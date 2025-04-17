@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@poma/*": ["packages/*/src"],
+      "*": ["node_modules/*"]
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@polkadot"
+    ],
+    "verbatimModuleSyntax": false,
+    "preserveSymlinks": true
+  },
+  "exclude": ["node_modules", "dist"]
+} 
