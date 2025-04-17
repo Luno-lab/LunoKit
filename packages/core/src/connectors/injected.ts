@@ -1,9 +1,9 @@
-import { BaseConnector } from './base';
 import { web3Accounts, web3Enable, web3FromAddress } from '@polkadot/extension-dapp';
-import type { InjectedWindow, InjectedExtension } from '@polkadot/extension-inject/types';
-import { decodeAddress } from '@polkadot/util-crypto';
+import { BaseConnector } from './base';
+import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
+import { u8aToHex } from '@polkadot/util';
 import type { PolkadotAccount } from '../types';
-import {u8aToHex} from '@polkadot/util'
+import { getWalletInfo, isWalletInstalled } from '../utils/wallet';
 
 const INJECTED_ID = 'injected';
 const INJECTED_NAME = '浏览器扩展钱包';
@@ -12,123 +12,42 @@ const INJECTED_ICON = 'https://polkadot.js.org/docs/img/favicon.ico';
 export interface InjectedConnectorOptions {
   /** 应用名称 */
   appName?: string;
-  /** 只使用支持的扩展 */
-  supportedOnly?: boolean;
-  /** 支持的扩展列表 */
-  supportedExtensions?: Array<{
-    id: string;
-    name: string;
-    icon?: string;
-    description?: string;
-  }>;
-  /** 不允许的扩展ID列表 */
-  disallowedExtensions?: string[];
-}
-
-/**
- * 检查是否已注入web3扩展
- */
-function isWeb3Injected(win: InjectedWindow): boolean {
-  return Object.values(win.injectedWeb3 || {})
-    .filter(({ enable, connect }) => !!(enable || connect))
-    .length > 0;
+  /** 指定使用的钱包ID，如 'polkadot-js', 'subwallet-js' 等 */
+  walletId?: string;
 }
 
 /**
  * 注入式钱包连接器
- * 支持浏览器扩展钱包，如Polkadot.js扩展等
+ * 支持多种浏览器扩展钱包
  */
 export class InjectedConnector extends BaseConnector {
-  private options: InjectedConnectorOptions;
+  /**
+   * 应用名称，用于显示在扩展中
+   */
+  private appName: string;
+  
+  /**
+   * 指定的钱包ID，如果指定则只使用该钱包
+   */
+  private walletId?: string;
 
   /**
    * 创建注入式钱包连接器
    */
   constructor(options: InjectedConnectorOptions = {}) {
+    // 如果指定了钱包ID，使用该钱包的信息
+    const walletInfo = options.walletId 
+      ? getWalletInfo(options.walletId)
+      : { name: INJECTED_NAME, icon: INJECTED_ICON };
+    
     super({
-      id: INJECTED_ID,
-      name: INJECTED_NAME,
-      icon: INJECTED_ICON,
+      id: options.walletId || INJECTED_ID,
+      name: walletInfo.name,
+      icon: walletInfo.icon,
     });
 
-    this.options = {
-      appName: '浏览器钱包',
-      supportedOnly: false,
-      supportedExtensions: [
-        {
-          id: 'polkadot-js',
-          name: 'Polkadot.js',
-          icon: 'https://polkadot.js.org/docs/img/favicon.ico',
-          description: 'Polkadot浏览器扩展钱包',
-        },
-        {
-          id: 'subwallet-js',
-          name: 'SubWallet',
-          icon: 'https://subwallet.app/favicon.ico',
-          description: 'SubWallet浏览器扩展钱包',
-        },
-        // 可以添加更多支持的扩展
-      ],
-      disallowedExtensions: [],
-      ...options,
-    };
-  }
-
-  /**
-   * 检测浏览器中已安装的扩展
-   */
-  private async detectExtensions(): Promise<InjectedExtension[]> {
-    const injectedWindow = window as Window & InjectedWindow;
-
-    // 如果还未注入，等待一段时间
-    if (!isWeb3Injected(injectedWindow)) {
-      try {
-        await Promise.race(
-          [300, 600, 1000].map(
-            (ms) =>
-              new Promise<string>((resolve, reject) =>
-                setTimeout(() => {
-                  if (isWeb3Injected(injectedWindow)) {
-                    resolve('injection complete');
-                  } else {
-                    reject(new Error('No injection found'));
-                  }
-                }, ms),
-              ),
-          ),
-        );
-      } catch (error) {
-        console.warn('No web3 extension found after waiting');
-      }
-    }
-
-    // 启用扩展
-    try {
-      const appName = this.options.appName || '浏览器钱包';
-      const extensions = await web3Enable(appName);
-
-      // 过滤扩展
-      return extensions.filter((ext) => {
-        const extId = ext.name.toLowerCase();
-
-        // 检查是否在不允许的列表中
-        if (this.options.disallowedExtensions?.includes(extId)) {
-          return false;
-        }
-
-        // 如果只使用支持的扩展，检查是否在支持列表中
-        if (this.options.supportedOnly) {
-          return this.options.supportedExtensions?.some(
-            (supported) => supported.id === extId
-          );
-        }
-
-        return true;
-      });
-    } catch (error) {
-      console.error('启用扩展失败:', error);
-      return [];
-    }
+    this.appName = options.appName || 'POMA App';
+    this.walletId = options.walletId;
   }
 
   /**
@@ -137,18 +56,40 @@ export class InjectedConnector extends BaseConnector {
    */
   async connect(): Promise<Array<PolkadotAccount>> {
     try {
-      // 检测扩展
-      const extensions = await this.detectExtensions();
-
-      if (!extensions.length) {
-        throw new Error('未找到可用的浏览器扩展钱包，请安装Polkadot.js扩展或其他兼容扩展');
+      // 如果指定了钱包ID，先检查是否已安装
+      if (this.walletId && !isWalletInstalled(this.walletId)) {
+        throw new Error(`未找到 ${getWalletInfo(this.walletId).name} 扩展，请安装并启用扩展`);
       }
 
-      // 获取账户
-      const polkadotAccounts = await web3Accounts();
+      // 启用扩展，如果指定了walletId，只启用指定的扩展
+      const extensions = await web3Enable(this.appName);
+      
+      // 过滤扩展（如果指定了钱包ID）
+      const filteredExtensions = this.walletId
+        ? extensions.filter(ext => ext.name === this.walletId)
+        : extensions;
+
+      if (!filteredExtensions.length) {
+        // 针对性的错误信息
+        if (this.walletId) {
+          throw new Error(`${getWalletInfo(this.walletId).name} 扩展未启用，请在扩展中授权访问`);
+        } else {
+          throw new Error('未找到可用的浏览器扩展钱包，请安装Polkadot.js扩展或其他兼容扩展');
+        }
+      }
+
+      // 获取账户，如果指定了钱包ID，只获取指定钱包的账户
+      const polkadotAccounts = await web3Accounts(
+        this.walletId ? { extensions: [this.walletId] } : undefined
+      );
 
       if (!polkadotAccounts.length) {
-        throw new Error('未找到账户，请在扩展钱包中创建或导入账户');
+        // 针对性的错误信息
+        if (this.walletId) {
+          throw new Error(`未找到账户，请在 ${getWalletInfo(this.walletId).name} 中创建或导入账户`);
+        } else {
+          throw new Error('未找到账户，请在扩展钱包中创建或导入账户');
+        }
       }
 
       // 转换账户格式
@@ -158,21 +99,28 @@ export class InjectedConnector extends BaseConnector {
           const publicKey = decodeAddress(account.address);
           // 使用 polkadot-js 提供的工具函数
           const hexPublicKey = u8aToHex(publicKey);
-
+            
           return {
             address: account.address,
             name: account.meta?.name || undefined,
             publicKey: hexPublicKey,
-            // 浏览器扩展钱包默认使用 42 格式
+            // 钱包默认使用 42 格式
             ss58Format: 42,
-            meta: account.meta
+            meta: {
+              ...account.meta,
+              // 添加账户来源信息
+              source: account.meta?.source || this.walletId || 'injected'
+            }
           };
         } catch (error) {
           console.error(`处理账户失败: ${error}`);
           return {
             address: account.address,
             name: account.meta?.name || undefined,
-            meta: account.meta
+            meta: {
+              ...account.meta,
+              source: account.meta?.source || this.walletId || 'injected'
+            }
           };
         }
       });
@@ -195,7 +143,7 @@ export class InjectedConnector extends BaseConnector {
 
     try {
       // 启用扩展（如果尚未启用）
-      await this.detectExtensions();
+      await web3Enable(this.appName);
 
       // 获取账户的扩展适配器
       const injector = await web3FromAddress(address);
@@ -234,7 +182,7 @@ export class InjectedConnector extends BaseConnector {
 
     try {
       // 启用扩展（如果尚未启用）
-      await this.detectExtensions();
+      await web3Enable(this.appName);
 
       // 获取账户的扩展适配器
       const injector = await web3FromAddress(address);
@@ -256,26 +204,55 @@ export class InjectedConnector extends BaseConnector {
   }
 
   /**
-   * 获取已安装的扩展列表
-   * @returns 已安装的扩展ID列表
+   * 格式化账户
+   * @param accounts 账户列表
+   * @param ss58Format 目标格式
+   * @returns 格式化后的账户列表
    */
-  async getInstalledExtensions(): Promise<string[]> {
-    const extensions = await this.detectExtensions();
-    return extensions.map((ext) => ext.name.toLowerCase());
+  formatAccounts(accounts: Array<PolkadotAccount>, ss58Format: number): Array<PolkadotAccount> {
+    try {
+      return accounts.map(account => {
+        try {
+          // 先解码获取公钥
+          const publicKey = decodeAddress(account.address);
+          // 将 Uint8Array 转换为十六进制字符串
+          const publicKeyHex = Array.from(publicKey)
+            .map((b: number) => b.toString(16).padStart(2, '0'))
+            .join('');
+            
+          // 使用目标 SS58 格式编码地址
+          const formattedAddress = encodeAddress(publicKey, ss58Format);
+          
+          return {
+            ...account,
+            address: formattedAddress,
+            publicKey: publicKeyHex,
+            ss58Format: ss58Format
+          };
+        } catch (error) {
+          console.error(`转换地址格式失败: ${error}`);
+          // 如果转换失败，返回原样
+          return account;
+        }
+      });
+    } catch (error) {
+      console.error(`地址工具加载失败: ${error}`);
+      return accounts;
+    }
   }
 }
 
 /**
- * 创建注入式钱包连接器工厂函数
- *
+ * 创建通用注入式钱包连接器
+ * 
  * @param options 连接器选项
- * @returns 注入式钱包连接器实例
- *
+ * @returns 注入式钱包连接器
+ * 
  * @example
  * ```ts
  * import { createConfig } from '@poma/core';
  * import { injected } from '@poma/core/connectors';
- *
+ * 
  * const config = createConfig({
  *   connectors: [
  *     injected({ appName: 'My App' })
@@ -285,4 +262,70 @@ export class InjectedConnector extends BaseConnector {
  */
 export function injected(options: InjectedConnectorOptions = {}): InjectedConnector {
   return new InjectedConnector(options);
+}
+
+/**
+ * 创建 Polkadot.js 专用连接器
+ * 
+ * @param options 连接器选项
+ * @returns Polkadot.js 连接器实例
+ * 
+ * @example
+ * ```ts
+ * import { createConfig } from '@poma/core';
+ * import { polkadotjs } from '@poma/core/connectors';
+ * 
+ * const config = createConfig({
+ *   connectors: [
+ *     polkadotjs({ appName: 'My App' })
+ *   ]
+ * });
+ * ```
+ */
+export function polkadotjs(options: InjectedConnectorOptions = {}): InjectedConnector {
+  return new InjectedConnector({ ...options, walletId: 'polkadot-js' });
+}
+
+/**
+ * 创建 SubWallet 专用连接器
+ * 
+ * @param options 连接器选项
+ * @returns SubWallet 连接器实例
+ * 
+ * @example
+ * ```ts
+ * import { createConfig } from '@poma/core';
+ * import { subwallet } from '@poma/core/connectors';
+ * 
+ * const config = createConfig({
+ *   connectors: [
+ *     subwallet({ appName: 'My App' })
+ *   ]
+ * });
+ * ```
+ */
+export function subwallet(options: InjectedConnectorOptions = {}): InjectedConnector {
+  return new InjectedConnector({ ...options, walletId: 'subwallet-js' });
+}
+
+/**
+ * 创建 Talisman 专用连接器
+ * 
+ * @param options 连接器选项
+ * @returns Talisman 连接器实例
+ * 
+ * @example
+ * ```ts
+ * import { createConfig } from '@poma/core';
+ * import { talisman } from '@poma/core/connectors';
+ * 
+ * const config = createConfig({
+ *   connectors: [
+ *     talisman({ appName: 'My App' })
+ *   ]
+ * });
+ * ```
+ */
+export function talisman(options: InjectedConnectorOptions = {}): InjectedConnector {
+  return new InjectedConnector({ ...options, walletId: 'talisman' });
 }

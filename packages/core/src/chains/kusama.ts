@@ -1,4 +1,3 @@
-import type { Chain } from '../types';
 import { defineChain } from './common';
 
 /**
@@ -33,4 +32,4 @@ export const kusamaChain = defineChain({
       url: 'https://polkascan.io/kusama',
     },
   },
-}); 
+});
