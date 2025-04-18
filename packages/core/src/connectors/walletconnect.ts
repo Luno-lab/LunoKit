@@ -28,18 +28,18 @@ export interface WalletConnectConnectorOptions {
 
 /**
  * 创建 WalletConnect 连接器工厂函数
- * 
+ *
  * @param options 连接器选项
  * @returns WalletConnect 连接器实例
- * 
+ *
  * @example
  * ```ts
  * import { createConfig } from '@poma/core';
  * import { walletConnect } from '@poma/core/connectors';
- * 
+ *
  * const config = createConfig({
  *   connectors: [
- *     walletConnect({ 
+ *     walletConnect({
  *       projectId: 'YOUR_PROJECT_ID',
  *       metadata: {
  *         name: 'My dApp',
@@ -107,7 +107,7 @@ export class WalletConnectConnector extends BaseConnector {
       },
       ...options,
     };
-    
+
     // 设置支持的链（如果提供）
     if (options.supportedChains) {
       this.setChains(options.supportedChains);
@@ -218,7 +218,7 @@ export class WalletConnectConnector extends BaseConnector {
    * 连接到WalletConnect
    * @returns 可用账户列表
    */
-  async connect(): Promise<Array<import('../types').PolkadotAccount>> {
+  async connect(): Promise<Array<import('../types').Account>> {
     try {
       // 初始化客户端
       if (!this.isInitialized) {
@@ -273,18 +273,18 @@ export class WalletConnectConnector extends BaseConnector {
    * 从WalletConnect会话获取账户列表
    * @returns 账户列表
    */
-  private getWalletConnectAccounts(): Array<import('../types').PolkadotAccount> {
+  private getWalletConnectAccounts(): Array<import('../types').Account> {
     if (!this.session) {
       return [];
     }
 
     const accounts = this.session.namespaces?.polkadot?.accounts || [];
-    
+
     // WalletConnect返回的账户格式通常为 "polkadot:chainId:address"
     return accounts.map((account: string) => {
       const parts = account.split(':');
       const address = parts.length === 3 ? parts[2] : account;
-      
+
       return {
         address,
         // WalletConnect通常不提供账户名称

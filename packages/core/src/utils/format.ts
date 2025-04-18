@@ -1,5 +1,5 @@
 import {bnToBn, u8aToHex} from '@polkadot/util';
-import {PolkadotAccount} from '../types'
+import {Account} from '../types'
 import {decodeAddress, encodeAddress} from '@polkadot/util-crypto'
 
 /**
@@ -88,10 +88,13 @@ export function formatTimestamp(timestamp: number): string {
  * @param ss58Format 目标 SS58 格式
  * @returns 转换后的账户列表
  */
-function formatAccounts(accounts: Array<PolkadotAccount>, ss58Format: number): Array<PolkadotAccount> {
+export function formatAccounts(accounts: Array<Account>, ss58Format: number): Array<Account> {
   try {
     return accounts.map(account => {
       try {
+        if (account.ss58Format === ss58Format) {
+          return account;
+        }
         // 先解码获取公钥
         const publicKey = decodeAddress(account.address);
         // 将 Uint8Array 转换为十六进制字符串

@@ -1,26 +1,26 @@
 import { defineChain } from './common';
+import {SS58_FORMAT} from '../types'
 
 /**
  * Kusama网络
  */
 export const kusamaChain = defineChain({
-  id: 1, // Kusama没有真正的链ID概念，使用1作为标识
+  id: SS58_FORMAT.KUSAMA,
   name: 'Kusama',
   network: 'kusama',
+  ss58Format: SS58_FORMAT.KUSAMA,
   nativeCurrency: {
     name: 'Kusama',
     symbol: 'KSM',
     decimals: 12,
   },
   rpcUrls: {
-    default: {
-      http: ['wss://kusama-rpc.polkadot.io'],
-      webSocket: ['wss://kusama-rpc.polkadot.io'],
-    },
-    public: {
-      http: ['wss://kusama-rpc.polkadot.io'],
-      webSocket: ['wss://kusama-rpc.polkadot.io'],
-    },
+    default: 'wss://kusama-rpc.polkadot.io',
+    http: 'https://kusama-rpc.polkadot.io',
+    alternative: [
+      'wss://kusama.api.onfinality.io/public-ws',
+      'wss://kusama-rpc.dwellir.com'
+    ]
   },
   blockExplorers: {
     default: {

@@ -1,27 +1,26 @@
-import type { Chain } from '../types';
 import { defineChain } from './common';
+import {SS58_FORMAT} from '../types'
 
 /**
  * Polkadot主网
  */
 export const polkadotChain = defineChain({
-  id: 0, // Polkadot没有真正的链ID概念，使用0作为标识
+  id: SS58_FORMAT.POLKADOT,
   name: 'Polkadot',
   network: 'polkadot',
+  ss58Format: SS58_FORMAT.POLKADOT,
   nativeCurrency: {
     name: 'Polkadot',
     symbol: 'DOT',
     decimals: 10,
   },
   rpcUrls: {
-    default: {
-      http: ['wss://rpc.polkadot.io'],
-      webSocket: ['wss://rpc.polkadot.io'],
-    },
-    public: {
-      http: ['wss://rpc.polkadot.io'],
-      webSocket: ['wss://rpc.polkadot.io'],
-    },
+    default: 'wss://rpc.polkadot.io',
+    http: 'https://rpc.polkadot.io',
+    alternative: [
+      'wss://polkadot.api.onfinality.io/public-ws',
+      'wss://polkadot-rpc.dwellir.com'
+    ]
   },
   blockExplorers: {
     default: {
@@ -33,4 +32,4 @@ export const polkadotChain = defineChain({
       url: 'https://polkascan.io/polkadot',
     },
   },
-}); 
+});

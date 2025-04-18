@@ -1,4 +1,6 @@
-import type { Connector, PolkadotAccount } from '../types';
+import type { Connector, Account } from '../types';
+import {SubmittableExtrinsic} from '@polkadot/api/types'
+import {ApiPromise} from '@polkadot/api'
 
 /**
  * 连接器选项
@@ -37,7 +39,7 @@ export abstract class BaseConnector implements Connector {
    * 连接到钱包并获取可用账户
    * @returns 可用账户列表
    */
-  abstract connect(): Promise<Array<PolkadotAccount>>;
+  abstract connect(): Promise<Array<Account>>;
 
   /**
    * 签名消息
@@ -53,5 +55,5 @@ export abstract class BaseConnector implements Connector {
    * @param address 用于签名的账户地址
    * @returns 签名结果
    */
-  abstract signTransaction(transaction: any, address: string): Promise<string>;
+  // abstract signTransaction(transaction: any, address: string): Promise<string>;
 }
