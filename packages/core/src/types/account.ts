@@ -6,8 +6,8 @@
  */
 export interface Account {
   /**
-   * 账户地址（格式化后的SS58地址）
-   * 根据不同链使用不同SS58前缀
+   * 账户地址（从钱包获取的原始格式）
+   * 具体的 SS58 格式化应在 React 层根据链进行。
    */
   address: string;
 
@@ -21,14 +21,6 @@ export interface Account {
   publicKey?: string;
 
   /**
-   * 当前地址的SS58格式
-   * 0: Polkadot
-   * 2: Kusama
-   * 42: 通用Substrate/测试网
-   */
-  ss58Format?: number;
-
-  /**
    * 其他元数据
    * 包括账户来源、控制方式等信息
    */
@@ -36,8 +28,8 @@ export interface Account {
     /** 账户来源（如 'polkadot-js', 'subwallet-js', 'talisman' 等） */
     source?: string;
 
-    /** 是否为外部账户（如：冷钱包、Ledger等） */
-    isExternal?: boolean;
+    /** 创世哈希 (如果钱包提供了特定链的账户) */
+    genesisHash?: string | null;
 
     /** 其他自定义元数据 */
     [key: string]: any;

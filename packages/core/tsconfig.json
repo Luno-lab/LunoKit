@@ -7,10 +7,6 @@
     "declarationMap": true,
     "sourceMap": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "paths": {
-      "@polkadot/extension-dapp": ["../../node_modules/@polkadot/extension-dapp"],
-      "@polkadot/extension-inject/types": ["../../node_modules/@polkadot/extension-inject/types"]
-    }
   },
   "include": ["src/**/*"]
-} 
+}

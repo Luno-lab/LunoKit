@@ -16,4 +16,6 @@ export * from './transaction';
 export * from './connector';
 
 // 导出配置相关类型
-export * from './config'; 
+export * from './config';
+
+export * from './signer'

@@ -8,7 +8,7 @@
     "lint": "pnpm --filter './packages/**' lint",
     "test": "pnpm --filter './packages/**' test",
     "changeset": "changeset",
-    "publish-packages": "pnpm build && changeset publish",
+    "publish-packages": "pnpm build && changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.2",

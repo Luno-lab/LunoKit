@@ -16,10 +16,9 @@
     },
     "typeRoots": [
       "./node_modules/@types",
-      "./node_modules/@polkadot"
     ],
     "verbatimModuleSyntax": false,
     "preserveSymlinks": true
   },
   "exclude": ["node_modules", "dist"]
-} 
+}

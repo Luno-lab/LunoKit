@@ -1,6 +1,7 @@
 import { decodeAddress, encodeAddress, isAddress } from '@polkadot/util-crypto';
 import type { Account } from '../types';
 import {u8aToHex} from '@polkadot/util'
+import {InjectedAccountWithMeta} from '@polkadot/extension-inject/types'
 
 /**
  * 检查地址是否有效
@@ -98,3 +99,41 @@ export function getPublicKey(address: string): Uint8Array {
   }
 }
 
+/**
+ * 将从钱包扩展获取的原始账户列表映射为内部 Account 类型。
+ * 主要提取地址、名称、来源，并尝试解码公钥。
+ * @param injectedAccounts - 从 web3Accounts() 或 web3AccountsSubscribe() 获取的原始账户列表。
+ * @returns 内部 Account 类型的列表。
+ */
+export function mapInjectedAccounts(injectedAccounts: InjectedAccountWithMeta[]): Account[] {
+  if (!injectedAccounts) {
+    return []; // 处理 null 或 undefined 输入
+  }
+
+  return injectedAccounts.map((acc: InjectedAccountWithMeta) => {
+    let publicKeyHex: string | undefined;
+    try {
+      // 从原始地址解码出公钥
+      const publicKeyBytes = decodeAddress(acc.address);
+      // 将公钥 Uint8Array 转换为十六进制字符串 (不带 '0x' 前缀)
+      publicKeyHex = u8aToHex(publicKeyBytes);
+    } catch (error) {
+      // 如果解码失败（地址格式可能无效），则 publicKey 为 undefined
+      console.error(`Failed to decode address "${acc.address}" to extract public key:`, error);
+    }
+
+    // 构建我们定义的 Account 对象
+    const mappedAccount: Account = {
+      address: acc.address, // 保留从钱包获取的原始地址
+      name: acc.meta?.name, // 使用钱包提供的名称
+      publicKey: publicKeyHex, // 添加提取的公钥
+      meta: {
+        source: acc.meta?.source, // 保留来源信息
+        genesisHash: acc.meta?.genesisHash, // 保留 genesisHash
+        // 可以选择性添加其他需要的 meta 字段，如 acc.meta.type
+      }
+    };
+
+    return mappedAccount;
+  });
+}

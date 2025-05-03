@@ -6,12 +6,7 @@ export type {
   SS58_FORMAT,
   ACCOUNT_TYPE,
   TransactionParameters,
-  TransactionResponse,
   TransactionReceipt,
-  BatchTransactions,
-  MultisigParameters,
-  ProxyParameters,
-  TransactionPriority,
   Config,
   ConfigOptions,
 } from './types';

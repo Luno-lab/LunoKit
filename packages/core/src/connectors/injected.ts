@@ -1,318 +1,160 @@
-import { web3Accounts, web3Enable, web3FromAddress } from '@polkadot/extension-dapp';
+// packages/core/src/connectors/injected.ts
 import { BaseConnector } from './base';
-import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
-import { u8aToHex } from '@polkadot/util';
-import type { Account } from '../types';
-import { getWalletInfo, isWalletInstalled } from '../utils/wallet';
-import {SS58_FORMAT} from '../types'
-import {formatAccounts} from '../utils'
+// 确保导入所有必要的类型和函数
+import type { Account, Signer } from '../types';
+import { web3Accounts, web3FromSource, web3AccountsSubscribe } from '@polkadot/extension-dapp';
+import type { InjectedAccountWithMeta, Unsubcall } from '@polkadot/extension-inject/types';
+import { stringToHex } from '@polkadot/util';
+import { mapInjectedAccounts } from '../utils'
 
-const INJECTED_ID = 'polkadot-js';
-const INJECTED_NAME = 'polkadot-js extension';
-const INJECTED_ICON = 'https://polkadot.js.org/docs/img/favicon.ico';
-
-export interface InjectedConnectorOptions {
-  /** 应用名称 */
-  appName?: string;
-}
-
-export interface ConnectOptions {
-  /** 指定使用的钱包ID，如 'polkadot-js', 'subwallet-js' 等 */
-  walletId?: string;
-}
-
-/**
- * 注入式钱包连接器
- * 支持多种浏览器扩展钱包
- */
+// 类名保持为 InjectedConnector，因为它确实处理注入式钱包
 export class InjectedConnector extends BaseConnector {
-  /**
-   * 应用名称，用于显示在扩展中
-   */
-  private appName: string;
+  readonly id = 'injected';
+  readonly name = 'Browser Wallet';
+  // 修正：icon 在 BaseConnector 中是可选的，这里保持一致
+  readonly icon?: string = 'https://polkadot.js.org/docs/img/logo.svg'; // 可以设为 undefined 或保留
 
-  /**
-   * 创建注入式钱包连接器
-   */
-  constructor(options: InjectedConnectorOptions = {}) {
-    super({
-      id: INJECTED_ID,
-      name: INJECTED_NAME,
-      icon: INJECTED_ICON,
-    });
+  private connectedSource: string | undefined = undefined;
+  private unsubscribe: Unsubcall | null = null;
 
-    this.appName = options.appName || 'POMA App';
+  constructor() {
+    super();
   }
 
-  /**
-   * 连接到扩展钱包并获取账户
-   * @param options 连接选项，可指定使用的钱包ID
-   * @returns 可用账户列表
-   */
-  async connect(options?: ConnectOptions): Promise<Array<Account>> {
-    // 从选项中获取钱包ID
-    const walletId = options?.walletId;
-
-    try {
-      // 如果指定了钱包ID，先检查是否已安装
-      if (walletId && !isWalletInstalled(walletId)) {
-        throw new Error(`未找到 ${getWalletInfo(walletId).name} 扩展，请安装并启用扩展`);
-      }
-
-      // 启用扩展，如果指定了walletId，只启用指定的扩展
-      const extensions = await web3Enable(this.appName);
-
-      // 过滤扩展（如果指定了钱包ID）
-      const filteredExtensions = walletId
-        ? extensions.filter(ext => ext.name === walletId)
-        : extensions;
-
-      if (!filteredExtensions.length) {
-        // 针对性的错误信息
-        if (walletId) {
-          throw new Error(`${getWalletInfo(walletId).name} 扩展未启用，请在扩展中授权访问`);
-        } else {
-          throw new Error('未找到可用的浏览器扩展钱包，请安装Polkadot.js扩展或其他兼容扩展');
-        }
-      }
-
-      // 获取账户，如果指定了钱包ID，只获取指定钱包的账户
-      const polkadotAccounts = await web3Accounts(
-        walletId ? {extensions: [walletId]} : {}
-      );
-
-      if (!polkadotAccounts.length) {
-        // 针对性的错误信息
-        if (walletId) {
-          throw new Error(`未找到账户，请在 ${getWalletInfo(walletId).name} 中创建或导入账户`);
-        } else {
-          throw new Error('未找到账户，请在扩展钱包中创建或导入账户');
-        }
-      }
-
-      // 转换账户格式
-      return formatAccounts(polkadotAccounts, SS58_FORMAT.SUBSTRATE)
-    } catch (e) {
-      throw new Error('Accounts no valid')
-    }
+  public async isAvailable(): Promise<boolean> {
+    if (typeof window === 'undefined') return false;
+    const injectedWeb3 = (window as any).injectedWeb3;
+    return typeof injectedWeb3 === 'object' && Object.keys(injectedWeb3).length > 0;
   }
 
-  /**
-   * 签名消息
-   * @param message 要签名的消息
-   * @param address 用于签名的账户地址
-   * @returns 签名结果
-   */
-  async signMessage(message: string, address: string): Promise<string> {
-    if (!address) {
-      throw new Error('未指定签名账户');
+  public async connect(): Promise<Array<Account>> {
+    console.log(`Connector ${this.id}: Attempting to connect...`);
+    if (this.signer) {
+      console.log(`Connector ${this.id}: Already connected.`);
+      return [...this.accounts];
+    }
+    if (!(await this.isAvailable())) {
+      throw new Error('No compatible browser wallet extension found.');
     }
 
+    let determinedSource: string;
+
     try {
-      // 启用扩展（如果尚未启用）
-      await web3Enable(this.appName);
-
-      // 获取账户的扩展适配器
-      const injector = await web3FromAddress(address);
-
-      // 签名消息
-      const signRaw = injector?.signer?.signRaw;
-
-      if (!signRaw) {
-        throw new Error('当前扩展不支持签名功能');
+      const allAccountsRaw: InjectedAccountWithMeta[] = await web3Accounts();
+      if (allAccountsRaw.length === 0) {
+        throw new Error('No accounts found. Ensure wallet is unlocked and access granted.');
       }
 
-      // 执行签名
-      const { signature } = await signRaw({
-        address: address,
-        data: message,
-        type: 'bytes',
-      });
+      const sources = [...new Set(allAccountsRaw.map(acc => acc.meta.source))];
+      if (sources.length > 1) {
+        throw new Error(`Multiple wallets detected (${sources.join(', ')}). Use specific connector or disable unused extensions.`);
+      }
 
-      return signature;
+      determinedSource = sources[0];
+      this.connectedSource = determinedSource;
+      console.log(`Connector ${this.id}: Determined source: ${determinedSource}`);
+
+      const injector = await web3FromSource(determinedSource);
+      const potentialSigner = injector?.signer as Signer | undefined;
+      if (!potentialSigner) {
+        throw new Error(`Could not get signer from source ${determinedSource}.`);
+      }
+      this.signer = potentialSigner;
+      console.log(`Connector ${this.id}: Signer obtained for ${determinedSource}.`);
+
+      const sourceAccountsRaw = allAccountsRaw.filter(acc => acc.meta.source === determinedSource);
+      this.accounts = mapInjectedAccounts(sourceAccountsRaw);
+      console.log(`Connector ${this.id}: Initial accounts loaded`, this.accounts);
+
+      // 调用修正后的 startSubscription
+      await this.startSubscription();
+
+      return [...this.accounts];
+
     } catch (error) {
-      console.error('签名消息失败:', error);
+      console.error(`Connector ${this.id}: Connection failed:`, error);
+      // *** 调用 cleanup 清理状态 ***
+      await this.cleanup();
       throw error;
     }
   }
 
-  /**
-   * 签名交易
-   * @param transaction 要签名的交易
-   * @param address 用于签名的账户地址
-   * @returns 签名结果
-   */
-  // async signTransaction(transaction: any, address: string): Promise<string> {
-  //   if (!address) {
-  //     throw new Error('未指定签名账户');
-  //   }
-  //
-  //   try {
-  //     // 启用扩展（如果尚未启用）
-  //     await web3Enable(this.appName);
-  //
-  //     // 获取账户的扩展适配器
-  //     const injector = await web3FromAddress(address);
-  //
-  //     // 检查是否支持签名
-  //     if (!injector.signer) {
-  //       throw new Error('当前扩展不支持签名功能');
-  //     }
-  //
-  //     // 执行签名 - 注意：这里简化了，实际使用需要根据API方式进行
-  //     // 实际使用可能需要获取API实例并使用signAndSend
-  //     const signResult = 'transaction_sign_result';
-  //
-  //     return signResult;
-  //   } catch (error) {
-  //     console.error('签名交易失败:', error);
-  //     throw error;
-  //   }
-  // }
+  // *** 修正 disconnect: 调用 cleanup 并 emit 事件 ***
+  public async disconnect(): Promise<void> {
+    console.log(`Connector ${this.id}: Disconnecting...`);
+    await this.cleanup(); // 调用辅助方法执行清理
+    this.emit('disconnect'); // 在清理后触发事件
+  }
 
+  // getAccounts 和 getSigner 由 BaseConnector 提供（假设 BaseConnector 已实现）
 
-
-  /**
-   * 格式化账户
-   * @param accounts 账户列表
-   * @param ss58Format 目标格式
-   * @returns 格式化后的账户列表
-   */
-  formatAccounts(accounts: Array<Account>, ss58Format: number): Array<Account> {
-    try {
-      return accounts.map(account => {
-        try {
-          // 先解码获取公钥
-          const publicKey = decodeAddress(account.address);
-          // 将 Uint8Array 转换为十六进制字符串
-          const publicKeyHex = Array.from(publicKey)
-            .map((b: number) => b.toString(16).padStart(2, '0'))
-            .join('');
-
-          // 使用目标 SS58 格式编码地址
-          const formattedAddress = encodeAddress(publicKey, ss58Format);
-
-          return {
-            ...account,
-            address: formattedAddress,
-            publicKey: publicKeyHex,
-            ss58Format: ss58Format
-          };
-        } catch (error) {
-          console.error(`转换地址格式失败: ${error}`);
-          // 如果转换失败，返回原样
-          return account;
-        }
-      });
-    } catch (error) {
-      console.error(`地址工具加载失败: ${error}`);
-      return accounts;
+  public async signMessage(message: string, address: string): Promise<string | undefined> {
+    const signer = await this.getSigner();
+    if (!signer?.signRaw) {
+      throw new Error('Signing function (signRaw) not available.');
     }
+    const accounts = await this.getAccounts();
+    if (!accounts.some(acc => acc.address === address)) {
+      throw new Error(`Address ${address} is not managed by the currently connected source (${this.connectedSource}).`);
+    }
+    try {
+      const dataHex = stringToHex(message);
+      const result = await signer.signRaw({ address, data: dataHex, type: 'bytes' });
+      return result.signature;
+    } catch (error) {
+      console.error(`Connector ${this.id}: Failed to sign message:`, error);
+      return undefined;
+    }
+  }
+
+  /**
+   * 内部方法：启动账户订阅（通用注入式）
+   * 订阅所有来源，但在回调中根据 connectedSource 过滤
+   */
+  private async startSubscription(): Promise<void> {
+    await this.cleanupSubscription(); // 清理旧订阅
+    try {
+      // 订阅所有来源，因为 web3AccountsSubscribe 不支持按来源过滤
+      this.unsubscribe = await web3AccountsSubscribe(
+        (injectedAccounts: InjectedAccountWithMeta[]) => {
+          // 确保我们只处理当前连接的那个来源的更新
+          if (!this.connectedSource) return;
+          const sourceAccounts = injectedAccounts.filter(acc => acc.meta.source === this.connectedSource);
+          const newAccounts = mapInjectedAccounts(sourceAccounts);
+          if (JSON.stringify(this.accounts) !== JSON.stringify(newAccounts)) {
+            this.accounts = newAccounts;
+            console.log(`Connector ${this.id}: Accounts updated via subscription for ${this.connectedSource}`, this.accounts);
+            this.emit('accountsChanged', [...this.accounts]);
+          }
+        }
+        // 没有第二个参数
+      );
+      console.log(`Connector ${this.id}: Subscribed to account changes (filtering for ${this.connectedSource}).`);
+    } catch (error) {
+      console.error(`Connector ${this.id}: Failed to subscribe to accounts:`, error);
+      this.unsubscribe = null;
+    }
+  }
+
+  // *** 添加 cleanupSubscription 辅助方法 ***
+  private async cleanupSubscription(): Promise<void> {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+      this.unsubscribe = null;
+      console.log(`Connector ${this.id}: Unsubscribed from account changes.`);
+    }
+  }
+
+  // *** 添加 cleanup 辅助方法 ***
+  private async cleanup(): Promise<void> {
+    await this.cleanupSubscription(); // 清理订阅
+    this.accounts = [];           // 清空账户
+    this.signer = undefined;      // 清空 signer
+    this.connectedSource = undefined; // 清空来源
+    // emit('disconnect') 由调用者 (disconnect 方法) 负责
   }
 }
 
-/**
- * 创建通用注入式钱包连接器
- *
- * @param options 连接器选项
- * @returns 注入式钱包连接器
- *
- * @example
- * ```ts
- * import { createConfig } from '@poma/core';
- * import { injected } from '@poma/core/connectors';
- *
- * const config = createConfig({
- *   connectors: [
- *     injected({ appName: 'My App' })
- *   ]
- * });
- * ```
- */
-export function injected(options: InjectedConnectorOptions = {}): InjectedConnector {
-  return new InjectedConnector(options);
-}
-
-/**
- * 创建 Polkadot.js 专用连接器
- *
- * @param options 连接器选项
- * @returns Polkadot.js 连接器实例
- *
- * @example
- * ```ts
- * import { createConfig } from '@poma/core';
- * import { polkadotjs } from '@poma/core/connectors';
- *
- * const config = createConfig({
- *   connectors: [
- *     polkadotjs({ appName: 'My App' })
- *   ]
- * });
- * ```
- */
-export function polkadotjs(options: InjectedConnectorOptions = {}): InjectedConnector {
-  const connector = new InjectedConnector(options);
-
-  // 包装connect方法，自动添加walletId
-  const originalConnect = connector.connect.bind(connector);
-  connector.connect = () => originalConnect({ walletId: 'polkadot-js' });
-
-  return connector;
-}
-
-/**
- * 创建 SubWallet 专用连接器
- *
- * @param options 连接器选项
- * @returns SubWallet 连接器实例
- *
- * @example
- * ```ts
- * import { createConfig } from '@poma/core';
- * import { subwallet } from '@poma/core/connectors';
- *
- * const config = createConfig({
- *   connectors: [
- *     subwallet({ appName: 'My App' })
- *   ]
- * });
- * ```
- */
-export function subwallet(options: InjectedConnectorOptions = {}): InjectedConnector {
-  const connector = new InjectedConnector(options);
-
-  // 包装connect方法，自动添加walletId
-  const originalConnect = connector.connect.bind(connector);
-  connector.connect = () => originalConnect({ walletId: 'subwallet-js' });
-
-  return connector;
-}
-
-/**
- * 创建 Talisman 专用连接器
- *
- * @param options 连接器选项
- * @returns Talisman 连接器实例
- *
- * @example
- * ```ts
- * import { createConfig } from '@poma/core';
- * import { talisman } from '@poma/core/connectors';
- *
- * const config = createConfig({
- *   connectors: [
- *     talisman({ appName: 'My App' })
- *   ]
- * });
- * ```
- */
-export function talisman(options: InjectedConnectorOptions = {}): InjectedConnector {
-  const connector = new InjectedConnector(options);
-
-  // 包装connect方法，自动添加walletId
-  const originalConnect = connector.connect.bind(connector);
-  connector.connect = () => originalConnect({ walletId: 'talisman' });
-
-  return connector;
+export function injected(): InjectedConnector {
+  return new InjectedConnector();
 }
