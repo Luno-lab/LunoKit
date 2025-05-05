@@ -12,7 +12,6 @@
     "baseUrl": ".",
     "paths": {
       "@poma/*": ["packages/*/src"],
-      "*": ["node_modules/*"]
     },
     "typeRoots": [
       "./node_modules/@types",

@@ -3,175 +3,56 @@
  * 为波卡生态系统定制的链信息
  */
 export interface Chain {
-  /** 链的唯一ID，通常是平行链ID，主网为0 */
-  id: number;
-  
-  /** 链名称 */
+  /**
+   * 链的创世哈希 (Genesis Hash)。
+   * 这是区分不同链的最可靠标识符。
+   * e.g., '0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3' for Polkadot
+   */
+  genesisHash: string;
+
+  /**
+   * 用户友好的链名称 (e.g., 'Polkadot', 'Kusama', 'Astar')
+   */
   name: string;
-  
-  /** 链标识符/网络名称 */
-  network: string;
-  
-  /** 链的默认SS58格式 */
-  ss58Format: number;
-  
-  /** 链的原生代币 */
+
+  /**
+   * 链的原生代币信息
+   */
   nativeCurrency: {
     name: string;
     symbol: string;
     decimals: number;
   };
-  
-  /** RPC 端点 */
+
+  /**
+   * 连接节点的 RPC URL 配置
+   */
   rpcUrls: {
-    default: string;  // 主要WebSocket端点
-    http?: string;    // 可选HTTP端点
-    alternative?: string[];  // 备用端点
+    /** 推荐使用的 WebSocket RPC 端点 (可以提供多个作为备选) */
+    webSocket?: readonly string[];
+    /** 可选的 HTTP RPC 端点 (可以提供多个作为备选) */
+    http?: readonly string[];
   };
-  
-  /** 区块浏览器 */
+
+  /**
+   * 该链使用的 SS58 地址格式前缀。
+   */
+  ss58Format: number;
+
+  /**
+   * 区块浏览器配置 (可选)
+   */
   blockExplorers?: {
-    default: {
-      name: string;  // 通常是 "Subscan"
-      url: string;   // 如 "https://polkadot.subscan.io"
-    };
-    [key: string]: {
-      name: string;
-      url: string;
-    };
+    // 可以定义一个默认的，或允许用户添加多个
+    default?: { name: string; url: string };
+    [key: string]: { name: string; url: string } | undefined; // 允许其他浏览器
   };
-  
-  /** 测试网标识 */
+
+  /**
+   * 是否为测试网 (可选)
+   */
   testnet?: boolean;
-  
-  /** 链特定的配置参数 */
+
+  /** 其他链特定的元数据 (可选) */
   meta?: Record<string, any>;
-}
-
-/**
- * 预定义的链配置
- */
-export const chains = {
-  /**
-   * Polkadot主网
-   */
-  polkadot: {
-    id: 0,
-    name: 'Polkadot',
-    network: 'polkadot',
-    ss58Format: 0,
-    nativeCurrency: {
-      name: 'Polkadot',
-      symbol: 'DOT',
-      decimals: 10,
-    },
-    rpcUrls: {
-      default: 'wss://rpc.polkadot.io',
-      http: 'https://rpc.polkadot.io',
-      alternative: [
-        'wss://polkadot.api.onfinality.io/public-ws',
-        'wss://polkadot-rpc.dwellir.com'
-      ]
-    },
-    blockExplorers: {
-      default: {
-        name: 'Subscan',
-        url: 'https://polkadot.subscan.io',
-      },
-      polkascan: {
-        name: 'Polkascan',
-        url: 'https://polkascan.io/polkadot',
-      },
-    },
-  },
-  
-  /**
-   * Kusama主网
-   */
-  kusama: {
-    id: 0,
-    name: 'Kusama',
-    network: 'kusama',
-    ss58Format: 2,
-    nativeCurrency: {
-      name: 'Kusama',
-      symbol: 'KSM',
-      decimals: 12,
-    },
-    rpcUrls: {
-      default: 'wss://kusama-rpc.polkadot.io',
-      http: 'https://kusama-rpc.polkadot.io',
-      alternative: [
-        'wss://kusama.api.onfinality.io/public-ws',
-        'wss://kusama-rpc.dwellir.com'
-      ]
-    },
-    blockExplorers: {
-      default: {
-        name: 'Subscan',
-        url: 'https://kusama.subscan.io',
-      },
-    },
-  },
-  
-  /**
-   * Westend测试网
-   */
-  westend: {
-    id: 0,
-    name: 'Westend',
-    network: 'westend',
-    ss58Format: 42,
-    nativeCurrency: {
-      name: 'Westend',
-      symbol: 'WND',
-      decimals: 12,
-    },
-    rpcUrls: {
-      default: 'wss://westend-rpc.polkadot.io',
-      http: 'https://westend-rpc.polkadot.io',
-    },
-    blockExplorers: {
-      default: {
-        name: 'Subscan',
-        url: 'https://westend.subscan.io',
-      },
-    },
-    testnet: true,
-  },
-  
-  /**
-   * Rococo测试网
-   */
-  rococo: {
-    id: 0,
-    name: 'Rococo',
-    network: 'rococo',
-    ss58Format: 42,
-    nativeCurrency: {
-      name: 'Rococo',
-      symbol: 'ROC',
-      decimals: 12,
-    },
-    rpcUrls: {
-      default: 'wss://rococo-rpc.polkadot.io',
-      http: 'https://rococo-rpc.polkadot.io',
-    },
-    blockExplorers: {
-      default: {
-        name: 'Subscan',
-        url: 'https://rococo.subscan.io',
-      },
-    },
-    testnet: true,
-  }
-} as const satisfies Record<string, Chain>;
-
-/**
- * 按名称获取预定义链
- * @param name 链名称
- * @returns 链配置
- */
-export function getChain(name: keyof typeof chains): Chain {
-  return chains[name];
 }

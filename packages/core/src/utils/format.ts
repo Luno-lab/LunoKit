@@ -1,6 +1,7 @@
 import {bnToBn, u8aToHex} from '@polkadot/util';
 import {Account} from '../types'
 import {decodeAddress, encodeAddress} from '@polkadot/util-crypto'
+import type {HexString} from '@polkadot/util/types'
 
 /**
  * 格式化余额
@@ -22,9 +23,10 @@ export function formatBalance(
   const { fixedDecimals = 4, thousandSeparator = ',' } = options || {};
 
   // 计算带小数点的格式
-  const base = 10n ** BigInt(decimals);
-  const whole = bn / base;
-  const fraction = bn % base;
+  const basePower = BigInt(decimals);
+  const base = bnToBn(10n ** basePower); // 将 bigint 转换为 BN
+  const whole = bn.div(base); // 使用 BN 的 div 方法
+  const fraction = bn.mod(base); // 使用 BN 的 mod 方法
 
   // 添加前导零
   let fractionStr = fraction.toString();
@@ -92,13 +94,10 @@ export function formatAccounts(accounts: Array<Account>, ss58Format: number): Ar
   try {
     return accounts.map(account => {
       try {
-        if (account.ss58Format === ss58Format) {
-          return account;
-        }
         // 先解码获取公钥
         const publicKey = decodeAddress(account.address);
         // 将 Uint8Array 转换为十六进制字符串
-        const publicKeyHex = u8aToHex(publicKey)
+        const publicKeyHex: HexString = u8aToHex(publicKey)
 
         // 使用目标 SS58 格式编码地址
         const formattedAddress = encodeAddress(publicKey, ss58Format);
@@ -106,8 +105,7 @@ export function formatAccounts(accounts: Array<Account>, ss58Format: number): Ar
         return {
           ...account,
           address: formattedAddress,
-          publicKey: publicKeyHex,
-          ss58Format: ss58Format
+          publicKey: publicKeyHex as HexString,
         };
       } catch (error) {
         console.error(`转换地址格式失败: ${error}`);

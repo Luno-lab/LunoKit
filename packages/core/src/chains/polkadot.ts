@@ -1,35 +1,13 @@
-import { defineChain } from './common';
-import {SS58_FORMAT} from '../types'
+import type {Chain} from '../types'
 
-/**
- * Polkadot主网
- */
-export const polkadotChain = defineChain({
-  id: SS58_FORMAT.POLKADOT,
+export const polkadot: Chain = {
+  genesisHash: '0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3',
   name: 'Polkadot',
-  network: 'polkadot',
-  ss58Format: SS58_FORMAT.POLKADOT,
-  nativeCurrency: {
-    name: 'Polkadot',
-    symbol: 'DOT',
-    decimals: 10,
-  },
+  nativeCurrency: { name: 'Polkadot', symbol: 'DOT', decimals: 10 },
   rpcUrls: {
-    default: 'wss://rpc.polkadot.io',
-    http: 'https://rpc.polkadot.io',
-    alternative: [
-      'wss://polkadot.api.onfinality.io/public-ws',
-      'wss://polkadot-rpc.dwellir.com'
-    ]
+    webSocket: ['wss://rpc.polkadot.io', 'wss://polkadot.api.onfinality.io/public-ws'],
+    http: ['https://rpc.polkadot.io'],
   },
-  blockExplorers: {
-    default: {
-      name: 'Subscan',
-      url: 'https://polkadot.subscan.io',
-    },
-    polkascan: {
-      name: 'Polkascan',
-      url: 'https://polkascan.io/polkadot',
-    },
-  },
-});
+  ss58Format: 0,
+  blockExplorers: { default: { name: 'Subscan', url: 'https://polkadot.subscan.io' } },
+};

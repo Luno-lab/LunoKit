@@ -1,5 +1,7 @@
 // 账户相关类型
 
+import {HexString} from '@polkadot/util/types'
+
 /**
  * 波卡账户接口
  * 代表链上的一个账户
@@ -18,7 +20,7 @@ export interface Account {
    * 账户公钥（十六进制格式，不带0x前缀）
    * 用于跨链地址转换和验证
    */
-  publicKey?: string;
+  publicKey?: HexString;
 
   /**
    * 其他元数据

@@ -5,22 +5,22 @@ export type {
   AccountBalance,
   SS58_FORMAT,
   ACCOUNT_TYPE,
-  TransactionParameters,
-  TransactionReceipt,
   Config,
-  ConfigOptions,
+  CreateConfigParameters,
 } from './types';
 
 // 导出连接器（已经在 './connectors' 中处理了 ConnectorOptions 和 InjectedConnectorOptions 的导出）
 export * from './connectors';
 
 // 配置API
-export { createConfig } from './createConfig';
+export { createConfig } from './config/createConfig';
 
 // 链
 export * from './chains';
 
 // 工具函数
 export * from './utils';
+
+export * from './config'
 
 

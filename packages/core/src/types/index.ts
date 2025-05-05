@@ -9,9 +9,6 @@ export * from './chain';
 // 导出账户相关类型
 export * from './account';
 
-// 导出交易相关类型
-export * from './transaction';
-
 // 导出连接器相关类型
 export * from './connector';
 

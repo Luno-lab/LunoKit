@@ -95,45 +95,45 @@ export abstract class BaseConnector extends EventEmitter {
   abstract signMessage(message: string, address: string): Promise<string | undefined>;
 
   // --- EventEmitter 类型提示 ---
-  /**
+  /*
    * 监听连接成功事件。
    * @param event 'connect'
    * @param listener 回调函数，接收初始账户列表。
    */
-  public abstract on(event: 'connect', listener: (accounts: Account[]) => void): this; // 添加 connect 事件
+  // public abstract on(event: 'connect', listener: (accounts: Account[]) => void): this; // 添加 connect 事件
   /**
    * 监听账户列表变化事件。
    * @param event 'accountsChanged'
    * @param listener 回调函数，接收新的账户列表。
    */
-  public abstract on(event: 'accountsChanged', listener: (accounts: Account[]) => void): this;
+  // public abstract on(event: 'accountsChanged', listener: (accounts: Account[]) => void): this;
   /**
    * 监听断开连接事件。
    * @param event 'disconnect'
    * @param listener 回调函数。
    */
-  public abstract on(event: 'disconnect', listener: () => void): this;
+  // public abstract on(event: 'disconnect', listener: () => void): this;
   // 通用签名以兼容 EventEmitter 的原始 on 方法
-  public abstract on(event: string | symbol, listener: (...args: any[]) => void): this;
+  // public abstract on(event: string | symbol, listener: (...args: any[]) => void): this;
 
   /**
    * 移除连接成功事件的监听器。
    * @param event 'connect'
    * @param listener 之前添加的回调函数。
    */
-  public abstract off(event: 'connect', listener: (accounts: Account[]) => void): this; // 添加 connect 事件
+  // public abstract off(event: 'connect', listener: (accounts: Account[]) => void): this; // 添加 connect 事件
   /**
    * 移除账户列表变化事件的监听器。
    * @param event 'accountsChanged'
    * @param listener 之前添加的回调函数。
    */
-  public abstract off(event: 'accountsChanged', listener: (accounts: Account[]) => void): this;
+  // public abstract off(event: 'accountsChanged', listener: (accounts: Account[]) => void): this;
   /**
    * 移除断开连接事件的监听器。
    * @param event 'disconnect'
    * @param listener 之前添加的回调函数。
    */
-  public abstract off(event: 'disconnect', listener: () => void): this;
+  // public abstract off(event: 'disconnect', listener: () => void): this;
   // 通用签名以兼容 EventEmitter 的原始 off 方法
-  public abstract off(event: string | symbol, listener: (...args: any[]) => void): this;
+  // public abstract off(event: string | symbol, listener: (...args: any[]) => void): this;
 }

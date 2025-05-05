@@ -39,4 +39,8 @@ dist-ssr
 .env.production.local
 
 # turbo
-.turbo 
+.turbo
+
+/.idea
+/.vscode
+/packages/*/dist

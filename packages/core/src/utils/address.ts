@@ -1,7 +1,8 @@
 import { decodeAddress, encodeAddress, isAddress } from '@polkadot/util-crypto';
 import type { Account } from '../types';
-import {u8aToHex} from '@polkadot/util'
-import {InjectedAccountWithMeta} from '@polkadot/extension-inject/types'
+import {u8aEq, u8aToHex} from '@polkadot/util'
+import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types'
+import type { HexString } from '@polkadot/util/types'
 
 /**
  * 检查地址是否有效
@@ -29,7 +30,8 @@ export function convertAddress(address: string, ss58Format: number): string {
     const publicKey = decodeAddress(address);
     return encodeAddress(publicKey, ss58Format);
   } catch (error: any) {
-    throw new Error(`无法转换地址: ${error.message}`);
+    console.error(`Failed to convert address "${address}" to SS58 format ${ss58Format}:`, error);
+    throw new Error(`Failed to convert address: ${error.message}`);
   }
 }
 
@@ -46,43 +48,10 @@ export function isSameAddress(address1: string, address2: string): boolean {
     const publicKey2 = decodeAddress(address2);
 
     // 使用更安全的比较方式，避免Buffer依赖
-    return Array.from(publicKey1).toString() === Array.from(publicKey2).toString();
+    return u8aEq(publicKey1, publicKey2)
   } catch (error: any) {
     return false;
   }
-}
-
-/**
- * 获取Polkadot主网格式的地址（SS58格式为0）
- *
- * @param address 任何SS58格式的地址
- * @param ss58Format 可选的SS58格式，默认为0（Polkadot）
- * @returns 转换后的地址
- */
-export function toPolkadotAddress(address: string, ss58Format: number = 0): string {
-  return convertAddress(address, ss58Format);
-}
-
-/**
- * 获取Kusama格式的地址（SS58格式为2）
- *
- * @param address 任何SS58格式的地址
- * @param ss58Format 可选的SS58格式，默认为2（Kusama）
- * @returns 转换后的地址
- */
-export function toKusamaAddress(address: string, ss58Format: number = 2): string {
-  return convertAddress(address, ss58Format);
-}
-
-/**
- * 获取自定义格式的地址
- *
- * @param address 任何SS58格式的地址
- * @param ss58Format 自定义的SS58格式
- * @returns 转换后的地址
- */
-export function toCustomAddress(address: string, ss58Format: number): string {
-  return convertAddress(address, ss58Format);
 }
 
 /**
@@ -106,17 +75,15 @@ export function getPublicKey(address: string): Uint8Array {
  * @returns 内部 Account 类型的列表。
  */
 export function mapInjectedAccounts(injectedAccounts: InjectedAccountWithMeta[]): Account[] {
-  if (!injectedAccounts) {
-    return []; // 处理 null 或 undefined 输入
-  }
+  if (!injectedAccounts) return []
 
   return injectedAccounts.map((acc: InjectedAccountWithMeta) => {
-    let publicKeyHex: string | undefined;
+    let publicKeyHex: HexString | undefined;
     try {
       // 从原始地址解码出公钥
       const publicKeyBytes = decodeAddress(acc.address);
       // 将公钥 Uint8Array 转换为十六进制字符串 (不带 '0x' 前缀)
-      publicKeyHex = u8aToHex(publicKeyBytes);
+      publicKeyHex = u8aToHex(publicKeyBytes, -1, false);
     } catch (error) {
       // 如果解码失败（地址格式可能无效），则 publicKey 为 undefined
       console.error(`Failed to decode address "${acc.address}" to extract public key:`, error);
@@ -130,7 +97,6 @@ export function mapInjectedAccounts(injectedAccounts: InjectedAccountWithMeta[])
       meta: {
         source: acc.meta?.source, // 保留来源信息
         genesisHash: acc.meta?.genesisHash, // 保留 genesisHash
-        // 可以选择性添加其他需要的 meta 字段，如 acc.meta.type
       }
     };
 

@@ -1,9 +1,10 @@
 {
   "name": "poma",
-  "description": "Polkadot核心React开发库，提供类似wagmi的开发体验",
+  "description": "The Poma monorepo containing core, react, and other related packages.",
   "private": true,
   "scripts": {
     "build": "pnpm --filter './packages/**' build",
+    "clean": "pnpm --filter './packages/**' run clean",
     "dev": "pnpm --filter './packages/**' dev",
     "lint": "pnpm --filter './packages/**' lint",
     "test": "pnpm --filter './packages/**' test",
@@ -22,5 +23,11 @@
   "engines": {
     "node": ">=16.0.0",
     "pnpm": ">=8.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@polkadot/extension-dapp": "0.58.8",
+      "@polkadot/extension-inject": "0.58.8"
+    }
   }
 }

@@ -1,7 +1,7 @@
 {
   "name": "@poma/core",
-  "description": "poma core code",
-  "version": "0.1.0",
+  "description": "Core module for Poma, providing foundational utilities, types, configuration, and connectors for Polkadot wallet interactions.",
+  "version": "0.0.1",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -9,18 +9,26 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
       "default": "./dist/index.js"
     },
     "./chains": {
       "types": "./dist/chains/index.d.ts",
+      "import": "./dist/chains/index.js",
+      "require": "./dist/chains/index.cjs",
       "default": "./dist/chains/index.js"
     },
     "./connectors": {
       "types": "./dist/connectors/index.d.ts",
+      "import": "./dist/connectors/index.js",
+      "require": "./dist/connectors/index.cjs",
       "default": "./dist/connectors/index.js"
     },
     "./utils": {
       "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.js",
+      "require": "./dist/utils/index.cjs",
       "default": "./dist/utils/index.js"
     }
   },
@@ -33,13 +41,14 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "lint": "eslint src",
-    "test": "vitest"
+    "test": "vitest",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "@polkadot/api": "^15.9.2",
     "@polkadot/extension-dapp": "^0.58.8",
-    "@polkadot/extension-inject": "0.58.8",
-    "@polkadot/types": "15.9.2",
+    "@polkadot/extension-inject": "^0.58.8",
+    "@polkadot/types": "^15.9.2",
     "@polkadot/util": "^13.4.4",
     "@polkadot/util-crypto": "^13.4.4",
     "@walletconnect/sign-client": "^2.10.1",
@@ -54,6 +63,6 @@
     "vitest": "^1.1.3"
   },
   "peerDependencies": {
-    "@polkadot/api": ">=10.0.0"
+    "@polkadot/api": "^15.9.2"
   }
 }
