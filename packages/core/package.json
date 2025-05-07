@@ -10,26 +10,22 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "default": "./dist/index.js"
+      "require": "./dist/index.cjs"
     },
     "./chains": {
       "types": "./dist/chains/index.d.ts",
       "import": "./dist/chains/index.js",
-      "require": "./dist/chains/index.cjs",
-      "default": "./dist/chains/index.js"
+      "require": "./dist/chains/index.cjs"
     },
     "./connectors": {
       "types": "./dist/connectors/index.d.ts",
       "import": "./dist/connectors/index.js",
-      "require": "./dist/connectors/index.cjs",
-      "default": "./dist/connectors/index.js"
+      "require": "./dist/connectors/index.cjs"
     },
     "./utils": {
       "types": "./dist/utils/index.d.ts",
       "import": "./dist/utils/index.js",
-      "require": "./dist/utils/index.cjs",
-      "default": "./dist/utils/index.js"
+      "require": "./dist/utils/index.cjs"
     }
   },
   "files": [

@@ -2,19 +2,19 @@ import { defineConfig } from 'tsup';
 
 export default defineConfig({
   entry: [
-    'src/index.ts', 
-    'src/hooks/index.ts', 
-    'src/components/index.ts'
+    'src/index.ts'
   ],
-  format: ['esm'],
+  format: ['esm', 'cjs'],
   dts: true,
   splitting: true,
   sourcemap: true,
   clean: true,
   treeshake: true,
   external: [
-    'react', 
-    '@tanstack/react-query', 
-    '@poma/core'
+    'react',
+    'react-dom',
+    '@tanstack/react-query',
+    '@poma/core',
+    'zustand',
   ],
-}); 
+});

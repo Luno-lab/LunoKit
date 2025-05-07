@@ -6,6 +6,7 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
+    "composite": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
   },
   "include": ["src/**/*"]
