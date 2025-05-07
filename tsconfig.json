@@ -11,7 +11,7 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
-      "@poma/*": ["packages/*/src"],
+      "@luno/*": ["packages/*/src"],
     },
     "typeRoots": [
       "./node_modules/@types",

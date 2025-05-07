@@ -34,8 +34,8 @@ export interface WalletConnectConnectorOptions {
  *
  * @example
  * ```ts
- * import { createConfig } from '@poma/core';
- * import { walletConnect } from '@poma/core/connectors';
+ * import { createConfig } from '@luno/core';
+ * import { walletConnect } from '@luno/core/connectors';
  *
  * const config = createConfig({
  *   connectors: [
@@ -63,7 +63,7 @@ export function walletConnect(options: WalletConnectConnectorOptions): WalletCon
  *
  * @example
  * ```ts
- * import { WalletConnectConnector } from '@poma/core/connectors';
+ * import { WalletConnectConnector } from '@luno/core/connectors';
  *
  * const connector = new WalletConnectConnector({
  *   projectId: 'YOUR_PROJECT_ID',
@@ -100,8 +100,8 @@ export class WalletConnectConnector extends BaseConnector {
     this.options = {
       relayUrl: 'wss://relay.walletconnect.com',
       metadata: {
-        name: 'POMA dApp',
-        description: 'POMA Polkadot dApp',
+        name: 'LUNO dApp',
+        description: 'LUNO Polkadot dApp',
         url: typeof window !== 'undefined' ? window.location.href : '',
         icons: ['https://polkadot.network/assets/img/logo-polkadot.svg'],
       },

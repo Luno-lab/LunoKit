@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { usePoma } from '../context/PomaProvider';
+import { usePoma } from '../context/LunoProvider';
 
 export interface UseDisconnectParams {
   /** 断开连接成功回调 */
@@ -10,14 +10,14 @@ export interface UseDisconnectParams {
 
 /**
  * 断开钱包连接的Hook
- * 
+ *
  * @example
  * ```tsx
- * import { useDisconnect } from '@poma/react';
- * 
+ * import { useDisconnect } from '@luno/react';
+ *
  * function DisconnectButton() {
  *   const { disconnect, isLoading } = useDisconnect();
- *   
+ *
  *   return (
  *     <button onClick={() => disconnect()} disabled={isLoading}>
  *       {isLoading ? '断开中...' : '断开连接'}
@@ -28,7 +28,7 @@ export interface UseDisconnectParams {
  */
 export function useDisconnect({ onSuccess, onError }: UseDisconnectParams = {}) {
   const { disconnect: disconnectFn } = usePoma();
-  
+
   const { mutate: disconnect, isPending } = useMutation({
     mutationFn: async () => {
       await disconnectFn();
@@ -36,9 +36,9 @@ export function useDisconnect({ onSuccess, onError }: UseDisconnectParams = {}) 
     onSuccess,
     onError,
   });
-  
+
   return {
     disconnect,
     isLoading: isPending,
   };
-} 
+}

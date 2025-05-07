@@ -14,7 +14,7 @@ export default defineConfig({
     'react',
     'react-dom',
     '@tanstack/react-query',
-    '@poma/core',
+    '@luno/core',
     'zustand',
   ],
 });

@@ -21,7 +21,7 @@ export function createDefaultStorage(): Storage {
   try {
     // 检查 localStorage 是否可用且功能正常
     storage = window.localStorage;
-    const testKey = '__poma_storage_test__';
+    const testKey = '__luno_storage_test__';
     storage.setItem(testKey, testKey);
     storage.removeItem(testKey);
     console.log('Using localStorage for persistent state.');

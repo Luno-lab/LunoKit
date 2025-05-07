@@ -1,6 +1,6 @@
 {
-  "name": "poma",
-  "description": "The Poma monorepo containing core, react, and other related packages.",
+  "name": "luno",
+  "description": "The Luno monorepo containing core, react, and other related packages.",
   "private": true,
   "scripts": {
     "build": "pnpm --filter './packages/**' build",

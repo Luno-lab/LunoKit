@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { usePoma } from '../context/PomaProvider';
-import { formatAccounts, getPublicKey } from '@poma/core/utils/address';
-import type { PolkadotAccount } from '@poma/core/types';
+import { usePoma } from '../context/LunoProvider';
+import { formatAccounts, getPublicKey } from '@luno/core/utils/address';
+import type { PolkadotAccount } from '@luno/core/types';
 
 // 预设的SS58格式
 export const SS58_FORMATS = {
@@ -27,15 +27,15 @@ export interface UseAccountParams {
 
 /**
  * 使用账户hook，支持根据链ID或SS58格式获取格式化的账户地址
- * 
+ *
  * @example
  * ```tsx
  * // 获取Polkadot格式的账户 (ss58Format = 0)
  * const { account, accounts } = useAccount({ ss58Format: 0 });
- * 
+ *
  * // 获取Kusama格式的账户 (ss58Format = 2)
  * const { account, accounts } = useAccount({ ss58Format: 2 });
- * 
+ *
  * // 根据链ID自动选择格式
  * const { account, accounts } = useAccount({ chainId: 0 }); // Polkadot格式
  * ```
@@ -44,9 +44,9 @@ export function useAccount(params?: UseAccountParams) {
   const { account, getAccounts } = usePoma();
   const chainId = params?.chainId;
   const specifiedSS58Format = params?.ss58Format;
-  
+
   // 根据链ID或指定的格式确定SS58格式
-  const ss58Format = specifiedSS58Format ?? 
+  const ss58Format = specifiedSS58Format ??
     (chainId !== undefined ? DEFAULT_CHAIN_SS58_FORMATS[chainId] || SS58_FORMATS.SUBSTRATE : undefined);
 
   // 获取多个账户
@@ -56,12 +56,12 @@ export function useAccount(params?: UseAccountParams) {
       try {
         // 获取原始账户
         const accounts = await getAccounts();
-        
+
         // 如果指定了SS58格式，转换所有地址
         if (ss58Format !== undefined && accounts.length > 0) {
           return formatAccounts(accounts, ss58Format);
         }
-        
+
         return accounts;
       } catch (error) {
         console.error('获取账户列表失败:', error);
@@ -91,15 +91,15 @@ export function useAccount(params?: UseAccountParams) {
     isConnected: account.isConnected,
     isConnecting: account.isConnecting,
     isDisconnected: account.isDisconnected,
-    
+
     // 公开常量和辅助函数
     SS58_FORMATS,
-    
+
     // 用于切换SS58格式的辅助方法
     formatAccounts: (accounts: PolkadotAccount[], format: number) => {
       return formatAccounts(accounts, format);
     },
-    
+
     // 检查两个地址是否相同（不考虑SS58格式）
     isSameAccount: (address1: string, address2: string) => {
       try {
@@ -111,4 +111,4 @@ export function useAccount(params?: UseAccountParams) {
       }
     }
   };
-} 
+}

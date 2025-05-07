@@ -1,15 +1,15 @@
-import { usePoma } from '../context/PomaProvider';
+import { usePoma } from '../context/LunoProvider';
 
 /**
  * 获取Poma配置
- * 
+ *
  * @example
  * ```tsx
- * import { useConfig } from '@poma/react';
- * 
+ * import { useConfig } from '@luno/react';
+ *
  * function ChainSelector() {
  *   const { chains } = useConfig();
- *   
+ *
  *   return (
  *     <select>
  *       {chains.map((chain) => (
@@ -25,4 +25,4 @@ import { usePoma } from '../context/PomaProvider';
 export function useConfig() {
   const { config } = usePoma();
   return config;
-} 
+}

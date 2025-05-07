@@ -1,6 +1,6 @@
 {
-  "name": "@poma/react",
-  "description": "React Hooks and Provider for Poma, enabling easy Polkadot wallet interactions in React applications.",
+  "name": "@luno/react",
+  "description": "React Hooks and Provider for Luno, enabling easy Polkadot wallet interactions in React applications.",
   "version": "0.0.1",
   "type": "module",
   "main": "dist/index.js",
@@ -26,8 +26,9 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@poma/core": "workspace:*",
-    "@tanstack/react-query": "^5.14.2"
+    "@luno/core": "workspace:*",
+    "@tanstack/react-query": "^5.14.2",
+    "zustand": "5.0.4"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",

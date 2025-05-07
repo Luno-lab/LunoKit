@@ -56,7 +56,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
   // 在严格模式下，Object.freeze 只冻结对象的第一层
   // 对于深层不可变性，需要更复杂的处理或库，但对于配置对象通常足够
 
-  console.log('Poma Core Config created:', config);
+  console.log('Luno Core Config created:', config);
 
   return config;
 }

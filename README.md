@@ -1,6 +1,6 @@
-# POMA
+# Luno
 
-POMA（POlkadot MAster或POlkadot MAkes it）是一个用于Polkadot生态系统的React开发库，提供类似于wagmi的开发体验。
+LUNO（POlkadot MAster或POlkadot MAkes it）是一个用于Polkadot生态系统的React开发库，提供类似于wagmi的开发体验。
 
 ## 功能特性
 
@@ -15,21 +15,21 @@ POMA（POlkadot MAster或POlkadot MAkes it）是一个用于Polkadot生态系统
 
 ```bash
 # npm
-npm install @poma/react @poma/core @tanstack/react-query
+npm install @luno/react @luno/core @tanstack/react-query
 
 # yarn
-yarn add @poma/react @poma/core @tanstack/react-query
+yarn add @luno/react @luno/core @tanstack/react-query
 
 # pnpm
-pnpm add @poma/react @poma/core @tanstack/react-query
+pnpm add @luno/react @luno/core @tanstack/react-query
 ```
 
 ## 快速开始
 
 ```tsx
-import { createConfig, polkadotChain, kusamaChain } from '@poma/core'
-import { WalletConnectConnector, PolkadotjsConnector } from '@poma/core/connectors'
-import { PomaProvider, useConnect, useAccount, useBalance } from '@poma/react'
+import { createConfig, polkadotChain, kusamaChain } from '@luno/core'
+import { WalletConnectConnector, PolkadotjsConnector } from '@luno/core/connectors'
+import { LunoProvider, useConnect, useAccount, useBalance } from '@luno/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 // 创建配置
@@ -49,11 +49,11 @@ const queryClient = new QueryClient()
 // 包装你的应用
 function App() {
   return (
-    <PomaProvider config={config}>
+    <LunoProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <YourApp />
       </QueryClientProvider>
-    </PomaProvider>
+    </LunoProvider>
   )
 }
 
@@ -82,8 +82,8 @@ function YourApp() {
 
 ## 包结构
 
-- `@poma/core` - 核心库，包含配置、连接器和公共工具
-- `@poma/react` - React hooks和组件
+- `@luno/core` - 核心库，包含配置、连接器和公共工具
+- `@luno/react` - React hooks和组件
 
 ## 许可证
 

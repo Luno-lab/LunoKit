@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { usePoma } from '../context/PomaProvider';
+import { usePoma } from '../context/LunoProvider';
 
 export interface UseConnectParams {
   /** 连接成功回调 */
@@ -10,16 +10,16 @@ export interface UseConnectParams {
 
 /**
  * 连接到钱包的Hook
- * 
+ *
  * @example
  * ```tsx
- * import { useConnect } from '@poma/react';
- * 
+ * import { useConnect } from '@luno/react';
+ *
  * function ConnectButton() {
  *   const { connect, connectors, isConnecting } = useConnect();
- *   
+ *
  *   return (
- *     <button 
+ *     <button
  *       onClick={() => connect({ connector: connectors[0].id })}
  *       disabled={isConnecting}
  *     >
@@ -31,11 +31,11 @@ export interface UseConnectParams {
  */
 export function useConnect({ onSuccess, onError }: UseConnectParams = {}) {
   const { connect: connectFn, account, config } = usePoma();
-  
+
   const { mutate: connect, isPending } = useMutation({
     mutationFn: async (params: { connector: string; chainId?: number }) => {
       await connectFn(params);
-      
+
       // 获取连接后的账户信息
       return {
         address: account.account?.address || '',
@@ -45,7 +45,7 @@ export function useConnect({ onSuccess, onError }: UseConnectParams = {}) {
     onSuccess,
     onError,
   });
-  
+
   return {
     connect,
     connectors: config.connectors.map((connector) => ({
@@ -55,4 +55,4 @@ export function useConnect({ onSuccess, onError }: UseConnectParams = {}) {
     })),
     isConnecting: isPending || account.isConnecting,
   };
-} 
+}

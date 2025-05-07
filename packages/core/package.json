@@ -1,6 +1,6 @@
 {
-  "name": "@poma/core",
-  "description": "Core module for Poma, providing foundational utilities, types, configuration, and connectors for Polkadot wallet interactions.",
+  "name": "@luno/core",
+  "description": "Core module for Luno, providing foundational utilities, types, configuration, and connectors for Polkadot wallet interactions.",
   "version": "0.0.1",
   "type": "module",
   "main": "dist/index.js",

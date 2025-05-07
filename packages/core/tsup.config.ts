@@ -8,7 +8,6 @@ export default defineConfig({
     'src/utils/index.ts'
   ],
   format: ['esm', 'cjs'],
-  dts: true,
   splitting: true,
   sourcemap: true,
   clean: true,
@@ -22,4 +21,11 @@ export default defineConfig({
     '@walletconnect/types',
     '@walletconnect/utils'
   ],
+  dts: {
+    resolve: true, // 可选，但有助于解析类型依赖
+    compilerOptions: {
+      composite: false, // <--- 关键：仅在 DTS 构建时禁用 composite
+    },
+  },
+  tsconfig: './tsconfig.json'
 });

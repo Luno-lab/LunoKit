@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import type { Config } from '@poma/core';
-import { AccountStatus } from '@poma/core';
+import type { Config } from '@luno/core';
+import { AccountStatus } from '@luno/core';
 
 // 上下文类型
-interface PomaContextValue {
+interface ContextValue {
   config: Config;
   account: AccountStatus;
   accounts: Array<{address: string; name?: string; meta?: any}>;
@@ -15,7 +15,7 @@ interface PomaContextValue {
 }
 
 // 创建上下文
-const PomaContext = createContext<PomaContextValue | undefined>(undefined);
+const LunoContext = createContext<ContextValue | undefined>(undefined);
 
 // Provider属性
 interface PomaProviderProps {
@@ -28,8 +28,8 @@ interface PomaProviderProps {
  *
  * @example
  * ```tsx
- * import { createConfig } from '@poma/core';
- * import { PomaProvider } from '@poma/react';
+ * import { createConfig } from '@luno/core';
+ * import { LunoProvider } from '@luno/react';
  *
  * const config = createConfig({
  *   // 配置项
@@ -37,14 +37,14 @@ interface PomaProviderProps {
  *
  * function App() {
  *   return (
- *     <PomaProvider config={config}>
+ *     <LunoProvider config={config}>
  *       <YourApp />
- *     </PomaProvider>
+ *     </LunoProvider>
  *   );
  * }
  * ```
  */
-export function PomaProvider({ config, children }: PomaProviderProps) {
+export function LunoProvider({ config, children }: PomaProviderProps) {
   // 账户状态
   const [account, setAccount] = useState<AccountStatus>({
     isConnected: false,
@@ -58,7 +58,7 @@ export function PomaProvider({ config, children }: PomaProviderProps) {
   // 初始化
   useEffect(() => {
     // 从存储中恢复连接状态
-    const storedConnector = config.storage.getItem('poma:connector');
+    const storedConnector = config.storage.getItem('luno:connector');
     if (storedConnector) {
       const connector = config.connectors.find(c => c.id === storedConnector);
       if (connector) {
@@ -67,7 +67,7 @@ export function PomaProvider({ config, children }: PomaProviderProps) {
           try {
             setAccount(prev => ({ ...prev, isConnecting: true }));
 
-            const chainId = Number(config.storage.getItem('poma:chainId') || '0');
+            const chainId = Number(config.storage.getItem('luno:chainId') || '0');
             const result = await connector.connect({ chainId });
 
             // 获取所有可用账户
@@ -114,8 +114,8 @@ export function PomaProvider({ config, children }: PomaProviderProps) {
       setAccounts(allAccounts);
 
       // 保存连接状态
-      config.storage.setItem('poma:connector', connector.id);
-      config.storage.setItem('poma:chainId', String(result.chainId));
+      config.storage.setItem('luno:connector', connector.id);
+      config.storage.setItem('luno:chainId', String(result.chainId));
 
       setAccount({
         isConnected: true,
@@ -148,8 +148,8 @@ export function PomaProvider({ config, children }: PomaProviderProps) {
     }
 
     // 清除存储
-    config.storage.removeItem('poma:connector');
-    config.storage.removeItem('poma:chainId');
+    config.storage.removeItem('luno:connector');
+    config.storage.removeItem('luno:chainId');
 
     setAccount({
       isConnected: false,
@@ -179,7 +179,7 @@ export function PomaProvider({ config, children }: PomaProviderProps) {
     setAccounts(allAccounts);
 
     // 更新存储和状态
-    config.storage.setItem('poma:chainId', String(chainId));
+    config.storage.setItem('luno:chainId', String(chainId));
 
     // 根据当前选择的账户地址获取新的账户信息
     const currentAccount = await connector.getAccount();
