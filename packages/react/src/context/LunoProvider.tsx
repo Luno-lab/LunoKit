@@ -1,278 +1,228 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import type { Config } from '@luno/core';
-import { AccountStatus } from '@luno/core';
+import React, { ReactNode, useEffect, useMemo } from 'react';
+import { ApiPromise } from '@polkadot/api';
+import type { Chain, Config, Transport, Connector, Account } from '@luno/core';
+import { useLunoStore } from '../store/createLunoStore'
+import { PERSIST_KEY } from '../constants'
+import { LunoContext, LunoContextState } from './LunoContext'
 
-// 上下文类型
-interface ContextValue {
+interface LunoProviderProps {
   config: Config;
-  account: AccountStatus;
-  accounts: Array<{address: string; name?: string; meta?: any}>;
-  connect: (params: { connector: string; chainId?: number }) => Promise<void>;
-  disconnect: () => Promise<void>;
-  switchChain: (chainId: number) => Promise<void>;
-  selectAccount: (address: string) => Promise<void>;
-  getAccounts: () => Promise<Array<{address: string; name?: string; meta?: any}>>;
+  children: ReactNode;
 }
 
-// 创建上下文
-const LunoContext = createContext<ContextValue | undefined>(undefined);
+export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromProps, children }: LunoProviderProps) => {
+  const {
+    _setConfig,
+    _setApi,
+    _setError,
+    _setIsApiReady,
+    currentChainId,
+    config: configInStore,
+    currentApi,
+    connect,
+    status,
+    error,
+    activeConnector,
+    rawAccounts,
+    currentChain,
+    isApiReady,
+    disconnect,
+    switchChain,
+  } = useLunoStore()
 
-// Provider属性
-interface PomaProviderProps {
-  config: Config;
-  children: React.ReactNode;
-}
-
-/**
- * Poma Provider组件
- *
- * @example
- * ```tsx
- * import { createConfig } from '@luno/core';
- * import { LunoProvider } from '@luno/react';
- *
- * const config = createConfig({
- *   // 配置项
- * });
- *
- * function App() {
- *   return (
- *     <LunoProvider config={config}>
- *       <YourApp />
- *     </LunoProvider>
- *   );
- * }
- * ```
- */
-export function LunoProvider({ config, children }: PomaProviderProps) {
-  // 账户状态
-  const [account, setAccount] = useState<AccountStatus>({
-    isConnected: false,
-    isConnecting: false,
-    isDisconnected: true,
-  });
-
-  // 所有可用账户
-  const [accounts, setAccounts] = useState<Array<{address: string; name?: string; meta?: any}>>([]);
-
-  // 初始化
   useEffect(() => {
-    // 从存储中恢复连接状态
-    const storedConnector = config.storage.getItem('luno:connector');
-    if (storedConnector) {
-      const connector = config.connectors.find(c => c.id === storedConnector);
-      if (connector) {
-        // 自动连接
-        (async () => {
-          try {
-            setAccount(prev => ({ ...prev, isConnecting: true }));
+    if (configFromProps) {
+      console.log('[LunoProvider] Setting config to store:', configFromProps);
+      _setConfig(configFromProps);
+    }
+  }, [configFromProps]);
 
-            const chainId = Number(config.storage.getItem('luno:chainId') || '0');
-            const result = await connector.connect({ chainId });
+  useEffect(() => {
+    let currentApiInstance: ApiPromise | null = null; // 用于在清理时引用
 
-            // 获取所有可用账户
-            const allAccounts = await connector.getAccounts() || [];
-            setAccounts(allAccounts);
+    const handleApiConnected = () => {
+      if (currentApiInstance) {
+        console.log(`[LunoProvider] API (re)connected: ${currentApiInstance.runtimeChain?.toString()}`);
+      }
+    };
 
-            setAccount({
-              isConnected: true,
-              isConnecting: false,
-              isDisconnected: false,
-              account: {
-                address: result.account,
-                chainId: result.chainId,
-              },
-              connector: connector.id,
-            });
-          } catch (error) {
-            console.error('自动连接失败:', error);
-            setAccount({
-              isConnected: false,
-              isConnecting: false,
-              isDisconnected: true,
-            });
-          }
-        })();
+    const handleApiReady = () => {
+      if (currentApiInstance) {
+        console.log(`[LunoProvider] API READY: ${currentApiInstance.runtimeChain?.toString()}`);
+        _setIsApiReady(true);
+      }
+    };
+
+    const handleApiError = (error: Error) => {
+      if (currentApiInstance) {
+        console.error(`[LunoProvider] API error on ${currentApiInstance.runtimeChain?.toString()}:`, error);
+        _setError(error);
+        _setApi(undefined);
+        _setIsApiReady(false);
+      }
+    };
+
+    const handleApiDisconnected = () => {
+      if (currentApiInstance) {
+        console.warn(`[LunoProvider] API disconnected: ${currentApiInstance.runtimeChain?.toString()}`);
+        _setApi(undefined);
+        _setIsApiReady(false);
+      }
+    };
+
+    if (currentApi && currentApi.isConnected && currentApi.genesisHash /* && 其他匹配检查 */) {
+      if (currentApi.genesisHash.toHex() === currentChainId /* && 其他相关配置也匹配当前 configFromProps */) {
+        console.log('[LunoProvider] API is already connected to the target chain and ready (or connecting). No action needed.');
+        return;
       }
     }
-  }, [config]);
 
-  // 连接函数
-  const connect = async (params: { connector: string; chainId?: number }) => {
-    const connector = config.connectors.find(c => c.id === params.connector);
-    if (!connector) {
-      throw new Error(`找不到连接器: ${params.connector}`);
+    // --- 开始时的状态设置与检查 ---
+    if (!configFromProps || !currentChainId) {
+      if (currentApi && currentApi.isConnected) { // currentApi 是来自上一个 render 周期的 store 值
+        currentApi.disconnect().catch(console.error);
+      }
+      _setApi(undefined);
+      _setIsApiReady(false);
+      return; // 提前退出
     }
+
+    const chainConfig: Chain | undefined = configFromProps.chains.find(
+      (c: Chain) => c.genesisHash === currentChainId
+    );
+    const transportConfig: Transport | undefined = configFromProps.transports[currentChainId];
+
+    if (!chainConfig || !transportConfig) {
+      if (currentApi && currentApi.isConnected) {
+        currentApi.disconnect().catch(console.error);
+      }
+      _setApi(undefined);
+      _setIsApiReady(false);
+      _setError(new Error(`Configuration missing for chainId: ${currentChainId}`));
+      return; // 提前退出
+    }
+
+    if (currentApi && currentApi.isConnected) {
+      console.log('[LunoProvider] Disconnecting API from previous render cycle:', currentApi.runtimeChain?.toString());
+      currentApi.disconnect().catch(e => console.error('[LunoProvider] Error disconnecting previous API:', e));
+    }
+    // 初始设置：在创建新实例前，确保 API 状态为非就绪
+    _setApi(undefined);
+    _setIsApiReady(false);
+
+    // --- 直接构造新的 ApiPromise ---
+    console.log(`[LunoProvider] Constructing new ApiPromise for chain: ${chainConfig.name} (${currentChainId})`);
+    const provider = transportConfig; // provider 应该是 WsProvider 或 ScProvider 的实例
 
     try {
-      setAccount(prev => ({ ...prev, isConnecting: true }));
-
-      const result = await connector.connect({ chainId: params.chainId });
-
-      // 获取所有可用账户
-      const allAccounts = await connector.getAccounts() || [];
-      setAccounts(allAccounts);
-
-      // 保存连接状态
-      config.storage.setItem('luno:connector', connector.id);
-      config.storage.setItem('luno:chainId', String(result.chainId));
-
-      setAccount({
-        isConnected: true,
-        isConnecting: false,
-        isDisconnected: false,
-        account: {
-          address: result.account,
-          chainId: result.chainId,
-        },
-        connector: connector.id,
+      const newApi = new ApiPromise({
+        provider,
+        registry: configFromProps.registry, // || 默认的或共享的 registry
+        types: configFromProps.types,
+        typesBundle: configFromProps.typesBundle,
+        rpc: configFromProps.rpc,
+        signer: configFromProps.signer,
       });
+      currentApiInstance = newApi; // 将新实例赋值给 effect 作用域内的变量
+      _setApi(newApi); // 将新实例设置到 Store
+
+      // --- 注册事件监听器 ---
+      newApi.on('ready', handleApiReady);
+      newApi.on('error', handleApiError);
+      newApi.on('disconnected', handleApiDisconnected);
+      newApi.on('connected', handleApiConnected);
+
+      // 对于非 light client (如 WsProvider)，连接通常是自动开始的。
+      // 对于 light client (ScProvider)，如果之前没有 await provider.connect()，可能需要在这里处理。
+      // 但通常 new ApiPromise() 后，它会自行处理连接和 'ready' 事件的触发。
+
     } catch (error) {
-      console.error('连接失败:', error);
-      setAccount({
-        isConnected: false,
-        isConnecting: false,
-        isDisconnected: true,
-      });
-      throw error;
-    }
-  };
-
-  // 断开连接函数
-  const disconnect = async () => {
-    if (!account.connector) return;
-
-    const connector = config.connectors.find(c => c.id === account.connector);
-    if (connector) {
-      await connector.disconnect();
+      console.error(`[LunoProvider] Failed to construct ApiPromise for ${chainConfig.name}:`, error);
+      _setError(error instanceof Error ? error : new Error(String(error)));
+      _setApi(undefined);
+      _setIsApiReady(false);
     }
 
-    // 清除存储
-    config.storage.removeItem('luno:connector');
-    config.storage.removeItem('luno:chainId');
+    // --- 清理函数 ---
+    return () => {
+      console.log('[LunoProvider] Cleanup function running.');
+      if (currentApiInstance) {
+        const instanceToClean = currentApiInstance;
+        console.log(`[LunoProvider] Cleaning up ApiPromise instance: ${instanceToClean.runtimeChain?.toString()}`);
 
-    setAccount({
-      isConnected: false,
-      isConnecting: false,
-      isDisconnected: true,
-    });
+        instanceToClean.off('ready', handleApiReady);
+        instanceToClean.off('error', handleApiError);
+        instanceToClean.off('disconnected', handleApiDisconnected);
+        instanceToClean.off('connected', handleApiConnected);
 
-    // 清空账户列表
-    setAccounts([]);
-  };
-
-  // 切换链函数
-  const switchChain = async (chainId: number) => {
-    if (!account.connector) {
-      throw new Error('未连接钱包');
-    }
-
-    const connector = config.connectors.find(c => c.id === account.connector);
-    if (!connector) {
-      throw new Error(`找不到连接器: ${account.connector}`);
-    }
-
-    await connector.switchChain(chainId);
-
-    // 更新账户列表（可能地址格式会变）
-    const allAccounts = await connector.getAccounts() || [];
-    setAccounts(allAccounts);
-
-    // 更新存储和状态
-    config.storage.setItem('luno:chainId', String(chainId));
-
-    // 根据当前选择的账户地址获取新的账户信息
-    const currentAccount = await connector.getAccount();
-
-    if (currentAccount) {
-      setAccount(prev => ({
-        ...prev,
-        account: {
-          address: currentAccount,
-          chainId,
-        },
-      }));
-    }
-  };
-
-  // 选择账户函数
-  const selectAccount = async (address: string) => {
-    if (!account.connector) {
-      throw new Error('未连接钱包');
-    }
-
-    const connector = config.connectors.find(c => c.id === account.connector);
-    if (!connector) {
-      throw new Error(`找不到连接器: ${account.connector}`);
-    }
-
-    // 检查是否支持选择账户
-    if (typeof (connector as any).selectAccount === 'function') {
-      await (connector as any).selectAccount(address);
-
-      // 更新当前账户
-      const currentAccount = await connector.getAccount();
-      if (currentAccount && account.account) {
-        setAccount(prev => ({
-          ...prev,
-          account: {
-            address: currentAccount,
-            chainId: prev.account!.chainId,
-          },
-        }));
+        if (instanceToClean.isConnected) {
+          instanceToClean.disconnect().catch(e => console.error('[LunoProvider] Error disconnecting API in cleanup:', e));
+        }
       }
-    } else {
-      throw new Error('当前连接器不支持选择账户');
-    }
-  };
+      _setApi(undefined);
+      _setIsApiReady(false);
+    };
+  }, [configFromProps, currentChainId, currentApi]);
 
-  // 获取所有账户
-  const getAccounts = async (): Promise<Array<{address: string; name?: string; meta?: any}>> => {
-    if (!account.connector) {
-      return [];
-    }
+  // 3. 处理自动连接 (autoConnect)
+  useEffect(() => {
+    const performAutoConnect = async () => {
+      // 1. 从 store 获取最新的 config 和 status
+      //    这仍然是一个挑战，不直接调用 getState() 的话，就需要依赖它们
 
-    const connector = config.connectors.find(c => c.id === account.connector);
-    if (!connector) {
-      return [];
-    }
-
-    try {
-      if (typeof connector.getAccounts === 'function') {
-        return await connector.getAccounts() || [];
+      if (!configFromProps.autoConnect) {
+        console.log('[LunoProvider][AutoConnect] AutoConnect disabled or config not set.');
+        return;
       }
-      return [];
-    } catch (error) {
-      console.error('获取账户列表失败:', error);
-      return [];
+
+      if (!configFromProps.storage) {
+        console.warn('[LunoProvider][AutoConnect] Storage not available, cannot auto-connect.');
+        return;
+      }
+
+      console.log('[LunoProvider][AutoConnect] Attempting to auto-connect...');
+      try {
+        const lastConnectorId = await configFromProps.storage.getItem(PERSIST_KEY.LAST_CONNECTOR_ID);
+        const lastChainId = await configFromProps.storage.getItem(PERSIST_KEY.LAST_CHAIN_ID);
+
+        if (lastConnectorId && lastChainId) {
+          console.log(`[LunoProvider][AutoConnect] Found persisted session: Connector ID "${lastConnectorId}", Chain ID "${lastChainId}"`);
+          // 调用 connect action
+          // connectAction 是从 useLunoStore(state => state.connect) 获取的
+          await connect(lastConnectorId, lastChainId);
+          console.log('[LunoProvider][AutoConnect] Auto-connect process initiated.');
+        } else {
+          console.log('[LunoProvider][AutoConnect] No persisted session found or missing data.');
+        }
+      } catch (error) {
+        console.error('[LunoProvider][AutoConnect] Error during auto-connect process:', error);
+      }
+    };
+
+    if (configFromProps) { // 确保 configFromProps 至少存在
+      performAutoConnect();
     }
-  };
 
-  return (
-    <PomaContext.Provider
-      value={{
-        config,
-        account,
-        accounts,
-        connect,
-        disconnect,
-        switchChain,
-        selectAccount,
-        getAccounts,
-      }}
-    >
-      {children}
-    </PomaContext.Provider>
-  );
-}
+  }, [configFromProps]);
 
-/**
- * 使用Poma上下文
- */
-export function usePoma() {
-  const context = useContext(PomaContext);
-  if (!context) {
-    throw new Error('usePoma必须在PomaProvider内部使用');
-  }
-  return context;
-}
+  // Create context value for LunoContext.Provider
+  const contextValue = useMemo<LunoContextState>(() => ({
+    config: configInStore,
+    status,
+    error,
+    activeConnector,
+    rawAccounts,
+    currentChainId,
+    currentChain,
+    currentApi,
+    isApiReady,
+    connect,
+    disconnect,
+    switchChain,
+  }), [
+    configInStore, status, error, activeConnector, rawAccounts, currentChainId, currentChain, currentApi, isApiReady,
+    connect, disconnect, switchChain
+  ]);
+
+  return <LunoContext.Provider value={contextValue}>{children}</LunoContext.Provider>;
+};
