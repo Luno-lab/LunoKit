@@ -4,24 +4,41 @@ import type {
   Chain,
   Connector,
   Transport,
+  RawStorage,
+  LunoStorage,
 } from '../types';
-import {defaultStorage} from './storage' // 导入所有需要的类型
+import {createStorage} from './createStorage'
+
+const noopStorage: RawStorage = {
+  getItem: async (_key: string) => null,
+  setItem: async (_key: string, _value: string) => {},
+  removeItem: async (_key: string) => {},
+};
+
+const defaultLunoStorage = createStorage({
+  storage: typeof window !== 'undefined' && window.localStorage
+    ? window.localStorage
+    : noopStorage,
+  keyPrefix: 'luno.', // Default key prefix for Luno
+});
+
 
 // 导出配置创建函数
 export function createConfig(parameters: CreateConfigParameters): Config {
   const {
-    appName,
+    appName = 'My Luno App',
     chains,
     connectors,
     transports,
-    storage = defaultStorage, // 使用导入的默认 storage
+    storage = defaultLunoStorage, // 使用导入的默认 storage
     autoConnect = true,       // 默认启用 autoConnect
+    registry, // 默认值可能是 undefined，如果 ApiOptions 中它们是可选的
+    types,
+    typesBundle,
+    rpc,
+    signer,
   } = parameters;
 
-  // --- 配置验证 ---
-  if (!appName) {
-    throw new Error('appName is required in createConfig.');
-  }
   if (!chains || chains.length === 0) {
     throw new Error('At least one chain must be provided in the `chains` array.');
   }
@@ -43,13 +60,18 @@ export function createConfig(parameters: CreateConfigParameters): Config {
 
   // --- 创建最终的 Config 对象 ---
   // 使用 Readonly 和副本确保配置的不可变性
-  const config: Config = {
+  const config = {
+    registry,
+    types,
+    typesBundle,
+    rpc,
+    signer,
+
     appName,
-    // 使用 Readonly 类型和展开语法创建不可变副本
     chains: Object.freeze([...chains]) as readonly Chain[],
     connectors: Object.freeze([...connectors]) as readonly Connector[],
     transports: Object.freeze({ ...transports }) as Readonly<Record<string, Transport>>,
-    storage: storage ?? null, // 确保最终是 Storage 或 null
+    storage, // 确保最终是 Storage 或 null
     autoConnect,
   };
 
