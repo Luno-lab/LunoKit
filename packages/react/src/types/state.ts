@@ -4,7 +4,6 @@ import type { ApiPromise } from '@polkadot/api';
 export enum ConnectionStatus {
   Disconnected = 'disconnected',
   Connecting = 'connecting',
-  Reconnecting = 'reconnecting',
   Disconnecting = 'disconnecting',
   Connected = 'connected',
 }
@@ -19,12 +18,9 @@ export interface LunoState {
    * 当前的连接状态：
    * 'disconnected': 已断开
    * 'connecting': 连接中
-   * 'reconnecting': 重新连接中 (例如，在自动重连时)
    * 'disconnecting': 断开连接中
    */
   status: ConnectionStatus;
-  /** 存储连接或操作过程中发生的错误对象，可以为null表示无错误 */
-  error: Error | null;
 
   // --- 当前活动的连接器及账户信息 ---
   /** 当前激活的钱包连接器实例 (例如 PolkadotJsConnector, SubWalletConnector) */
@@ -34,7 +30,9 @@ export interface LunoState {
    * 注意：这里的账户地址 (`Account.address`) 是钱包直接返回的格式。
    * 为了支持动态的 SS58 地址格式化，每个 Account 对象【必须】包含 `publicKey` (十六进制字符串格式的公钥)。
    */
-  rawAccounts: Account[];
+  accounts: Account[];
+  account?: Account;   // 当前选中账户
+  setAccount: (accountOrAddress: Account | string) => void;
 
   // --- 当前链及API实例 (主要由 Provider 管理，并在 Store 中反映) ---
   /** DApp 当前逻辑上活动或选中的链的创世哈希 (genesisHash) */
@@ -48,7 +46,7 @@ export interface LunoState {
   // --- 操作 (Actions) ---
   // 初始化
   /** 设置Luno的配置，通常由 Provider 在挂载时调用 */
-  _setConfig: (config: Config) => void;
+  _setConfig: (config: Config) => Promise<void>;
 
   // 连接生命周期管理
   /**
@@ -78,8 +76,4 @@ export interface LunoState {
 
   _setIsApiReady: (isApiReady: boolean) => void;
 
-  /** (内部action) 清除当前的错误状态 */
-  _clearError: () => void;
-
-  _setError: (error: Error | null) => void;
 }

@@ -1,58 +1,53 @@
 import { useMutation } from '@tanstack/react-query';
-import { usePoma } from '../context/LunoProvider';
+import { useLuno } from './useLuno';
+import type { Connector } from '@luno/core';
+import {ConnectionStatus} from '../types'
+import {useCallback} from 'react'
 
-export interface UseConnectParams {
-  /** 连接成功回调 */
-  onSuccess?: (data: { address: string; chainId: number }) => void;
-  /** 连接失败回调 */
-  onError?: (error: Error) => void;
+export interface UseConnectResult {
+  connect: (connectorId: string, targetChainId?: string) => Promise<void>;
+  connectors: Connector[];
+  activeConnector?: Connector;
+  status: ConnectionStatus;
+  error: Error | null;
+  isPending: boolean;
+  isError: boolean;
+  isSuccess: boolean;
+  reset: () => void;
 }
 
-/**
- * 连接到钱包的Hook
- *
- * @example
- * ```tsx
- * import { useConnect } from '@luno/react';
- *
- * function ConnectButton() {
- *   const { connect, connectors, isConnecting } = useConnect();
- *
- *   return (
- *     <button
- *       onClick={() => connect({ connector: connectors[0].id })}
- *       disabled={isConnecting}
- *     >
- *       {isConnecting ? '连接中...' : '连接钱包'}
- *     </button>
- *   );
- * }
- * ```
- */
-export function useConnect({ onSuccess, onError }: UseConnectParams = {}) {
-  const { connect: connectFn, account, config } = usePoma();
+export const useConnect = (): UseConnectResult => {
+  const { connect, config, activeConnector, status } = useLuno();
 
-  const { mutate: connect, isPending } = useMutation({
-    mutationFn: async (params: { connector: string; chainId?: number }) => {
-      await connectFn(params);
-
-      // 获取连接后的账户信息
-      return {
-        address: account.account?.address || '',
-        chainId: account.account?.chainId || 0,
-      };
+  const {
+    mutateAsync,
+    error,
+    isPending,
+    isError,
+    isSuccess,
+    reset,
+  } = useMutation({
+    mutationFn: async ({ connectorId, targetChainId }: { connectorId: string; targetChainId?: string; }) => {
+      await connect(connectorId, targetChainId);
     },
-    onSuccess,
-    onError,
   });
 
+  // 让开发者用 connect(connectorId, targetChainId) 这种方式调用
+  const connectWrapper = useCallback(
+    (connectorId: string, targetChainId?: string) =>
+      mutateAsync({ connectorId, targetChainId }),
+    [mutateAsync]
+  );
+
   return {
-    connect,
-    connectors: config.connectors.map((connector) => ({
-      id: connector.id,
-      name: connector.name,
-      icon: connector.icon,
-    })),
-    isConnecting: isPending || account.isConnecting,
+    connect: connectWrapper,
+    connectors: config?.connectors ?? [],
+    activeConnector,
+    status,
+    error: error as Error | null,
+    isPending,
+    isError,
+    isSuccess,
+    reset,
   };
-}
+};

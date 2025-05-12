@@ -1,44 +1,43 @@
 import { useMutation } from '@tanstack/react-query';
-import { usePoma } from '../context/LunoProvider';
+import { useLuno } from './useLuno';
+import { useCallback } from 'react';
+import { ConnectionStatus } from '../types';
 
-export interface UseDisconnectParams {
-  /** 断开连接成功回调 */
-  onSuccess?: () => void;
-  /** 断开连接失败回调 */
-  onError?: (error: Error) => void;
+export interface UseDisconnectResult {
+  disconnect: () => Promise<void>;
+  status: ConnectionStatus;
+  error: Error | null;
+  isPending: boolean;
+  isError: boolean;
+  isSuccess: boolean;
+  reset: () => void;
 }
 
-/**
- * 断开钱包连接的Hook
- *
- * @example
- * ```tsx
- * import { useDisconnect } from '@luno/react';
- *
- * function DisconnectButton() {
- *   const { disconnect, isLoading } = useDisconnect();
- *
- *   return (
- *     <button onClick={() => disconnect()} disabled={isLoading}>
- *       {isLoading ? '断开中...' : '断开连接'}
- *     </button>
- *   );
- * }
- * ```
- */
-export function useDisconnect({ onSuccess, onError }: UseDisconnectParams = {}) {
-  const { disconnect: disconnectFn } = usePoma();
+export const useDisconnect = (): UseDisconnectResult => {
+  const { disconnect, status } = useLuno();
 
-  const { mutate: disconnect, isPending } = useMutation({
+  const {
+    mutateAsync,
+    error,
+    isPending,
+    isError,
+    isSuccess,
+    reset,
+  } = useMutation({
     mutationFn: async () => {
-      await disconnectFn();
+      await disconnect();
     },
-    onSuccess,
-    onError,
   });
 
+  const disconnectWrapper = useCallback(mutateAsync, [mutateAsync]);
+
   return {
-    disconnect,
-    isLoading: isPending,
+    disconnect: disconnectWrapper,
+    status,
+    error: error as Error | null,
+    isPending,
+    isError,
+    isSuccess,
+    reset,
   };
-}
+};

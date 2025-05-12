@@ -14,16 +14,14 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
   const {
     _setConfig,
     _setApi,
-    _setError,
     _setIsApiReady,
     currentChainId,
     config: configInStore,
     currentApi,
     connect,
     status,
-    error,
     activeConnector,
-    rawAccounts,
+    accounts,
     currentChain,
     isApiReady,
     disconnect,
@@ -55,10 +53,10 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
 
     const handleApiError = (error: Error) => {
       if (currentApiInstance) {
-        console.error(`[LunoProvider] API error on ${currentApiInstance.runtimeChain?.toString()}:`, error);
-        _setError(error);
         _setApi(undefined);
         _setIsApiReady(false);
+
+        throw new Error(`[LunoProvider] API error on ${currentApiInstance.runtimeChain?.toString()}: ${error}`);
       }
     };
 
@@ -98,8 +96,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
       }
       _setApi(undefined);
       _setIsApiReady(false);
-      _setError(new Error(`Configuration missing for chainId: ${currentChainId}`));
-      return; // 提前退出
+      throw new Error(`Configuration missing for chainId: ${currentChainId}`)
     }
 
     if (currentApi && currentApi.isConnected) {
@@ -137,10 +134,10 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
       // 但通常 new ApiPromise() 后，它会自行处理连接和 'ready' 事件的触发。
 
     } catch (error) {
-      console.error(`[LunoProvider] Failed to construct ApiPromise for ${chainConfig.name}:`, error);
-      _setError(error instanceof Error ? error : new Error(String(error)));
       _setApi(undefined);
       _setIsApiReady(false);
+      console.error(`[LunoProvider] Failed to construct ApiPromise for ${chainConfig.name}:`, error);
+      throw new Error(`[LunoProvider] Failed to construct ApiPromise for ${chainConfig.name}: ${error?.message || error}`)
     }
 
     // --- 清理函数 ---
@@ -209,9 +206,8 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
   const contextValue = useMemo<LunoContextState>(() => ({
     config: configInStore,
     status,
-    error,
     activeConnector,
-    rawAccounts,
+    accounts: accounts,
     currentChainId,
     currentChain,
     currentApi,
@@ -220,7 +216,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     disconnect,
     switchChain,
   }), [
-    configInStore, status, error, activeConnector, rawAccounts, currentChainId, currentChain, currentApi, isApiReady,
+    configInStore, status, activeConnector, accounts, currentChainId, currentChain, currentApi, isApiReady,
     connect, disconnect, switchChain
   ]);
 
