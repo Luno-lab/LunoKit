@@ -239,7 +239,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
 
       cleanupActiveConnectorListeners()
 
-      set({ status: ConnectionStatus.Disconnected, activeConnector: undefined, rawAccounts: [] })
+      set({ status: ConnectionStatus.Disconnected, activeConnector: undefined, accounts: [] })
       if (get().status !== ConnectionStatus.Disconnected) {
         console.warn("[LunoStore] disconnect method called, but status is not yet 'disconnected' (event handler might be delayed or did not fire). Check connector events.");
       }

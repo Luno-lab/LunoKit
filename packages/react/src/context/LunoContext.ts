@@ -9,9 +9,8 @@ export interface LunoContextState {
   // State
   config?: Config;
   status: ConnectionStatus;
-  error: Error | null;
   activeConnector?: Connector;
-  rawAccounts: Account[];
+  accounts: Account[];
   currentChainId?: string;
   currentChain?: Chain;
   currentApi?: ApiPromise;

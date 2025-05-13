@@ -92,6 +92,9 @@ importers:
       '@polkadot/api':
         specifier: ^15.9.2
         version: 15.9.3
+      '@polkadot/api-derive':
+        specifier: ^15.9.2
+        version: 15.9.3
       '@polkadot/types':
         specifier: ^15.9.2
         version: 15.9.3
