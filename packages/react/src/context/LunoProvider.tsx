@@ -15,6 +15,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     _setConfig,
     _setApi,
     _setIsApiReady,
+    setAccount,
     currentChainId,
     config: configInStore,
     currentApi,
@@ -22,6 +23,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     status,
     activeConnector,
     accounts,
+    account,
     currentChain,
     isApiReady,
     disconnect,
@@ -208,6 +210,8 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     status,
     activeConnector,
     accounts: accounts,
+    account,
+    setAccount,
     currentChainId,
     currentChain,
     currentApi,
@@ -216,8 +220,8 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     disconnect,
     switchChain,
   }), [
-    configInStore, status, activeConnector, accounts, currentChainId, currentChain, currentApi, isApiReady,
-    connect, disconnect, switchChain
+    configInStore, status, activeConnector, accounts, account, currentChainId, currentChain, currentApi, isApiReady,
+    connect, disconnect, switchChain, setAccount
   ]);
 
   return <LunoContext.Provider value={contextValue}>{children}</LunoContext.Provider>;

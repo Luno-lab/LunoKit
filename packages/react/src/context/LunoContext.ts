@@ -11,6 +11,8 @@ export interface LunoContextState {
   status: ConnectionStatus;
   activeConnector?: Connector;
   accounts: Account[];
+  account?: Account;
+  setAccount: (accountOrAddress: Account | string) => void;
   currentChainId?: string;
   currentChain?: Chain;
   currentApi?: ApiPromise;
