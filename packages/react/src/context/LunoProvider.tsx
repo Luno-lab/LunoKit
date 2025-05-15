@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useMemo } from 'react';
 import { ApiPromise } from '@polkadot/api';
-import type { Chain, Config, Transport, Connector, Account } from '@luno/core';
+import type { Chain, Config, Transport } from '@luno/core';
 import { useLunoStore } from '../store/createLunoStore'
 import { PERSIST_KEY } from '../constants'
 import { LunoContext, LunoContextState } from './LunoContext'
@@ -135,7 +135,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
       // 对于 light client (ScProvider)，如果之前没有 await provider.connect()，可能需要在这里处理。
       // 但通常 new ApiPromise() 后，它会自行处理连接和 'ready' 事件的触发。
 
-    } catch (error) {
+    } catch (error: any) {
       _setApi(undefined);
       _setIsApiReady(false);
       console.error(`[LunoProvider] Failed to construct ApiPromise for ${chainConfig.name}:`, error);

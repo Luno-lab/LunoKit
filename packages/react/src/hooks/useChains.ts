@@ -3,5 +3,5 @@ import { useLuno } from './useLuno';
 
 export const useChains = (): Chain[] => {
   const { config } = useLuno();
-  return config?.chains ?? [];
+  return config?.chains ? [...config.chains] : [];
 };

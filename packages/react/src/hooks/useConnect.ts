@@ -41,7 +41,7 @@ export const useConnect = (): UseConnectResult => {
 
   return {
     connect: connectWrapper,
-    connectors: config?.connectors ?? [],
+    connectors: config?.connectors ? [...config.connectors] : [],
     activeConnector,
     status,
     error: error as Error | null,

@@ -3,5 +3,5 @@ import { useLuno } from './useLuno';
 
 export const useConnectors = (): Connector[] => {
   const { config } = useLuno();
-  return config?.connectors ?? [];
+  return config?.connectors ? [...config.connectors] : [];
 };

@@ -36,7 +36,7 @@ export const useSwitchChain = (): UseSwitchChainResult => {
 
   return {
     switchChain,
-    chains: config?.chains ?? [],
+    chains: config?.chains ? [...config.chains] : [],
     currentChain,
     currentChainId,
     error: error as Error | null,
