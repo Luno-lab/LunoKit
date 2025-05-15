@@ -34,15 +34,24 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     if (configFromProps) {
       console.log('[LunoProvider] Setting config to store:', configFromProps);
       _setConfig(configFromProps);
+    } else {
+      console.error('[LunoProvider:ConfigEffect] configFromProps is null or undefined. LunoProvider cannot function without a valid config.');
+      if (currentApi && currentApi.isConnected) {
+        currentApi.disconnect().catch(e => console.error('[LunoProvider:ConfigEffect] Error disconnecting API on config missing:', e));
+      }
+      _setApi(undefined);
+      _setIsApiReady(false);
     }
-  }, [configFromProps]);
+  }, [configFromProps, currentApi]);
+
 
   useEffect(() => {
+    if (!configInStore) return
     let currentApiInstance: ApiPromise | null = null; // 用于在清理时引用
 
     const handleApiConnected = () => {
       if (currentApiInstance) {
-        console.log(`[LunoProvider] API (re)connected: ${currentApiInstance.runtimeChain?.toString()}`);
+        console.log(`[LunoProvider] API WebSocket (re)connected to ${currentChainId}. Waiting for API to be ready...`);
       }
     };
 
@@ -77,7 +86,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
       }
     }
 
-    if (!configFromProps || !currentChainId) {
+    if (!currentChainId) {
       if (currentApi && currentApi.isConnected) {
         currentApi.disconnect().catch(console.error);
       }
@@ -154,7 +163,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
       _setApi(undefined);
       _setIsApiReady(false);
     };
-  }, [configFromProps, currentChainId, currentApi]);
+  }, [configInStore, configFromProps, currentChainId]);
 
   useEffect(() => {
     const performAutoConnect = async () => {
@@ -200,7 +209,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
 
         if (apiSs58 && apiSs58 !== currentChain.ss58Format) {
           console.error(
-            `[LunoProvider] SS58 Format Mismatch for chain "${currentChain.name}" (ID: ${currentChain.id}):\n` +
+            `[LunoProvider] SS58 Format Mismatch for chain "${currentChain.name}" (genesisHash: ${currentChain.genesisHash}):\n` +
             `  - Configured SS58Format: ${currentChain.ss58Format}\n` +
             `  - Node Runtime SS58Format: ${apiSs58}\n` +
             `Please verify your Luno configuration for this chain to ensure correct address display and interaction.`

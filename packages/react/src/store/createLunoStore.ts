@@ -56,7 +56,6 @@ export const useLunoStore = create<LunoState>((set, get) => ({
       accounts: [],
       currentChainId: initialChainId,
       currentChain: initialChain,
-      currentApi: undefined // ApiPromise will be initialized by Provider for this initialChain
     });
   },
 
@@ -69,6 +68,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
   },
 
   setAccount: (accountOrPublicKey) => {
+    if (accountOrPublicKey) return
     const accounts = get().accounts;
 
     const targetPublicKey =

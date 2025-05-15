@@ -33,7 +33,7 @@ export interface LunoState {
    */
   accounts: Account[];
   account?: Account;   // 当前选中账户
-  setAccount: (accountOrPubkey: Account | HexString) => void;
+  setAccount: (accountOrPubkey?: Account | HexString) => void;
 
   // --- 当前链及API实例 (主要由 Provider 管理，并在 Store 中反映) ---
   /** DApp 当前逻辑上活动或选中的链的创世哈希 (genesisHash) */

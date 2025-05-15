@@ -7,7 +7,7 @@ import type { HexString } from '@polkadot/util/types'
 
 export interface UseAccountsResult {
   accounts: Account[];
-  selectAccount: (accountOrAddress: Account | HexString) => void;
+  selectAccount: (accountOrAddress?: Account | HexString) => void;
 }
 
 export const useAccounts = (): UseAccountsResult => {

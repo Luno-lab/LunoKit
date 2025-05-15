@@ -1,6 +1,6 @@
 // packages/core/src/connectors/base.ts
 import type { Account, Signer } from '../types'; // 导入本地类型
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'eventemitter3';
 // 不再需要导入 extension-dapp 或 inject types，因为订阅/处理逻辑下放
 
 /**

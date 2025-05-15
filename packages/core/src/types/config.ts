@@ -43,7 +43,7 @@ type LunoApiOptions = Pick<ApiOptions,
 
 export interface CreateConfigParameters extends LunoApiOptions {
   appName?: string; // appName 在 Parameters 中也是必需的，createConfig 会验证
-  chains: readonly [Chain, ...Chain[]];
+  chains: readonly Chain[];
   connectors: Connector[];
   transports: Record<string, Transport>;
 
