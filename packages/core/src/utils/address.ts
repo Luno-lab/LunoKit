@@ -30,7 +30,6 @@ export function convertAddress(address: string, ss58Format: number): string {
     const publicKey = decodeAddress(address);
     return encodeAddress(publicKey, ss58Format);
   } catch (error: any) {
-    console.error(`Failed to convert address "${address}" to SS58 format ${ss58Format}:`, error);
     throw new Error(`Failed to convert address: ${error.message}`);
   }
 }

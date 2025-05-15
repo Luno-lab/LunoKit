@@ -12,7 +12,11 @@ export interface UseSs58FormatResult {
 }
 
 export const useSs58Format = (): UseSs58FormatResult => {
-  const { currentApi, isApiReady } = useLuno();
+  const { currentApi, isApiReady, currentChain } = useLuno();
+
+  const configuredSs58Fallback = currentChain?.ss58Format !== undefined
+    ? currentChain.ss58Format
+    : DEFAULT_SS58_FORMAT;
 
   return useMemo(() => {
     if (currentApi && isApiReady) {
@@ -23,7 +27,7 @@ export const useSs58Format = (): UseSs58FormatResult => {
         ss58 = isNumber(format) ? format : DEFAULT_SS58_FORMAT;
       } catch (e) {
         console.error("[useSs58Format] Error fetching chainSS58:", e);
-        ss58 = DEFAULT_SS58_FORMAT; // 出错时也使用默认值
+        ss58 = configuredSs58Fallback; // 出错时也使用默认值
       }
       // API 就绪且计算完成，isLoading 为 false
       return { data: ss58, isLoading: false };

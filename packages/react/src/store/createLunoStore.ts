@@ -68,15 +68,15 @@ export const useLunoStore = create<LunoState>((set, get) => ({
     set({isApiReady: isReady});
   },
 
-  setAccount: (accountOrAddress) => {
+  setAccount: (accountOrPublicKey) => {
     const accounts = get().accounts;
 
-    const targetAddress =
-      typeof accountOrAddress === 'string'
-        ? accountOrAddress.toLowerCase()
-        : accountOrAddress.address.toLowerCase();
+    const targetPublicKey =
+      typeof accountOrPublicKey === 'string'
+        ? accountOrPublicKey.toLowerCase()
+        : accountOrPublicKey.publicKey?.toLowerCase()
 
-    const nextAccount = accounts.find(acc => acc.address.toLowerCase() === targetAddress);
+    const nextAccount = accounts.find(acc => acc.publicKey?.toLowerCase() === targetPublicKey);
 
     if (!nextAccount) {
       console.warn('[LunoStore] setAccount: The provided account or address is not in the current accounts list. Ignored.');
