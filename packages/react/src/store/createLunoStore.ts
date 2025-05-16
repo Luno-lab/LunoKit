@@ -165,6 +165,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
         activeConnector: connector,
         accounts: accountsFromWallet,
         status: ConnectionStatus.Connected,
+        account: accountsFromWallet[0],
       });
 
       // Persist the connected connector ID

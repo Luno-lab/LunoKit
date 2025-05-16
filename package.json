@@ -3,7 +3,7 @@
   "description": "The Luno monorepo containing core, react, and other related packages.",
   "private": true,
   "scripts": {
-    "build": "pnpm --filter './packages/**' build",
+    "build": "pnpm -r --stream --filter './packages/**' run build",
     "clean": "pnpm --filter './packages/**' run clean",
     "dev": "pnpm --filter './packages/**' dev",
     "lint": "pnpm --filter './packages/**' lint",
