@@ -14,7 +14,7 @@ export const useAccounts = (): UseAccountsResult => {
   const { accounts, setAccount, currentChain } = useLuno();
 
   const formattedAccounts = useMemo(() => {
-    if (!currentChain?.ss58Format) return accounts ?? []
+    if (!currentChain || currentChain?.ss58Format === undefined) return accounts ?? []
     return (accounts || []).map(acc => {
       if (!acc.publicKey) {
         console.warn(`[useAccounts] Account ${acc.name || acc.address} is missing publicKey. Cannot re-format address.`);
@@ -32,7 +32,7 @@ export const useAccounts = (): UseAccountsResult => {
         return { ...acc };
       }
     })
-  }, [accounts, currentChain?.ss58Format])
+  }, [accounts, currentChain, currentChain?.ss58Format])
 
   return { accounts: formattedAccounts, selectAccount: setAccount };
 };

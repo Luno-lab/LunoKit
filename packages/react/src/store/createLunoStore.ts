@@ -68,13 +68,16 @@ export const useLunoStore = create<LunoState>((set, get) => ({
   },
 
   setAccount: (accountOrPublicKey) => {
-    if (accountOrPublicKey) return
+    if (!accountOrPublicKey) return
+
     const accounts = get().accounts;
 
     const targetPublicKey =
       typeof accountOrPublicKey === 'string'
         ? accountOrPublicKey.toLowerCase()
         : accountOrPublicKey.publicKey?.toLowerCase()
+    console.log('targetPublicKey', targetPublicKey)
+    console.log('accounts', accounts)
 
     const nextAccount = accounts.find(acc => acc.publicKey?.toLowerCase() === targetPublicKey);
 

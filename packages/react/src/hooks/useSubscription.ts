@@ -1,36 +1,30 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useLuno } from './useLuno';
 import type { ApiPromise } from '@polkadot/api';
-import type { UnsubscribePromise } from '@polkadot/api/types';
 import type { Callback } from '@polkadot/types/types'
-// import type { Callback, UnsubscribePromise } from '@polkadot/api/types'; // Callback 和 UnsubscribePromise 很关键
 
-// 定义一个通用的 Polkadot API 订阅函数类型
-// 它接受参数 TArgs 和一个回调函数 Callback<TData>
-// 返回一个 Promise，该 Promise 解析为取消订阅函数 () => void
 type SubscriptionFn<TArgs extends any[], TData> =
-  (...params: [...TArgs, Callback<TData>]) => UnsubscribePromise;
+  (...params: [...TArgs, Callback<TData>]) => Promise<() => void>;
 
 export interface UseSubscriptionOptions<TData, TTransformed = TData> {
-  enabled?: boolean; // 是否启用订阅 (默认为 true)
-  transform?: (data: TData, api: ApiPromise) => TTransformed; // 数据转换函数
-  defaultValue?: TTransformed; // 默认值
-  // onError?: (error: Error) => void; // 可以考虑加错误回调，但 hook 返回 error 通常足够
+  enabled?: boolean;
+  transform?: (data: TData, api: ApiPromise) => TTransformed;
+  defaultValue?: TTransformed;
 }
 
+type ApiBoundSubscriptionFactory<TArgs extends any[], TData> =
+  (api: ApiPromise) => SubscriptionFn<TArgs, TData>;
+
 export interface UseSubscriptionProps<TArgs extends any[], TData, TTransformed = TData> {
-  /** Polkadot API 的订阅函数引用，例如 api.query.system.account */
-  factory?: SubscriptionFn<TArgs, TData>;
-  /** API 函数所需的参数数组 (不包括回调) */
+  factory: ApiBoundSubscriptionFactory<TArgs, TData>; // <--- 修改这里
   params?: TArgs;
-  /** Hook 的选项 */
   options?: UseSubscriptionOptions<TData, TTransformed>;
 }
 
 export interface UseSubscriptionResult<TTransformed> {
-  data?: TTransformed; // 最新数据 (已转换)
-  error?: Error;       // 错误状态
-  isLoading: boolean; // 是否正在加载初始数据
+  data?: TTransformed;
+  error?: Error;
+  isLoading: boolean;
 }
 
 const defaultTransform = <T>(data: T): T => data;
@@ -41,19 +35,23 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
   const { currentApi, isApiReady } = useLuno();
   const {
     enabled = true,
-    transform = defaultTransform as (data: TData, api: ApiPromise) => TTransformed, // 类型断言
+    transform = defaultTransform as (data: TData, api: ApiPromise) => TTransformed,
     defaultValue,
   } = options;
 
   const [data, setData] = useState<TTransformed | undefined>(defaultValue);
   const [error, setError] = useState<Error | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState<boolean>(enabled); // 初始 loading 状态取决于 enabled
+  const [isLoading, setIsLoading] = useState<boolean>(enabled);
   const unsubscribeRef = useRef<(() => void) | null>(null);
-  const transformRef = useRef(transform); // 确保 transform 函数引用稳定
+  const transformRef = useRef(transform);
   useEffect(() => { transformRef.current = transform; }, [transform]);
 
-  // 使用 JSON.stringify 稳定 params 依赖，类似 useCall
   const stableParamsKey = useMemo(() => params ? JSON.stringify(params) : '[]', [params]);
+
+  const factoryFn = useMemo(() => {
+    if (!factory || !currentApi || !isApiReady) return
+    return factory(currentApi)
+  }, [factory, currentApi, isApiReady])
 
   useEffect(() => {
     const cleanup = () => {
@@ -64,7 +62,7 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
     };
 
     // 检查条件
-    const canSubscribe = enabled && !!currentApi && isApiReady && !!factory && params !== undefined;
+    const canSubscribe = enabled && factoryFn && params !== undefined;
 
     if (!canSubscribe) {
       cleanup();
@@ -76,11 +74,10 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
       return;
     }
 
-    // 条件满足，准备订阅
-    cleanup(); // 清理旧订阅
-    setIsLoading(true); // 开始加载
+    cleanup();
+    setIsLoading(true);
     setError(undefined);
-    setData(defaultValue); // 重置为默认值
+    setData(defaultValue);
 
     let unsubCalled = false;
     const performUnsub = () => {
@@ -93,13 +90,10 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
     // 定义回调函数
     const callback: Callback<TData> = (result) => {
       try {
-        // 检查是否还需要处理（防止异步回调时组件已卸载或重新订阅）
-        if (!unsubscribeRef.current && !unsubCalled) { // 检查是否还处于活跃订阅状态
-          // 如果已经取消订阅了（unsubscribeRef为空），就不处理新数据
-          // console.warn('[useSubscription] Received data after unsubscribe.');
+        if (!unsubscribeRef.current && !unsubCalled) {
           return;
         }
-        const transformedData = transformRef.current(result, currentApi);
+        const transformedData = transformRef.current(result, currentApi!);
         setData(transformedData);
         setError(undefined);
         setIsLoading(false);
@@ -110,17 +104,16 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
       }
     };
 
-    // 执行订阅
     (async () => {
       try {
-        if (!factory) {
+        if (!factoryFn) {
           console.error("Factory became undefined unexpectedly");
           return;
         }
 
-        const unsubscribe = await factory(...params!, callback);
+        const unsubscribe = await factoryFn(...params!, callback);
 
-        if (!unsubCalled) { // 检查在 await 期间是否被清理
+        if (!unsubCalled) {
           unsubscribeRef.current = unsubscribe;
         } else {
           unsubscribe();
@@ -129,14 +122,13 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
         console.error("[useSubscription] Error setting up subscription:", subError);
         setError(subError instanceof Error ? subError : new Error('Subscription setup failed'));
         setIsLoading(false);
-        performUnsub(); // 确保清理
+        performUnsub();
       }
     })();
 
-    return performUnsub; // 返回清理函数
+    return performUnsub;
 
-    // 依赖项：API 状态、factory 引用、序列化的 params、enabled 状态
-  }, [currentApi, isApiReady, factory, stableParamsKey, enabled, defaultValue]); // 加入 defaultValue
+  }, [factoryFn, stableParamsKey, enabled, defaultValue]);
 
   return { data, error, isLoading };
 };

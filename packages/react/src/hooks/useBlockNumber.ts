@@ -2,6 +2,7 @@
 import { useSubscription, UseSubscriptionResult } from './useSubscription';
 import type { BlockNumber } from '@polkadot/types/interfaces';
 import { useLuno } from './useLuno';
+import {ApiPromise} from '@polkadot/api'
 
 export type UseBlockNumberResult = UseSubscriptionResult<number>; // 返回 number 类型更常用
 
@@ -14,7 +15,7 @@ export const useBlockNumber = (): UseBlockNumberResult => {
   };
 
   return useSubscription<[], BlockNumber, number>({
-    factory: currentApi?.derive.chain.bestNumber,
+    factory: (api: ApiPromise) => api.derive.chain.bestNumber,
     params: [], // bestNumber 不需要参数
     options: {
       enabled: !!currentApi && isApiReady,

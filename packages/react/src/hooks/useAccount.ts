@@ -15,7 +15,7 @@ export const useAccount = (): UseAccountResult => {
 
   const formattedAccount = useMemo(() => {
     if (!account) return
-    if (!currentChain?.ss58Format || !account?.publicKey) return account
+    if (!currentChain || currentChain?.ss58Format === undefined || !account?.publicKey) return account
 
     try {
       const newAddress = convertAddress(account.address, currentChain.ss58Format); // 重点：使用 publicKey
@@ -27,7 +27,7 @@ export const useAccount = (): UseAccountResult => {
       console.error(`[useAccount] Failed to re-format address for account with publicKey ${account.publicKey}:`, error);
       return { ...account };
     }
-  }, [account, currentChain?.ss58Format])
+  }, [account, currentChain, currentChain?.ss58Format])
 
   return {
     account: formattedAccount,

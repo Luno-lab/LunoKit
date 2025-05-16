@@ -13,7 +13,7 @@ export interface UseBalanceProps {
 export type UseBalanceResult = UseSubscriptionResult<AccountBalance>;
 
 export const useBalance = ({ address }: UseBalanceProps): UseBalanceResult => {
-  const { currentApi } = useLuno();
+  const { currentApi, isApiReady } = useLuno();
 
   const transform = (balancesAll: DeriveBalancesAll, api: ApiPromise): AccountBalance => {
     const decimals = api.registry.chainDecimals[0];
@@ -65,10 +65,10 @@ export const useBalance = ({ address }: UseBalanceProps): UseBalanceResult => {
   };
 
   return useSubscription<[string | AccountId], DeriveBalancesAll, AccountBalance>({
-    factory: currentApi?.derive.balances.all,
+    factory: (api: ApiPromise) => api.derive.balances.all, // <--- 修改这里
     params: [address as string | AccountId],
     options: {
-      enabled: !!address && !!currentApi,
+      enabled: !!address && !!currentApi && isApiReady,
       transform: transform,
       defaultValue: undefined,
     }

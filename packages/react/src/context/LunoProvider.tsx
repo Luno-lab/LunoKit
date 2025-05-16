@@ -34,24 +34,15 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     if (configFromProps) {
       console.log('[LunoProvider] Setting config to store:', configFromProps);
       _setConfig(configFromProps);
-    } else {
-      console.error('[LunoProvider:ConfigEffect] configFromProps is null or undefined. LunoProvider cannot function without a valid config.');
-      if (currentApi && currentApi.isConnected) {
-        currentApi.disconnect().catch(e => console.error('[LunoProvider:ConfigEffect] Error disconnecting API on config missing:', e));
-      }
-      _setApi(undefined);
-      _setIsApiReady(false);
     }
-  }, [configFromProps, currentApi]);
-
+  }, [configFromProps]);
 
   useEffect(() => {
-    if (!configInStore) return
     let currentApiInstance: ApiPromise | null = null; // 用于在清理时引用
 
     const handleApiConnected = () => {
       if (currentApiInstance) {
-        console.log(`[LunoProvider] API WebSocket (re)connected to ${currentChainId}. Waiting for API to be ready...`);
+        console.log(`[LunoProvider] API (re)connected: ${configFromProps.transports[currentChainId!].endpoint}`);
       }
     };
 
@@ -86,7 +77,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
       }
     }
 
-    if (!currentChainId) {
+    if (!configFromProps || !currentChainId) {
       if (currentApi && currentApi.isConnected) {
         currentApi.disconnect().catch(console.error);
       }
@@ -127,6 +118,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
         types: configFromProps.types,
         typesBundle: configFromProps.typesBundle,
         rpc: configFromProps.rpc,
+        // signer: configFromProps.signer,
       });
       currentApiInstance = newApi;
       _setApi(newApi);
@@ -153,7 +145,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
         instanceToClean.off('ready', handleApiReady);
         instanceToClean.off('error', handleApiError);
         instanceToClean.off('disconnected', handleApiDisconnected);
-        instanceToClean.off('connected', handleApiConnected);
+        // instanceToClean.off('connected', handleApiConnected);
 
         if (instanceToClean.isConnected) {
           instanceToClean.disconnect().catch(e => console.error('[LunoProvider] Error disconnecting API in cleanup:', e));
@@ -162,7 +154,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
       _setApi(undefined);
       _setIsApiReady(false);
     };
-  }, [configInStore, configFromProps, currentChainId]);
+  }, [configFromProps, currentChainId]);
 
   useEffect(() => {
     const performAutoConnect = async () => {

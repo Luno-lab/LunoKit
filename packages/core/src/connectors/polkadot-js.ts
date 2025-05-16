@@ -50,7 +50,6 @@ export class PolkadotJsConnector extends BaseConnector {
       //@ts-ignore
       this.specificInjector = await window.injectedWeb3[this.id]!.enable(appName);
 
-      console.log('injectedExtensions', this.specificInjector)
       if (!this.specificInjector) {
         throw new Error(`Failed to enable the '${this.id}' extension.`);
       }
