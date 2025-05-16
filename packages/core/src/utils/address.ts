@@ -1,7 +1,7 @@
 import { decodeAddress, encodeAddress, isAddress } from '@polkadot/util-crypto';
 import type { Account } from '../types';
 import {u8aEq, u8aToHex} from '@polkadot/util'
-import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types'
+import type { InjectedAccount } from '@polkadot/extension-inject/types'
 import type { HexString } from '@polkadot/util/types'
 
 /**
@@ -73,16 +73,16 @@ export function getPublicKey(address: string): Uint8Array {
  * @param injectedAccounts - 从 web3Accounts() 或 web3AccountsSubscribe() 获取的原始账户列表。
  * @returns 内部 Account 类型的列表。
  */
-export function mapInjectedAccounts(injectedAccounts: InjectedAccountWithMeta[]): Account[] {
+export function mapInjectedAccounts(injectedAccounts: InjectedAccount[], sourceId: string): Account[] {
   if (!injectedAccounts) return []
 
-  return injectedAccounts.map((acc: InjectedAccountWithMeta) => {
+  return injectedAccounts.map((acc: InjectedAccount) => {
     let publicKeyHex: HexString | undefined;
     try {
       // 从原始地址解码出公钥
       const publicKeyBytes = decodeAddress(acc.address);
       // 将公钥 Uint8Array 转换为十六进制字符串 (不带 '0x' 前缀)
-      publicKeyHex = u8aToHex(publicKeyBytes, -1, false);
+      publicKeyHex = u8aToHex(publicKeyBytes);
     } catch (error) {
       // 如果解码失败（地址格式可能无效），则 publicKey 为 undefined
       console.error(`Failed to decode address "${acc.address}" to extract public key:`, error);
@@ -91,12 +91,13 @@ export function mapInjectedAccounts(injectedAccounts: InjectedAccountWithMeta[])
     // 构建我们定义的 Account 对象
     const mappedAccount: Account = {
       address: acc.address, // 保留从钱包获取的原始地址
-      name: acc.meta?.name, // 使用钱包提供的名称
+      name: acc.name, // 使用钱包提供的名称
       publicKey: publicKeyHex, // 添加提取的公钥
       meta: {
-        source: acc.meta?.source, // 保留来源信息
-        genesisHash: acc.meta?.genesisHash, // 保留 genesisHash
-      }
+        source: sourceId, // 保留来源信息
+        genesisHash: acc.genesisHash, // 保留 genesisHash
+      },
+      type: acc.type
     };
 
     return mappedAccount;

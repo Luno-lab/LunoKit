@@ -8,7 +8,7 @@ export interface Connector extends EventEmitter {
   readonly name: string;
   readonly icon?: string;
   isAvailable(): Promise<boolean>;
-  connect(): Promise<Array<Account>>;
+  connect(appName: string): Promise<Array<Account>>;
   disconnect(): Promise<void>;
   getAccounts(): Promise<Array<Account>>;
   getSigner(): Promise<Signer | undefined>;

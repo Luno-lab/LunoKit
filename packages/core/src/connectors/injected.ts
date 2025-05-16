@@ -27,7 +27,7 @@ export class InjectedConnector extends BaseConnector {
     return typeof injectedWeb3 === 'object' && Object.keys(injectedWeb3).length > 0;
   }
 
-  public async connect(): Promise<Array<Account>> {
+  public async connect(appName): Promise<Array<Account>> {
     console.log(`Connector ${this.id}: Attempting to connect...`);
     if (this.signer) {
       console.log(`Connector ${this.id}: Already connected.`);

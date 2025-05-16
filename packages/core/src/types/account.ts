@@ -1,6 +1,7 @@
 // 账户相关类型
 
-import {HexString} from '@polkadot/util/types'
+import type { HexString } from '@polkadot/util/types'
+import type { KeypairType } from '@polkadot/util-crypto/types'
 
 /**
  * 波卡账户接口
@@ -36,6 +37,7 @@ export interface Account {
     /** 其他自定义元数据 */
     [key: string]: any;
   };
+  type?: KeypairType
 }
 
 /**

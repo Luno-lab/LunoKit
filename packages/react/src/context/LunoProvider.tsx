@@ -127,7 +127,6 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
         types: configFromProps.types,
         typesBundle: configFromProps.typesBundle,
         rpc: configFromProps.rpc,
-        signer: configFromProps.signer,
       });
       currentApiInstance = newApi;
       _setApi(newApi);

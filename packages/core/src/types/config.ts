@@ -32,7 +32,6 @@ type LunoApiOptions = Pick<ApiOptions,
   | 'types'
   | 'typesBundle'
   | 'rpc'
-  | 'signer'
 >;
 
 // --- createConfig 返回的配置对象类型 ---
@@ -52,7 +51,7 @@ export interface CreateConfigParameters extends LunoApiOptions {
   autoConnect?: boolean;
 }
 
-export interface Config extends LunoApiOptions{
+export interface Config extends LunoApiOptions {
   readonly appName: string;
   readonly chains: readonly Chain[];
   readonly connectors: readonly Connector[];

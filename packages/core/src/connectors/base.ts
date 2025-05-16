@@ -46,7 +46,9 @@ export abstract class BaseConnector extends EventEmitter {
   /**
    * 检查此连接器是否可用。
    */
-  abstract isAvailable(): Promise<boolean>;
+  public abstract isAvailable(): Promise<boolean>;
+
+  public abstract isInstalled(): boolean;
 
   /**
    * 连接到钱包，获取初始账户和 Signer，并设置必要的事件监听。
@@ -58,7 +60,7 @@ export abstract class BaseConnector extends EventEmitter {
    * 5. (可选) 触发 'connect' 事件。
    * @returns 初始可用账户列表
    */
-  abstract connect(): Promise<Array<Account>>;
+  abstract connect(appName: string): Promise<Array<Account>>;
 
   /**
    * 断开与钱包的连接。

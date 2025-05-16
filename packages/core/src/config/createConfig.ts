@@ -36,7 +36,6 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     types,
     typesBundle,
     rpc,
-    signer,
   } = parameters;
 
   if (!chains || chains.length === 0) {
@@ -65,7 +64,6 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     types,
     typesBundle,
     rpc,
-    signer,
 
     appName,
     chains: Object.freeze([...chains]) as readonly Chain[],
