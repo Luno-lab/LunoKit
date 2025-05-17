@@ -1,5 +1,7 @@
 import { useLuno } from './useLuno';
 import { useLunoMutation, type LunoMutationOptions } from './useLunoMutation';
+import { useAccount } from './useAccount'
+import { useAccounts } from './useAccounts'
 
 export interface SignMessageVariables {
   message: string;
@@ -41,7 +43,9 @@ export interface UseSignMessageResult {
 export function useSignMessage(
   hookLevelConfig?: UseSignMessageOptions
 ): UseSignMessageResult {
-  const { activeConnector, account } = useLuno();
+  const { activeConnector } = useLuno();
+  const { account, address } = useAccount()
+  const { accounts } = useAccounts()
 
   const mutationFn = async (
     variables: SignMessageVariables
@@ -49,16 +53,21 @@ export function useSignMessage(
     if (!activeConnector) {
       throw new Error('[useSignMessage]: No active connector found to sign the message.');
     }
-    if (!account || !account.address || !account.meta?.source) {
+    if (!account || !address || !account.meta?.source) {
       throw new Error('[useSignMessage]: No address provided for signing.');
     }
+
+    if (!accounts.some(acc => acc.address === address)) {
+      throw new Error(`[useSignMessage]: Address ${address} is not managed by ${activeConnector.id}.`);
+    }
+
     if (!variables.message) {
       throw new Error('[useSignMessage]: No message provided for signing.');
     }
 
     const signatureString = await activeConnector.signMessage(
       variables.message,
-      account.address
+      address
     );
 
     if (!signatureString) {
@@ -69,7 +78,7 @@ export function useSignMessage(
     return {
       signature: signatureString,
       rawMessage: variables.message,
-      addressUsed: account.address ,
+      addressUsed: address ,
     };
   };
 

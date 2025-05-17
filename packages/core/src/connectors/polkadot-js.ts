@@ -93,10 +93,7 @@ export class PolkadotJsConnector extends BaseConnector {
     if (!signer?.signRaw) {
       throw new Error('Signer is not available or does not support signRaw.');
     }
-    const accounts = await this.getAccounts();
-    if (!accounts.some(acc => acc.address === address)) {
-      throw new Error(`Address ${address} is not managed by ${this.name}.`);
-    }
+
     try {
       const dataHex = stringToHex(message);
       const result = await signer.signRaw({ address, data: dataHex, type: 'bytes' });
