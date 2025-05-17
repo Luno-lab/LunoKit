@@ -28,11 +28,11 @@ export const useBalance = ({ address }: UseBalanceProps): UseBalanceResult => {
     const transferable = BigInt(availableBalanceBn.toString());
     const total = BigInt(freeBalanceBn.add(reservedBalanceBn).toString());
 
-    const options = { withUnit: symbol, withSi: false, decimals };
-    const formattedFree = formatBalance(free, options);
+    const options = { forceUnit: '-', withSi: false, decimals };
+    const formattedTransferable = formatBalance(transferable, options);
     const formattedTotal = formatBalance(total, options);
 
-    const locks = balancesAll.lockedBreakdown.map((lock) => {
+    const locks = (balancesAll.lockedBreakdown || []).map((lock) => {
       let reasonStr = 'Unknown';
       if (lock.reasons) {
         if (lock.reasons.isFee) reasonStr = 'Fee';
@@ -50,6 +50,7 @@ export const useBalance = ({ address }: UseBalanceProps): UseBalanceResult => {
         id: lock.id.toHex(),
         amount: BigInt(lock.amount.toString()),
         reason: reasonStr,
+        lockHuman: lock.id.toHuman() as string,
       };
     });
 
@@ -58,7 +59,7 @@ export const useBalance = ({ address }: UseBalanceProps): UseBalanceResult => {
       total,
       reserved,
       transferable,
-      formattedFree,
+      formattedTransferable,
       formattedTotal,
       locks: locks.length > 0 ? locks : undefined,
     };

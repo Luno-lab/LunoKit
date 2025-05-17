@@ -124,7 +124,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
             console.warn(`[LunoStore] Account ${acc.address} (from ${connector.name}) is missing publicKey.`);
           }
         });
-        set({accounts: newAccounts});
+        set({accounts: newAccounts, account: newAccounts[0] });
       };
 
       const handleDisconnect = () => {

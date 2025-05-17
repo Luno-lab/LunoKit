@@ -60,7 +60,7 @@ export interface AccountBalance {
   transferable: bigint;
 
   /** 格式化后的可用余额（带单位，用于显示） */
-  formattedFree: string;
+  formattedTransferable: string;
 
   /** 格式化后的总余额（带单位，用于显示） */
   formattedTotal: string;
@@ -70,6 +70,7 @@ export interface AccountBalance {
     id: string;
     amount: bigint;
     reason: string;
+    lockHuman: string;
   }>;
 }
 
