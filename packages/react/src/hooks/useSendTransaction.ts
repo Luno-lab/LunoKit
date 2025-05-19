@@ -17,7 +17,7 @@ export interface TransactionReceipt {
   status: 'Success' | 'Failed';
   dispatchError?: DispatchError;
   errorMessage?: string;
-  rawStatus: ISubmittableResult['status'];
+  // rawStatus: ISubmittableResult['status'];
   dispatchInfo?: DispatchInfo;
 }
 
@@ -114,7 +114,7 @@ export function useSendTransaction(
                   status: 'Failed',
                   dispatchError,
                   errorMessage: getReadableDispatchError(currentApi, dispatchError),
-                  rawStatus: status,
+                  // rawStatus: status.toJSON(),
                   dispatchInfo,
                 });
               } else {
@@ -128,7 +128,7 @@ export function useSendTransaction(
                     status: 'Success',
                     dispatchError: undefined,
                     errorMessage: undefined,
-                    rawStatus: status,
+                    // rawStatus: status,
                     dispatchInfo,
                   });
                 // }
