@@ -1,6 +1,6 @@
 import { defineConfig } from 'tsup';
 
-export default defineConfig({
+export default defineConfig(options => ({
   entry: [
     'src/index.ts',
     'src/chains/index.ts',
@@ -27,5 +27,6 @@ export default defineConfig({
       composite: false, // <--- 关键：仅在 DTS 构建时禁用 composite
     },
   },
-  tsconfig: './tsconfig.json'
-});
+  tsconfig: './tsconfig.json',
+  minify: !options.watch,
+}));

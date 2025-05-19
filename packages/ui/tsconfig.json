@@ -10,10 +10,14 @@
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "composite": true
+    "paths": {
+      "@/*": ["*"]
+    }
   },
   "include": ["src/**/*"],
   "references": [
-    { "path": "../core" }
-  ]
+    { "path": "../react" }
+  ],
+  "exclude": ["node_modules", "dist"],
+  "composite": true
 }
