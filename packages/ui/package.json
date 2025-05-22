@@ -1,0 +1,84 @@
+{
+  "name": "@luno/ui",
+  "version": "0.0.1",
+  "private": true,
+  "description": "UI components for Luno, a Polkadot frontend toolkit.",
+  "keywords": [
+    "polkadot",
+    "substrate",
+    "react",
+    "ui",
+    "components",
+    "luno"
+  ],
+  "homepage": "https://github.com/Luno-lab/LunoKit",
+  "bugs": {
+    "url": "https://github.com/Luno-lab/LunoKit/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "wbh1328551759",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm build:js && pnpm build:css",
+    "build:css": "pnpm exec tailwindcss -i ./src/styles/source.css -o ./dist/styles.css --minify",
+    "build:js": "tsup",
+    "dev": "concurrently \"pnpm:dev:css\" \"pnpm:dev:js\"",
+    "dev:css": "pnpm exec tailwindcss -i ./src/styles/source.css -o ./dist/styles.css --watch",
+    "dev:js": "tsup --watch",
+    "clean": "rm -rf dist",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": ">=5.0.0",
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "dependencies": {
+    "@luno/core": "workspace:*",
+    "@luno/react": "workspace:*",
+    "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-dropdown-menu": "^2.0.6",
+    "@radix-ui/react-label": "^2.0.2",
+    "@radix-ui/react-popover": "^1.0.7",
+    "@radix-ui/react-slot": "^1.0.2",
+    "clsx": "^2.1.0",
+    "tailwind-merge": "^2.2.1"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "^8.0.0",
+    "@storybook/addon-interactions": "^8.0.0",
+    "@storybook/addon-themes": "8.6.14",
+    "@storybook/addon-links": "^8.0.0",
+    "@storybook/blocks": "^8.0.0",
+    "@storybook/react": "^8.0.0",
+    "@storybook/react-vite": "^8.0.0",
+    "@storybook/test": "^8.0.0",
+    "@tailwindcss/cli": "^4.0.0",
+    "@tailwindcss/postcss": "^4.0.0",
+    "@tanstack/react-query": "^5.14.2",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "autoprefixer": "^10.4.17",
+    "concurrently": "^8.2.2",
+    "postcss": "^8.4.35",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "storybook": "^8.0.0",
+    "tailwindcss": "^4.0.0",
+    "tsup": "^8.0.2",
+    "typescript": "^5.3.3",
+    "vite": "^5.1.4"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

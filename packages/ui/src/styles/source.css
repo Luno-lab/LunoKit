@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+@theme {
+  --text-primary: 16px;
+  --text-primary--line-height: 20px;
+  --text-title: 18px;
+  --text-title--line-height: 24px;
+  --text-secondary: 14px;
+  --text-secondary--line-height: 18px;
+  --text-accent: 12px;
+  --text-accent--line-height: 18px;
+
+  --shadow-primary: 0px 10px 20px 0px rgba(0,0,0,0.1);
+  --radius-primary: 6px;
+  --radius-sm: 4px;
+
+  /* Light Mode Variables (Default) */
+  --color-primary: #25292E;
+  --color-text-accent: #8A6EAC;
+  --color-text-secondary: rgba(60, 66, 66, 0.6);
+  --color-modal-bg: white;
+  --color-connector-item-bg: #F0F0F0; /* Light mode connector item background, assuming one is needed */
+
+  @variant dark {
+    /* Dark Mode Variables */
+    --color-primary: #FFFFFF;
+    /* --color-text-accent: #8A6EAC; /* Accent color seems to be the same */
+    --color-text-secondary: rgba(255,255,255,0.5);
+    --color-modal-bg: #3A3B43;
+    --color-connector-item-bg: #4A4B51;
+  }
+}
