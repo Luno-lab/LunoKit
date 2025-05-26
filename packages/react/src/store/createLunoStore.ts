@@ -156,7 +156,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
       connector.on('disconnect', handleDisconnect);
       activeConnectorUnsubscribeFunctions.push(() => connector.off('disconnect', handleDisconnect));
 
-      const accountsFromWallet = await connector.connect();
+      const accountsFromWallet = await connector.connect(config.appName);
 
       accountsFromWallet.forEach(acc => {
         if (!acc.publicKey) {

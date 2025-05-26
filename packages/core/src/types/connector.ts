@@ -6,7 +6,7 @@ import type { Signer } from './signer';   // 假设 Signer 在 signer.ts
 export interface Connector extends EventEmitter {
   readonly id: string;
   readonly name: string;
-  readonly icon?: string;
+  readonly icon: string;
   isAvailable(): Promise<boolean>;
   connect(appName: string): Promise<Array<Account>>;
   disconnect(): Promise<void>;

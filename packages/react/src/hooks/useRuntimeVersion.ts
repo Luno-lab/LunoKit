@@ -1,7 +1,6 @@
 import {useLuno} from './useLuno';
 import type {RuntimeVersion} from '@polkadot/types/interfaces';
 import {useQuery, UseQueryResult} from '@tanstack/react-query';
-import {HexString} from '@polkadot/util/types'
 import {useMemo} from 'react'
 
 export type UseRuntimeVersionResult = UseQueryResult<RuntimeVersion, Error>;
