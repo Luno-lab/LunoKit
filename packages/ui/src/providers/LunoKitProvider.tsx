@@ -2,7 +2,7 @@ import React, { ReactNode, useState } from 'react';
 import { LunoProvider } from '@luno/react';
 import type { Config as LunoCoreConfig } from '@luno/core'
 import { QueryClient, QueryClientProvider, type QueryClientConfig } from '@tanstack/react-query';
-import { ModalProvider, useLunoModal } from './ModalContext';
+import { ModalProvider, useAccountModal, useChainModal, useConnectModal } from './ModalContext';
 import { ThemeProvider, ThemeMode } from './ThemeContext';
 
 export interface LunoKitProviderProps {
@@ -12,20 +12,6 @@ export interface LunoKitProviderProps {
   // theme?: ThemeMode | LunoTheme;
   theme?: ThemeMode;
 }
-
-const ModalRenderer: React.FC = () => {
-  const { activeModal, closeModal } = useLunoModal();
-
-  if (!activeModal) return null;
-
-  return (
-    <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'var(--luno-colors-background, white)', color: 'var(--luno-colors-text, black)', border: '1px solid black', padding: '20px', zIndex: 1000 }}>
-      Modal Type: {activeModal} (Placeholder) <button onClick={closeModal}>Close</button>
-      {/* TODO: Replace with actual modal components */}
-      {/*todo*/}
-    </div>
-  );
-};
 
 export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
   children,
@@ -41,10 +27,34 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
         <ThemeProvider initialTheme={theme}>
           <ModalProvider>
             {children}
-            <ModalRenderer />
+            {/*<RenderModals />*/}
           </ModalProvider>
         </ThemeProvider>
       </LunoProvider>
     </QueryClientProvider>
   );
 };
+
+
+const RenderModals: React.FC = () => {
+  const { isOpen: isConnectModalOpen, close: closeConnectModal } = useConnectModal();
+  const { isOpen: isAccountModalOpen, close: closeAccountModal } = useAccountModal();
+  const { isOpen: isChainModalOpen, close: closeChainModal } = useChainModal(); // 示例
+
+  return (
+    <>
+      <ConnectModal
+        open={isConnectModalOpen}
+        onClose={closeConnectModal}
+      />
+      <AccountDetailsModal
+        open={isAccountModalOpen}
+        onClose={closeAccountModal}
+      />
+      <ChainSelectorModal // 示例
+        open={isChainModalOpen}
+        onClose={closeChainModal}
+      />
+    </>
+  );
+}

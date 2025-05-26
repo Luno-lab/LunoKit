@@ -10,9 +10,6 @@
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "paths": {
-      "@/*": ["*"]
-    }
   },
   "include": ["src/**/*"],
   "references": [

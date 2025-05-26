@@ -10,9 +10,8 @@ export default defineConfig((options) => ( {
   dts: true,
   splitting: false,
   sourcemap: true,
-  clean: true,
+  clean: !options.watch, // 只在非 watch 模式下清理
   minify: !options.watch,
-
   external: [
     'react',
     'react-dom',

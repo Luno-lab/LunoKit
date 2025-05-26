@@ -1,4 +1,3 @@
-// packages/ui/.storybook/main.mjs
 /** @type { import('@storybook/react-vite').StorybookConfig } */
 const config = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
@@ -19,14 +18,14 @@ const config = {
   //   // Merge custom configuration into the default Vite config
   //   return config;
   // },
-  async viteFinal(config) {
-    // Merge custom configuration into the default Vite config
-    if (!config.resolve) config.resolve = {};
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': path.resolve(__dirname, '../src'), // 确保路径正确指向 packages/ui/src
-    };
-    return config;
-  },
+  // async viteFinal(config) {
+  //   // Merge custom configuration into the default Vite config
+  //   if (!config.resolve) config.resolve = {};
+  //   config.resolve.alias = {
+  //     ...config.resolve.alias,
+  //     '@': path.resolve(__dirname, '../src'), // 确保路径正确指向 packages/ui/src
+  //   };
+  //   return config;
+  // },
 };
 export default config;

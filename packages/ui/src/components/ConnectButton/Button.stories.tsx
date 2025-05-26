@@ -1,73 +1,177 @@
-// packages/ui/src/components/ConnectButton/ConnectButton.stories.tsx
 import type { Meta, StoryObj } from '@storybook/react';
-import { ConnectButton } from './ConnectButton';
+import React from 'react';
+import { ConnectButton } from './index';
+import { useLunoTheme } from '../../providers/ThemeContext';
 
 const meta: Meta<typeof ConnectButton> = {
   title: 'Components/ConnectButton',
   component: ConnectButton,
   parameters: {
-    layout: 'centered', // Centers the component in the Canvas tab
+    layout: 'centered',
   },
   tags: ['autodocs'],
   argTypes: {
     variant: {
       control: 'select',
-      options: ['default', 'destructive', 'outline', 'secondary', 'ghost', 'link'],
+      options: ['default', 'outline', 'ghost', 'secondary'],
     },
     size: {
       control: 'select',
-      options: ['default', 'sm', 'lg', 'icon'],
+      options: ['sm', 'md', 'lg'],
     },
-    children: {
+    label: {
       control: 'text',
     },
-    disabled: {
+    accountStatus: {
+      control: 'select',
+      options: ['full', 'address'],
+    },
+    chainStatus: {
+      control: 'select',
+      options: ['full', 'icon', 'name', 'none'],
+    },
+    showBalance: {
       control: 'boolean',
-    }
+    },
   },
 };
 
 export default meta;
 type Story = StoryObj<typeof ConnectButton>;
 
+// 普通的 stories
 export const Default: Story = {
   args: {
-    children: 'Button',
+    size: 'md',
+    label: 'Connect Wallet',
+  },
+};
+
+export const Small: Story = {
+  args: {
+    size: 'sm',
+    label: 'Connect Wallet',
+  },
+};
+
+export const Large: Story = {
+  args: {
+    size: 'lg',
+    label: 'Connect Wallet',
+  },
+};
+
+// 带主题切换的 story - 正确的写法
+export const WithThemeToggle: Story = {
+  render: (args) => {
+    // hooks 在 render 函数内部使用
+    const { themeMode, toggleTheme } = useLunoTheme();
+
+    return (
+      <div className="space-y-4">
+        {/* 主题切换按钮 */}
+        <div className="flex items-center justify-center">
+          <button
+            onClick={toggleTheme}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+          >
+            切换到 {themeMode === 'light' ? 'Dark' : 'Light'} 主题
+          </button>
+        </div>
+
+        {/* 显示当前主题 */}
+        <div className="text-center text-sm text-gray-600">
+          当前主题: {themeMode}
+        </div>
+
+        {/* ConnectButton */}
+        <div className="flex justify-center">
+          <ConnectButton {...args} />
+        </div>
+      </div>
+    );
+  },
+  args: {
     variant: 'default',
+    size: 'md',
+    label: 'Connect Wallet',
   },
 };
 
-export const Destructive: Story = {
+// 所有变体对比 - 正确的写法
+export const AllVariantsWithThemeToggle: Story = {
+  render: (args) => {
+    // hooks 在 render 函数内部使用
+    const { themeMode, toggleTheme } = useLunoTheme();
+
+    return (
+      <div className="space-y-6">
+        {/* 主题切换按钮 */}
+        <div className="flex items-center justify-center">
+          <button
+            onClick={toggleTheme}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+          >
+            切换到 {themeMode === 'light' ? 'Dark' : 'Light'} 主题
+          </button>
+        </div>
+
+        {/* 显示当前主题 */}
+        <div className="text-center text-sm">
+          当前主题: <strong>{themeMode}</strong>
+        </div>
+
+        {/* 所有变体 */}
+        <div className="grid grid-cols-2 gap-4 max-w-2xl">
+          <div className="space-y-2 text-center">
+            <h3 className="text-sm font-medium">sm</h3>
+            <ConnectButton {...args} size="sm" />
+          </div>
+          <div className="space-y-2 text-center">
+            <h3 className="text-sm font-medium">md</h3>
+            <ConnectButton {...args} size="md" />
+          </div>
+          <div className="space-y-2 text-center">
+            <h3 className="text-sm font-medium">lg</h3>
+            <ConnectButton {...args} size="lg" />
+          </div>
+
+        </div>
+      </div>
+    );
+  },
   args: {
-    variant: 'destructive',
-    children: 'Delete Item',
+    size: 'md',
+    label: 'Connect Wallet',
   },
 };
 
-export const Outline: Story = {
-  args: {
-    variant: 'outline',
-    children: 'Learn More',
-  },
-};
+export const CustomLabel: Story = {
+  render: (args) => {
+    const { themeMode, toggleTheme } = useLunoTheme();
 
-export const Secondary: Story = {
-  args: {
-    variant: 'secondary',
-    children: 'Secondary Action',
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-center">
+          <button
+            onClick={toggleTheme}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+          >
+            切换到 {themeMode === 'light' ? 'Dark' : 'Light'} 主题
+          </button>
+        </div>
+        <div className="text-center text-sm text-gray-600">
+          当前主题: {themeMode}
+        </div>
+        <div className="flex justify-center">
+          <ConnectButton {...args} />
+        </div>
+      </div>
+    );
   },
-};
-
-export const Ghost: Story = {
   args: {
-    variant: 'ghost',
-    children: 'Dismiss',
-  },
-};
-
-export const Link: Story = {
-  args: {
-    variant: 'link',
-    children: 'Visit Website',
+    variant: 'default',
+    size: 'md',
+    label: '连接钱包',
   },
 };
