@@ -32,7 +32,6 @@ export const useConnect = (): UseConnectResult => {
     },
   });
 
-  // 让开发者用 connect(connectorId, targetChainId) 这种方式调用
   const connectWrapper = useCallback(
     (connectorId: string, targetChainId?: string) =>
       mutateAsync({ connectorId, targetChainId }),

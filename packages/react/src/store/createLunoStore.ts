@@ -131,7 +131,6 @@ export const useLunoStore = create<LunoState>((set, get) => ({
         console.log(`[LunoStore] disconnect event from ${connector.name}`);
         if (get().activeConnector?.id === connector.id) {
           cleanupActiveConnectorListeners();
-          // Clear persisted connection info from storage
           try {
             config.storage.removeItem(PERSIST_KEY.LAST_CONNECTOR_ID);
             config.storage.removeItem(PERSIST_KEY.LAST_CHAIN_ID);
