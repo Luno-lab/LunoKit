@@ -89,7 +89,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
                   <p className={'pb-[10px] text-primary leading-primary text-modalFont font-700'}>
                     Opening {selectedConnector.name}...
                   </p>
-                  <p className={'text-secondaryFont text-secondary leading-secondary font-500 leading-'}>
+                  <p className={'text-secondaryFont text-secondary leading-secondary font-500'}>
                     Confirm connection in the extension
                   </p>
                 </>
