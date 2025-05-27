@@ -1,5 +1,6 @@
 import React, {createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useState} from 'react';
 import {ConnectionStatus, useStatus} from '@luno/react'
+import {ConnectModal} from '../components'
 
 function useModalVisibility() {
   const [isOpen, setIsOpen] = useState(false);
@@ -69,6 +70,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
   return (
     <ModalContext.Provider value={contextValue}>
       {children}
+      <ConnectModal />
     </ModalContext.Provider>
   );
 };

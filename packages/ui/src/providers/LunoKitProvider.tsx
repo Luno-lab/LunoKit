@@ -4,10 +4,12 @@ import type { Config as LunoCoreConfig } from '@luno/core'
 import { QueryClient, QueryClientProvider, type QueryClientConfig } from '@tanstack/react-query';
 import { ModalProvider, useAccountModal, useChainModal, useConnectModal } from './ModalContext';
 import { ThemeProvider, ThemeMode } from './ThemeContext';
+import { ConnectModal } from '../components'
+import { ModalSize } from '../components/Dialog'
 
 export interface LunoKitProviderProps {
   children: ReactNode;
-  config: LunoCoreConfig;
+  config: LunoCoreConfig & { modalSize?: ModalSize };
   queryClientConfig?: QueryClientConfig;
   // theme?: ThemeMode | LunoTheme;
   theme?: ThemeMode;
@@ -27,7 +29,7 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
         <ThemeProvider initialTheme={theme}>
           <ModalProvider>
             {children}
-            {/*<RenderModals />*/}
+            <RenderModals modalSize={config.modalSize} />
           </ModalProvider>
         </ThemeProvider>
       </LunoProvider>
@@ -36,25 +38,21 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
 };
 
 
-const RenderModals: React.FC = () => {
-  const { isOpen: isConnectModalOpen, close: closeConnectModal } = useConnectModal();
+const RenderModals: React.FC = ({ modalSize }: { modalSize?: ModalSize }) => {
   const { isOpen: isAccountModalOpen, close: closeAccountModal } = useAccountModal();
   const { isOpen: isChainModalOpen, close: closeChainModal } = useChainModal(); // 示例
 
   return (
     <>
-      <ConnectModal
-        open={isConnectModalOpen}
-        onClose={closeConnectModal}
-      />
-      <AccountDetailsModal
-        open={isAccountModalOpen}
-        onClose={closeAccountModal}
-      />
-      <ChainSelectorModal // 示例
-        open={isChainModalOpen}
-        onClose={closeChainModal}
-      />
+      <ConnectModal size={modalSize} />
+      {/*<AccountDetailsModal*/}
+      {/*  open={isAccountModalOpen}*/}
+      {/*  onClose={closeAccountModal}*/}
+      {/*/>*/}
+      {/*<ChainSelectorModal // 示例*/}
+      {/*  open={isChainModalOpen}*/}
+      {/*  onClose={closeChainModal}*/}
+      {/*/>*/}
     </>
   );
 }

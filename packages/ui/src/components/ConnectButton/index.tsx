@@ -84,7 +84,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
   return (
     <div
       className={cs(
-        'text-primaryFont flex items-center bg-transparent font-700',
+        'text-modalFont flex items-center bg-transparent font-700',
         sizeConfig.connected,
         className
       )}
@@ -96,7 +96,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
       {chainStatus !== 'none' && (
         <div className={cs(
           'flex items-center rounded-sm cursor-pointer',
-          'bg-[--color-chainButton] shadow-[--shadow-accountButton]',
+          'bg-chainButton shadow-accountButton',
           sizeConfig.chain,
           transitionClassName,
         )}>
@@ -123,7 +123,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
 
 
       <div className={cs(
-        'flex items-center cursor-pointer rounded-sm py-1px bg-[--color-chainButton]',
+        'flex items-center cursor-pointer rounded-sm py-1px bg-chainButton shadow-accountButton',
         transitionClassName,
       )}>
 
@@ -137,7 +137,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
         )}
 
         <div className={cs(
-          "flex items-center bg-[--color-deepBackground] rounded-sm",
+          "flex items-center bg-deepBackground rounded-sm m-[2px]",
           sizeConfig.account,
         )}>
           {accountStatus === 'full' && (

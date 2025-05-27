@@ -14,12 +14,15 @@
   --color-accentFont: #8A6EAC;
   --color-secondaryFont: rgba(60, 66, 66, 0.6);
   --color-modal-bg: white;
-  --color-connector-item-bg: #F0F0F0;
+  --color-connectorItemBackground: #F0F0F0;
   --color-connectButtonBackground: #0E76FD;
   --shadow-connectButton: 0px 4px 12px rgba(0, 0, 0, 0.1);
-  --shadow-accountButton: 0px 5px 10px 0px rgba(0,0,0,0.1);
+  --shadow-accountButton: 0px 4px 12px rgba(0, 0, 0, 0.1);
   --color-deepBackground: #f6f6f6;
   --color-chainButton: #FFFFFF;
+
+  --color-modalFont: #25292E;
+  --color-modalLine: rgba(0, 0, 0, 0.06);
 }
 
 /* Dark Mode 变量 */
@@ -28,12 +31,15 @@
   --color-accentFont: #8A6EAC;
   --color-secondaryFont: rgba(255,255,255,0.5);
   --color-modal-bg: #3A3B43;
-  --color-connector-item-bg: #4A4B51;
+  --color-connectorItemBackground: #4A4B51;
   --color-connectButtonBackground: #4A4B51;
   --shadow-connectButton: 0px 4px 12px rgba(0, 0, 0, 0.1);
   --shadow-accountButton: 0px 5px 10px 0px rgba(0,0,0,0.1);
   --color-deepBackground: #3A3B43;
   --color-chainButton: #4A4B51;
+
+  --color-modalFont: #FFFFFF;
+  --color-modalLine: rgba(74,75,88,0.75);
 }
 
 @theme {
@@ -70,11 +76,48 @@
   --color-accentFont: var(--color-accentFont);
   --color-secondaryFont: var(--color-secondaryFont);
   --color-modal-bg: var(--color-modal-bg);
-  --color-connector-item-bg: var(--color-connector-item-bg);
+  --color-connectorItemBackground: var(--color-connectorItemBackground);
   --color-connectButtonBackground: var(--color-connectButtonBackground);
 
   --shadow-connectButton: var(--shadow-connectButton);
   --shadow-accountButton: var(--shadow-accountButton);
   --color-deepBackground: var(--color-deepBackground);
   --color-chainButton: var(--color-chainButton);
+
+  --color-modalBackdrop: rgba(0, 0, 0, 0.3);
+
+  --color-modalFont: var(--color-modalFont);
+  --color-modalLine: var(--color-modalLine);
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    top: 80vh; /* 从屏幕底部开始 */
+  }
+  to {
+    opacity: 1;
+    top: 50%; /* 到屏幕中心 */
+  }
+}
+
+@keyframes dialog-out {
+  from {
+    opacity: 1;
+    top: 50%; /* 从屏幕中心 */
+  }
+  to {
+    opacity: 0;
+    top: 80vh; /* 退回到底部 */
+  }
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes overlay-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
