@@ -88,7 +88,6 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
         sizeConfig.connected,
         className
       )}
-      onClick={() => openAccountModal?.()}
       role="button"
       tabIndex={0}
       aria-label="Account details"
@@ -122,10 +121,13 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
       )}
 
 
-      <div className={cs(
+      <div
+        onClick={() => openAccountModal?.()}
+        className={cs(
         'flex items-center cursor-pointer rounded-sm py-1px bg-chainButton shadow-accountButton',
         transitionClassName,
-      )}>
+        )}
+      >
 
         {showBalance && (
           <div className={sizeConfig.balance}>

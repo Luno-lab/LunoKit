@@ -1,4 +1,4 @@
-// export * from './AccountModal'
+export * from './AccountDetailsModal'
 // export * from './ChainModal'
 export * from './ConnectModal'
 

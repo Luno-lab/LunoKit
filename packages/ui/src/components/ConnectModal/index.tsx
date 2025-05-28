@@ -38,7 +38,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
             </DialogTitle>
             {!isWide && (
               <DialogClose className={'z-[10] cursor-pointer'}>
-                <Close className={'w-[28px] h-[28px]'}/>
+                <Close className={'w-[24px] h-[24px]'}/>
               </DialogClose>
             )}
           </div>
@@ -74,7 +74,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
               <div className={'flex items-center justify-between'}>
                 <div/>
                 <DialogClose className={'z-10 cursor-pointer'}>
-                  <Close className={'w-[28px] h-[28px]'}/>
+                  <Close className={'w-[24px] h-[24px]'}/>
                 </DialogClose>
               </div>
             </div>

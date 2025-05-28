@@ -4,7 +4,7 @@ import type { Config as LunoCoreConfig } from '@luno/core'
 import { QueryClient, QueryClientProvider, type QueryClientConfig } from '@tanstack/react-query';
 import { ModalProvider, useAccountModal, useChainModal, useConnectModal } from './ModalContext';
 import { ThemeProvider, ThemeMode } from './ThemeContext';
-import { ConnectModal } from '../components'
+import { ConnectModal, AccountDetailsModal } from '../components'
 import { ModalSize } from '../components/Dialog'
 
 export interface LunoKitProviderProps {
@@ -45,6 +45,7 @@ const RenderModals: React.FC = ({ modalSize }: { modalSize?: ModalSize }) => {
   return (
     <>
       <ConnectModal size={modalSize} />
+      <AccountDetailsModal />
       {/*<AccountDetailsModal*/}
       {/*  open={isAccountModalOpen}*/}
       {/*  onClose={closeAccountModal}*/}
