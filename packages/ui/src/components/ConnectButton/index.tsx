@@ -55,6 +55,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
     balance,
     openConnectModal,
     openAccountModal,
+    openChainModal,
     chainIconUrl,
     chainName,
     currentChain,
@@ -93,12 +94,14 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
       aria-label="Account details"
     >
       {chainStatus !== 'none' && (
-        <div className={cs(
-          'flex items-center rounded-sm cursor-pointer',
-          'bg-chainButton shadow-accountButton',
-          sizeConfig.chain,
-          transitionClassName,
-        )}>
+        <div
+          onClick={() => openChainModal?.()}
+          className={cs(
+            'flex items-center rounded-sm cursor-pointer',
+            'bg-chainButton shadow-accountButton',
+            sizeConfig.chain,
+            transitionClassName,
+          )}>
           <div className={cs(sizeConfig.icon, 'overflow-hidden rounded-full')}>
             {(chainStatus === 'full' || chainStatus === 'icon')
               ? chainIconUrl

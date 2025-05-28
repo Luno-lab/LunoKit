@@ -15,6 +15,7 @@ const gebSignet: Chain = {
   nativeCurrency: { name: 'GEB', symbol: 'GEB', decimals: 8 },
   rpcUrls: { webSocket: ['wss://signet.geb.network/ws'] },
   ss58Format: 44,
+  testnet: true,
 };
 
 const supportedChains: readonly Chain[] = [polkadot, gebSignet];
