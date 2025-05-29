@@ -1,27 +1,30 @@
 import {create} from 'zustand';
-import type {LunoState} from '../types'; // Adjust path as needed
-import {ConnectionStatus} from '../types'; // Adjust path as needed
+import type {LunoState} from '../types';
+import {ConnectionStatus} from '../types';
 import type {Account, LunoStorage} from '@luno/core';
 import {PERSIST_KEY} from '../constants';
 
-// --- Event Listener Management ---
-// This array exists in the closure of the Zustand `create` function,
-// holding unsubscribe functions for the currently active connector.
+interface StoredAccountInfo {
+  publicKey?: string;
+  address: string;
+  name?: string;
+  source?: string;
+}
+
 let activeConnectorUnsubscribeFunctions: (() => void)[] = [];
 
 const cleanupActiveConnectorListeners = () => {
   activeConnectorUnsubscribeFunctions.forEach(unsub => {
     try {
-      unsub(); // Execute unsubscribe
+      unsub();
     } catch (e) {
       console.warn('[LunoStore] Error during listener cleanup:', e);
     }
   });
-  activeConnectorUnsubscribeFunctions = []; // Clear the array
+  activeConnectorUnsubscribeFunctions = [];
 };
 
 export const useLunoStore = create<LunoState>((set, get) => ({
-  // --- Initial State ---
   config: undefined,
   status: ConnectionStatus.Disconnected,
   activeConnector: undefined,
@@ -70,14 +73,12 @@ export const useLunoStore = create<LunoState>((set, get) => ({
   setAccount: (accountOrPublicKey) => {
     if (!accountOrPublicKey) return
 
-    const accounts = get().accounts;
+    const { accounts, config } = get(); // 添加config
 
     const targetPublicKey =
       typeof accountOrPublicKey === 'string'
         ? accountOrPublicKey.toLowerCase()
         : accountOrPublicKey.publicKey?.toLowerCase()
-    console.log('targetPublicKey', targetPublicKey)
-    console.log('accounts', accounts)
 
     const nextAccount = accounts.find(acc => acc.publicKey?.toLowerCase() === targetPublicKey);
 
@@ -87,6 +88,21 @@ export const useLunoStore = create<LunoState>((set, get) => ({
     }
 
     set({ account: nextAccount });
+
+    if (config) {
+      try {
+        const accountInfo: StoredAccountInfo = {
+          publicKey: nextAccount.publicKey,
+          address: nextAccount.address,
+          name: nextAccount.name,
+          source: nextAccount.source,
+        };
+        config.storage.setItem(PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO, JSON.stringify(accountInfo));
+        console.log(`[LunoStore] Persisted selected account: ${nextAccount.address}`);
+      } catch (e) {
+        console.error('[LunoStore] Failed to persist selected account:', e);
+      }
+    }
   },
 
   connect: async (connectorId, targetChainId) => {
@@ -117,14 +133,35 @@ export const useLunoStore = create<LunoState>((set, get) => ({
 
 
     try {
-      const handleAccountsChanged = (newAccounts: Account[]) => {
+      const handleAccountsChanged = async (newAccounts: Account[]) => {
         console.log(`[LunoStore] accountsChanged event from ${connector.name}:`, newAccounts);
         newAccounts.forEach(acc => {
           if (!acc.publicKey) {
             console.warn(`[LunoStore] Account ${acc.address} (from ${connector.name}) is missing publicKey.`);
           }
         });
-        set({accounts: newAccounts, account: newAccounts[0] });
+
+        let selectedAccount = newAccounts[0]; // 默认第一个
+
+        try {
+          const storedAccountJson = await config.storage.getItem(PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO);
+          if (storedAccountJson) {
+            const storedAccount: StoredAccountInfo = JSON.parse(storedAccountJson);
+
+            const restoredAccount = newAccounts.find(acc =>
+              (storedAccount.publicKey && acc.publicKey?.toLowerCase() === storedAccount.publicKey.toLowerCase()) ||
+              acc.address.toLowerCase() === storedAccount.address.toLowerCase()
+            );
+
+            if (restoredAccount) {
+              selectedAccount = restoredAccount;
+            }
+          }
+        } catch (e) {
+          console.warn('[LunoStore] Failed to restore account during accountsChanged:', e);
+        }
+
+        set({accounts: newAccounts, account: selectedAccount });
       };
 
       const handleDisconnect = () => {
@@ -167,10 +204,39 @@ export const useLunoStore = create<LunoState>((set, get) => ({
         activeConnector: connector,
         accounts: accountsFromWallet,
         status: ConnectionStatus.Connected,
-        account: accountsFromWallet[0],
       });
 
-      // Persist the connected connector ID
+      let selectedAccount = accountsFromWallet[0];
+
+      try {
+        const storedAccountJson = await config.storage.getItem(PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO);
+        if (storedAccountJson) {
+          const storedAccount: StoredAccountInfo = JSON.parse(storedAccountJson);
+
+          let restoredAccount = accountsFromWallet.find(acc =>
+            storedAccount.publicKey &&
+            acc.publicKey?.toLowerCase() === storedAccount.publicKey.toLowerCase()
+          );
+
+          if (!restoredAccount) {
+            restoredAccount = accountsFromWallet.find(acc =>
+              acc.address.toLowerCase() === storedAccount.address.toLowerCase()
+            );
+          }
+
+          if (restoredAccount) {
+            selectedAccount = restoredAccount;
+            console.log(`[LunoStore] Restored previously selected account: ${selectedAccount.address}`);
+          } else {
+            console.log('[LunoStore] Previously selected account not found in current accounts list, using first account');
+          }
+        }
+      } catch (e) {
+        console.warn('[LunoStore] Failed to restore selected account from storage:', e);
+      }
+
+      set({ account: selectedAccount });
+
       try {
         config.storage.setItem(PERSIST_KEY.LAST_CONNECTOR_ID, connector.id);
         console.log(`[LunoStore] Persisted connectorId: ${connector.id}`);
@@ -234,6 +300,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
           console.log('[LunoStore] Attempting to remove persisted connection info due to user disconnect action...');
           await config.storage.removeItem(PERSIST_KEY.LAST_CONNECTOR_ID);
           await config.storage.removeItem(PERSIST_KEY.LAST_CHAIN_ID);
+          await config.storage.removeItem(PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO);
           console.log('[LunoStore] Removed persisted connection info from storage.');
         } catch (e) {
           console.error('[LunoStore] Failed to remove connection info from storage during disconnect action:', e);
