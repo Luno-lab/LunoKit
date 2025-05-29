@@ -11,6 +11,8 @@
 [![react](https://img.shields.io/badge/React-18+-black?style=flat&colorA=000000&colorB=000000&logo=react)](https://reactjs.org/)
 [![polkadot](https://img.shields.io/badge/Polkadot-Ready-black?style=flat&colorA=000000&colorB=000000&logo=polkadot)](https://polkadot.network/)
 
+**The best way to connect Polkadot wallets 🚀**
+
 </div>
 
 <div align="center">
@@ -19,165 +21,202 @@
 
 </div>
 
-A modern Polkadot wallet connection library that provides a complete wallet integration solution for React applications.
+Luno is a React library that makes it easy to add Polkadot wallet connection to your dapp.
 
-## ✨ Features
+* 🎨 **Beautiful UI components** - Ready-to-use wallet connection button
+* ✅ **Easily customizable** - Flexible theming and styling options
+* 🔌 **Multi-wallet support** - Support for major Polkadot ecosystem wallets
+* 🌐 **Multi-chain ready** - Polkadot, Kusama and parachain support
+* 🦄 **Built for React** - TypeScript-first with modern React patterns
 
-- 🎨 **Ready-to-use UI Components** - Beautiful wallet connection button with built-in account and chain management
-- 🔌 **Multi-wallet Support** - Support for mainstream Polkadot ecosystem wallets
-- ⚛️ **React First** - Hooks API designed specifically for React applications
-- 🌐 **Multi-chain Support** - Support for Polkadot, Kusama and other ecosystem chains
-- 💾 **State Persistence** - Automatically save connection state and account selection
-- 🎯 **TypeScript** - Full type safety support
-- 📱 **Responsive Design** - Mobile-friendly UI components
+## Installation & Usage
 
-## 📦 Package Structure
-
-- `@luno/ui` - UI component library (includes all dependencies, ready to use)
-- `@luno/react` - React Hooks and Provider (automatically imported via ui package)
-- `@luno/core` - Core connectors and utilities (automatically imported via ui package)
-
-## 🚀 Quick Start
-
-### 1. Installation
-
+### UI Components Only
 ```bash
-# Only need to install one package
-pnpm add @luno/ui
+pnpm add @luno/ui @tanstack/react-query @polkadot/api @polkadot/types @polkadot/util
 ```
 
-### 2. Create Configuration
+### With React Hooks
+```bash
+# If you want to use React hooks directly
+pnpm add @luno/react @luno/ui @tanstack/react-query @polkadot/api @polkadot/types @polkadot/util
+```
+
+## Quick start
+
+### Basic setup
 
 ```tsx
-import { createConfig, polkadot, kusama, wsProvider } from '@luno/core'
+import { LunoKitProvider, ConnectButton } from '@luno/ui'
+import { createConfig, polkadot, kusama, wsProvider, polkadotjs, subwallet } from '@luno/core'
 import type { Config } from '@luno/core'
 
-const lunoConfig: Config = createConfig({
+const config: Config = createConfig({
   appName: 'My Polkadot App',
   chains: [polkadot, kusama],
-  connectors: connectors, // Your connector array
+  connectors: [polkadotjs(), subwallet()],
   autoConnect: true,
   transports: {
     [polkadot.genesisHash]: wsProvider('wss://polkadot.api.onfinality.io/public-ws'),
     [kusama.genesisHash]: wsProvider('wss://kusama-rpc.polkadot.io'),
   }
 })
-```
-
-### 3. Setup Provider
-
-```tsx
-import { LunoKitProvider } from '@luno/ui'
 
 function App() {
   return (
-    <LunoKitProvider config={lunoConfig}>
-      <YourApp />
+    <LunoKitProvider config={config}>
+      <ConnectButton />
     </LunoKitProvider>
   )
 }
 ```
 
-### 4. Use ConnectButton
+### Using with React Hooks
 
 ```tsx
-import { ConnectButton } from '@luno/ui'
-
-function YourApp() {
-  return (
-    <div>
-      <h1>My Polkadot App</h1>
-      <ConnectButton />
-    </div>
-  )
-}
-```
-
-### 5. Use React Hooks
-
-```tsx
-import { useAccount, useAccounts, useBalance } from '@luno/react'
+import { LunoKitProvider } from '@luno/ui'
+import { useAccount, useBalance, useConnect } from '@luno/react'
 
 function WalletInfo() {
   const { account, isConnected } = useAccount()
-  const { accounts } = useAccounts()
   const { balance } = useBalance()
+  const { connect, connectors } = useConnect()
 
   if (!isConnected) {
-    return <div>Please connect wallet</div>
+    return (
+      <button onClick={() => connect(connector[0].Id)}>
+        Connect Wallet
+      </button>
+    )
   }
 
   return (
     <div>
-      <div>Current Account: {account?.name}</div>
+      <div>Account: {account?.name}</div>
       <div>Address: {account?.address}</div>
       <div>Transferable Balance: {balance?.formattedTransferable}</div>
       <div>Total Balance: {balance?.formattedTotal}</div>
     </div>
   )
 }
+
+function App() {
+  return (
+    <LunoKitProvider config={config}>
+      <WalletInfo />
+    </LunoKitProvider>
+  )
+}
 ```
 
-## 🎨 UI Components
+## Documentation
 
-### ConnectButton
+For full documentation and examples, visit [our documentation site](#) (coming soon).
 
-`ConnectButton` is the only UI component you need to use directly. It includes a complete wallet connection flow:
+### Try it out
 
-- Wallet connection/disconnection
-- Account selection and switching
-- Chain network selection
-- Account details display
+You can try out Luno with these CodeSandbox examples:
 
-```tsx
-import { ConnectButton } from '@luno/ui'
+* [with Create React App](#) (coming soon)
+* [with Next.js](#) (coming soon)
+* [with Vite](#) (coming soon)
 
-// Basic usage
-<ConnectButton />
+## Examples
 
-// Custom styling
-<ConnectButton className="my-custom-class" />
-```
+The following examples are provided in the `examples` folder:
 
-## 📖 React Hooks API
+* `with-next` - Next.js integration
+* `with-vite` - Vite integration
+* `with-cra` - Create React App integration
 
-### Account Related
+### Running examples
 
-- `useAccount()` - Get current account information
-- `useAccounts()` - Get all account list
-- `useConnect()` - Connect wallet
-- `useDisconnect()` - Disconnect wallet
-
-### Chain Related
-
-- `useChain()` - Get current chain information
-- `useSwitchChain()` - Switch chain
-
-### Balance Related
-
-- `useBalance()` - Get account balance
-    - `balance.formattedTransferable` - Transferable balance
-    - `balance.formattedTotal` - Total balance
-
-## 🛠️ Development
+To run an example locally:
 
 ```bash
-# Clone repository
-git clone https://github.com/Luno-lab/LunoKit.git
-
 # Install dependencies
 pnpm install
 
-# Start development
+# Go to example directory
+cd examples/with-next
+
+# Start development server
 pnpm dev
-
-# Build
-pnpm build
-
-# Run storybook
-pnpm --filter @luno/ui storybook
 ```
 
-## 📄 License
+## API Reference
 
-Apache-2.0
+### UI Components (`@luno/ui`)
+
+* `<ConnectButton />` - Main wallet connection component
+* `<LunoKitProvider />` - Context provider for the app
+
+### React Hooks (`@luno/react`)
+
+> **Note:** To use these hooks directly, you need to install `@luno/react` separately.
+
+#### Account Management
+* `useAccount()` - Get current account information
+* `useAccounts()` - Get all connected accounts
+* `useActiveConnector()` - Get currently active connector
+
+#### Connection Management
+* `useConnect()` - Connect to wallets
+* `useConnectors()` - Get available connectors
+* `useDisconnect()` - Disconnect from wallet
+* `useStatus()` - Get connection status
+
+#### Chain & Network
+* `useChain()` - Get current chain information
+* `useChains()` - Get all available chains
+* `useSwitchChain()` - Switch between chains
+* `useGenesisHash()` - Get chain genesis hash
+* `useSs58Format()` - Get chain SS58 format
+
+#### Blockchain Data
+* `useApi()` - Get Polkadot API instance
+* `useBalance()` - Get account balance
+* `useBlockNumber()` - Get current block number
+* `useRuntimeVersion()` - Get runtime version
+* `useSubscription()` - Subscribe to blockchain data
+
+#### Transactions & Signing
+* `useSendTransaction()` - Send transactions
+* `useSignMessage()` - Sign messages
+* `useLunoMutation()` - Handle async mutations
+
+#### Configuration & Utils
+* `useConfig()` - Get Luno configuration
+* `useLuno()` - Get Luno store instance
+
+## Package Structure
+
+- `@luno/ui` - UI component library (includes all dependencies, ready to use)
+- `@luno/react` - React Hooks and Provider
+- `@luno/core` - Core connectors and utilities
+
+## Contributing
+
+Please read our [contributing guidelines](CONTRIBUTING.md) before submitting PRs.
+
+## License
+
+Licensed under the Apache 2.0 License, Copyright © 2024-present Luno Labs.
+
+See [LICENSE](LICENSE) for more information.
+
+## About
+
+The best way to connect Polkadot wallets 🚀
+
+### Keywords
+
+polkadot  substrate  react  ui  components  luno  wallet  dapp  web3
+
+### Resources
+
+Readme
+
+### License
+
+Apache 2.0 license
