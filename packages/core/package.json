@@ -38,7 +38,8 @@
     "dev": "tsup --watch",
     "lint": "eslint src",
     "test": "vitest",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "generate:logos": "node scripts/convertLogos.mjs"
   },
   "dependencies": {
     "@polkadot/api": "^15.9.2",

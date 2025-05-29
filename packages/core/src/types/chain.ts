@@ -26,5 +26,5 @@ export interface Chain {
 
   meta?: Record<string, any>;
 
-  chainIconUrl?: string
+  chainIconUrl: string
 }
