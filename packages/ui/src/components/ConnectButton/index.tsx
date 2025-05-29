@@ -69,7 +69,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
         type="button"
         onClick={() => openConnectModal?.()}
         className={cs(
-          'cursor-pointer font-[700] inline-flex items-center justify-center border border-transparent rounded-sm focus:outline-none',
+          'cursor-pointer font-[600] inline-flex items-center justify-center border border-transparent rounded-sm focus:outline-none',
           'text-primaryFont bg-connectButtonBackground shadow-connectButton active:scale-[0.95]',
           transitionClassName,
           sizes[size].button,
@@ -86,7 +86,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
   return (
     <div
       className={cs(
-        'text-modalFont flex items-center bg-transparent font-[700]',
+        'text-modalFont flex items-center bg-transparent font-[600]',
         sizeConfig.connected,
         className
       )}

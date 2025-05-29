@@ -19,6 +19,6 @@ export default defineConfig((options) => ( {
   loader: {
     '.ttf': 'file',
   },
-  publicDir: './src/assets', // 如果需要的话
+  publicDir: './src/assets/fonts',
   ...options,
 }));
