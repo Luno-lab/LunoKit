@@ -3,6 +3,7 @@ import type {LunoState} from '../types';
 import {ConnectionStatus} from '../types';
 import type {Account, LunoStorage} from '@luno/core';
 import {PERSIST_KEY} from '../constants';
+import { isSameAddress } from '@luno/core/utils';
 
 interface StoredAccountInfo {
   publicKey?: string;
@@ -141,7 +142,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
           }
         });
 
-        let selectedAccount = newAccounts[0]; // 默认第一个
+        let selectedAccount = newAccounts[0];
 
         try {
           const storedAccountJson = await config.storage.getItem(PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO);
@@ -150,7 +151,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
 
             const restoredAccount = newAccounts.find(acc =>
               (storedAccount.publicKey && acc.publicKey?.toLowerCase() === storedAccount.publicKey.toLowerCase()) ||
-              acc.address.toLowerCase() === storedAccount.address.toLowerCase()
+              isSameAddress(acc.address, storedAccount.address)
             );
 
             if (restoredAccount) {
@@ -213,16 +214,10 @@ export const useLunoStore = create<LunoState>((set, get) => ({
         if (storedAccountJson) {
           const storedAccount: StoredAccountInfo = JSON.parse(storedAccountJson);
 
-          let restoredAccount = accountsFromWallet.find(acc =>
-            storedAccount.publicKey &&
-            acc.publicKey?.toLowerCase() === storedAccount.publicKey.toLowerCase()
+          const restoredAccount = accountsFromWallet.find(acc =>
+            (storedAccount.publicKey && acc.publicKey?.toLowerCase() === storedAccount.publicKey.toLowerCase()) ||
+            isSameAddress(acc.address, storedAccount.address)
           );
-
-          if (!restoredAccount) {
-            restoredAccount = accountsFromWallet.find(acc =>
-              acc.address.toLowerCase() === storedAccount.address.toLowerCase()
-            );
-          }
 
           if (restoredAccount) {
             selectedAccount = restoredAccount;
