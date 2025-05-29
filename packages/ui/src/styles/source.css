@@ -4,11 +4,17 @@
   box-sizing: border-box;
 }
 
-/* 定义自定义变体 */
+@font-face {
+  font-family: 'roboto-mono';
+  src: url('/src/assets/fonts/RobotoMono-VF.ttf') format('truetype-variations');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant light (&:where([data-theme=light], [data-theme=light] *));
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
-/* Light Mode 变量 */
 [data-theme='light'] {
   --color-primaryFont: #FFFFFF;
   --color-accentFont: #8A6EAC;
@@ -47,8 +53,10 @@
 }
 
 @theme {
+  --font-base: roboto-mono,ui-rounded,SF Pro Rounded,system-ui,Helvetica Neue,Arial,Helvetica,sans-serif;
+
   --spacing-1: 4px;
-  --spacing-1\.5: 6px;  /* 6px */
+  --spacing-1\.5: 6px;
   --spacing-2: 8px;
   --spacing-2\.5: 10px;
   --spacing-3: 12px;
@@ -56,7 +64,6 @@
   --spacing-5: 20px;
   --spacing-6: 24px;
 
-  /* 文字尺寸和行高 */
   --text-sm: 14px;
   --leading-sm: 18px;
   --text-primary: 16px;
@@ -70,12 +77,10 @@
   --text-accent: 12px;
   --leading-accent: 18px;
 
-  /* 阴影和圆角 */
   --shadow-primary: 0px 10px 20px 0px rgba(0,0,0,0.1);
   --radius-primary: 6px;
   --radius-sm: 4px;
 
-  /* 主题颜色 - 引用上面定义的变量 */
   --color-primaryFont: var(--color-primaryFont);
   --color-accentFont: var(--color-accentFont);
   --color-secondaryFont: var(--color-secondaryFont);
@@ -99,22 +104,22 @@
 @keyframes dialog-in {
   from {
     opacity: 0;
-    top: 80vh; /* 从屏幕底部开始 */
+    top: 80vh;
   }
   to {
     opacity: 1;
-    top: 50%; /* 到屏幕中心 */
+    top: 50%;
   }
 }
 
 @keyframes dialog-out {
   from {
     opacity: 1;
-    top: 50%; /* 从屏幕中心 */
+    top: 50%;
   }
   to {
     opacity: 0;
-    top: 80vh; /* 退回到底部 */
+    top: 80vh;
   }
 }
 
@@ -149,3 +154,13 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-secondaryFont);
 }
+
+.chain-icon-text {
+  font-size: calc(100% * 0.9);
+  line-height: 1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -52%);
+}
+

@@ -7,6 +7,7 @@ import { useAccountModal } from '../../providers/ModalContext';
 import type { Account } from '@luno/core';
 import {Close, Copy, Disconnect, Switch, Back} from '../../assets/icons'
 import {formatAddress} from '@luno/core'
+import {ChainIcon} from '../ChainIcon'
 
 // 你需要创建的图标组件
 // import { Close, SwitchAccount, Disconnect, ChevronRight, Copy, Check } from '../../assets/icons';
@@ -43,13 +44,13 @@ export const AccountDetailsModal: React.FC = () => {
     return [
       { key: 'Chain Name', content: (
           <>
-            <div className={'w-[24px] h-[24px] rounded-full overflow-hidden'}>
-              {chain?.chainIconUrl
-                ? <img className={'w-full h-full'} src={chain?.chainIconUrl} alt=""/>
-                : <div className={'w-full h-full'}/>}
-            </div>
+            <ChainIcon
+              className={'w-[24px] h-[24px]'}
+              chainIconUrl={chain?.chainIconUrl}
+              chainName={chain?.name}
+            />
 
-            <span className="font-700 text-primary text-modalFont">{chain?.name || 'Polkadot'}</span>
+            <span className="text-primary text-modalFont">{chain?.name || 'Polkadot'}</span>
           </>
         )
       },
@@ -57,7 +58,7 @@ export const AccountDetailsModal: React.FC = () => {
         content: (
           <>
             <Switch className="w-[16px] h-[16px]"/>
-            <span className="font-700 text-primary text-modalFont">Switch Account</span>
+            <span className="text-primary text-modalFont">Switch Account</span>
           </>
         ),
         onClick: () => setCurrentView(AccountModalView.switchAccount)
@@ -82,7 +83,7 @@ export const AccountDetailsModal: React.FC = () => {
             <div className="flex flex-col items-start gap-[8px] w-full">
 
             <div className="flex items-center gap-[6px] w-full">
-                <span className="text-primary leading-primary text-modalFont font-600">
+                <span className="text-primary leading-primary text-modalFont font-[600]">
                   {shortAddress(address)}
                 </span>
                 <Copy
@@ -90,7 +91,7 @@ export const AccountDetailsModal: React.FC = () => {
                   onClick={() => address && copyToClipboard(address)}/>
               </div>
 
-              <div className="text-secondaryFont leading-secondary text-secondary">
+              <div className="text-secondaryFont leading-secondary text-secondary font-[500]">
                 {balance?.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
               </div>
             </div>
@@ -99,7 +100,7 @@ export const AccountDetailsModal: React.FC = () => {
               <div className={'flex items-center justify-center max-w-[16px] cursor-pointer'} onClick={onBack}>
                 <Back className={'w-full'}/>
               </div>
-              <DialogTitle className="text-title leading-title text-modalFont font-800">
+              <DialogTitle className="text-title leading-title text-modalFont font-[800]">
                 {'Switch Accounts'}
               </DialogTitle>
             </>
@@ -122,7 +123,7 @@ export const AccountDetailsModal: React.FC = () => {
 
             <SelectItem onClick={handleDisconnect}>
               <Disconnect className="w-[16px] h-[16px]" />
-              <span className="font-700 text-primary text-modalFont">Disconnect</span>
+              <span className="font-[600] text-primary text-modalFont">Disconnect</span>
             </SelectItem>
           </div>
         ) : (
@@ -144,7 +145,7 @@ const SelectItem = ({ children, onClick }: { children: React.ReactNode; onClick?
       className={cs(
       'cursor-pointer bg-connectorItemBackground p-[14px] w-full rounded-sm border-none',
       'hover:opacity-90 transition-transform active:scale-[0.95]',
-      'text-left flex items-center gap-[8px]'
+      'text-left flex items-center gap-[8px] font-[600]'
     )}>
       {children}
     </div>
@@ -172,10 +173,10 @@ const AccountItem = ({ isSelected, account, selectAccount }: { isSelected: boole
           {/*//todo*/}
         </div>
         <div className="flex flex-col items-start">
-          <span className="font-700 text-secondary leading-secondary text-modalFont">
+          <span className="font-[700] text-secondary leading-secondary text-modalFont">
             {account.name || formatAddress(address)}
           </span>
-          <span className="text-sm text-secondaryFont text-accent leading-accent">
+          <span className="text-sm text-secondaryFont text-accent leading-accent font-[500]">
             {balance?.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
           </span>
         </div>

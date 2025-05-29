@@ -1,5 +1,4 @@
-// packages/ui/tsup.config.ts
-import {defineConfig} from 'tsup';
+import { defineConfig } from 'tsup';
 
 export default defineConfig((options) => ( {
   entry: ['src/index.ts'],
@@ -17,5 +16,9 @@ export default defineConfig((options) => ( {
     'react-dom',
   ],
   tsconfig: './tsconfig.json',
+  loader: {
+    '.ttf': 'file',
+  },
+  publicDir: './src/assets', // 如果需要的话
   ...options,
 }));

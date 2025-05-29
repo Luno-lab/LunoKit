@@ -6,6 +6,7 @@ import { cs } from '../../utils';
 import { useChainModal } from '../../providers/ModalContext';
 import type { Chain } from '@luno/core';
 import { Close } from '../../assets/icons';
+import {ChainIcon} from '../ChainIcon'
 
 enum ChainFilter {
   all = 'All',
@@ -59,7 +60,7 @@ export const ChainModal: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div />
-          <DialogTitle className="text-title leading-title text-modalFont font-800">
+          <DialogTitle className="text-title leading-title text-modalFont font-[700]">
             Select Networks
           </DialogTitle>
           <DialogClose className="z-10 cursor-pointer">
@@ -73,7 +74,7 @@ export const ChainModal: React.FC = () => {
               key={tab.key}
               onClick={() => setActiveFilter(tab.key)}
               className={cs(
-                'px-[14px] flex items-center justify-center cursor-pointer min-w-[48px] min-h-[24px] rounded-sm text-[12px] leading-[16px] font-500 transition-colors',
+                'px-[14px] flex items-center justify-center cursor-pointer min-w-[48px] min-h-[24px] rounded-sm text-[12px] leading-[16px] font-[500] transition-colors',
                 activeFilter === tab.key
                   ? 'bg-chainSelected text-modalFont'
                   : 'bg-transparent text-secondaryFont hover:text-modalFont'
@@ -131,22 +132,14 @@ const ChainItem: React.FC<ChainItemProps> = ({
       )}
     >
       <div className="flex items-center gap-[8px]">
-        <div className="w-[28px] bg-modal-bg h-[28px] rounded-full overflow-hidden flex items-center justify-center">
-          {chain.chainIconUrl ? (
-            <img
-              src={chain.chainIconUrl}
-              alt={chain.name}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <span className="text-sm font-700 text-modalFont leading-sm">
-              {chain.name[0]}
-            </span>
-          )}
-        </div>
+        <ChainIcon
+          className={'w-[24px] bg-modal-bg h-[24px] flex items-center justify-center'}
+          chainIconUrl={chain?.chainIconUrl}
+          chainName={chain?.name}
+        />
 
         <div className="flex flex-col items-start">
-          <span className="font-700 text-primary text-modalFont leading-primary">
+          <span className="font-[600] text-primary text-modalFont leading-primary">
             {chain.name}
           </span>
         </div>

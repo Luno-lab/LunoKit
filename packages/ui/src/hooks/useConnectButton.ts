@@ -27,7 +27,7 @@ export interface UseConnectButtonReturn {
   currentChain?: Chain;
   configuredChains: Chain[];
   isChainSupported: boolean;
-  chainIconUrl?: string;
+  chainIconUrl: string;
   chainName?: string;
 
   balance?: AccountBalance;

@@ -1,6 +1,7 @@
 import React, {useMemo} from 'react';
 import { useLunoWallet } from '../../hooks';
 import { cs } from '../../utils';
+import {ChainIcon} from '../ChainIcon'
 
 const sizes: Record<'sm' | 'md' | 'lg', Record<string, string>> = {
   sm: {
@@ -68,7 +69,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
         type="button"
         onClick={() => openConnectModal?.()}
         className={cs(
-          'cursor-pointer font-700 inline-flex items-center justify-center border border-transparent rounded-sm focus:outline-none',
+          'cursor-pointer font-[700] inline-flex items-center justify-center border border-transparent rounded-sm focus:outline-none',
           'text-primaryFont bg-connectButtonBackground shadow-connectButton active:scale-[0.95]',
           transitionClassName,
           sizes[size].button,
@@ -85,7 +86,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
   return (
     <div
       className={cs(
-        'text-modalFont flex items-center bg-transparent font-700',
+        'text-modalFont flex items-center bg-transparent font-[700]',
         sizeConfig.connected,
         className
       )}
@@ -102,20 +103,11 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
             sizeConfig.chain,
             transitionClassName,
           )}>
-          <div className={cs(sizeConfig.icon, 'overflow-hidden rounded-full')}>
+          {/*<div className={cs(sizeConfig.icon, 'overflow-hidden rounded-full')}>*/}
             {(chainStatus === 'full' || chainStatus === 'icon')
-              ? chainIconUrl
-                ? (<img
-                  src={chainIconUrl}
-                  alt={`${chainName} logo`}
-                />)
-                : <span
-                  aria-label="Chain icon placeholder"
-                  className={cs(sizeConfig.icon, 'mr-2 bg-gray-500 rounded-full inline-block')}>
-
-              </span>
+              ? <ChainIcon chainIconUrl={chainIconUrl} chainName={chainName} className={sizeConfig.icon}/>
               : null}
-          </div>
+          {/*</div>*/}
 
           {(chainStatus === 'full' || chainStatus === 'name') && (
             <span className={''}>{currentChain?.name || 'Unknown Chain'}</span>
