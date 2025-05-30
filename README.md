@@ -2,9 +2,9 @@
 
 <div align="center">
 
-[![npm version](https://img.shields.io/npm/v/@luno/ui.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@luno/ui)
-[![npm downloads](https://img.shields.io/npm/dm/@luno/ui.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@luno/ui)
-[![bundle size](https://img.shields.io/bundlephobia/minzip/@luno/ui?style=flat&colorA=000000&colorB=000000)](https://bundlephobia.com/package/@luno/ui)
+[![npm version](https://img.shields.io/npm/v/@luno-kit/ui.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@luno-kit/ui)
+[![npm downloads](https://img.shields.io/npm/dm/@luno-kit/ui.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@luno-kit/ui)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/@luno-kit/ui?style=flat&colorA=000000&colorB=000000)](https://bundlephobia.com/package/@luno-kit/ui)
 [![license](https://img.shields.io/badge/license-Apache%202.0-black?style=flat&colorA=000000&colorB=000000)](https://github.com/Luno-lab/LunoKit/blob/main/LICENSE)
 
 [![typescript](https://img.shields.io/badge/TypeScript-Ready-black?style=flat&colorA=000000&colorB=000000&logo=typescript)](https://www.typescriptlang.org/)
@@ -21,7 +21,7 @@
 
 </div>
 
-Luno is a React library that makes it easy to add Polkadot wallet connection to your dapp.
+Luno Kit is a React library that makes it easy to add Polkadot wallet connection to your dapp.
 
 * 🎨 **Beautiful UI components** - Ready-to-use wallet connection button
 * ✅ **Easily customizable** - Flexible theming and styling options
@@ -33,13 +33,13 @@ Luno is a React library that makes it easy to add Polkadot wallet connection to 
 
 ### UI Components Only
 ```bash
-pnpm add @luno/ui @tanstack/react-query @polkadot/api @polkadot/types @polkadot/util
+pnpm add @luno-kit/ui @tanstack/react-query @polkadot/api @polkadot/types @polkadot/util
 ```
 
 ### With React Hooks
 ```bash
 # If you want to use React hooks directly
-pnpm add @luno/react @luno/ui @tanstack/react-query @polkadot/api @polkadot/types @polkadot/util
+pnpm add @luno-kit/react @luno-kit/ui @tanstack/react-query @polkadot/api @polkadot/types @polkadot/util
 ```
 
 ## Quick start
@@ -47,9 +47,9 @@ pnpm add @luno/react @luno/ui @tanstack/react-query @polkadot/api @polkadot/type
 ### Basic setup
 
 ```tsx
-import { LunoKitProvider, ConnectButton } from '@luno/ui'
-import { createConfig, polkadot, kusama, wsProvider, polkadotjs, subwallet } from '@luno/core'
-import type { Config } from '@luno/core'
+import { LunoKitProvider, ConnectButton } from '@luno-kit/ui'
+import { createConfig, polkadot, kusama, wsProvider, polkadotjs, subwallet } from '@luno-kit/core'
+import type { Config } from '@luno-kit/core'
 
 const config: Config = createConfig({
   appName: 'My Polkadot App',
@@ -74,8 +74,8 @@ function App() {
 ### Using with React Hooks
 
 ```tsx
-import { LunoKitProvider } from '@luno/ui'
-import { useAccount, useBalance, useConnect } from '@luno/react'
+import { LunoKitProvider } from '@luno-kit/ui'
+import { useAccount, useBalance, useConnect } from '@luno-kit/react'
 
 function WalletInfo() {
   const { account, isConnected } = useAccount()
@@ -146,14 +146,14 @@ pnpm dev
 
 ## API Reference
 
-### UI Components (`@luno/ui`)
+### UI Components (`@luno-kit/ui`)
 
 * `<ConnectButton />` - Main wallet connection component
 * `<LunoKitProvider />` - Context provider for the app
 
-### React Hooks (`@luno/react`)
+### React Hooks (`@luno-kit/react`)
 
-> **Note:** To use these hooks directly, you need to install `@luno/react` separately.
+> **Note:** To use these hooks directly, you need to install `@luno-kit/react` separately.
 
 #### Account Management
 * `useAccount()` - Get current account information
@@ -191,9 +191,9 @@ pnpm dev
 
 ## Package Structure
 
-- `@luno/ui` - UI component library (includes all dependencies, ready to use)
-- `@luno/react` - React Hooks and Provider
-- `@luno/core` - Core connectors and utilities
+- `@luno-kit/ui` - UI component library (includes all dependencies, ready to use)
+- `@luno-kit/react` - React Hooks and Provider
+- `@luno-kit/core` - Core connectors and utilities
 
 ## Contributing
 

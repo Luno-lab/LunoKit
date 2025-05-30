@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useLuno } from './useLuno';
-import type { Connector } from '@luno/core';
+import type { Connector } from '@luno-kit/core';
 import {ConnectionStatus} from '../types'
 import {useCallback} from 'react'
 

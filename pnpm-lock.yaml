@@ -33,12 +33,12 @@ importers:
 
   examples/with-vite:
     dependencies:
-      '@luno/core':
-        specifier: workspace:0.0.1
-        version: link:../../packages/core
-      '@luno/react':
+      '@luno-kit/react':
         specifier: workspace:0.0.1
         version: link:../../packages/react
+      '@luno-kit/ui':
+        specifier: workspace:0.0.1
+        version: link:../../packages/ui
       '@polkadot/api':
         specifier: ^15.9.2
         version: 15.10.2
@@ -137,7 +137,7 @@ importers:
 
   packages/react:
     dependencies:
-      '@luno/core':
+      '@luno-kit/core':
         specifier: workspace:*
         version: link:../core
       '@tanstack/react-query':
@@ -189,10 +189,10 @@ importers:
 
   packages/ui:
     dependencies:
-      '@luno/core':
+      '@luno-kit/core':
         specifier: workspace:*
         version: link:../core
-      '@luno/react':
+      '@luno-kit/react':
         specifier: workspace:*
         version: link:../react
       '@radix-ui/react-dialog':

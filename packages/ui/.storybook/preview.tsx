@@ -3,11 +3,11 @@ import type { Preview, Decorator } from '@storybook/react';
 import React from 'react';
 import { withThemeByClassName } from '@storybook/addon-themes';
 import { LunoKitProvider } from '../src/providers';
-import type {Chain, Config, Config as LunoCoreConfig, Connector} from '@luno/core';
+import type {Chain, Config, Config as LunoCoreConfig, Connector} from '@luno-kit/core';
 
 // Import your compiled Tailwind CSS
 import '../dist/styles.css';
-import {createConfig, kusama, polkadot, polkadotjs, subwallet, wsProvider} from '@luno/core'
+import {createConfig, kusama, polkadot, polkadotjs, subwallet, wsProvider} from '@luno-kit/core'
 
 const gebSignet: Chain = {
   genesisHash: '0xe676fe35e3e2a37fb911ab4ec0857870f1cdc10b04a7b2f0f64eb31e9a142067',

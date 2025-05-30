@@ -1,5 +1,5 @@
 {
-  "name": "luno",
+  "name": "luno-kit",
   "description": "The Luno monorepo containing core, react, and other related packages.",
   "private": true,
   "scripts": {

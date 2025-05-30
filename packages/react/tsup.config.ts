@@ -23,7 +23,7 @@ export default defineConfig((options) => ({
     'react',
     'react-dom',
     '@tanstack/react-query',
-    '@luno/core',
+    '@luno-kit/core',
     'zustand',
   ],
   tsconfig: './tsconfig.json'

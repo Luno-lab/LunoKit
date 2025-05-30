@@ -1,8 +1,8 @@
-import type { Account } from '@luno/core';
+import type { Account } from '@luno-kit/core';
 import { useLuno } from './useLuno';
 import { useMemo } from 'react'
 import { useSs58Format } from './useSs58Format'
-import { convertAddress } from '@luno/core'
+import { convertAddress } from '@luno-kit/core'
 import type { HexString } from '@polkadot/util/types'
 
 export interface UseAccountsResult {

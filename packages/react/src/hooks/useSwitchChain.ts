@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { useLuno } from './useLuno';
 import { useCallback } from 'react';
-import type { Chain } from '@luno/core';
+import type { Chain } from '@luno-kit/core';
 
 export interface UseSwitchChainResult {
   switchChain: (chainId: string) => Promise<void>;

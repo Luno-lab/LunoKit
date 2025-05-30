@@ -10,9 +10,6 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
-//    "paths": {
-//      "@luno/*": ["packages/*/src"],
-//    },
     "typeRoots": [
       "./node_modules/@types",
     ],

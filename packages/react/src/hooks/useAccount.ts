@@ -1,7 +1,7 @@
-import type { Account } from '@luno/core';
+import type { Account } from '@luno-kit/core';
 import { useLuno } from './useLuno';
 import { useSs58Format } from './useSs58Format'
-import { convertAddress } from '@luno/core'
+import { convertAddress } from '@luno-kit/core'
 import { useMemo } from 'react'
 
 export interface UseAccountResult {

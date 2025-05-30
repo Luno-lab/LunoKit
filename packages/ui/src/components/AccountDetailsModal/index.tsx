@@ -1,12 +1,12 @@
 // packages/ui/src/components/AccountDetailsModal/index.tsx
 import React, {useMemo, useState} from 'react';
-import { useAccount, useAccounts, useBalance, useChain, useDisconnect } from '@luno/react';
+import { useAccount, useAccounts, useBalance, useChain, useDisconnect } from '@luno-kit/react';
 import { Dialog, DialogClose, DialogTitle } from '../Dialog';
 import {cs, shortAddress} from '../../utils';
 import { useAccountModal } from '../../providers/ModalContext';
-import type { Account } from '@luno/core';
+import type { Account } from '@luno-kit/core';
 import {Close, Copy, Disconnect, Switch, Back} from '../../assets/icons'
-import {formatAddress} from '@luno/core'
+import {formatAddress} from '@luno-kit/core'
 import {ChainIcon} from '../ChainIcon'
 
 // 你需要创建的图标组件

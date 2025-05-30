@@ -1,4 +1,4 @@
-import type { Config, Connector, Account, Chain } from '@luno/core';
+import type { Config, Connector, Account, Chain } from '@luno-kit/core';
 import type { ApiPromise } from '@polkadot/api';
 import type {HexString} from '@polkadot/util/types'
 

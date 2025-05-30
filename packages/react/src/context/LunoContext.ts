@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ApiPromise } from '@polkadot/api';
-import type { Chain, Config, Connector, Account } from '@luno/core';
+import type { Chain, Config, Connector, Account } from '@luno-kit/core';
 import type { ConnectionStatus } from '../types';
 import type { HexString } from '@polkadot/util/types' // Assuming ConnectionStatus is in a shared types file
 

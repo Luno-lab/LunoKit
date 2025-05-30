@@ -1,5 +1,5 @@
 {
-  "name": "@luno/react",
+  "name": "@luno-kit/react",
   "description": "React Hooks and Provider for Luno, enabling easy Polkadot wallet interactions in React applications.",
   "version": "0.0.1",
   "type": "module",
@@ -26,7 +26,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@luno/core": "workspace:*",
+    "@luno-kit/core": "workspace:*",
     "@tanstack/react-query": "^5.14.2",
     "zustand": "5.0.4"
   },

@@ -1,10 +1,10 @@
 // packages/ui/src/components/ConnectModal/index.tsx
 import React, {useState} from 'react';
-import { useConnect, useConnectors } from '@luno/react';
+import { useConnect, useConnectors } from '@luno-kit/react';
 import { Dialog, DialogClose, DialogTitle, ModalSize } from '../Dialog';
 import { cs } from '../../utils';
 import { useConnectModal } from '../../providers/ModalContext'
-import type { Connector } from '@luno/core'
+import type { Connector } from '@luno-kit/core'
 import { Close } from '../../assets/icons'
 
 export interface ConnectModalProps {

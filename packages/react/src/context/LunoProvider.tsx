@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useMemo } from 'react';
 import { ApiPromise } from '@polkadot/api';
-import type { Chain, Config, Transport } from '@luno/core';
+import type { Chain, Config, Transport } from '@luno-kit/core';
 import { useLunoStore } from '../store'
 import { PERSIST_KEY } from '../constants'
 import { LunoContext, LunoContextState } from './LunoContext'

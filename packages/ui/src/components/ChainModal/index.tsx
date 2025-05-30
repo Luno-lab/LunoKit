@@ -1,10 +1,10 @@
 // packages/ui/src/components/ChainModal/index.tsx
 import React, { useState, useMemo } from 'react';
-import { useChain, useChains, useSwitchChain } from '@luno/react';
+import { useChain, useChains, useSwitchChain } from '@luno-kit/react';
 import { Dialog, DialogClose, DialogTitle } from '../Dialog';
 import { cs } from '../../utils';
 import { useChainModal } from '../../providers/ModalContext';
-import type { Chain } from '@luno/core';
+import type { Chain } from '@luno-kit/core';
 import { Close } from '../../assets/icons';
 import {ChainIcon} from '../ChainIcon'
 

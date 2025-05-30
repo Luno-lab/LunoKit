@@ -1,9 +1,9 @@
 import {create} from 'zustand';
 import type {LunoState} from '../types';
 import {ConnectionStatus} from '../types';
-import type {Account, LunoStorage} from '@luno/core';
+import type {Account, LunoStorage} from '@luno-kit/core';
 import {PERSIST_KEY} from '../constants';
-import { isSameAddress } from '@luno/core/utils';
+import { isSameAddress } from '@luno-kit/core/utils';
 
 interface StoredAccountInfo {
   publicKey?: string;

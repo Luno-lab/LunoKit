@@ -5,8 +5,8 @@ import {
   useChain,
   useBalance, // 如果要集成余额
   ConnectionStatus, useChains, useActiveConnector
-} from '@luno/react';
-import type { Account, Chain, AccountBalance, Connector } from '@luno/core'
+} from '@luno-kit/react';
+import type { Account, Chain, AccountBalance, Connector } from '@luno-kit/core'
 import {
   useConnectModal,
   useAccountModal,

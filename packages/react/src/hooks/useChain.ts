@@ -1,4 +1,4 @@
-import type { Chain } from '@luno/core';
+import type { Chain } from '@luno-kit/core';
 import {useLuno} from './useLuno'
 
 export interface UseChainResult {

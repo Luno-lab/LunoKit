@@ -1,5 +1,5 @@
 import React, {createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useState} from 'react';
-import {ConnectionStatus, useStatus} from '@luno/react'
+import {ConnectionStatus, useStatus} from '@luno-kit/react'
 
 function useModalVisibility() {
   const [isOpen, setIsOpen] = useState(false);

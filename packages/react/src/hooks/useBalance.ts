@@ -3,7 +3,7 @@ import { formatBalance } from '@polkadot/util';
 import type { DeriveBalancesAll } from '@polkadot/api-derive/types';
 import type { ApiPromise } from '@polkadot/api';
 import { useLuno } from './useLuno';
-import { AccountBalance } from '@luno/core'
+import { AccountBalance } from '@luno-kit/core'
 import { AccountId } from '@polkadot/types/interfaces'
 
 export interface UseBalanceProps {

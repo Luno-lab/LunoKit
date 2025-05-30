@@ -34,8 +34,8 @@ export interface WalletConnectConnectorOptions {
  *
  * @example
  * ```ts
- * import { createConfig } from '@luno/core';
- * import { walletConnect } from '@luno/core/connectors';
+ * import { createConfig } from '@luno-kit/core';
+ * import { walletConnect } from '@luno-kit/core/connectors';
  *
  * const config = createConfig({
  *   connectors: [
@@ -63,7 +63,7 @@ export function walletConnect(options: WalletConnectConnectorOptions): WalletCon
  *
  * @example
  * ```ts
- * import { WalletConnectConnector } from '@luno/core/connectors';
+ * import { WalletConnectConnector } from '@luno-kit/core/connectors';
  *
  * const connector = new WalletConnectConnector({
  *   projectId: 'YOUR_PROJECT_ID',
