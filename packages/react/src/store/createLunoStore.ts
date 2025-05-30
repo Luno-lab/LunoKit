@@ -97,6 +97,12 @@ export const useLunoStore = create<LunoState>((set, get) => ({
       throw new Error('[LunoStore] LunoConfig has not been initialized. Cannot connect.')
     }
 
+    const { appName } = config;
+    const resolvedAppName = appName || 'Luno App';
+    if (!appName) {
+      console.warn('[LunoStore] appName is missing in config. Using default "Luno App".');
+    }
+
     const connector = config.connectors.find(c => c.id === connectorId);
     if (!connector) {
       set({status: ConnectionStatus.Disconnected});
@@ -156,7 +162,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
       connector.on('disconnect', handleDisconnect);
       activeConnectorUnsubscribeFunctions.push(() => connector.off('disconnect', handleDisconnect));
 
-      const accountsFromWallet = await connector.connect();
+      const accountsFromWallet = await connector.connect(resolvedAppName);
 
       accountsFromWallet.forEach(acc => {
         if (!acc.publicKey) {
