@@ -1,0 +1,34 @@
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    top: 80vh;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    top: 50%;
+    transform: scale(1);
+  }
+}
+
+@keyframes dialog-out {
+  from {
+    opacity: 1;
+    top: 50%;
+  }
+  to {
+    opacity: 0;
+    top: 80vh;
+  }
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes overlay-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+

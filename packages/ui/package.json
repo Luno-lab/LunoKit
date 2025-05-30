@@ -28,10 +28,10 @@
   ],
   "scripts": {
     "build": "pnpm build:js && pnpm build:css",
-    "build:css": "pnpm exec tailwindcss -i ./src/styles/source.css -o ./dist/styles.css --minify",
+    "build:css": "pnpm exec tailwindcss -i ./src/styles/styles.css -o ./dist/styles.css --minify",
     "build:js": "tsup",
     "dev": "concurrently \"pnpm:dev:css\" \"pnpm:dev:js\"",
-    "dev:css": "pnpm exec tailwindcss -i ./src/styles/source.css -o ./dist/styles.css --watch",
+    "dev:css": "pnpm exec tailwindcss -i ./src/styles/styles.css -o ./dist/styles.css --watch",
     "dev:js": "tsup --watch",
     "clean": "rm -rf dist",
     "storybook": "storybook dev -p 6006",

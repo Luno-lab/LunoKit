@@ -27,7 +27,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
-      <div className={cs('flex items-stretch justify-between max-h-[504px] max-w-[720px]')}>
+      <div className={cs('flex items-stretch justify-between max-h-[504px] max-w-[724px]')}>
         <div className={cs(
           'flex flex-col items-start py-[16px] px-[18px] min-w-[287px]',
           isWide && 'border-r-[1px] border-r-solid border-r-modalLine'
@@ -69,7 +69,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
         </div>
 
         {isWide && (
-          <div className={'flex flex-col items-center w-full p-[16px] min-h-[472px] min-w-[400px]'}>
+          <div className={'flex flex-col items-center p-[16px] min-h-[472px] w-[400px]'}>
             <div className={'w-full'}>
               <div className={'flex items-center justify-between'}>
                 <div/>

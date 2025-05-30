@@ -63,7 +63,7 @@ export const ChainModal: React.FC = () => {
           <DialogTitle className="text-title leading-title text-modalFont font-[700]">
             Select Networks
           </DialogTitle>
-          <DialogClose className="z-10 cursor-pointer">
+          <DialogClose className="z-[10] cursor-pointer">
             <Close className="w-[24px] h-[24px]" />
           </DialogClose>
         </div>

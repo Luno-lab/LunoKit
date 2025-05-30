@@ -4,9 +4,8 @@ import type { Config as LunoCoreConfig } from '@luno/core'
 import { QueryClient, QueryClientProvider, type QueryClientConfig } from '@tanstack/react-query';
 import { ModalProvider } from './ModalContext';
 import { ThemeProvider, ThemeMode } from './ThemeContext';
-import { ConnectModal, AccountDetailsModal } from '../components'
+import { ConnectModal, AccountDetailsModal, ChainModal } from '../components'
 import { ModalSize } from '../components/Dialog'
-import { ChainModal } from '../components/ChainModal'
 
 export interface LunoKitProviderProps {
   children: ReactNode;
@@ -27,9 +26,9 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
   return (
     <QueryClientProvider client={queryClient}>
       <LunoProvider config={config}>
-        <ThemeProvider initialTheme={theme}>
+        <ThemeProvider initialThemeMode={theme}>
           <ModalProvider>
-            <div className={'font-base'}>
+            <div className={'font-base luno-kit'}>
               {children}
             </div>
             <RenderModals modalSize={config.modalSize} />
@@ -41,7 +40,7 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
 };
 
 
-const RenderModals: React.FC = ({ modalSize }: { modalSize?: ModalSize }) => {
+const RenderModals: React.FC<{modalSize?: ModalSize}> = ({ modalSize }: { modalSize?: ModalSize }) => {
   return (
     <>
       <ConnectModal size={modalSize} />
