@@ -3,7 +3,6 @@ import { ConnectButton, useLunoTheme } from '@luno-kit/ui';
 import {
   useAccount,
   useAccounts,
-  useConnect,
   useDisconnect,
   useStatus,
   useChain,
