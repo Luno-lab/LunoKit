@@ -4,4 +4,6 @@
 // Do not edit. Auto-generated via node scripts/convertLogos.mjs
 
 export { kusamaSVG } from './kusamaSVG.js';
+export { paseoSVG } from './paseoSVG.js';
 export { polkadotSVG } from './polkadotSVG.js';
+export { westendSVG } from './westendSVG.js';
