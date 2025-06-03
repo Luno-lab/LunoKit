@@ -26,6 +26,9 @@
   font-size: 4rem;
   margin-bottom: 1rem;
   animation: float 3s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @keyframes float {

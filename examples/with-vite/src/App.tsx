@@ -107,7 +107,9 @@ const App: React.FC = () => {
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
-          <div className="hero-icon">🚀</div>
+          <div className="hero-icon">
+            <img src="/favicon-96x96.png" alt=""/>
+          </div>
           <h1>Luno Wallet Kit</h1>
           <p className="hero-subtitle">
             The modern Polkadot wallet connection library for React applications
