@@ -44,7 +44,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
           </div>
 
           <div className={'flex flex-col items-start gap-[16px] w-full'}>
-            <div className={'flex flex-col items-start gap-[8px] w-full'}>
+            <div className={'flex flex-col items-start gap-[12px] w-full'}>
               <div className={'text-primary text-modalFont font-[700] leading-primary'}>Installed</div>
               <div className={'flex flex-col items-start gap-[4px] w-full'}>
                 {installedConnectors.map(i => (
@@ -56,7 +56,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
               </div>
             </div>
 
-            <div className={'flex flex-col items-start gap-[8px] w-full'}>
+            <div className={'flex flex-col items-start gap-[12px] w-full'}>
               <div className={'text-primary text-modalFont font-[700] leading-primary'}>Uninstalled</div>
               <div className={'flex flex-col items-start gap-[4px] w-full'}>
                 {moreConnectors.map(i => (
@@ -129,15 +129,18 @@ const ConnectorItem: React.FC<ConnectorItemProps> = ({ connector, onConnect }) =
       onClick={onConnect}
       className={cs(
         'cursor-pointer bg-connectorItemBackground p-[8px] w-full flex items-center gap-[12px] rounded-sm border-none',
-        'hover:opacity-90 transition-transform active:scale-[0.95]',
+        'hover:opacity-80 hover:scale-[1.03] transition-transform active:scale-[0.95]',
         'text-left'
       )}
     >
-      <img
-        src={connector.icon}
-        alt={connector.name}
-        className="w-[24px] h-[24px]"
-      />
+      <div className={'w-[24px] h-[24px] overflow-hidden rounded-full'}>
+        <img
+          src={connector.icon}
+          alt={connector.name}
+          className="w-full h-full"
+        />
+      </div>
+
       <span className="font-[700] leading-primary text-primary text-modalFont">{connector.name}</span>
     </button>
   );
