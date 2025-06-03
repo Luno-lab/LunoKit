@@ -30,7 +30,7 @@ const sizes: Record<'sm' | 'md' | 'lg', Record<string, string>> = {
   },
 };
 
-const transitionClassName = 'transition-transform transition-[125] hover:scale-[1.03] transition-ease'
+export const transitionClassName = 'transition-transform transition-[125] hover:scale-[1.03] transition-ease'
 
 export interface ConnectButtonProps {
   size?: 'sm' | 'md' | 'lg';

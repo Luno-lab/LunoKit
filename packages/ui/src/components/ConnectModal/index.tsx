@@ -5,7 +5,9 @@ import { Dialog, DialogClose, DialogTitle, ModalSize } from '../Dialog';
 import { cs } from '../../utils';
 import { useConnectModal } from '../../providers/ModalContext'
 import type { Connector } from '@luno-kit/core'
-import { Close } from '../../assets/icons'
+import { Close, Loading } from '../../assets/icons'
+import { SpiralAnimation } from '../SpiralAnimation'
+import {transitionClassName} from '../ConnectButton'
 
 export interface ConnectModalProps {
   size?: ModalSize;
@@ -16,7 +18,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 }) => {
   const { isOpen, close } = useConnectModal();
   const connectors = useConnectors();
-  const { connect } = useConnect()
+  const { connect, isError: connectError, isPending: isConnecting, reset: resetConnect } = useConnect()
   const [selectedConnector, setSelectedConnector] = useState<Connector | null>(null)
 
   const isWide = size === 'wide';
@@ -25,8 +27,16 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
   const moreConnectors = connectors.filter(c => !c.isInstalled())
 
+  const handleConnect = (connectorId: string) => connect(connectorId)
+
+  const _onOpenChange = (open: boolean) => {
+    !open && close()
+    resetConnect()
+    setSelectedConnector(null)
+  }
+
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
+    <Dialog open={isOpen} onOpenChange={_onOpenChange}>
       <div className={cs('flex items-stretch justify-between max-h-[504px] max-w-[724px]')}>
         <div className={cs(
           'flex flex-col items-start py-[16px] px-[18px] min-w-[287px]',
@@ -50,7 +60,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
                 {installedConnectors.map(i => (
                   <ConnectorItem key={i.id} connector={i} onConnect={() => {
                     setSelectedConnector(i)
-                    connect(i.id)
+                    handleConnect(i.id)
                   }}/>
                 ))}
               </div>
@@ -89,14 +99,27 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
                   <p className={'pb-[10px] text-primary leading-primary text-modalFont font-[700]'}>
                     Opening {selectedConnector.name}...
                   </p>
-                  <p className={'text-secondaryFont text-secondary leading-secondary font-[500]'}>
+                  <p className={'pb-[10px] text-secondaryFont text-secondary leading-secondary font-[500]'}>
                     Confirm connection in the extension
                   </p>
+                  {isConnecting && (
+                    <Loading className={'w-[24px] h-[24px] text-secondaryFont animate-[spin_3s_linear_infinite]'}/>
+                  )}
+                  { !isConnecting && connectError && (
+                    <button
+                      className={cs(
+                        'rounded-sm focus:outline-none py-[4px] px-[12px] cursor-pointer font-[600] text-primaryFont bg-connectButtonBackground shadow-connectButton active:scale-[0.95]',
+                        transitionClassName
+                      )}
+                      onClick={() => handleConnect(selectedConnector.id)}>
+                      Retry
+                    </button>
+                  )}
                 </>
               ) : (
                 <>
-                  <div className={'w-[200px] h-[140px] pb-[8px]'}>
-                    <div></div>
+                  <div className={'w-[200px] h-[140px] mb-[16px]'}>
+                    <SpiralAnimation />
                   </div>
 
                   <p className={'cursor-pointer pb-[10px] text-primary leading-primary text-accentFont font-[700] text-center'}>
