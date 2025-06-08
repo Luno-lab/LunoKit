@@ -21,7 +21,7 @@ export const ChainList: React.FC = () => {
   const { chain: currentChain } = useChain();
   const chains = useChains();
   const { switchChain } = useSwitchChain();
-  const { isApiReady } = useApi()
+  const { isApiReady, apiError } = useApi()
 
   const [activeFilter, setActiveFilter] = useState<ChainFilter>(ChainFilter.all);
   const [switchingChain, setSwitchingChain] = useState<string | null>(null);
@@ -40,7 +40,7 @@ export const ChainList: React.FC = () => {
 
   const handleChainSelect = async (chain: Chain) => {
     if (chain.genesisHash === currentChain?.genesisHash) return;
-    if (!isApiReady) return
+    if (!isApiReady && !apiError) return
 
     setSwitchingChain(chain.genesisHash);
     try {
@@ -78,7 +78,7 @@ export const ChainList: React.FC = () => {
             chain={chain}
             isSelected={chain.genesisHash === currentChain?.genesisHash}
             onSelect={handleChainSelect}
-            isLoading={switchingChain === chain.genesisHash || !isApiReady}
+            isLoading={(switchingChain === chain.genesisHash || !isApiReady) && !apiError}
           />
         ))}
       </div>
