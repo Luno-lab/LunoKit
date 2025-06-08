@@ -35,6 +35,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
   currentChain: undefined,
   currentApi: undefined,
   isApiReady: false,
+  apiError: null,
 
   // --- Actions ---
 
@@ -344,5 +345,8 @@ export const useLunoStore = create<LunoState>((set, get) => ({
     } catch (e) {
       throw new Error(`[LunoStore] Failed to persist new chainId to storage: ${e?.message || e}`);
     }
+  },
+  _setApiError: (err) => {
+    set({ apiError: err })
   }
 }));

@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useMemo } from 'react';
+import React, {ReactNode, useCallback, useEffect, useMemo} from 'react';
 import { ApiPromise } from '@polkadot/api';
 import type { Chain, Config, Transport } from '@luno-kit/core';
 import { useLunoStore } from '../store'
@@ -15,6 +15,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     _setConfig,
     _setApi,
     _setIsApiReady,
+    _setApiError,
     setAccount,
     currentChainId,
     config: configInStore,
@@ -26,9 +27,15 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     account,
     currentChain,
     isApiReady,
+    apiError,
     disconnect,
     switchChain,
   } = useLunoStore()
+
+  const clearApiState = useCallback(() => {
+    _setApi(undefined);
+    _setIsApiReady(false);
+  }, [_setApi, _setIsApiReady])
 
   useEffect(() => {
     if (configFromProps) {
@@ -50,29 +57,29 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
       if (currentApiInstance) {
         console.log(`[LunoProvider] API READY: ${currentApiInstance.runtimeChain?.toString()}`);
         _setIsApiReady(true);
+        _setApiError(null); // 清除错误状态
       }
     };
 
-    const handleApiError = (error: Error) => {
+    const handleApiError = (error: any) => {
       if (currentApiInstance) {
         _setApi(undefined);
         _setIsApiReady(false);
-
-        throw new Error(`[LunoProvider] API error on ${currentApiInstance.runtimeChain?.toString()}: ${error}`);
+        _setApiError(error);
+        console.error(`[LunoProvider] API error on:`, error.target.url);
       }
     };
 
     const handleApiDisconnected = () => {
       if (currentApiInstance) {
-        console.warn(`[LunoProvider] API disconnected: ${currentApiInstance.runtimeChain?.toString()}`);
-        _setApi(undefined);
-        _setIsApiReady(false);
+        console.warn(`[LunoProvider] API disconnected...`);
+        clearApiState()
       }
     };
 
     if (currentApi && currentApi.isConnected && currentApi.genesisHash) {
       if (currentApi.genesisHash.toHex() === currentChainId ) {
-        console.log('[LunoProvider] API is already connected to the target chain and ready (or connecting). No action needed.');
+        console.log('[LunoProvider] API is already connected to the target chain and ready. No action needed.');
         return;
       }
     }
@@ -81,8 +88,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
       if (currentApi && currentApi.isConnected) {
         currentApi.disconnect().catch(console.error);
       }
-      _setApi(undefined);
-      _setIsApiReady(false);
+      clearApiState()
       return;
     }
 
@@ -95,8 +101,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
       if (currentApi && currentApi.isConnected) {
         currentApi.disconnect().catch(console.error);
       }
-      _setApi(undefined);
-      _setIsApiReady(false);
+      clearApiState()
       throw new Error(`Configuration missing for chainId: ${currentChainId}`)
     }
 
@@ -105,8 +110,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
       currentApi.disconnect().catch(e => console.error('[LunoProvider] Error disconnecting previous API:', e));
     }
 
-    _setApi(undefined);
-    _setIsApiReady(false);
+    clearApiState()
 
     console.log(`[LunoProvider] Constructing new ApiPromise for chain: ${chainConfig.name} (${currentChainId})`);
     const provider = transportConfig;
@@ -128,14 +132,8 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
       newApi.on('disconnected', handleApiDisconnected);
       newApi.on('connected', handleApiConnected);
 
-      if (!provider.isConnected) {
-        console.log('[LunoProvider] Provider not connected, waiting for connection...');
-        provider.connect();
-      }
     } catch (error: any) {
-      _setApi(undefined);
-      _setIsApiReady(false);
-      console.error(`[LunoProvider] Failed to construct ApiPromise for ${chainConfig.name}:`, error);
+      clearApiState()
       throw new Error(`[LunoProvider] Failed to construct ApiPromise for ${chainConfig.name}: ${error?.message || error}`)
     }
 
@@ -143,19 +141,18 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     return () => {
       if (currentApiInstance) {
         const instanceToClean = currentApiInstance;
-        console.log(`[LunoProvider] Cleaning up ApiPromise instance: ${instanceToClean.runtimeChain?.toString()}`);
+        console.log(`[LunoProvider] Cleaning up ApiPromise instance: ${instanceToClean}`);
 
         instanceToClean.off('ready', handleApiReady);
         instanceToClean.off('error', handleApiError);
         instanceToClean.off('disconnected', handleApiDisconnected);
-        // instanceToClean.off('connected', handleApiConnected);
+        instanceToClean.off('connected', handleApiConnected);
 
-        if (instanceToClean.isConnected) {
-          instanceToClean.disconnect().catch(e => console.error('[LunoProvider] Error disconnecting API in cleanup:', e));
-        }
+        // if (instanceToClean.isConnected) {
+          // instanceToClean.disconnect().catch(e => console.error('[LunoProvider] Error disconnecting API in cleanup:', e));
+        // }
       }
-      _setApi(undefined);
-      _setIsApiReady(false);
+      clearApiState()
     };
   }, [configFromProps, currentChainId]);
 
@@ -172,7 +169,6 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
         return;
       }
 
-      console.log('[LunoProvider][AutoConnect] Attempting to auto-connect...');
       try {
         const lastConnectorId = await configFromProps.storage.getItem(PERSIST_KEY.LAST_CONNECTOR_ID);
         const lastChainId = await configFromProps.storage.getItem(PERSIST_KEY.LAST_CHAIN_ID);
@@ -180,7 +176,6 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
         if (lastConnectorId && lastChainId) {
           console.log(`[LunoProvider][AutoConnect] Found persisted session: Connector ID "${lastConnectorId}", Chain ID "${lastChainId}"`);
           await connect(lastConnectorId, lastChainId);
-          console.log('[LunoProvider][AutoConnect] Auto-connect process initiated.');
         } else {
           console.log('[LunoProvider][AutoConnect] No persisted session found or missing data.');
         }
@@ -238,8 +233,9 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     connect,
     disconnect,
     switchChain,
+    apiError,
   }), [
-    configInStore, status, activeConnector, accounts, account, currentChainId, currentChain, currentApi, isApiReady,
+    configInStore, status, activeConnector, accounts, account, currentChainId, currentChain, currentApi, isApiReady, apiError,
     connect, disconnect, switchChain, setAccount
   ]);
 
