@@ -1,20 +1,18 @@
-// packages/ui/src/components/AccountDetailsModal/index.tsx
-import React, {useMemo, useState} from 'react';
+// components/AccountDetailsModal/index.tsx
+import React, { useState } from 'react';
 import { useAccount, useAccounts, useBalance, useChain, useDisconnect } from '@luno-kit/react';
 import { Dialog, DialogClose, DialogTitle } from '../Dialog';
-import {cs, shortAddress} from '../../utils';
+import { cs, shortAddress } from '../../utils';
 import { useAccountModal } from '../../providers/ModalContext';
-import type { Account } from '@luno-kit/core';
-import {Close, Copy, Disconnect, Switch, Back} from '../../assets/icons'
-import {formatAddress} from '@luno-kit/core'
-import {ChainIcon} from '../ChainIcon'
-
-// 你需要创建的图标组件
-// import { Close, SwitchAccount, Disconnect, ChevronRight, Copy, Check } from '../../assets/icons';
+import { Close, Copy, Back } from '../../assets/icons';
+import { MainView } from './MainView';
+import { SwitchAccountView } from './SwitchAccountView';
+import { SwitchChainView } from './SwitchChainView';
 
 enum AccountModalView {
   main = 'main',
-  switchAccount = 'switchAccount'
+  switchAccount = 'switchAccount',
+  switchChain = 'switchChain',
 }
 
 export const AccountDetailsModal: React.FC = () => {
@@ -37,34 +35,44 @@ export const AccountDetailsModal: React.FC = () => {
   };
 
   const onBack = () => {
-    setCurrentView(AccountModalView.main)
-  }
+    setCurrentView(AccountModalView.main);
+  };
 
-  const items = useMemo(() => {
-    return [
-      { key: 'Chain Name', content: (
-          <>
-            <ChainIcon
-              className={'w-[24px] h-[24px]'}
-              chainIconUrl={chain?.chainIconUrl}
-              chainName={chain?.name}
-            />
+  const getViewTitle = () => {
+    switch (currentView) {
+      case AccountModalView.switchAccount:
+        return 'Switch Accounts';
+      case AccountModalView.switchChain:
+        return 'Select Networks';
+      default:
+        return null;
+    }
+  };
 
-            <span className="text-primary text-modalFont">{chain?.name || 'Polkadot'}</span>
-          </>
-        )
-      },
-      { key: 'Switch Account',
-        content: (
-          <>
-            <Switch className="w-[16px] h-[16px]"/>
-            <span className="text-primary text-modalFont">Switch Account</span>
-          </>
-        ),
-        onClick: () => setCurrentView(AccountModalView.switchAccount)
-      }
-    ]
-  }, [chain, setCurrentView])
+  const viewComponents = {
+    [AccountModalView.main]: (
+      <MainView
+        chain={chain}
+        onSwitchAccount={() => setCurrentView(AccountModalView.switchAccount)}
+        onSwitchChain={() => setCurrentView(AccountModalView.switchChain)}
+        onDisconnect={handleDisconnect}
+        onCopyAddress={copyToClipboard}
+      />
+    ),
+    [AccountModalView.switchAccount]: (
+      <SwitchAccountView
+        accounts={accounts}
+        currentAddress={address}
+        onSelectAccount={(account) => {
+          selectAccount(account);
+          setTimeout(() => setCurrentView(AccountModalView.main), 150);
+        }}
+      />
+    ),
+    [AccountModalView.switchChain]: (
+      <SwitchChainView />
+    )
+  };
 
   return (
     <Dialog
@@ -72,122 +80,63 @@ export const AccountDetailsModal: React.FC = () => {
       onOpenChange={(open) => {
         if (!open) {
           close();
-          setCurrentView(AccountModalView.main); // 重置视图
+          setCurrentView(AccountModalView.main);
         }
       }}
     >
-      <div className="flex flex-col w-[360px] max-h-[500px] p-[16px] gap-[26px] text-modalFont">
+      <div className={cs(
+        'flex flex-col w-[360px] max-h-[500px] p-[16px]  text-modalFont',
+        currentView === AccountModalView.main ? 'gap-[26px]' : 'gap-[14px]'
+      )}>
         {/* Header */}
         <div className="flex items-stretch justify-between w-full">
           {currentView === AccountModalView.main ? (
             <div className="flex flex-col items-start gap-[8px] w-full">
-
-            <div className="flex items-center gap-[6px] w-full">
+              <div className="flex items-center gap-[6px] w-full">
                 <span className="text-primary leading-primary text-modalFont font-[600]">
                   {shortAddress(address)}
                 </span>
                 <Copy
                   className="w-[13px] h-[13px] cursor-pointer"
-                  onClick={() => address && copyToClipboard(address)}/>
+                  onClick={() => address && copyToClipboard(address)}
+                />
               </div>
-
               <div className="text-secondaryFont leading-secondary text-secondary font-[500]">
                 {balance?.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
               </div>
             </div>
           ) : (
             <>
-              <div className={'flex items-center justify-center max-w-[16px] cursor-pointer'} onClick={onBack}>
-                <Back className={'w-full'}/>
+              <div className="flex items-center justify-center max-w-[16px] cursor-pointer" onClick={onBack}>
+                <Back className="w-full" />
               </div>
-              <DialogTitle className="text-title leading-title text-modalFont font-[800]">
-                {'Switch Accounts'}
+              <DialogTitle className="text-title leading-title text-modalFont font-[800] transition-opacity duration-300">
+                {getViewTitle()}
               </DialogTitle>
             </>
           )}
 
           <DialogClose className="z-10 cursor-pointer flex items-start">
-            <Close className="w-[24px] h-[24px]"/>
+            <Close className="w-[24px] h-[24px]" />
           </DialogClose>
         </div>
 
-        {currentView === AccountModalView.main ? (
-          <div className={'flex flex-col items-center gap-[26px] w-full'}>
-
-            <div className="flex flex-col gap-[4px] w-full">
-              {items.map(i => (
-                <SelectItem key={i.key} onClick={i.onClick}>{i.content}</SelectItem>
-              ))}
-
+        {/* 视图容器 */}
+        <div className="relative overflow-hidden">
+          {Object.entries(viewComponents).map(([view, component]) => (
+            <div
+              key={view}
+              className={cs(
+                currentView === view
+                  ? "opacity-100 transition-opacity duration-200 ease-in-out"
+                  : "opacity-0 absolute inset-0 pointer-events-none"
+              )}
+            >
+              {component}
             </div>
-
-            <SelectItem onClick={handleDisconnect}>
-              <Disconnect className="w-[16px] h-[16px]" />
-              <span className="font-[600] text-primary text-modalFont">Disconnect</span>
-            </SelectItem>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-[4px]">
-            {accounts.map((acc) => (
-              <AccountItem key={acc.address} account={acc} isSelected={acc.address === address} selectAccount={selectAccount} />
-            ))}
-          </div>
-        )}
+          ))}
+        </div>
       </div>
     </Dialog>
   );
 };
-
-const SelectItem = ({ children, onClick }: { children: React.ReactNode; onClick?: () => void}) => {
-  return (
-    <div
-      onClick={() => onClick?.()}
-      className={cs(
-      'cursor-pointer bg-connectorItemBackground p-[14px] w-full rounded-sm border-none',
-      'hover:opacity-90 transition-transform active:scale-[0.95]',
-      'text-left flex items-center gap-[8px] font-[600]'
-    )}>
-      {children}
-    </div>
-  )
-}
-
-const AccountItem = ({ isSelected, account, selectAccount }: { isSelected: boolean; account: Account; selectAccount: (acc: Account) => void }) => {
-  const { chain } = useChain()
-  const address = account.address
-
-  const { data: balance} = useBalance({ address })
-
-  return (
-    <div
-      onClick={() => selectAccount(account)}
-      className={cs(
-        'bg-connectorItemBackground px-[14px] py-[10px] w-full rounded-sm border-none',
-        'hover:opacity-90 transition-transform active:scale-[0.95]',
-        'text-left flex items-center justify-between gap-[8px]',
-        isSelected ? 'cursor-auto' : 'cursor-pointer'
-      )}
-    >
-      <div className="flex items-center gap-[8px]">
-        <div className="shrink-0 w-[24px] h-[24px] bg-pink-500 rounded-full flex items-center justify-center">
-          {/*//todo*/}
-        </div>
-        <div className="flex flex-col items-start">
-          <span className="font-[700] text-secondary leading-secondary text-modalFont">
-            {account.name || formatAddress(address)}
-          </span>
-          <span className="text-sm text-secondaryFont text-accent leading-accent font-[500]">
-            {balance?.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
-          </span>
-        </div>
-      </div>
-
-      {isSelected && (
-        <div
-          className={'border-[1px] border-solid border-accentFont rounded-full overflow-hidden flex items-center justify-center w-[18px] h-[18px]'}>
-          <div className={'rounded-full bg-accentFont w-[10px] h-[10px]'}/>
-        </div>
-      )}
-    </div>
-  )
-}
