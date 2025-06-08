@@ -1,5 +1,5 @@
 // components/AccountDetailsModal/index.tsx
-import React, { useState } from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import { useAccount, useAccounts, useBalance, useChain, useDisconnect } from '@luno-kit/react';
 import { Dialog, DialogClose, DialogTitle } from '../Dialog';
 import { cs, shortAddress } from '../../utils';
@@ -9,7 +9,7 @@ import { MainView } from './MainView';
 import { SwitchAccountView } from './SwitchAccountView';
 import { SwitchChainView } from './SwitchChainView';
 
-enum AccountModalView {
+export enum AccountModalView {
   main = 'main',
   switchAccount = 'switchAccount',
   switchChain = 'switchChain',
@@ -18,61 +18,47 @@ enum AccountModalView {
 export const AccountDetailsModal: React.FC = () => {
   const { isOpen, close } = useAccountModal();
   const { address } = useAccount();
-  const { accounts, selectAccount } = useAccounts();
   const { chain } = useChain();
-  const { disconnect } = useDisconnect();
   const { data: balance } = useBalance({ address });
 
   const [currentView, setCurrentView] = useState<AccountModalView>(AccountModalView.main);
 
-  const handleDisconnect = () => {
-    disconnect();
-    close();
-  };
-
-  const copyToClipboard = (text: string) => {
+  const copyToClipboard = useCallback((text: string) => {
     navigator.clipboard.writeText(text);
-  };
+  }, []);
 
-  const onBack = () => {
+  const handleViewChange = useCallback((view: AccountModalView) => {
+    setCurrentView(view);
+  }, []);
+
+  const handleModalClose = useCallback(() => {
+    close();
     setCurrentView(AccountModalView.main);
-  };
+  }, [close]);
 
-  const getViewTitle = () => {
-    switch (currentView) {
-      case AccountModalView.switchAccount:
-        return 'Switch Accounts';
-      case AccountModalView.switchChain:
-        return 'Select Networks';
-      default:
-        return null;
-    }
-  };
+  const viewTitle = useMemo(() => {
+    const titleMap = {
+      [AccountModalView.switchAccount]: SwitchAccountView.title,
+      [AccountModalView.switchChain]: SwitchChainView.title,
+      [AccountModalView.main]: null
+    };
+    return titleMap[currentView];
+  }, [currentView]);
 
-  const viewComponents = {
+  const viewComponents = useMemo(() => ({
     [AccountModalView.main]: (
       <MainView
-        chain={chain}
-        onSwitchAccount={() => setCurrentView(AccountModalView.switchAccount)}
-        onSwitchChain={() => setCurrentView(AccountModalView.switchChain)}
-        onDisconnect={handleDisconnect}
-        onCopyAddress={copyToClipboard}
+        onViewChange={handleViewChange}
+        onModalClose={handleModalClose}
       />
     ),
     [AccountModalView.switchAccount]: (
-      <SwitchAccountView
-        accounts={accounts}
-        currentAddress={address}
-        onSelectAccount={(account) => {
-          selectAccount(account);
-          setTimeout(() => setCurrentView(AccountModalView.main), 150);
-        }}
-      />
+      <SwitchAccountView />
     ),
     [AccountModalView.switchChain]: (
       <SwitchChainView />
     )
-  };
+  }), [handleViewChange, handleModalClose]);
 
   return (
     <Dialog
@@ -88,7 +74,6 @@ export const AccountDetailsModal: React.FC = () => {
         'flex flex-col w-[360px] max-h-[500px] p-[16px]  text-modalFont',
         currentView === AccountModalView.main ? 'gap-[26px]' : 'gap-[14px]'
       )}>
-        {/* Header */}
         <div className="flex items-stretch justify-between w-full">
           {currentView === AccountModalView.main ? (
             <div className="flex flex-col items-start gap-[8px] w-full">
@@ -107,11 +92,11 @@ export const AccountDetailsModal: React.FC = () => {
             </div>
           ) : (
             <>
-              <div className="flex items-center justify-center max-w-[16px] cursor-pointer" onClick={onBack}>
+              <div className="flex items-center justify-center max-w-[16px] cursor-pointer" onClick={() => handleViewChange(AccountModalView.main)}>
                 <Back className="w-full" />
               </div>
               <DialogTitle className="text-title leading-title text-modalFont font-[800] transition-opacity duration-300">
-                {getViewTitle()}
+                {viewTitle}
               </DialogTitle>
             </>
           )}
@@ -121,7 +106,6 @@ export const AccountDetailsModal: React.FC = () => {
           </DialogClose>
         </div>
 
-        {/* 视图容器 */}
         <div className="relative overflow-hidden">
           {Object.entries(viewComponents).map(([view, component]) => (
             <div

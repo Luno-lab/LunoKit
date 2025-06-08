@@ -1,24 +1,25 @@
 // components/AccountDetailsModal/MainView.tsx
 import React from 'react';
-import { cs, shortAddress } from '../../utils';
-import { Copy, Disconnect, Switch } from '../../assets/icons';
+import { cs } from '../../utils';
+import { Disconnect, Switch } from '../../assets/icons';
 import { ChainIcon } from '../ChainIcon';
-import type { AccountBalance, Chain } from '@luno-kit/core'
+import { AccountModalView } from './index'
+import {useAccount, useBalance, useChain, useDisconnect} from '@luno-kit/react'
 
 interface MainViewProps {
-  chain?: Chain;
-  onSwitchAccount: () => void;
-  onSwitchChain: () => void;
-  onDisconnect: () => void;
-  onCopyAddress: (address: string) => void;
+  onViewChange: (view: AccountModalView) => void;
+  onModalClose: () => void;
 }
 
 export const MainView: React.FC<MainViewProps> = ({
-  chain,
-  onSwitchAccount,
-  onSwitchChain,
-  onDisconnect,
+  onViewChange,
+  onModalClose,
 }) => {
+  const { address } = useAccount();
+  const { chain } = useChain();
+  const { data: balance } = useBalance({ address });
+  const { disconnect } = useDisconnect();
+
   const items = [
     {
       key: 'Chain Name',
@@ -32,7 +33,7 @@ export const MainView: React.FC<MainViewProps> = ({
           <span className="text-primary text-modalFont">{chain?.name || 'Polkadot'}</span>
         </>
       ),
-      onClick: onSwitchChain
+      onClick: () => onViewChange(AccountModalView.switchChain)
     },
     {
       key: 'Switch Account',
@@ -42,9 +43,14 @@ export const MainView: React.FC<MainViewProps> = ({
           <span className="text-primary text-modalFont">Switch Account</span>
         </>
       ),
-      onClick: onSwitchAccount
+      onClick: () => onViewChange(AccountModalView.switchAccount)
     }
   ];
+
+  const handleDisconnect = () => {
+    disconnect();
+    onModalClose();
+  };
 
   return (
     <div className="flex flex-col items-center gap-[26px] w-full">
@@ -56,7 +62,7 @@ export const MainView: React.FC<MainViewProps> = ({
         ))}
       </div>
 
-      <SelectItem onClick={onDisconnect}>
+      <SelectItem onClick={handleDisconnect}>
         <Disconnect className="w-[16px] h-[16px]" />
         <span className="font-[600] text-primary text-modalFont">Disconnect</span>
       </SelectItem>

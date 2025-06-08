@@ -1,21 +1,18 @@
 // components/AccountDetailsModal/SwitchAccountView.tsx
 import React from 'react';
-import {useActiveConnector, useBalance, useChain} from '@luno-kit/react';
+import { useAccount, useAccounts, useActiveConnector, useBalance, useChain } from '@luno-kit/react';
 import { cs } from '../../utils';
 import { formatAddress } from '@luno-kit/core';
 import type { Account } from '@luno-kit/core';
 
-interface SwitchAccountViewProps {
-  accounts: Account[];
-  currentAddress?: string;
-  onSelectAccount: (account: Account) => void;
+interface ViewComponent extends React.FC {
+  title?: string;
 }
 
-export const SwitchAccountView: React.FC<SwitchAccountViewProps> = ({
-  accounts,
-  currentAddress,
-  onSelectAccount
-}) => {
+export const SwitchAccountView: ViewComponent = () => {
+  const { accounts, selectAccount } = useAccounts();
+  const { address: currentAddress } = useAccount();
+
   return (
     <div className="flex flex-col gap-[4px] pt-[12px]">
       {accounts.map((acc) => (
@@ -23,12 +20,14 @@ export const SwitchAccountView: React.FC<SwitchAccountViewProps> = ({
           key={acc.address}
           account={acc}
           isSelected={acc.address === currentAddress}
-          selectAccount={onSelectAccount}
+          selectAccount={selectAccount}
         />
       ))}
     </div>
   );
 };
+
+SwitchAccountView.title = 'Switch Accounts';
 
 const AccountItem = ({
   isSelected,
