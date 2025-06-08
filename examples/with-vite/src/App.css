@@ -441,3 +441,85 @@
     font-size: 2rem;
   }
 }
+
+/* Simplified Hooks Reference Styles */
+.hooks-reference {
+  background: var(--bg-secondary);
+  padding: 4rem 0;
+}
+
+.hooks-reference .container {
+  max-width: 1200px;
+}
+
+.hooks-reference h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.section-subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-bottom: 3rem;
+}
+
+.hooks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.hooks-group {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.hooks-group:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.hooks-group h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.hooks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.hook-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.hook-item code {
+  background: rgba(255, 255, 255, 0.1);
+  color: #64ffda;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.hook-item span {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.875rem;
+  margin-left: 0.5rem;
+}

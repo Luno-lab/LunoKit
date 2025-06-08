@@ -389,6 +389,103 @@ import { LunoProvider } from '@luno-kit/react';
           </div>
         </div>
       </section>
+
+      {/* Hooks API Reference Section */}
+      <section className="hooks-reference">
+        <div className="container">
+          <h2>Available Hooks</h2>
+          <p className="section-subtitle">
+            All React hooks provided by @luno-kit/react
+          </p>
+
+          <div className="hooks-grid">
+
+            {/* Connection */}
+            <div className="hooks-group">
+              <h3>🔌 Connection</h3>
+              <div className="hooks-list">
+                <div className="hook-item">
+                  <code>useStatus()</code>
+                  <span>Get wallet connection status</span>
+                </div>
+                <div className="hook-item">
+                  <code>useDisconnect()</code>
+                  <span>Disconnect wallet</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Account */}
+            <div className="hooks-group">
+              <h3>👤 Account</h3>
+              <div className="hooks-list">
+                <div className="hook-item">
+                  <code>useAccount()</code>
+                  <span>Get current account</span>
+                </div>
+                <div className="hook-item">
+                  <code>useAccounts()</code>
+                  <span>Get all accounts</span>
+                </div>
+                <div className="hook-item">
+                  <code>useBalance()</code>
+                  <span>Get account balance</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Chain */}
+            <div className="hooks-group">
+              <h3>🔗 Chain</h3>
+              <div className="hooks-list">
+                <div className="hook-item">
+                  <code>useChain()</code>
+                  <span>Get current chain</span>
+                </div>
+                <div className="hook-item">
+                  <code>useChains()</code>
+                  <span>Get all chains</span>
+                </div>
+                <div className="hook-item">
+                  <code>useSwitchChain()</code>
+                  <span>Switch chains</span>
+                </div>
+                <div className="hook-item">
+                  <code>useApi()</code>
+                  <span>Get API instance</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Transaction */}
+            <div className="hooks-group">
+              <h3>💸 Transaction</h3>
+              <div className="hooks-list">
+                <div className="hook-item">
+                  <code>useSignMessage()</code>
+                  <span>Sign messages</span>
+                </div>
+                <div className="hook-item">
+                  <code>useSendTransaction()</code>
+                  <span>Send transactions</span>
+                </div>
+              </div>
+            </div>
+
+            {/* UI */}
+            <div className="hooks-group">
+              <h3>🎨 UI</h3>
+              <div className="hooks-list">
+                <div className="hook-item">
+                  <code>useLunoTheme()</code>
+                  <span>Control theme</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
