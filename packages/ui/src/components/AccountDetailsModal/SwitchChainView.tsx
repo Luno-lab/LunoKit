@@ -1,5 +1,5 @@
 import React from 'react'
-import { ChainSelector } from '../ChainSelector'
+import { ChainList } from '../ChainList'
 
 interface ViewComponent extends React.FC {
   title?: string;
@@ -8,7 +8,7 @@ interface ViewComponent extends React.FC {
 export const SwitchChainView: ViewComponent = () => {
   return (
     <div className={'flex flex-col gap-[14px] '}>
-      <ChainSelector showTitle={false}/>
+      <ChainList />
     </div>
   )
 }
