@@ -4,11 +4,12 @@ import type { Account, Signer } from '../types';
 import type {Injected, InjectedAccount, Unsubcall} from '@polkadot/extension-inject/types';
 import { stringToHex } from '@polkadot/util';
 import { mapInjectedAccounts } from '../utils'
+import { polkadotjsSVG } from '../config/logos/generated'
 
 export class PolkadotJsConnector extends BaseConnector {
   readonly id = 'polkadot-js';
   readonly name = 'Polkadot{.js}';
-  readonly icon = 'https://polkadot.js.org/docs/img/logo.svg'; // 或其他官方图标
+  readonly icon = polkadotjsSVG;
 
   /** 存储账户订阅取消函数 */
   private unsubscribe: Unsubcall | null = null;

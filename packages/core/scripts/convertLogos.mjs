@@ -36,7 +36,7 @@ function makeContents(exportName, base64Data) {
   return `${HEADER}export const ${exportName} = '${base64Data}';\n`;
 }
 
-const logosDir = path.join(__dirname, '../src/chains/logos');
+const logosDir = path.join(__dirname, '../src/config/logos');
 const generatedDir = path.join(logosDir, 'generated');
 
 // Clean and recreate generated directory

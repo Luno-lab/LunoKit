@@ -1,5 +1,5 @@
 import type { Chain } from '../types'
-import { paseoSVG } from './logos/generated'
+import { paseoSVG } from '../config/logos/generated'
 
 export const paseo: Chain = {
   genesisHash: '0x74300973617e2936e22d46e94fee5016a1a514747ae108277b770d02b47d37d9',

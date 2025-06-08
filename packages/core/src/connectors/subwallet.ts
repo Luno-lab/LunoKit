@@ -4,11 +4,12 @@ import type { Account, Signer } from '../types';
 import { stringToHex } from '@polkadot/util';
 import {mapInjectedAccounts} from '../utils'
 import type {Injected, InjectedAccount, Unsubcall} from '@polkadot/extension-inject/types';
+import { subwalletSVG } from '../config/logos/generated'
 
 export class SubWalletConnector extends BaseConnector {
   readonly id = 'subwallet-js';
   readonly name = 'SubWallet';
-  readonly icon = 'https://pbs.twimg.com/profile_images/1651520550295212037/YUKs0gC5_400x400.jpg'; // 替换为 SubWallet 的真实图标
+  readonly icon = subwalletSVG;
 
   /** 存储账户订阅取消函数 */
   private unsubscribe: Unsubcall | null = null;
