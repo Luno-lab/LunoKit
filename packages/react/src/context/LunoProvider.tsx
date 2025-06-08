@@ -128,6 +128,10 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
       newApi.on('disconnected', handleApiDisconnected);
       newApi.on('connected', handleApiConnected);
 
+      if (!provider.isConnected) {
+        console.log('[LunoProvider] Provider not connected, waiting for connection...');
+        provider.connect();
+      }
     } catch (error: any) {
       _setApi(undefined);
       _setIsApiReady(false);
@@ -137,7 +141,6 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
 
     // --- 清理函数 ---
     return () => {
-      console.log('[LunoProvider] Cleanup function running.');
       if (currentApiInstance) {
         const instanceToClean = currentApiInstance;
         console.log(`[LunoProvider] Cleaning up ApiPromise instance: ${instanceToClean.runtimeChain?.toString()}`);
