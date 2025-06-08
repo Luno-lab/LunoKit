@@ -1,8 +1,9 @@
 import React, {useMemo, useState} from 'react'
 import { cs } from '../../utils'
-import { useChain, useChains, useSwitchChain } from '@luno-kit/react'
+import { useApi, useChain, useChains, useSwitchChain } from '@luno-kit/react'
 import type { Chain } from '@luno-kit/core'
-import {ChainIcon} from '../ChainIcon'
+import { ChainIcon } from '../ChainIcon'
+import {Loading} from '../../assets/icons'
 
 enum ChainFilter {
   all = 'All',
@@ -20,8 +21,10 @@ export const ChainList: React.FC = () => {
   const { chain: currentChain } = useChain();
   const chains = useChains();
   const { switchChain } = useSwitchChain();
+  const { isApiReady } = useApi()
 
   const [activeFilter, setActiveFilter] = useState<ChainFilter>(ChainFilter.all);
+  const [switchingChain, setSwitchingChain] = useState<string | null>(null);
 
   const filteredChains = useMemo(() => {
     switch (activeFilter) {
@@ -37,11 +40,15 @@ export const ChainList: React.FC = () => {
 
   const handleChainSelect = async (chain: Chain) => {
     if (chain.genesisHash === currentChain?.genesisHash) return;
+    if (!isApiReady) return
 
+    setSwitchingChain(chain.genesisHash);
     try {
       await switchChain(chain.genesisHash);
     } catch (error) {
       console.error('Failed to switch chain:', error);
+    } finally {
+      setSwitchingChain(null);
     }
   };
 
@@ -71,15 +78,16 @@ export const ChainList: React.FC = () => {
             chain={chain}
             isSelected={chain.genesisHash === currentChain?.genesisHash}
             onSelect={handleChainSelect}
+            isLoading={switchingChain === chain.genesisHash || !isApiReady}
           />
         ))}
       </div>
 
       {filteredChains.length === 0 && (
         <div className="flex items-center justify-center py-12">
-            <span className="text-secondaryFont text-sm">
-              No {activeFilter === ChainFilter.all ? 'chains' : activeFilter.toLowerCase()} available
-            </span>
+          <span className="text-secondaryFont text-sm">
+            No {activeFilter === ChainFilter.all ? 'chains' : activeFilter.toLowerCase()} available
+          </span>
         </div>
       )}
     </>
@@ -89,24 +97,28 @@ export const ChainList: React.FC = () => {
 interface ChainItemProps {
   chain: Chain;
   isSelected: boolean;
+  isLoading: boolean;
   onSelect: (chain: Chain) => void;
 }
 
 const ChainItem: React.FC<ChainItemProps> = ({
   chain,
   isSelected,
+  isLoading,
   onSelect
 }) => {
   return (
     <button
       onClick={() => onSelect(chain)}
-      disabled={isSelected}
+      disabled={isSelected || isLoading}
       className={cs(
         'flex items-center justify-between p-[8px] bg-connectorItemBackground rounded-sm',
         'transition-transform',
-        isSelected
-          ? 'cursor-auto'
-          : 'cursor-pointer hover:opacity-90 active:scale-[0.95]'
+        isSelected || isLoading
+          ? 'cursor-default'
+          : 'cursor-pointer hover:opacity-90 active:scale-[0.95]',
+        isLoading && 'opacity-80'
+
       )}
     >
       <div className="flex items-center gap-[8px]">
@@ -123,12 +135,19 @@ const ChainItem: React.FC<ChainItemProps> = ({
         </div>
       </div>
 
-      {isSelected && (
-        <div
-          className={'border-[1px] border-solid border-accentFont rounded-full overflow-hidden flex items-center justify-center w-[18px] h-[18px]'}>
-          <div className={'rounded-full bg-accentFont w-[10px] h-[10px]'}/>
-        </div>
-      )}
+      {isSelected
+        ? isLoading
+          ? <Loading className={'w-[16px] h-[16px] text-secondaryFont animate-[spin_2s_linear_infinite]'}/>
+          : (
+              <div className={'ripple-effect'}>
+                <div
+                  className="border-[1px] border-solid border-accentFont rounded-full overflow-hidden flex items-center justify-center w-[16px] h-[16px] relative z-10">
+                  <div className="rounded-full bg-accentFont w-[8px] h-[8px]"/>
+                </div>
+              </div>)
+        : null
+      }
+
     </button>
   );
 };
