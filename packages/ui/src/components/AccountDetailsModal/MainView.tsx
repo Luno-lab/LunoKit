@@ -1,7 +1,7 @@
 // components/AccountDetailsModal/MainView.tsx
-import React from 'react';
+import React, {useMemo} from 'react';
 import { cs } from '../../utils';
-import { Disconnect, Switch } from '../../assets/icons';
+import {Arrow, Disconnect, List, Switch} from '../../assets/icons';
 import { ChainIcon } from '../ChainIcon';
 import { AccountModalView } from './index'
 import {useAccount, useBalance, useChain, useDisconnect} from '@luno-kit/react'
@@ -20,32 +20,50 @@ export const MainView: React.FC<MainViewProps> = ({
   const { data: balance } = useBalance({ address });
   const { disconnect } = useDisconnect();
 
-  const items = [
-    {
-      key: 'Chain Name',
-      content: (
-        <>
-          <ChainIcon
-            className="w-[24px] h-[24px]"
-            chainIconUrl={chain?.chainIconUrl}
-            chainName={chain?.name}
-          />
-          <span className="text-primary text-modalFont">{chain?.name || 'Polkadot'}</span>
-        </>
-      ),
-      onClick: () => onViewChange(AccountModalView.switchChain)
-    },
-    {
-      key: 'Switch Account',
-      content: (
-        <>
-          <Switch className="w-[16px] h-[16px]" />
-          <span className="text-primary text-modalFont">Switch Account</span>
-        </>
-      ),
-      onClick: () => onViewChange(AccountModalView.switchAccount)
-    }
-  ];
+  const items = useMemo(() => {
+    return [
+      {
+        key: 'Chain Name',
+        content: (
+          <div className={'flex items-stretch w-full justify-between'}>
+            <div className={'flex items-center gap-[8px]'}>
+              <ChainIcon
+                className="w-[20px] h-[20px]"
+                chainIconUrl={chain?.chainIconUrl}
+                chainName={chain?.name}
+              />
+              <span className="text-primary text-modalFont">{chain?.name || 'Polkadot'}</span>
+            </div>
+            <div
+              onClick={ () => onViewChange(AccountModalView.switchChain)}
+              className={'flex items-center justify-center cursor-pointer'}>
+              <Arrow className={'w-[16px] h-[16px] '} />
+            </div>
+          </div>
+        ),
+      },
+      {
+        key: 'View on Explorer',
+        content: (
+          <>
+            <List className="w-[16px] h-[16px]" />
+            <span className="text-primary text-modalFont">View on Explorer</span>
+          </>
+        ),
+        onClick: () => window.open(chain?.blockExplorers?.default?.url!)
+      },
+      {
+        key: 'Switch Account',
+        content: (
+          <>
+            <Switch className="w-[16px] h-[16px]" />
+            <span className="text-primary text-modalFont">Switch Account</span>
+          </>
+        ),
+        onClick: () => onViewChange(AccountModalView.switchAccount)
+      }
+    ];
+  }, [onViewChange, chain])
 
   const handleDisconnect = () => {
     disconnect();
@@ -64,7 +82,7 @@ export const MainView: React.FC<MainViewProps> = ({
 
       <SelectItem onClick={handleDisconnect}>
         <Disconnect className="w-[16px] h-[16px]" />
-        <span className="font-[600] text-primary text-modalFont">Disconnect</span>
+        <span className="font-[500] text-primary text-modalFont">Disconnect</span>
       </SelectItem>
     </div>
   );
@@ -77,7 +95,8 @@ const SelectItem = ({ children, onClick }: { children: React.ReactNode; onClick?
       className={cs(
         'cursor-pointer bg-connectorItemBackground p-[14px] w-full rounded-sm border-none',
         'hover:opacity-90 transition-transform active:scale-[0.95]',
-        'text-left flex items-center gap-[8px] font-[600]'
+        'text-left flex items-center gap-[8px] font-[500]',
+        onClick ? 'cursor-pointer' : 'cursor-auto'
       )}
     >
       {children}

@@ -8,14 +8,14 @@
 }
 
 [data-theme='light'] {
-  --color-primaryFont: #FFFFFF;
-  --color-accentFont: #8A6EAC;
+  --color-primaryFont: #211F26;
+  --color-accentFont: #3385FF;
   --color-secondaryFont: rgba(60, 66, 66, 0.6);
   --color-modal-bg: white;
-  --color-connectorItemBackground: #F0F0F0;
-  --color-connectButtonBackground: #0E76FD;
-  --shadow-connectButton: 0px 4px 12px rgba(0, 0, 0, 0.1);
-  --shadow-accountButton: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  --color-connectorItemBackground: #F1EFF3;
+  --color-connectButtonBackground: #F1EFF3;
+  --shadow-connectButton: 0px 10px 20px 0px rgba(0,0,0,0.1);
+  --shadow-accountButton: 00px 10px 20px 0px rgba(0,0,0,0.1);
   --color-deepBackground: #f6f6f6;
   --color-chainButton: #FFFFFF;
 
@@ -68,8 +68,8 @@
   --leading-accent: 18px;
 
   --shadow-primary: 0px 10px 20px 0px rgba(0,0,0,0.1);
-  --radius-primary: 6px;
-  --radius-sm: 4px;
+  --radius-primary: 8px;
+  --radius-sm: 6px;
 
   --color-primaryFont: var(--color-primaryFont);
   --color-accentFont: var(--color-accentFont);

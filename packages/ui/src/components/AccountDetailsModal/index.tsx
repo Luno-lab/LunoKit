@@ -1,13 +1,14 @@
 // components/AccountDetailsModal/index.tsx
 import React, {useCallback, useMemo, useState} from 'react';
-import { useAccount, useAccounts, useBalance, useChain, useDisconnect } from '@luno-kit/react';
+import { useAccount, useBalance, useChain } from '@luno-kit/react';
 import { Dialog, DialogClose, DialogTitle } from '../Dialog';
 import { cs, shortAddress } from '../../utils';
 import { useAccountModal } from '../../providers/ModalContext';
-import { Close, Copy, Back } from '../../assets/icons';
+import { Close, Back } from '../../assets/icons';
 import { MainView } from './MainView';
 import { SwitchAccountView } from './SwitchAccountView';
 import { SwitchChainView } from './SwitchChainView';
+import {Copy} from '../Copy'
 
 export enum AccountModalView {
   main = 'main',
@@ -22,10 +23,6 @@ export const AccountDetailsModal: React.FC = () => {
   const { data: balance } = useBalance({ address });
 
   const [currentView, setCurrentView] = useState<AccountModalView>(AccountModalView.main);
-
-  const copyToClipboard = useCallback((text: string) => {
-    navigator.clipboard.writeText(text);
-  }, []);
 
   const handleViewChange = useCallback((view: AccountModalView) => {
     setCurrentView(view);
@@ -81,10 +78,7 @@ export const AccountDetailsModal: React.FC = () => {
                 <span className="text-primary leading-primary text-modalFont font-[600]">
                   {shortAddress(address)}
                 </span>
-                <Copy
-                  className="w-[13px] h-[13px] cursor-pointer"
-                  onClick={() => address && copyToClipboard(address)}
-                />
+                <Copy copyText={address}/>
               </div>
               <div className="text-secondaryFont leading-secondary text-secondary font-[500]">
                 {balance?.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}

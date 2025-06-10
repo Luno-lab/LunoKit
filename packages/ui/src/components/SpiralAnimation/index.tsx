@@ -9,7 +9,7 @@ export interface SpiralAnimationProps {
 }
 
 export const SpiralAnimation: React.FC<SpiralAnimationProps> = ({
-  size = 140,
+  size = 160,
   dotCount = 300,
   duration = 3,
   className = ''
@@ -80,7 +80,7 @@ export const SpiralAnimation: React.FC<SpiralAnimationProps> = ({
   return (
     <div
       ref={containerRef}
-      className={cs('text-modalFont inline-flex w-full h-full justify-center align-center', className)}
+      className={cs('text-accentFont inline-flex w-full h-full justify-center align-center', className)}
     />
   );
 };

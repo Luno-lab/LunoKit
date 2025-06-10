@@ -43,9 +43,8 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
   }, [closeConnectModal, closeAccountModal, closeChainModal]);
 
   useEffect(() => {
-    if (connectionStatus === ConnectionStatus.Connected) closeConnectModal();
     if (connectionStatus === ConnectionStatus.Disconnected) { closeAccountModal(); closeChainModal(); }
-  }, [connectionStatus, closeConnectModal, closeAccountModal, closeChainModal]);
+  }, [connectionStatus, closeAccountModal, closeChainModal]);
 
 
   const contextValue = useMemo(() => ({

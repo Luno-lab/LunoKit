@@ -27,7 +27,11 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
   const moreConnectors = connectors.filter(c => !c.isInstalled())
 
-  const handleConnect = (connectorId: string) => connect(connectorId)
+  const handleConnect = async (connector: Connector) => {
+    setSelectedConnector(connector)
+    await connect(connector.id)
+    _onOpenChange(false)
+  }
 
   const _onOpenChange = (open: boolean) => {
     !open && close()
@@ -58,22 +62,21 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
               <div className={'text-primary text-modalFont font-[700] leading-primary'}>Installed</div>
               <div className={'flex flex-col items-start gap-[4px] w-full'}>
                 {installedConnectors.map(i => (
-                  <ConnectorItem key={i.id} connector={i} onConnect={() => {
-                    setSelectedConnector(i)
-                    handleConnect(i.id)
-                  }}/>
+                  <ConnectorItem key={i.id} connector={i} onConnect={() => handleConnect(i)}/>
                 ))}
               </div>
             </div>
 
-            <div className={'flex flex-col items-start gap-[12px] w-full'}>
-              <div className={'text-primary text-modalFont font-[700] leading-primary'}>Uninstalled</div>
-              <div className={'flex flex-col items-start gap-[4px] w-full'}>
-                {moreConnectors.map(i => (
-                  <ConnectorItem key={i.id} connector={i} onConnect={() => connect(i.id)}/>
-                ))}
+            {moreConnectors.length > 0 && (
+              <div className={'flex flex-col items-start gap-[12px] w-full'}>
+                <div className={'text-primary text-modalFont font-[700] leading-primary'}>More</div>
+                <div className={'flex flex-col items-start gap-[4px] w-full'}>
+                  {moreConnectors.map(i => (
+                    <ConnectorItem key={i.id} connector={i} onConnect={() => handleConnect(i)}/>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
         </div>
@@ -111,18 +114,18 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
                         'rounded-sm focus:outline-none py-[4px] px-[12px] cursor-pointer font-[600] text-primaryFont bg-connectButtonBackground shadow-connectButton active:scale-[0.95]',
                         transitionClassName
                       )}
-                      onClick={() => handleConnect(selectedConnector.id)}>
+                      onClick={() => handleConnect(selectedConnector)}>
                       Retry
                     </button>
                   )}
                 </>
               ) : (
                 <>
-                  <div className={'w-[200px] h-[140px] mb-[16px]'}>
+                  <div className={'w-[160px] h-[160px] mb-[16px]'}>
                     <SpiralAnimation />
                   </div>
 
-                  <p className={'cursor-pointer pb-[10px] text-primary leading-primary text-accentFont font-[700] text-center'}>
+                  <p className={'cursor-pointer pb-[16px] text-primary leading-primary text-accentFont font-[700] text-center'}>
                     New to wallets?
                   </p>
                   <p className={'text-secondaryFont text-secondary leading-secondary font-[500] text-center'}>
