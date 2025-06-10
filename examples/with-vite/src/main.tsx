@@ -18,7 +18,7 @@ const lunoConfig = createConfig({
     [polkadot.genesisHash]: wsProvider('wss://polkadot.api.onfinality.io/public-ws'),
     [kusama.genesisHash]: wsProvider('wss://kusama-rpc.polkadot.io'),
     [westend.genesisHash]: wsProvider('wss://westend-rpc.polkadot.io'),
-    [paseo.genesisHash]: wsProvider('wss://paseo.rpc.amforc.com')
+    [paseo.genesisHash]: wsProvider('wss://pas-rpc.stakeworld.io')
   }
 });
 
