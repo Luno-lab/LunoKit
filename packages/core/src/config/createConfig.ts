@@ -7,7 +7,6 @@ import type {
   RawStorage,
 } from '../types';
 import { createStorage } from './createStorage'
-import { wsProvider } from './providers'
 
 const noopStorage: RawStorage = {
   getItem: async (_key: string) => null,
@@ -28,7 +27,7 @@ function generateTransportsFromChains(chains: readonly Chain[]): Record<string, 
   for (const chain of chains) {
     const wsUrl = chain.rpcUrls.webSocket?.[0];
     if (wsUrl) {
-      transports[chain.genesisHash] = wsProvider(wsUrl);
+      transports[chain.genesisHash] = wsUrl;
     } else {
       console.warn(`No WebSocket URL found for chain "${chain.name}" (${chain.genesisHash}). Skipping transport generation.`);
     }

@@ -25,7 +25,8 @@ export interface LunoStorage {
  * 定义如何连接到特定链的节点。
  * 可以是 WsProvider 或 HttpProvider 的实例。
  */
-export type Transport = WsProvider;
+// export type Transport = WsProvider;
+export type Transport = string;
 
 type LunoApiOptions = Pick<ApiOptions,
   | 'registry'
