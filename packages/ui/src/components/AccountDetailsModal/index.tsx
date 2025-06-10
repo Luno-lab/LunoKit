@@ -89,7 +89,7 @@ export const AccountDetailsModal: React.FC = () => {
               <div className="flex items-center justify-center max-w-[16px] cursor-pointer" onClick={() => handleViewChange(AccountModalView.main)}>
                 <Back className="w-full" />
               </div>
-              <DialogTitle className="text-title leading-title text-modalFont font-[800] transition-opacity duration-300">
+              <DialogTitle className="text-title leading-title text-modalFont font-[600] transition-opacity duration-300">
                 {viewTitle}
               </DialogTitle>
             </>

@@ -47,7 +47,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
           isWide && 'border-r-[1px] border-r-solid border-r-modalLine'
           )}>
           <div className={'flex items-center justify-between'}>
-            <DialogTitle className="text-title leading-title text-modalFont font-[800] pb-[24px]">
+            <DialogTitle className="text-title leading-title text-modalFont font-[700] pb-[24px]">
               Connect Wallet
             </DialogTitle>
             {!isWide && (
@@ -59,7 +59,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
           <div className={'flex flex-col items-start gap-[16px] w-full'}>
             <div className={'flex flex-col items-start gap-[12px] w-full'}>
-              <div className={'text-primary text-modalFont font-[700] leading-primary'}>Installed</div>
+              <div className={'text-primary text-modalFont font-[600] leading-primary'}>Installed</div>
               <div className={'flex flex-col items-start gap-[4px] w-full'}>
                 {installedConnectors.map(i => (
                   <ConnectorItem key={i.id} connector={i} onConnect={() => handleConnect(i)}/>
@@ -69,7 +69,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
             {moreConnectors.length > 0 && (
               <div className={'flex flex-col items-start gap-[12px] w-full'}>
-                <div className={'text-primary text-modalFont font-[700] leading-primary'}>More</div>
+                <div className={'text-primary text-modalFont font-[600] leading-primary'}>More</div>
                 <div className={'flex flex-col items-start gap-[4px] w-full'}>
                   {moreConnectors.map(i => (
                     <ConnectorItem key={i.id} connector={i} onConnect={() => handleConnect(i)}/>
@@ -99,7 +99,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
                   <div className={'w-[102px] h-[102px] pb-[8px]'}>
                     <img src={selectedConnector.icon} className={'w-full h-full'} alt=""/>
                   </div>
-                  <p className={'pb-[10px] text-primary leading-primary text-modalFont font-[700]'}>
+                  <p className={'pb-[10px] text-primary leading-primary text-modalFont font-[600]'}>
                     Opening {selectedConnector.name}...
                   </p>
                   <p className={'pb-[10px] text-secondaryFont text-secondary leading-secondary font-[500]'}>
@@ -167,7 +167,7 @@ const ConnectorItem: React.FC<ConnectorItemProps> = ({ connector, onConnect }) =
         />
       </div>
 
-      <span className="font-[700] leading-primary text-primary text-modalFont">{connector.name}</span>
+      <span className="font-[600] leading-primary text-primary text-modalFont">{connector.name}</span>
     </button>
   );
 };

@@ -129,7 +129,7 @@ const ChainItem: React.FC<ChainItemProps> = ({
         />
 
         <div className="flex flex-col items-start">
-          <span className="font-[600] text-primary text-modalFont leading-primary">
+          <span className="font-[500] text-primary text-modalFont leading-primary">
             {chain.name}
           </span>
         </div>

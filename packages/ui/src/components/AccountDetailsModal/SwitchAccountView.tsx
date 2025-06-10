@@ -58,7 +58,7 @@ const AccountItem = ({
           {connector?.icon && <img src={connector?.icon} alt="luno account"/>}
         </div>
         <div className="flex flex-col items-start">
-          <span className="font-[700] text-secondary leading-secondary text-modalFont">
+          <span className="font-[500] text-secondary leading-secondary text-modalFont">
             {account.name || formatAddress(address)}
           </span>
           <span className="text-sm text-secondaryFont text-accent leading-accent font-[500]">
