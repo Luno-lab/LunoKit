@@ -4,6 +4,7 @@ import type { Chain, Config, Transport } from '@luno-kit/core';
 import { useLunoStore } from '../store'
 import { PERSIST_KEY } from '../constants'
 import { LunoContext, LunoContextState } from './LunoContext'
+import {wsProvider} from '@luno-kit/core'
 
 interface LunoProviderProps {
   config: Config;
@@ -49,7 +50,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
 
     const handleApiConnected = () => {
       if (currentApiInstance) {
-        console.log(`[LunoProvider] API (re)connected: ${configFromProps.transports[currentChainId!].endpoint}`);
+        console.log(`[LunoProvider] API (re)connected: ${configFromProps.transports[currentChainId!]}`);
       }
     };
 
@@ -113,7 +114,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     clearApiState()
 
     console.log(`[LunoProvider] Constructing new ApiPromise for chain: ${chainConfig.name} (${currentChainId})`);
-    const provider = transportConfig;
+    const provider = wsProvider(transportConfig);
 
     try {
       const newApi = new ApiPromise({
@@ -148,9 +149,9 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
         instanceToClean.off('disconnected', handleApiDisconnected);
         instanceToClean.off('connected', handleApiConnected);
 
-        // if (instanceToClean.isConnected) {
-          // instanceToClean.disconnect().catch(e => console.error('[LunoProvider] Error disconnecting API in cleanup:', e));
-        // }
+        if (instanceToClean.isConnected) {
+          instanceToClean.disconnect().catch(e => console.error('[LunoProvider] Error disconnecting API in cleanup:', e));
+        }
       }
       clearApiState()
     };
