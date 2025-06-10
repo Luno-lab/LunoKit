@@ -125,21 +125,32 @@
   transform: translate(-50%, -52%); /* 稍微向上偏移2% */
 }
 
-.ripple-effect {
+.status-dot-container {
   position: relative;
-  display: inline-block;
+  display: flex;
+  height: 10px; /* 10px */
+  width: 10px;  /* 10px */
 }
 
-.ripple-effect::before {
-  content: '';
+.ping-animation {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 18px;
-  height: 18px;
-  border: 1px solid var(--color-accentFont);
+  top: 0;
+  left: 0;
+  display: inline-flex;
+  height: 100%;
+  width: 100%;
   border-radius: 50%;
-  transform: translate(-50%, -50%);
-  animation: ripple 1.5s ease-out infinite;
-  opacity: 0;
+  background-color: var(--color-accentFont);
+  opacity: 0.75;
+  animation: ping 1.2s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
+
+.status-dot {
+  position: relative;
+  display: inline-flex;
+  border-radius: 50%;
+  height: 100%;
+  width: 100%;
+  background-color: var(--color-accentFont);
+}
+

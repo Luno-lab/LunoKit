@@ -139,12 +139,11 @@ const ChainItem: React.FC<ChainItemProps> = ({
         ? isLoading
           ? <Loading className={'w-[16px] h-[16px] text-secondaryFont animate-[spin_2s_linear_infinite]'}/>
           : (
-              <div className={'ripple-effect'}>
-                <div
-                  className="border-[1px] border-solid border-accentFont rounded-full overflow-hidden flex items-center justify-center w-[16px] h-[16px] relative z-10">
-                  <div className="rounded-full bg-accentFont w-[8px] h-[8px]"/>
-                </div>
-              </div>)
+            <span className="status-dot-container">
+              <span className="ping-animation"></span>
+              <span className="status-dot"></span>
+            </span>
+            )
         : null
       }
 
