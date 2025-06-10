@@ -44,7 +44,7 @@ export interface CreateConfigParameters extends LunoApiOptions {
   appName?: string; // appName 在 Parameters 中也是必需的，createConfig 会验证
   chains: readonly Chain[];
   connectors: Connector[];
-  transports: Record<string, Transport>;
+  transports?: Record<string, Transport>;
 
   // 在 Parameters 中可选，但在 Config 中会有默认值
   storage?: LunoStorage;    // 用户提供原始 RawStorage，在 Config 中会变成 LunoStorage
