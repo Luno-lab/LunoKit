@@ -137,11 +137,8 @@ To run an example locally:
 # Install dependencies
 pnpm install
 
-# Go to example directory
-cd examples/with-next
-
-# Start development server
-pnpm dev
+# Start with-vite server
+pnpm --filter with-vite dev
 ```
 
 ## API Reference
