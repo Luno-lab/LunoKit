@@ -38,7 +38,8 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
   const clearApiState = useCallback(() => {
     _setApi(undefined);
     _setIsApiConnected(false)
-  }, [_setApi, _setIsApiConnected])
+    _setIsApiReady(false)
+  }, [_setApi, _setIsApiConnected, _setIsApiReady])
 
   useEffect(() => {
     if (configFromProps) {
@@ -54,6 +55,17 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
       if (currentApiInstance) {
         _setIsApiConnected(true)
         console.log(`[LunoProvider] API (re)connected: ${configFromProps.transports[currentChainId!]}`);
+
+        currentApiInstance.isReady
+          .then(() => {
+            console.log('[LunoProvider] API confirmed ready after reconnection');
+            _setIsApiReady(true);
+            _setApiError(null);
+          })
+          .catch((error) => {
+            console.error('[LunoProvider] API failed to become ready after reconnection:', error);
+            _setApiError(error);
+          });
       }
     };
 
