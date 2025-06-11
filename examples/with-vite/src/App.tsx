@@ -27,9 +27,8 @@ const App: React.FC = () => {
   const { switchChain } = useSwitchChain();
   const { signMessageAsync, data: signMessageData } = useSignMessage();
   const { sendTransactionAsync, data: sendTransactionData, isPending: isSendingTransaction } = useSendTransaction();
-  const { api, isApiReady } = useApi();
+  const { api, isApiReady, apiError, isApiConnected } = useApi();
 
-  // 使用UI模块提供的主题系统
   const { themeMode, toggleTheme } = useLunoTheme();
 
   // 转账表单状态
@@ -351,15 +350,27 @@ const App: React.FC = () => {
               <div className="card-content">
                 <div className="api-status">
                   <div className="status-item">
-                    <span className="label">Connection:</span>
-                    <span className="status connected">
+                    <span className="label">API Ready:</span>
+                    <span className={`status ${isApiReady ? 'connected' : 'disconnected'}`}>
                       {isApiReady ? '✅ Ready' : '⏳ Loading...'}
+                    </span>
+                  </div>
+                  <div className="status-item">
+                    <span className="label">Connection:</span>
+                    <span className={`status ${isApiConnected ? 'connected' : 'disconnected'}`}>
+                      {isApiConnected ? '✅ Connected' : '❌ Disconnected'}
                     </span>
                   </div>
                   <div className="status-item">
                     <span className="label">Network:</span>
                     <span className="value">{currentChain?.name || 'None'}</span>
                   </div>
+                  {apiError && (
+                    <div className="status-item">
+                      <span className="label">Error:</span>
+                      <span className="error">{apiError.message || 'Unknown error'}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
