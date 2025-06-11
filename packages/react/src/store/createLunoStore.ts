@@ -35,6 +35,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
   currentChain: undefined,
   currentApi: undefined,
   isApiReady: false,
+  isApiConnected: false,
   apiError: null,
 
   // --- Actions ---
@@ -66,6 +67,10 @@ export const useLunoStore = create<LunoState>((set, get) => ({
 
   _setApi: (apiInstance) => {
     set({currentApi: apiInstance});
+  },
+
+  _setIsApiConnected: (isConnected) => {
+    set ({isApiConnected: isConnected})
   },
 
   _setIsApiReady: (isReady) => {

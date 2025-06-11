@@ -17,6 +17,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     _setApi,
     _setIsApiReady,
     _setApiError,
+    _setIsApiConnected,
     setAccount,
     currentChainId,
     config: configInStore,
@@ -28,6 +29,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     account,
     currentChain,
     isApiReady,
+    isApiConnected,
     apiError,
     disconnect,
     switchChain,
@@ -35,8 +37,8 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
 
   const clearApiState = useCallback(() => {
     _setApi(undefined);
-    _setIsApiReady(false);
-  }, [_setApi, _setIsApiReady])
+    _setIsApiConnected(false)
+  }, [_setApi, _setIsApiConnected])
 
   useEffect(() => {
     if (configFromProps) {
@@ -50,6 +52,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
 
     const handleApiConnected = () => {
       if (currentApiInstance) {
+        _setIsApiConnected(true)
         console.log(`[LunoProvider] API (re)connected: ${configFromProps.transports[currentChainId!]}`);
       }
     };
@@ -58,16 +61,15 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
       if (currentApiInstance) {
         console.log(`[LunoProvider] API READY: ${currentApiInstance.runtimeChain?.toString()}`);
         _setIsApiReady(true);
-        _setApiError(null); // 清除错误状态
+        _setApiError(null);
       }
     };
 
     const handleApiError = (error: any) => {
       if (currentApiInstance) {
-        _setApi(undefined);
-        _setIsApiReady(false);
+        _setIsApiConnected(false)
         _setApiError(error);
-        console.error(`[LunoProvider] API error on:`, error.target.url);
+        console.error(`[LunoProvider] API error on:`, error.target.url || error.currentTarget.url);
       }
     };
 
@@ -230,13 +232,14 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     currentChainId,
     currentChain,
     currentApi,
+    isApiConnected,
     isApiReady,
     connect,
     disconnect,
     switchChain,
     apiError,
   }), [
-    configInStore, status, activeConnector, accounts, account, currentChainId, currentChain, currentApi, isApiReady, apiError,
+    configInStore, status, activeConnector, accounts, account, currentChainId, currentChain, currentApi, isApiReady, isApiConnected, apiError,
     connect, disconnect, switchChain, setAccount
   ]);
 

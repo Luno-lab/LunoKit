@@ -17,6 +17,7 @@ export interface LunoContextState {
   currentChainId?: string;
   currentChain?: Chain;
   currentApi?: ApiPromise;
+  isApiConnected: boolean;
   isApiReady: boolean;
   apiError: Error | null;
 
