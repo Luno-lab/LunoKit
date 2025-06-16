@@ -1,52 +1,69 @@
-import { useMutation } from '@tanstack/react-query';
 import { useLuno } from './useLuno';
 import type { Connector } from '@luno-kit/core';
 import {ConnectionStatus} from '../types'
-import {useCallback} from 'react'
+import { useLunoMutation, type LunoMutationOptions } from './useLunoMutation';
+
+export interface ConnectVariables {
+  connectorId: string;
+  targetChainId?: string;
+}
+
+export type UseConnectOptions = LunoMutationOptions<
+  void,
+  Error,
+  ConnectVariables,
+  unknown
+>;
 
 export interface UseConnectResult {
-  connect: (connectorId: string, targetChainId?: string) => Promise<void>;
+  connect: (
+    variables: ConnectVariables,
+    options?: UseConnectOptions
+  ) => void;
+  connectAsync: (
+    variables: ConnectVariables,
+    options?: UseConnectOptions
+  ) => Promise<void>;
   connectors: Connector[];
   activeConnector?: Connector;
   status: ConnectionStatus;
+  data: void | undefined;
   error: Error | null;
-  isPending: boolean;
   isError: boolean;
+  isIdle: boolean;
+  isPending: boolean;
   isSuccess: boolean;
   reset: () => void;
+  variables: ConnectVariables | undefined;
 }
 
-export const useConnect = (): UseConnectResult => {
+export const useConnect = (hookLevelConfig?: UseConnectOptions): UseConnectResult => {
   const { connect, config, activeConnector, status } = useLuno();
 
-  const {
-    mutateAsync,
-    error,
-    isPending,
-    isError,
-    isSuccess,
-    reset,
-  } = useMutation({
-    mutationFn: async ({ connectorId, targetChainId }: { connectorId: string; targetChainId?: string; }) => {
-      await connect(connectorId, targetChainId);
-    },
-  });
+  const connectFn = async (variables: ConnectVariables): Promise<void> => {
+    await connect(variables.connectorId, variables.targetChainId);
+  };
 
-  const connectWrapper = useCallback(
-    (connectorId: string, targetChainId?: string) =>
-      mutateAsync({ connectorId, targetChainId }),
-    [mutateAsync]
-  );
+  const mutationResult = useLunoMutation<
+    void,
+    Error,
+    ConnectVariables,
+    unknown
+  >(connectFn, hookLevelConfig);
 
   return {
-    connect: connectWrapper,
+    connect: mutationResult.mutate,
+    connectAsync: mutationResult.mutateAsync,
     connectors: config?.connectors ? [...config.connectors] : [],
     activeConnector,
     status,
-    error: error as Error | null,
-    isPending,
-    isError,
-    isSuccess,
-    reset,
+    data: mutationResult.data,
+    error: mutationResult.error,
+    isError: mutationResult.isError,
+    isIdle: mutationResult.isIdle,
+    isPending: mutationResult.isPending,
+    isSuccess: mutationResult.isSuccess,
+    reset: mutationResult.reset,
+    variables: mutationResult.variables,
   };
 };
