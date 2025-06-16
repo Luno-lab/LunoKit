@@ -32,7 +32,7 @@ interface ModalProviderProps {
 export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
   const { isOpen: isConnectModalOpen, open: openConnectModal, close: closeConnectModal } = useModalVisibility();
   const { isOpen: isAccountModalOpen, open: openAccountModal, close: closeAccountModal } = useModalVisibility();
-  const { isOpen: isChainModalOpen, open: openChainModal, close: closeChainModal } = useModalVisibility(); // 示例
+  const { isOpen: isChainModalOpen, open: openChainModal, close: closeChainModal } = useModalVisibility();
 
   const connectionStatus = useStatus()
 
@@ -72,7 +72,6 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
   );
 };
 
-// 4. 特定 Hooks
 export const useConnectModal = (): { isOpen: boolean; open?: () => void; close: () => void } => {
   const context = useContext(ModalContext);
   if (!context) throw new Error('[ModalContext]: useConnectModal must be used within a ModalProvider');
@@ -94,7 +93,7 @@ export const useAccountModal = (): { isOpen: boolean; open?: () => void; close: 
   };
 };
 
-export const useChainModal = (): { isOpen: boolean; open?: () => void; close: () => void } => { // 示例
+export const useChainModal = (): { isOpen: boolean; open?: () => void; close: () => void } => {
   const context = useContext(ModalContext);
   if (!context) throw new Error('[ModalContext]: useChainModal must be used within a ModalProvider');
   return {

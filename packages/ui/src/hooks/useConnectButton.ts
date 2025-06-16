@@ -1,9 +1,8 @@
-// packages/ui/src/hooks/useLunoWallet.ts
 import {
   useStatus,
   useAccount,
   useChain,
-  useBalance, // 如果要集成余额
+  useBalance,
   ConnectionStatus, useChains, useActiveConnector
 } from '@luno-kit/react';
 import type { Account, Chain, AccountBalance, Connector } from '@luno-kit/core'
@@ -12,7 +11,7 @@ import {
   useAccountModal,
   useChainModal,
 } from '../providers/ModalContext';
-import {shortAddress} from '../utils' // 调整 ModalContext 的导入路径
+import {formatAddress} from '@luno-kit/core'
 
 export interface UseConnectButtonReturn {
   connectionStatus: ConnectionStatus;
@@ -41,7 +40,6 @@ export interface UseConnectButtonReturn {
   isConnectModalOpen: boolean;
   isAccountModalOpen: boolean;
   isChainModalOpen: boolean;
-  // mounted?: boolean; // 用于防止 hydration mismatch，可以稍后考虑
 }
 
 export function useLunoWallet(): UseConnectButtonReturn {
@@ -72,12 +70,12 @@ export function useLunoWallet(): UseConnectButtonReturn {
 
     account,
     address,
-    displayAddress: shortAddress(address),
+    displayAddress: formatAddress(address),
 
     currentChain,
     configuredChains,
     isChainSupported,
-    chainIconUrl: currentChain?.chainIconUrl,
+    chainIconUrl: currentChain?.chainIconUrl!,
     chainName: currentChain?.name ,
 
     balance,

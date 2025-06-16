@@ -17,7 +17,6 @@ export const MainView: React.FC<MainViewProps> = ({
 }) => {
   const { address } = useAccount();
   const { chain } = useChain();
-  const { data: balance } = useBalance({ address });
   const { disconnect } = useDisconnect();
 
   const items = useMemo(() => {

@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import { useLunoWallet } from '../../hooks';
 import { cs } from '../../utils';
 import {ChainIcon} from '../ChainIcon'
@@ -103,11 +103,9 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
             sizeConfig.chain,
             transitionClassName,
           )}>
-          {/*<div className={cs(sizeConfig.icon, 'overflow-hidden rounded-full')}>*/}
             {(chainStatus === 'full' || chainStatus === 'icon')
               ? <ChainIcon chainIconUrl={chainIconUrl} chainName={chainName} className={sizeConfig.icon}/>
               : null}
-          {/*</div>*/}
 
           {(chainStatus === 'full' || chainStatus === 'name') && (
             <span className={''}>{currentChain?.name || 'Unknown Chain'}</span>

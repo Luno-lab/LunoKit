@@ -1,14 +1,14 @@
-// components/AccountDetailsModal/index.tsx
-import React, {useCallback, useMemo, useState} from 'react';
-import {useAccount, useActiveConnector, useBalance, useChain} from '@luno-kit/react';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useAccount, useActiveConnector, useBalance, useChain } from '@luno-kit/react';
 import { Dialog, DialogClose, DialogTitle } from '../Dialog';
-import { cs, shortAddress } from '../../utils';
+import { cs } from '../../utils';
 import { useAccountModal } from '../../providers/ModalContext';
 import { Close, Back } from '../../assets/icons';
 import { MainView } from './MainView';
 import { SwitchAccountView } from './SwitchAccountView';
 import { SwitchChainView } from './SwitchChainView';
-import {Copy} from '../Copy'
+import { Copy } from '../Copy'
+import { formatAddress } from '@luno-kit/core'
 
 export enum AccountModalView {
   main = 'main',
@@ -84,7 +84,7 @@ export const AccountDetailsModal: React.FC = () => {
                 <DialogTitle className={'sr-only'}>Account Details</DialogTitle>
                 <div className="flex items-center gap-[6px] w-full">
                 <span className="text-primary leading-primary text-modalFont font-[600]">
-                  {shortAddress(address)}
+                  {formatAddress(address)}
                 </span>
                   <Copy copyText={address}/>
                 </div>

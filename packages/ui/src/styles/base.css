@@ -53,7 +53,6 @@
   --spacing-5: 20px;
   --spacing-6: 24px;
 
-  /* 文字尺寸和行高 */
   --text-sm: 14px;
   --leading-sm: 18px;
   --text-primary: 16px;
@@ -122,14 +121,14 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -52%); /* 稍微向上偏移2% */
+  transform: translate(-50%, -52%); 
 }
 
 .status-dot-container {
   position: relative;
   display: flex;
-  height: 10px; /* 10px */
-  width: 10px;  /* 10px */
+  height: 10px;
+  width: 10px;
 }
 
 .ping-animation {

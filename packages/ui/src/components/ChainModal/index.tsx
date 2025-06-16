@@ -1,4 +1,3 @@
-// packages/ui/src/components/ChainModal/index.tsx
 import React from 'react';
 import { Dialog } from '../Dialog';
 import { useChainModal } from '../../providers/ModalContext';

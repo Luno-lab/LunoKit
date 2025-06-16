@@ -7,7 +7,7 @@ import { useConnectModal } from '../../providers/ModalContext'
 import type { Connector } from '@luno-kit/core'
 import { Close, Loading } from '../../assets/icons'
 import { SpiralAnimation } from '../SpiralAnimation'
-import {transitionClassName} from '../ConnectButton'
+import { transitionClassName } from '../ConnectButton'
 
 export interface ConnectModalProps {
   size?: ModalSize;
@@ -143,7 +143,6 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
   );
 };
 
-// Connector 列表项组件
 interface ConnectorItemProps {
   connector: Connector;
   onConnect: () => void;

@@ -1,4 +1,3 @@
-// components/AccountDetailsModal/SwitchAccountView.tsx
 import React from 'react';
 import { useAccount, useAccounts, useActiveConnector, useBalance, useChain } from '@luno-kit/react';
 import { cs } from '../../utils';

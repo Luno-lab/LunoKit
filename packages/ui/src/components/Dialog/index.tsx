@@ -27,7 +27,6 @@ const DialogRoot: React.FC<DialogProps> = ({
           className={cs(
             'fixed inset-0 z-[100] bg-modalBackdrop luno-kit',
             'data-[state=open]:[animation:overlay-in_150ms_ease-out]',
-            // 'data-[state=closed]:[animation:overlay-out_100ms_ease-in]',
             overlayClassName
           )}
         />
@@ -37,7 +36,6 @@ const DialogRoot: React.FC<DialogProps> = ({
             'rounded-md bg-modal-bg shadow-primary focus:outline-none',
             'transition-all duration-200',
             'data-[state=open]:[animation:dialog-in_150ms_ease-out]',
-            // 'data-[state=closed]:[animation:dialog-out_75ms_ease-in]',
             contentClassName
           )}
         >

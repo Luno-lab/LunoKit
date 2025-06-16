@@ -33,7 +33,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children, initialT
   useEffect(() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem(THEME_STORAGE_KEY, themeMode);
-      // 关键修改：设置 data-theme 属性而不是 class
       document.documentElement.setAttribute('data-theme', themeMode);
     }
   }, [themeMode]);

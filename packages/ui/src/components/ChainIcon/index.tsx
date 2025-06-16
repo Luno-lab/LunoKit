@@ -1,5 +1,5 @@
 import React from 'react'
-import {cs} from '../../utils'
+import { cs } from '../../utils'
 
 interface ChainIconProps {
   className?: string
@@ -26,7 +26,7 @@ export const ChainIcon: React.FC<ChainIconProps> = ({ className, chainIconUrl, c
             'chain-icon-text',
             iconClassName,
           )}>
-          {chainName.split('')[0]}
+          {chainName?.split('')[0]}
         </span>}
     </div>
   )
