@@ -42,7 +42,7 @@ export function formatBalance(
  * format address display
  */
 export function formatAddress(
-  address: string,
+  address?: string,
   prefixLength = 4,
   suffixLength = 4
 ): string {
