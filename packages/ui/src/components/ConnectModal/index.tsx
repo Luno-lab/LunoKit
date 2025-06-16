@@ -18,7 +18,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 }) => {
   const { isOpen, close } = useConnectModal();
   const connectors = useConnectors();
-  const { connect, isError: connectError, isPending: isConnecting, reset: resetConnect } = useConnect()
+  const { connectAsync, isError: connectError, isPending: isConnecting, reset: resetConnect } = useConnect()
   const [selectedConnector, setSelectedConnector] = useState<Connector | null>(null)
 
   const isWide = size === 'wide';
@@ -29,7 +29,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
   const handleConnect = async (connector: Connector) => {
     setSelectedConnector(connector)
-    await connect(connector.id)
+    await connectAsync({ connectorId: connector.id })
     _onOpenChange(false)
   }
 

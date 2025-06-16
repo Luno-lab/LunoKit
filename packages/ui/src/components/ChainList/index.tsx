@@ -24,7 +24,7 @@ interface ChainListProps {
 export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched }: ChainListProps) => {
   const { chain: currentChain } = useChain();
   const chains = useChains();
-  const { switchChain } = useSwitchChain();
+  const { switchChainAsync } = useSwitchChain();
   const { isApiReady, apiError } = useApi()
 
   const [activeFilter, setActiveFilter] = useState<ChainFilter>(ChainFilter.all);
@@ -48,7 +48,7 @@ export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched }: ChainLi
 
     setSwitchingChain(chain.genesisHash);
     try {
-      await switchChain(chain.genesisHash);
+      await switchChainAsync({ chainId: chain.genesisHash });
       onChainSwitched?.(chain);
     } catch (error) {
       console.error('Failed to switch chain:', error);

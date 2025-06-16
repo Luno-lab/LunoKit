@@ -17,7 +17,7 @@ export const MainView: React.FC<MainViewProps> = ({
 }) => {
   const { address } = useAccount();
   const { chain } = useChain();
-  const { disconnect } = useDisconnect();
+  const { disconnectAsync } = useDisconnect();
 
   const items = useMemo(() => {
     return [
@@ -64,8 +64,8 @@ export const MainView: React.FC<MainViewProps> = ({
     ];
   }, [onViewChange, chain, address])
 
-  const handleDisconnect = () => {
-    disconnect();
+  const handleDisconnect = async () => {
+    await disconnectAsync();
     onModalClose();
   };
 
