@@ -1,10 +1,10 @@
-// components/AccountDetailsModal/MainView.tsx
 import React, {useMemo} from 'react';
 import { cs } from '../../utils';
-import {Arrow, Disconnect, List, Switch} from '../../assets/icons';
+import { Arrow, Disconnect, List, Switch } from '../../assets/icons';
 import { ChainIcon } from '../ChainIcon';
 import { AccountModalView } from './index'
-import {useAccount, useBalance, useChain, useDisconnect} from '@luno-kit/react'
+import { useAccount, useBalance, useChain, useDisconnect } from '@luno-kit/react'
+import { getExplorerUrl } from '@luno-kit/core'
 
 interface MainViewProps {
   onViewChange: (view: AccountModalView) => void;
@@ -35,12 +35,12 @@ export const MainView: React.FC<MainViewProps> = ({
               <span className="text-primary text-modalFont">{chain?.name || 'Polkadot'}</span>
             </div>
             <div
-              onClick={ () => onViewChange(AccountModalView.switchChain)}
-              className={'flex items-center justify-center cursor-pointer'}>
+              className={'flex items-center justify-center'}>
               <Arrow className={'w-[16px] h-[16px] '} />
             </div>
           </div>
         ),
+        onClick: () => onViewChange(AccountModalView.switchChain)
       },
       {
         key: 'View on Explorer',
@@ -50,7 +50,7 @@ export const MainView: React.FC<MainViewProps> = ({
             <span className="text-primary text-modalFont">View on Explorer</span>
           </>
         ),
-        onClick: () => window.open(chain?.blockExplorers?.default?.url!)
+        onClick: () => window.open(getExplorerUrl(chain?.blockExplorers?.default?.url!, address, 'address'))
       },
       {
         key: 'Switch Account',
@@ -63,7 +63,7 @@ export const MainView: React.FC<MainViewProps> = ({
         onClick: () => onViewChange(AccountModalView.switchAccount)
       }
     ];
-  }, [onViewChange, chain])
+  }, [onViewChange, chain, address])
 
   const handleDisconnect = () => {
     disconnect();
