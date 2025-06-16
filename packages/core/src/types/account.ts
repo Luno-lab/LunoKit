@@ -1,71 +1,71 @@
-// 账户相关类型
+// account related types
 
 import type { HexString } from '@polkadot/util/types'
 import type { KeypairType } from '@polkadot/util-crypto/types'
 
 /**
- * 波卡账户接口
- * 代表链上的一个账户
+ * Polkadot account interface
+ * Represents a chain account
  */
 export interface Account {
   /**
-   * 账户地址（从钱包获取的原始格式）
-   * 具体的 SS58 格式化应在 React 层根据链进行。
+   * account address (original format from wallet)
+   * specific SS58 formatting should be done in the React layer based on the chain.
    */
   address: string;
 
-  /** 账户名称（如果有） */
+  /** account name (if any) */
   name?: string;
 
   /**
-   * 账户公钥（十六进制格式，不带0x前缀）
-   * 用于跨链地址转换和验证
+   * account public key (hex format, without 0x prefix)
+   * used for cross-chain address conversion and verification
    */
   publicKey?: HexString;
 
   /**
-   * 其他元数据
-   * 包括账户来源、控制方式等信息
+   * other metadata
+   * including account source, control method, etc.
    */
   meta?: {
-    /** 账户来源（如 'polkadot-js', 'subwallet-js', 'talisman' 等） */
+    /** account source (e.g. 'polkadot-js', 'subwallet-js', 'talisman' etc.) */
     source?: string;
 
-    /** 创世哈希 (如果钱包提供了特定链的账户) */
+    /** genesis hash (if the wallet provides a specific chain account) */
     genesisHash?: string | null;
 
-    /** 其他自定义元数据 */
+    /** other custom metadata */
     [key: string]: any;
   };
   type?: KeypairType
 }
 
 /**
- * 账户余额信息
+ * account balance information
  */
 export interface AccountBalance {
-  /** 可用余额（以最小单位表示） */
+  /** available balance (in smallest unit) */
   free: bigint;
 
-  /** 总余额（以最小单位表示） */
+  /** total balance (in smallest unit) */
   total: bigint;
 
-  /** 冻结余额（以最小单位表示） */
+  /** reserved balance (in smallest unit) */
   reserved: bigint;
 
   /**
-   * 可转账余额（以最小单位表示）
-   * free减去各种锁定金额
+   * transferable balance (in smallest unit)
+   * free minus various locked amounts
    */
   transferable: bigint;
 
-  /** 格式化后的可用余额（带单位，用于显示） */
+  /** formatted available balance (with unit, for display) */
   formattedTransferable: string;
 
-  /** 格式化后的总余额（带单位，用于显示） */
+  /** formatted total balance (with unit, for display) */
   formattedTotal: string;
 
-  /** 锁定详情（如果有） */
+  /** lock details (if any) */
   locks?: Array<{
     id: string;
     amount: bigint;
@@ -75,33 +75,33 @@ export interface AccountBalance {
 }
 
 /**
- * SS58地址格式常量
- * 详见: https://github.com/paritytech/substrate/wiki/External-Address-Format-(SS58)
+ * SS58 address format constants
+ * see: https://github.com/paritytech/substrate/wiki/External-Address-Format-(SS58)
  */
 export enum SS58_FORMAT {
-  /** Polkadot账户 */
+  /** Polkadot account */
   POLKADOT = 0,
 
-  /** Kusama账户 */
+  /** Kusama account */
   KUSAMA = 2,
 
-  /** 通用Substrate格式（用于大多数测试网） */
+  /** general Substrate format (for most testnets) */
   SUBSTRATE = 42,
 }
 
 /**
- * 账户类型枚举
+ * account type enum
  */
 export enum ACCOUNT_TYPE {
-  /** 普通账户 */
+  /** normal account */
   NORMAL = 'normal',
 
-  /** 多签账户 */
+  /** multisig account */
   MULTISIG = 'multisig',
 
-  /** 代理账户 */
+  /** proxy account */
   PROXY = 'proxy',
 
-  /** 智能合约账户 */
+  /** smart contract account */
   CONTRACT = 'contract',
 }

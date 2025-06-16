@@ -1,4 +1,3 @@
-// packages/core/src/connectors/polkadot-js.ts
 import { BaseConnector } from './base';
 import type { Account, Signer } from '../types';
 import type {Injected, InjectedAccount, Unsubcall} from '@polkadot/extension-inject/types';
@@ -11,7 +10,6 @@ export class PolkadotJsConnector extends BaseConnector {
   readonly name = 'Polkadot{.js}';
   readonly icon = polkadotjsSVG;
 
-  /** 存储账户订阅取消函数 */
   private unsubscribe: Unsubcall | null = null;
 
   private specificInjector?: Injected = undefined
@@ -41,7 +39,6 @@ export class PolkadotJsConnector extends BaseConnector {
     }
 
     if (!window.injectedWeb3 || !window.injectedWeb3[this.id]) {
-      // this.id 就是例如 'polkadot-js'
       throw new Error(
         `The '${this.id}' extension is not installed. Please install it to connect.`
       );
@@ -61,7 +58,6 @@ export class PolkadotJsConnector extends BaseConnector {
         throw new Error(`Could not get signer from ${this.name}.`);
       }
 
-      // 2. 获取初始账户
       const rawAccounts = await this.specificInjector.accounts.get();
       if (rawAccounts.length === 0) {
         throw new Error(`No accounts found in ${this.name}. Make sure accounts are visible and access is granted.`);
@@ -69,7 +65,6 @@ export class PolkadotJsConnector extends BaseConnector {
       this.accounts = mapInjectedAccounts(rawAccounts, this.id);
       console.log(`Connector ${this.id}: Initial accounts loaded`, this.accounts);
 
-      // 3. 启动账户订阅
       await this.startSubscription();
 
       this.emit('connect', [...this.accounts]);
@@ -78,7 +73,7 @@ export class PolkadotJsConnector extends BaseConnector {
 
     } catch (error) {
       console.error(`Connector ${this.id}: Connection failed:`, error);
-      await this.cleanup(); // 清理状态
+      await this.cleanup();
       throw error;
     }
   }
@@ -86,7 +81,7 @@ export class PolkadotJsConnector extends BaseConnector {
   public async disconnect(): Promise<void> {
     console.log(`Connector ${this.id}: Disconnecting...`);
     await this.cleanup();
-    this.emit('disconnect'); // 触发 disconnect 事件
+    this.emit('disconnect');
   }
 
   public async signMessage(message: string, address: string): Promise<string | undefined> {
@@ -101,20 +96,18 @@ export class PolkadotJsConnector extends BaseConnector {
       return result.signature;
     } catch (error) {
       console.error(`Connector ${this.id}: Failed to sign message:`, error);
-      return undefined; // 用户取消或其他错误
+      return undefined; 
     }
   }
 
 
   private async startSubscription(): Promise<void> {
-    await this.cleanupSubscription(); // 清理旧订阅
-
+    await this.cleanupSubscription();
     if (!this.specificInjector) {
       throw new Error(`Connector ${this.id}: Cannot subscribe, specificInjector not available.`);
     }
 
     try {
-      // 明确只订阅自己的来源
       this.unsubscribe = this.specificInjector.accounts.subscribe(
         (updatedRawAccounts: InjectedAccount[]) => {
           const newAccounts = mapInjectedAccounts(updatedRawAccounts, this.id);
@@ -131,9 +124,6 @@ export class PolkadotJsConnector extends BaseConnector {
     }
   }
 
-  /**
-   * 内部方法：清理订阅
-   */
   private async cleanupSubscription(): Promise<void> {
     if (this.unsubscribe) {
       this.unsubscribe();
@@ -142,9 +132,7 @@ export class PolkadotJsConnector extends BaseConnector {
     }
   }
 
-  /**
-   * 内部方法：用于 disconnect 时清理所有状态
-   */
+
   private async cleanup(): Promise<void> {
     await this.cleanupSubscription();
     this.accounts = [];

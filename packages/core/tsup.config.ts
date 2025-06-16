@@ -22,11 +22,16 @@ export default defineConfig(options => ({
     '@walletconnect/utils'
   ],
   dts: {
-    resolve: true, // 可选，但有助于解析类型依赖
+    resolve: true,
     compilerOptions: {
-      composite: false, // <--- 关键：仅在 DTS 构建时禁用 composite
+      composite: false,
     },
   },
   tsconfig: './tsconfig.json',
   minify: !options.watch,
+  esbuildOptions(options) {
+    if (!options.watch) {
+      options.drop = ['console', 'debugger']
+    }
+  }
 }));

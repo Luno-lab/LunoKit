@@ -1,7 +1,6 @@
-// --- Connector 接口 (如果还没定义或想放在这里) ---
-import type { EventEmitter } from 'eventemitter3'; // 改为使用 eventemitter3
-import type { Account } from './account'; // 假设 Account 在 account.ts
-import type { Signer } from './signer';   // 假设 Signer 在 signer.ts
+import type { EventEmitter } from 'eventemitter3';
+import type { Account } from './account';
+import type { Signer } from './signer';
 
 export interface Connector extends EventEmitter {
   readonly id: string;

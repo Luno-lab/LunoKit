@@ -87,7 +87,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     autoConnect,
   };
 
-  console.log('Luno Core Config created:', config);
+  console.log('[createConfig]: Luno Core Config created:', config);
 
   return config;
 }

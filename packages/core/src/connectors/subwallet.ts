@@ -1,4 +1,3 @@
-// packages/core/src/connectors/subwallet.ts
 import { BaseConnector } from './base';
 import type { Account, Signer } from '../types';
 import { stringToHex } from '@polkadot/util';
@@ -11,7 +10,6 @@ export class SubWalletConnector extends BaseConnector {
   readonly name = 'SubWallet';
   readonly icon = subwalletSVG;
 
-  /** 存储账户订阅取消函数 */
   private unsubscribe: Unsubcall | null = null;
   private specificInjector?: Injected = undefined
 
@@ -63,7 +61,6 @@ export class SubWalletConnector extends BaseConnector {
         throw new Error(`Could not get signer from ${this.name}.`);
       }
 
-      // 2. 获取初始账户
       const rawAccounts = await this.specificInjector.accounts.get();
       if (rawAccounts.length === 0) {
         throw new Error(`No accounts found in ${this.name}. Make sure accounts are visible and access is granted.`);
@@ -71,10 +68,8 @@ export class SubWalletConnector extends BaseConnector {
       this.accounts = mapInjectedAccounts(rawAccounts, this.id);
       console.log(`Connector ${this.id}: Initial accounts loaded`, this.accounts);
 
-      // 3. 启动账户订阅 (使用 this.id)
       await this.startSubscription();
 
-      // （可选）触发 connect 事件
       this.emit('connect', [...this.accounts]);
 
       return [...this.accounts];
@@ -86,16 +81,12 @@ export class SubWalletConnector extends BaseConnector {
     }
   }
 
-  // 实现 disconnect
   public async disconnect(): Promise<void> {
     console.log(`Connector ${this.id}: Disconnecting...`);
     await this.cleanup();
-    this.emit('disconnect'); // 触发 disconnect 事件
+    this.emit('disconnect'); 
   }
 
-  // getAccounts 和 getSigner 由 BaseConnector 提供
-
-  // 实现 signMessage
   public async signMessage(message: string, address: string): Promise<string | undefined> {
     const signer = await this.getSigner();
     if (!signer?.signRaw) {
@@ -111,13 +102,10 @@ export class SubWalletConnector extends BaseConnector {
       return result.signature;
     } catch (error) {
       console.error(`Connector ${this.id}: Failed to sign message:`, error);
-      return undefined; // 用户取消或其他错误
+      return undefined;
     }
   }
 
-  /**
-   * 内部方法：启动特定于此连接器的账户订阅
-   */
   private async startSubscription(): Promise<void> {
     await this.cleanupSubscription();
 
@@ -126,7 +114,6 @@ export class SubWalletConnector extends BaseConnector {
     }
 
     try {
-      // 明确只订阅自己的来源
       this.unsubscribe = this.specificInjector.accounts.subscribe(
         (updatedRawAccounts: InjectedAccount[]) => {
           const newAccounts = mapInjectedAccounts(updatedRawAccounts, this.id);
@@ -143,9 +130,6 @@ export class SubWalletConnector extends BaseConnector {
     }
   }
 
-  /**
-   * 内部方法：清理订阅
-   */
   private async cleanupSubscription(): Promise<void> {
     if (this.unsubscribe) {
       this.unsubscribe();
@@ -153,10 +137,7 @@ export class SubWalletConnector extends BaseConnector {
       console.log(`Connector ${this.id}: Unsubscribed from account changes.`);
     }
   }
-
-  /**
-   * 内部方法：用于 disconnect 时清理所有状态
-   */
+  
   private async cleanup(): Promise<void> {
     await this.cleanupSubscription();
     this.accounts = [];

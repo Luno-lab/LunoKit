@@ -9,7 +9,7 @@ import path from 'node:path'
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const MAX_SIZE = 48 * 1024; // 48KB limit
+const MAX_SIZE = 48 * 1024;
 
 const HEADER = '// Copyright 2024 Luno contributors\n// SPDX-License-Identifier: Apache-2.0\n\n// Do not edit. Auto-generated via node scripts/convertLogos.mjs\n\n';
 
