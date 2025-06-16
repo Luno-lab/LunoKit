@@ -29,7 +29,7 @@ export default defineConfig(options => ({
   },
   tsconfig: './tsconfig.json',
   minify: !options.watch,
-  esbuildOptions(options) {
+  esbuildOptions() {
     if (!options.watch) {
       options.drop = ['console', 'debugger']
     }
