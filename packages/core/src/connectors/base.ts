@@ -69,7 +69,7 @@ export abstract class BaseConnector extends EventEmitter {
    * @returns the current available accounts list
    */
   public async getAccounts(): Promise<Array<Account>> {
-    return [...this.accounts]; // 返回缓存账户的拷贝
+    return [...this.accounts];
   }
 
   /**

@@ -17,7 +17,7 @@ export const useAccount = (): UseAccountResult => {
     if (!currentChain || currentChain?.ss58Format === undefined || !account?.publicKey) return account
 
     try {
-      const newAddress = convertAddress(account.address, currentChain.ss58Format); // 重点：使用 publicKey
+      const newAddress = convertAddress(account.address, currentChain.ss58Format);
       return {
         ...account,
         address: newAddress,

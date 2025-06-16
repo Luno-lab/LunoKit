@@ -21,7 +21,7 @@ export const useAccounts = (): UseAccountsResult => {
       }
 
       try {
-        const newAddress = convertAddress(acc.address, currentChain.ss58Format); // 重点：使用 publicKey
+        const newAddress = convertAddress(acc.address, currentChain.ss58Format);
         return {
           ...acc,
           address: newAddress,

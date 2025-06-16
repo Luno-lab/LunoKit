@@ -31,13 +31,11 @@ const App: React.FC = () => {
 
   const { themeMode, toggleTheme } = useLunoTheme();
 
-  // 转账表单状态
   const [transferForm, setTransferForm] = useState({
     to: '',
     amount: ''
   });
 
-  // 简单的通知函数
   const showNotification = (title: string, message?: string) => {
     if (Notification.permission === 'granted') {
       console.log('message', message)
@@ -47,7 +45,6 @@ const App: React.FC = () => {
     }
   };
 
-  // 处理签名消息，完成后显示通知
   const handleSignMessage = async () => {
     try {
       const { signature } = await signMessageAsync({
@@ -93,7 +90,6 @@ const App: React.FC = () => {
     }
   };
 
-  // 请求通知权限
   React.useEffect(() => {
     if (Notification.permission === 'default') {
       Notification.requestPermission();

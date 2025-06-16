@@ -34,7 +34,6 @@
     "dev:css": "pnpm exec tailwindcss -i ./src/styles/styles.css -o ./dist/styles.css --watch",
     "dev:js": "tsup --watch",
     "clean": "rm -rf dist",
-    "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "svgr": "svgr --typescript --icon --out-dir src/assets/icons src/assets"
   },

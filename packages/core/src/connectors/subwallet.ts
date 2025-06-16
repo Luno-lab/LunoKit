@@ -76,7 +76,7 @@ export class SubWalletConnector extends BaseConnector {
 
     } catch (error) {
       console.error(`Connector ${this.id}: Connection failed:`, error);
-      await this.cleanup(); // 清理状态
+      await this.cleanup();
       throw error;
     }
   }
@@ -137,7 +137,7 @@ export class SubWalletConnector extends BaseConnector {
       console.log(`Connector ${this.id}: Unsubscribed from account changes.`);
     }
   }
-  
+
   private async cleanup(): Promise<void> {
     await this.cleanupSubscription();
     this.accounts = [];

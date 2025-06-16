@@ -78,7 +78,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
   setAccount: (accountOrPublicKey) => {
     if (!accountOrPublicKey) return
 
-    const { accounts, config } = get(); // 添加config
+    const { accounts, config } = get();
 
     const targetPublicKey =
       typeof accountOrPublicKey === 'string'

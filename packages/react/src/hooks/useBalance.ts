@@ -66,7 +66,7 @@ export const useBalance = ({ address }: UseBalanceProps): UseBalanceResult => {
   };
 
   return useSubscription<[string | AccountId], DeriveBalancesAll, AccountBalance>({
-    factory: (api: ApiPromise) => api.derive.balances.all, // <--- 修改这里
+    factory: (api: ApiPromise) => api.derive.balances.all,
     params: [address as string | AccountId],
     options: {
       enabled: !!address && !!currentApi && isApiReady,
