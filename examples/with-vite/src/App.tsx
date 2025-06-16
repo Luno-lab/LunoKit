@@ -24,7 +24,7 @@ const App: React.FC = () => {
   const { chain: currentChain } = useChain();
   const chains = useChains();
   const { data: balance } = useBalance({ address });
-  const { switchChain } = useSwitchChain();
+  const { switchChainAsync } = useSwitchChain();
   const { signMessageAsync, data: signMessageData } = useSignMessage();
   const { sendTransactionAsync, data: sendTransactionData, isPending: isSendingTransaction } = useSendTransaction();
   const { api, isApiReady, apiError, isApiConnected } = useApi();
@@ -183,7 +183,7 @@ const App: React.FC = () => {
                           <button
                             key={chain.genesisHash}
                             className="chain-switch-btn"
-                            onClick={() => switchChain(chain.genesisHash)}
+                            onClick={async () => await switchChainAsync({ chainId: chain.genesisHash })}
                           >
                             Switch to {chain.name}
                           </button>
