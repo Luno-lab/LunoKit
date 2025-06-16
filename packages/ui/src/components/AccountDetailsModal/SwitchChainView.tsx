@@ -1,14 +1,18 @@
 import React from 'react'
 import { ChainList } from '../ChainList'
 
-interface ViewComponent extends React.FC {
+interface ViewComponent extends React.FC<SwitchChainViewProps> {
   title?: string;
 }
 
-export const SwitchChainView: ViewComponent = () => {
+interface SwitchChainViewProps {
+  onBack: () => void
+}
+
+export const SwitchChainView: ViewComponent = ({ onBack }) => {
   return (
     <div className={'flex flex-col gap-[14px] '}>
-      <ChainList />
+      <ChainList onChainSwitched={onBack} />
     </div>
   )
 }

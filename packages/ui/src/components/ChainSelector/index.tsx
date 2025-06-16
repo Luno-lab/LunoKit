@@ -3,7 +3,11 @@ import { Close } from '../../assets/icons'
 import React from 'react'
 import { ChainList } from '../ChainList'
 
-export const ChainSelector: React.FC = () => {
+interface ChainSelectorProps {
+  onClose: () => void
+}
+
+export const ChainSelector: React.FC<ChainSelectorProps> = ({ onClose }: ChainSelectorProps) => {
   return (
     <>
       <div className="flex items-center justify-between">
@@ -16,7 +20,7 @@ export const ChainSelector: React.FC = () => {
         </DialogClose>
       </div>
 
-      <ChainList />
+      <ChainList onChainSwitched={onClose} />
     </>
   )
 }

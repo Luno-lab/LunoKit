@@ -3,7 +3,7 @@ import { cs } from '../../utils'
 import { useApi, useChain, useChains, useSwitchChain } from '@luno-kit/react'
 import type { Chain } from '@luno-kit/core'
 import { ChainIcon } from '../ChainIcon'
-import {Loading} from '../../assets/icons'
+import { Loading } from '../../assets/icons'
 
 enum ChainFilter {
   all = 'All',
@@ -17,7 +17,11 @@ const FILTER_TABS = [
   { key: ChainFilter.testnets, label: ChainFilter.testnets }
 ] as const;
 
-export const ChainList: React.FC = () => {
+interface ChainListProps {
+  onChainSwitched?: (chain: Chain) => void;
+}
+
+export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched }: ChainListProps) => {
   const { chain: currentChain } = useChain();
   const chains = useChains();
   const { switchChain } = useSwitchChain();
@@ -45,6 +49,7 @@ export const ChainList: React.FC = () => {
     setSwitchingChain(chain.genesisHash);
     try {
       await switchChain(chain.genesisHash);
+      onChainSwitched?.(chain);
     } catch (error) {
       console.error('Failed to switch chain:', error);
     } finally {

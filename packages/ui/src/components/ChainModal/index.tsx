@@ -12,7 +12,7 @@ export const ChainModal: React.FC = () => {
       onOpenChange={(open) => !open && close()}
     >
       <div className="flex flex-col w-[360px] max-h-[500px] p-[16px] gap-[14px] text-modalFont">
-        <ChainSelector />
+        <ChainSelector onClose={close} />
       </div>
     </Dialog>
   );
