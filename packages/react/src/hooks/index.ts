@@ -18,3 +18,4 @@ export * from './useSs58Format';
 export * from './useStatus';
 export * from './useSubscription';
 export * from './useSwitchChain';
+export * from './useSigner';
