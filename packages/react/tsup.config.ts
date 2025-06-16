@@ -27,7 +27,7 @@ export default defineConfig((options) => ({
     'zustand',
   ],
   tsconfig: './tsconfig.json',
-  esbuildOptions(options) {
+  esbuildOptions() {
     if (!options.watch) {
       options.drop = ['console', 'debugger']
     }

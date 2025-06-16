@@ -1,43 +1,53 @@
-import { useMutation } from '@tanstack/react-query';
 import { useLuno } from './useLuno';
-import { useCallback } from 'react';
 import { ConnectionStatus } from '../types';
+import { useLunoMutation, type LunoMutationOptions} from './useLunoMutation';
+
+export type UseDisconnectOptions = LunoMutationOptions<
+  void,
+  Error,
+  void,
+  unknown
+>;
 
 export interface UseDisconnectResult {
-  disconnect: () => Promise<void>;
+  disconnect: (options?: UseDisconnectOptions) => void;
+  disconnectAsync: (options?: UseDisconnectOptions) => Promise<void>;
   status: ConnectionStatus;
+  data: void | undefined;
   error: Error | null;
-  isPending: boolean;
   isError: boolean;
+  isIdle: boolean;
+  isPending: boolean;
   isSuccess: boolean;
   reset: () => void;
+  variables: void | undefined;
 }
 
-export const useDisconnect = (): UseDisconnectResult => {
+export const useDisconnect = (hookLevelConfig?: UseDisconnectOptions): UseDisconnectResult => {
   const { disconnect, status } = useLuno();
 
-  const {
-    mutateAsync,
-    error,
-    isPending,
-    isError,
-    isSuccess,
-    reset,
-  } = useMutation({
-    mutationFn: async () => {
-      await disconnect();
-    },
-  });
+  const disconnectFn = async (): Promise<void> => {
+    await disconnect();
+  };
 
-  const disconnectWrapper = useCallback(mutateAsync, [mutateAsync]);
+  const mutationResult = useLunoMutation<
+    void,
+    Error,
+    void,
+    unknown
+  >(disconnectFn, hookLevelConfig);
 
   return {
-    disconnect: disconnectWrapper,
+    disconnect: (options?: UseDisconnectOptions) => mutationResult.mutate(undefined, options),
+    disconnectAsync: (options?: UseDisconnectOptions) => mutationResult.mutateAsync(undefined, options),
     status,
-    error: error as Error | null,
-    isPending,
-    isError,
-    isSuccess,
-    reset,
+    data: mutationResult.data,
+    error: mutationResult.error,
+    isError: mutationResult.isError,
+    isIdle: mutationResult.isIdle,
+    isPending: mutationResult.isPending,
+    isSuccess: mutationResult.isSuccess,
+    reset: mutationResult.reset,
+    variables: mutationResult.variables,
   };
 };
