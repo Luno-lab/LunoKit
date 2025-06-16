@@ -28,7 +28,6 @@ export const useSwitchChain = (): UseSwitchChainResult => {
   } = useMutation({
     mutationFn: async (chainId: string) => {
       await storeSwitchChain(chainId);
-      // window.location.reload();
     },
   });
 

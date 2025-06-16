@@ -1,4 +1,3 @@
-// packages/react/src/hooks/useGenesisHash.ts
 import { useMemo } from 'react';
 import { useLuno } from './useLuno';
 import type { BlockHash } from '@polkadot/types/interfaces';
@@ -18,10 +17,9 @@ export const useGenesisHash = (): UseGenesisHashResult => {
         return { data: hash, isLoading: false };
       } catch (e) {
         console.error("[useGenesisHash] Error fetching genesisHash:", e);
-        return { data: undefined, isLoading: false }; // Error case, still not loading
+        return { data: undefined, isLoading: false };
       }
     }
-    // API not ready
     return { data: undefined, isLoading: true };
   }, [currentApi, isApiReady]);
 };

@@ -16,7 +16,7 @@ type ApiBoundSubscriptionFactory<TArgs extends any[], TData> =
   (api: ApiPromise) => SubscriptionFn<TArgs, TData>;
 
 export interface UseSubscriptionProps<TArgs extends any[], TData, TTransformed = TData> {
-  factory: ApiBoundSubscriptionFactory<TArgs, TData>; // <--- 修改这里
+  factory: ApiBoundSubscriptionFactory<TArgs, TData>;
   params?: TArgs;
   options?: UseSubscriptionOptions<TData, TTransformed>;
 }
@@ -61,14 +61,11 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
       }
     };
 
-    // 检查条件
     const canSubscribe = enabled && factoryFn && params !== undefined;
 
     if (!canSubscribe) {
       cleanup();
-      // 如果未启用，根据是否有默认值判断 loading
       setIsLoading(enabled && defaultValue === undefined);
-      // 重置状态 (保留 defaultValue)
       setData(defaultValue);
       setError(undefined);
       return;
@@ -87,7 +84,6 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
       }
     };
 
-    // 定义回调函数
     const callback: Callback<TData> = (result) => {
       try {
         if (!unsubscribeRef.current && !unsubCalled) {
@@ -100,7 +96,7 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
       } catch (transformError) {
         console.error("[useSubscription] Error during data transformation:", transformError);
         setError(transformError instanceof Error ? transformError : new Error('Data transformation failed'));
-        setIsLoading(false); // 转换出错，也停止 loading
+        setIsLoading(false);
       }
     };
 

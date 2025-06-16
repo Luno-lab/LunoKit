@@ -17,7 +17,7 @@ export type UseSignMessageOptions = LunoMutationOptions<
   SignMessageData,
   Error,
   SignMessageVariables,
-  unknown // TContext
+  unknown
 >;
 
 export interface UseSignMessageResult {

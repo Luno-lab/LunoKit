@@ -49,7 +49,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
   }, [configFromProps]);
 
   useEffect(() => {
-    let currentApiInstance: ApiPromise | null = null; // 用于在清理时引用
+    let currentApiInstance: ApiPromise | null = null;
 
     const handleApiConnected = () => {
       if (currentApiInstance) {
@@ -152,7 +152,6 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
       throw new Error(`[LunoProvider] Failed to construct ApiPromise for ${chainConfig.name}: ${error?.message || error}`)
     }
 
-    // --- 清理函数 ---
     return () => {
       if (currentApiInstance) {
         const instanceToClean = currentApiInstance;

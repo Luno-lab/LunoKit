@@ -17,7 +17,6 @@ export interface TransactionReceipt {
   status: 'Success' | 'Failed';
   dispatchError?: DispatchError;
   errorMessage?: string;
-  // rawStatus: ISubmittableResult['status'];
   dispatchInfo?: DispatchInfo;
 }
 
@@ -114,24 +113,20 @@ export function useSendTransaction(
                   status: 'Failed',
                   dispatchError,
                   errorMessage: getReadableDispatchError(currentApi, dispatchError),
-                  // rawStatus: status.toJSON(),
                   dispatchInfo,
                 });
               } else {
                 const successEvent = events.find(({ event }) => currentApi.events.system.ExtrinsicSuccess.is(event));
 
-                // if (successEvent) {
-                  resolveAndUnsubscribe({
-                    transactionHash: txHash.toHex(),
-                    blockHash: status.asInBlock.toHex(),
-                    events,
-                    status: 'Success',
-                    dispatchError: undefined,
-                    errorMessage: undefined,
-                    // rawStatus: status,
-                    dispatchInfo,
-                  });
-                // }
+                resolveAndUnsubscribe({
+                  transactionHash: txHash.toHex(),
+                  blockHash: status.asInBlock.toHex(),
+                  events,
+                  status: 'Success',
+                  dispatchError: undefined,
+                  errorMessage: undefined,
+                  dispatchInfo,
+                });
 
               }
             }

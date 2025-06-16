@@ -18,7 +18,7 @@ export interface LunoState {
   activeConnector?: Connector;
 
   accounts: Account[];
-  account?: Account;   // 当前选中账户
+  account?: Account;
   setAccount: (accountOrPubkey?: Account | HexString) => void;
 
   currentChainId?: string;

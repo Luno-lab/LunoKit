@@ -38,10 +38,8 @@ export const useLunoStore = create<LunoState>((set, get) => ({
   isApiConnected: false,
   apiError: null,
 
-  // --- Actions ---
-
   _setConfig: async (newConfig) => {
-    cleanupActiveConnectorListeners(); // Clean up listeners from any previous config/session
+    cleanupActiveConnectorListeners();
 
     const storedChainId = await newConfig.storage.getItem(PERSIST_KEY.LAST_CHAIN_ID);
     const normalizedStoredChainId = storedChainId?.toLowerCase();
@@ -102,7 +100,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
           publicKey: nextAccount.publicKey,
           address: nextAccount.address,
           name: nextAccount.name,
-          source: nextAccount.source,
+          source: nextAccount.meta.source,
         };
         config.storage.setItem(PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO, JSON.stringify(accountInfo));
         console.log(`[LunoStore] Persisted selected account: ${nextAccount.address}`);
@@ -255,10 +253,9 @@ export const useLunoStore = create<LunoState>((set, get) => ({
             set({
               currentChainId: chainIdToSet,
               currentChain: newChain,
-              currentApi: undefined // ApiPromise will be set by LunoProvider based on currentChainId
+              currentApi: undefined
             });
           }
-          // Persist the chain ID after it's successfully set in the store
           try {
             config.storage.setItem(PERSIST_KEY.LAST_CHAIN_ID, chainIdToSet);
             console.log(`[LunoStore] Persisted chainId: ${chainIdToSet}`);

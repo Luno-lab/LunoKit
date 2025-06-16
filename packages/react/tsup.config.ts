@@ -9,9 +9,9 @@ export default defineConfig((options) => ({
   },
   format: ['esm', 'cjs'],
   dts: {
-    resolve: true, // 可选，但有助于解析类型依赖
+    resolve: true,
     compilerOptions: {
-      composite: false, // <--- 关键：仅在 DTS 构建时禁用 composite
+      composite: false,
     },
   },
   minify: !options.watch,
@@ -26,5 +26,10 @@ export default defineConfig((options) => ({
     '@luno-kit/core',
     'zustand',
   ],
-  tsconfig: './tsconfig.json'
+  tsconfig: './tsconfig.json',
+  esbuildOptions(options) {
+    if (!options.watch) {
+      options.drop = ['console', 'debugger']
+    }
+  }
 }));
