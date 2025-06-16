@@ -1,47 +1,67 @@
-import { useMutation } from '@tanstack/react-query';
 import { useLuno } from './useLuno';
-import { useCallback } from 'react';
 import type { Chain } from '@luno-kit/core';
+import { useLunoMutation, type LunoMutationOptions } from './useLunoMutation';
+
+export interface SwitchChainVariables {
+  chainId: string;
+}
+
+export type UseSwitchChainOptions = LunoMutationOptions<
+  void,
+  Error,
+  SwitchChainVariables,
+  unknown
+>;
 
 export interface UseSwitchChainResult {
-  switchChain: (chainId: string) => Promise<void>;
+  switchChain: (
+    variables: SwitchChainVariables,
+    options?: UseSwitchChainOptions
+  ) => void;
+  switchChainAsync: (
+    variables: SwitchChainVariables,
+    options?: UseSwitchChainOptions
+  ) => Promise<void>;
   chains: Chain[];
   currentChain?: Chain;
   currentChainId?: string;
+  data: void | undefined;
   error: Error | null;
-  isPending: boolean;
   isError: boolean;
+  isIdle: boolean;
+  isPending: boolean;
   isSuccess: boolean;
   reset: () => void;
+  variables: SwitchChainVariables | undefined;
 }
 
-export const useSwitchChain = (): UseSwitchChainResult => {
+export const useSwitchChain = (hookLevelConfig?: UseSwitchChainOptions): UseSwitchChainResult => {
   const { switchChain: storeSwitchChain, config, currentChain, currentChainId } = useLuno();
 
-  const {
-    mutateAsync,
-    error,
-    isPending,
-    isError,
-    isSuccess,
-    reset,
-  } = useMutation({
-    mutationFn: async (chainId: string) => {
-      await storeSwitchChain(chainId);
-    },
-  });
+  const switchChainFn = async (variables: SwitchChainVariables): Promise<void> => {
+    await storeSwitchChain(variables.chainId);
+  };
 
-  const switchChain = useCallback(mutateAsync, [mutateAsync]);
+  const mutationResult = useLunoMutation<
+    void,
+    Error,
+    SwitchChainVariables,
+    unknown
+  >(switchChainFn, hookLevelConfig);
 
   return {
-    switchChain,
+    switchChain: mutationResult.mutate,
+    switchChainAsync: mutationResult.mutateAsync,
     chains: config?.chains ? [...config.chains] : [],
     currentChain,
     currentChainId,
-    error: error as Error | null,
-    isPending,
-    isError,
-    isSuccess,
-    reset,
+    data: mutationResult.data,
+    error: mutationResult.error,
+    isError: mutationResult.isError,
+    isIdle: mutationResult.isIdle,
+    isPending: mutationResult.isPending,
+    isSuccess: mutationResult.isSuccess,
+    reset: mutationResult.reset,
+    variables: mutationResult.variables,
   };
 };
