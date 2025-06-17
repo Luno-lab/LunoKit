@@ -51,7 +51,7 @@ export const AccountDetailsModal: React.FC = () => {
       />
     ),
     [AccountModalView.switchAccount]: (
-      <SwitchAccountView />
+      <SwitchAccountView onBack={() => handleViewChange(AccountModalView.main)} />
     ),
     [AccountModalView.switchChain]: (
       <SwitchChainView onBack={() => handleViewChange(AccountModalView.main)} />

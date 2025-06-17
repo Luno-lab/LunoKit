@@ -116,7 +116,7 @@ export function useSendTransaction(
                   dispatchInfo,
                 });
               } else {
-                const successEvent = events.find(({ event }) => currentApi.events.system.ExtrinsicSuccess.is(event));
+                // const successEvent = events.find(({ event }) => currentApi.events.system.ExtrinsicSuccess.is(event));
 
                 resolveAndUnsubscribe({
                   transactionHash: txHash.toHex(),

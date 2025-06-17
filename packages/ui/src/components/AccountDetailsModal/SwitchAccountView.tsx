@@ -1,16 +1,25 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import { useAccount, useAccounts, useActiveConnector, useBalance, useChain } from '@luno-kit/react';
 import { cs } from '../../utils';
 import { formatAddress } from '@luno-kit/core';
 import type { Account } from '@luno-kit/core';
 
-interface ViewComponent extends React.FC {
+interface ViewComponent extends React.FC<SwitchAccountViewProps> {
   title?: string;
 }
 
-export const SwitchAccountView: ViewComponent = () => {
+interface SwitchAccountViewProps {
+  onBack: () => void
+}
+
+export const SwitchAccountView: ViewComponent = ({ onBack }) => {
   const { accounts, selectAccount } = useAccounts();
   const { address: currentAddress } = useAccount();
+
+  const _selectAccount = useCallback((acc: Account) => {
+    selectAccount(acc)
+    onBack()
+  }, [onBack])
 
   return (
     <div className="flex flex-col gap-[4px] pt-[12px]">
@@ -19,7 +28,7 @@ export const SwitchAccountView: ViewComponent = () => {
           key={acc.address}
           account={acc}
           isSelected={acc.address === currentAddress}
-          selectAccount={selectAccount}
+          selectAccount={_selectAccount}
         />
       ))}
     </div>
