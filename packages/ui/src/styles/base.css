@@ -121,7 +121,7 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -52%); 
+  transform: translate(-50%, -52%);
 }
 
 .status-dot-container {
@@ -151,5 +151,16 @@
   height: 100%;
   width: 100%;
   background-color: var(--color-accentFont);
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
 }
 
