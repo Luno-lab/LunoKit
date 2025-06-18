@@ -13,13 +13,8 @@ export default defineConfig(options => ({
   clean: true,
   treeshake: true,
   external: [
-    '@polkadot/api',
-    '@polkadot/extension-dapp',
-    '@polkadot/util',
-    '@polkadot/util-crypto',
-    '@walletconnect/sign-client',
-    '@walletconnect/types',
-    '@walletconnect/utils'
+    'dedot',
+    '@dedot/chaintypes',
   ],
   dts: {
     resolve: true,

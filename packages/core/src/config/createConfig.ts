@@ -7,6 +7,7 @@ import type {
   RawStorage,
 } from '../types';
 import { createStorage } from './createStorage'
+import {AnyShape} from 'dedot/shape'
 
 const noopStorage: RawStorage = {
   getItem: async (_key: string) => null,
@@ -36,6 +37,12 @@ function generateTransportsFromChains(chains: readonly Chain[]): Record<string, 
   return transports;
 }
 
+function convertCustomTypesToShapes(customTypes?: Record<string, any>): Record<string, AnyShape> | undefined {
+  if (!customTypes) return undefined;
+
+  return customTypes as Record<string, AnyShape>;
+}
+
 export function createConfig(parameters: CreateConfigParameters): Config {
   const {
     appName = 'My Luno App',
@@ -44,10 +51,11 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     transports,
     storage = defaultLunoStorage,
     autoConnect = true,
-    registry,
-    types,
-    typesBundle,
-    rpc,
+    cacheMetadata,
+    metadata,
+    scaledResponses,
+    customTypes,
+    customRpc,
   } = parameters;
 
   if (!chains || chains.length === 0) {
@@ -74,10 +82,11 @@ export function createConfig(parameters: CreateConfigParameters): Config {
   }
 
   const config = {
-    registry,
-    types,
-    typesBundle,
-    rpc,
+    customRpc,
+    customTypes,
+    cacheMetadata,
+    metadata,
+    scaledResponses,
 
     appName,
     chains: Object.freeze([...chains]) as readonly Chain[],

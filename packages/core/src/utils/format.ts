@@ -1,41 +1,36 @@
-import { bnToBn } from '@polkadot/util';
-
 /**
  * format balance
  */
 export function formatBalance(
-  value: string | number | bigint,
-  decimals: number,
-  options?: {
-    fixedDecimals?: number;
-    thousandSeparator?: string;
-  }
+  value: string | number | bigint | undefined,
+  decimals: number = 0,
+  fixedDecimals: number = 4
 ): string {
-  const bn = bnToBn(value);
-  const { fixedDecimals = 4, thousandSeparator = ',' } = options || {};
-
-  const basePower = BigInt(decimals);
-  const base = bnToBn(10n ** basePower);
-  const whole = bn.div(base);
-  const fraction = bn.mod(base);
-
-  let fractionStr = fraction.toString();
-  while (fractionStr.length < decimals) {
-    fractionStr = '0' + fractionStr;
+  if (value === undefined || value === null) {
+    return '0';
   }
 
-  fractionStr = fractionStr.substring(0, fixedDecimals);
+  const bn = typeof value === 'bigint' ? value : BigInt(value);
 
-  let wholeStr = whole.toString();
-  if (thousandSeparator) {
-    wholeStr = wholeStr.replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
+  if (decimals === 0) {
+    return bn.toString();
   }
 
-  if (parseInt(fractionStr) === 0 || fractionStr === '') {
-    return wholeStr;
+  const base = BigInt(10) ** BigInt(decimals);
+  const whole = bn / base;
+  const fraction = bn % base;
+
+  if (fraction === 0n) {
+    return whole.toString();
   }
 
-  return `${wholeStr}.${fractionStr}`;
+  // 函数式处理，避免 let
+  const paddedFraction = fraction.toString().padStart(decimals, '0');
+  const truncatedFraction = paddedFraction
+    .substring(0, fixedDecimals)
+    .replace(/0+$/, '');
+
+  return truncatedFraction ? `${whole.toString()}.${truncatedFraction}` : whole.toString();
 }
 
 /**
@@ -61,3 +56,5 @@ export function formatAddress(
 export function formatTimestamp(timestamp: number): string {
   return new Date(timestamp).toLocaleString();
 }
+
+export { formatBalance as formatBalanceWithUnit } from 'dedot/utils';

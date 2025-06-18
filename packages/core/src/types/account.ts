@@ -1,7 +1,5 @@
-// account related types
-
-import type { HexString } from '@polkadot/util/types'
-import type { KeypairType } from '@polkadot/util-crypto/types'
+import type { HexString } from 'dedot/utils'
+import type { KeypairType } from 'dedot/types'
 
 /**
  * Polkadot account interface

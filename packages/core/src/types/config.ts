@@ -1,7 +1,7 @@
-import type { WsProvider, HttpProvider } from '@polkadot/api';
 import type { Chain } from './chain';
 import type { Connector } from './connector';
-import type { ApiOptions } from '@polkadot/api/types';
+import type { ApiOptions } from 'dedot';
+import type { AnyShape } from 'dedot/shape';
 
 export interface RawStorage {
   getItem(key: string): string | null | Promise<string | null>;
@@ -19,11 +19,13 @@ export interface LunoStorage {
 export type Transport = string;
 
 type LunoApiOptions = Pick<ApiOptions,
-  | 'registry'
-  | 'types'
-  | 'typesBundle'
-  | 'rpc'
->;
+  | 'cacheMetadata'
+  | 'metadata'
+  | 'scaledResponses'
+> & {
+  customTypes?: Record<string, AnyShape>;
+  customRpc?: Record<string, any>;
+};
 
 export interface CreateConfigParameters extends LunoApiOptions {
   appName?: string;

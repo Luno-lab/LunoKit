@@ -1,16 +1,16 @@
 import { BaseConnector } from './base';
 import type { Account, Signer } from '../types';
-import { stringToHex } from '@polkadot/util';
-import {mapInjectedAccounts} from '../utils'
-import type {Injected, InjectedAccount, Unsubcall} from '@polkadot/extension-inject/types';
+import { mapInjectedAccounts } from '../utils'
 import { subwalletSVG } from '../config/logos/generated'
+import { Injected, InjectedAccount } from 'dedot/types'
+import { stringToHex } from 'dedot/utils'
 
 export class SubWalletConnector extends BaseConnector {
   readonly id = 'subwallet-js';
   readonly name = 'SubWallet';
   readonly icon = subwalletSVG;
 
-  private unsubscribe: Unsubcall | null = null;
+  private unsubscribe: (() => void) | null = null;
   private specificInjector?: Injected = undefined
 
   constructor() {
@@ -84,7 +84,7 @@ export class SubWalletConnector extends BaseConnector {
   public async disconnect(): Promise<void> {
     console.log(`Connector ${this.id}: Disconnecting...`);
     await this.cleanup();
-    this.emit('disconnect'); 
+    this.emit('disconnect');
   }
 
   public async signMessage(message: string, address: string): Promise<string | undefined> {

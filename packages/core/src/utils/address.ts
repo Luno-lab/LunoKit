@@ -1,16 +1,18 @@
-import { decodeAddress, encodeAddress, isAddress } from '@polkadot/util-crypto';
+import { decodeAddress, encodeAddress } from 'dedot/utils';
 import type { Account } from '../types';
-import {u8aEq, u8aToHex} from '@polkadot/util'
-import type { InjectedAccount } from '@polkadot/extension-inject/types'
-import type { HexString } from '@polkadot/util/types'
+import { u8aEq, u8aToHex } from 'dedot/utils'
+import type { InjectedAccount } from 'dedot/types'
+import type { HexString } from 'dedot/utils'
 
 /**
  * check if address is valid
  */
 export function isValidAddress(address: string): boolean {
   try {
-    return isAddress(address);
-  } catch (error: any) {
+    const decoded = decodeAddress(address);
+    encodeAddress(decoded);
+    return true;
+  } catch (error) {
     return false;
   }
 }

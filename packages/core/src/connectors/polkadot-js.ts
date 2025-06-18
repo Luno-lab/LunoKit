@@ -1,16 +1,16 @@
 import { BaseConnector } from './base';
 import type { Account, Signer } from '../types';
-import type {Injected, InjectedAccount, Unsubcall} from '@polkadot/extension-inject/types';
-import { stringToHex } from '@polkadot/util';
 import { mapInjectedAccounts } from '../utils'
 import { polkadotjsSVG } from '../config/logos/generated'
+import { Injected, InjectedAccount } from 'dedot/types'
+import { stringToHex } from 'dedot/utils'
 
 export class PolkadotJsConnector extends BaseConnector {
   readonly id = 'polkadot-js';
   readonly name = 'Polkadot{.js}';
   readonly icon = polkadotjsSVG;
 
-  private unsubscribe: Unsubcall | null = null;
+  private unsubscribe: (() => void) | null = null;
 
   private specificInjector?: Injected = undefined
 
@@ -86,7 +86,7 @@ export class PolkadotJsConnector extends BaseConnector {
 
   public async signMessage(message: string, address: string): Promise<string | undefined> {
     const signer = await this.getSigner();
-    if (!signer?.signRaw) {
+    if (!signer || !signer?.signRaw) {
       throw new Error('Signer is not available or does not support signRaw.');
     }
 
@@ -96,7 +96,7 @@ export class PolkadotJsConnector extends BaseConnector {
       return result.signature;
     } catch (error) {
       console.error(`Connector ${this.id}: Failed to sign message:`, error);
-      return undefined; 
+      return undefined;
     }
   }
 
