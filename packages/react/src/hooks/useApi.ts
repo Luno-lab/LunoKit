@@ -1,8 +1,8 @@
-import type { ApiPromise } from '@polkadot/api';
+import type { DedotClient } from 'dedot';
 import { useLuno } from './useLuno';
 
 export interface UseApiResult {
-  api?: ApiPromise;
+  api?: DedotClient;
   isApiReady: boolean;
   isApiConnected: boolean;
   apiError: Error | null;

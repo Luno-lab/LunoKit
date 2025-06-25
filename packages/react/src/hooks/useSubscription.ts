@@ -1,23 +1,23 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useLuno } from './useLuno';
-import type { ApiPromise } from '@polkadot/api';
-import type { Callback } from '@polkadot/types/types'
+import type { Callback } from 'dedot/types'
+import type { DedotClient } from 'dedot';
 
 type SubscriptionFn<TArgs extends any[], TData> =
-  (...params: [...TArgs, Callback<TData>]) => Promise<() => void>;
+  (...params: [...TArgs, Callback<TData>]) => Promise<() => Promise<void>>;
 
 export interface UseSubscriptionOptions<TData, TTransformed = TData> {
   enabled?: boolean;
-  transform?: (data: TData, api: ApiPromise) => TTransformed;
+  transform?: (data: TData) => TTransformed;
   defaultValue?: TTransformed;
 }
 
 type ApiBoundSubscriptionFactory<TArgs extends any[], TData> =
-  (api: ApiPromise) => SubscriptionFn<TArgs, TData>;
+  (api: DedotClient) => SubscriptionFn<TArgs, TData>;
 
 export interface UseSubscriptionProps<TArgs extends any[], TData, TTransformed = TData> {
   factory: ApiBoundSubscriptionFactory<TArgs, TData>;
-  params?: TArgs;
+  params?: TArgs | ((api: DedotClient) => TArgs);
   options?: UseSubscriptionOptions<TData, TTransformed>;
 }
 
@@ -35,18 +35,26 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
   const { currentApi, isApiReady } = useLuno();
   const {
     enabled = true,
-    transform = defaultTransform as (data: TData, api: ApiPromise) => TTransformed,
+    transform = defaultTransform as (data: TData) => TTransformed,
     defaultValue,
   } = options;
 
   const [data, setData] = useState<TTransformed | undefined>(defaultValue);
   const [error, setError] = useState<Error | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(enabled);
-  const unsubscribeRef = useRef<(() => void) | null>(null);
+  const unsubscribeRef = useRef<(() => Promise<void>) | null>(null);
   const transformRef = useRef(transform);
   useEffect(() => { transformRef.current = transform; }, [transform]);
 
-  const stableParamsKey = useMemo(() => params ? JSON.stringify(params) : '[]', [params]);
+  const resolvedParams = useMemo(() => {
+    if (!params || !currentApi || !isApiReady) return undefined;
+    return typeof params === 'function' ? params(currentApi) : params;
+  }, [params, currentApi, isApiReady]);
+
+  const stableParamsKey = useMemo(() =>
+      resolvedParams ? JSON.stringify(resolvedParams) : '[]',
+    [resolvedParams]
+  );
 
   const factoryFn = useMemo(() => {
     if (!factory || !currentApi || !isApiReady) return
@@ -54,14 +62,14 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
   }, [factory, currentApi, isApiReady])
 
   useEffect(() => {
-    const cleanup = () => {
+    const cleanup = async () => {
       if (unsubscribeRef.current) {
-        unsubscribeRef.current();
+        await unsubscribeRef.current();
         unsubscribeRef.current = null;
       }
     };
 
-    const canSubscribe = enabled && factoryFn && params !== undefined;
+    const canSubscribe = enabled && factoryFn && resolvedParams !== undefined;
 
     if (!canSubscribe) {
       cleanup();
@@ -77,19 +85,19 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
     setData(defaultValue);
 
     let unsubCalled = false;
-    const performUnsub = () => {
+    const performUnsub = async () => {
       if (!unsubCalled) {
-        cleanup();
+        await cleanup();
         unsubCalled = true;
       }
     };
 
-    const callback: Callback<TData> = (result) => {
+    const callback: Callback<TData> = (result: TData) => {
       try {
         if (!unsubscribeRef.current && !unsubCalled) {
           return;
         }
-        const transformedData = transformRef.current(result, currentApi!);
+        const transformedData = transformRef.current(result);
         setData(transformedData);
         setError(undefined);
         setIsLoading(false);
@@ -107,22 +115,24 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
           return;
         }
 
-        const unsubscribe = await factoryFn(...params!, callback);
+        const unsubscribe = await factoryFn(...resolvedParams!, callback);
 
         if (!unsubCalled) {
           unsubscribeRef.current = unsubscribe;
         } else {
-          unsubscribe();
+          await unsubscribe();
         }
       } catch (subError) {
         console.error("[useSubscription] Error setting up subscription:", subError);
         setError(subError instanceof Error ? subError : new Error('Subscription setup failed'));
         setIsLoading(false);
-        performUnsub();
+        await performUnsub();
       }
     })();
 
-    return performUnsub;
+    return () => {
+      performUnsub();
+    };
 
   }, [factoryFn, stableParamsKey, enabled, defaultValue]);
 

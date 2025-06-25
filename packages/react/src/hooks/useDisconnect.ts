@@ -1,6 +1,6 @@
 import { useLuno } from './useLuno';
 import { ConnectionStatus } from '../types';
-import { useLunoMutation, type LunoMutationOptions} from './useLunoMutation';
+import { useLunoMutation, type LunoMutationOptions } from './useLunoMutation';
 
 export type UseDisconnectOptions = LunoMutationOptions<
   void,

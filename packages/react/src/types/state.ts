@@ -1,6 +1,6 @@
 import type { Config, Connector, Account, Chain } from '@luno-kit/core';
-import type { ApiPromise } from '@polkadot/api';
-import type {HexString} from '@polkadot/util/types'
+import type { DedotClient } from 'dedot';
+import type { HexString } from 'dedot/utils'
 
 export enum ConnectionStatus {
   Disconnected = 'disconnected',
@@ -23,7 +23,7 @@ export interface LunoState {
 
   currentChainId?: string;
   currentChain?: Chain;
-  currentApi?: ApiPromise;
+  currentApi?: DedotClient;
   isApiConnected: boolean;
   isApiReady: boolean;
   apiError: Error | null
@@ -35,7 +35,7 @@ export interface LunoState {
 
   switchChain: (newChainId: string) => Promise<void>;
 
-  _setApi: (api?: ApiPromise) => void;
+  _setApi: (api?: DedotClient) => void;
 
   _setIsApiConnected: (isApiConnected: boolean) => void;
   _setIsApiReady: (isApiReady: boolean) => void;

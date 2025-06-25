@@ -1,7 +1,7 @@
-import {DispatchError} from '@polkadot/types/interfaces'
-import {ApiPromise} from '@polkadot/api'
+import type { DispatchError } from 'dedot/codecs'
+import type { DedotClient } from 'dedot'
 
-export function getReadableDispatchError(api: ApiPromise, dispatchError: DispatchError): string {
+export function getReadableDispatchError(api: DedotClient, dispatchError: DispatchError): string {
   let message: string = dispatchError.type;
 
   if (dispatchError.isModule) {

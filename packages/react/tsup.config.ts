@@ -23,8 +23,9 @@ export default defineConfig((options) => ({
     'react',
     'react-dom',
     '@tanstack/react-query',
-    '@luno-kit/core',
     'zustand',
+    'dedot',
+    '@dedot/chaintypes',
   ],
   tsconfig: './tsconfig.json',
   esbuildOptions() {

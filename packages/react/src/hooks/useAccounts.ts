@@ -2,7 +2,7 @@ import type { Account } from '@luno-kit/core';
 import { useLuno } from './useLuno';
 import { useMemo } from 'react'
 import { convertAddress } from '@luno-kit/core'
-import type { HexString } from '@polkadot/util/types'
+import type { HexString } from 'dedot/utils'
 
 export interface UseAccountsResult {
   accounts: Account[];

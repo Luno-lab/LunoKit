@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useLuno } from './useLuno';
-import type { BlockHash } from '@polkadot/types/interfaces';
+import type { BlockHash } from 'dedot/codecs';
 
 export interface UseGenesisHashResult {
   data?: string;
@@ -13,7 +13,7 @@ export const useGenesisHash = (): UseGenesisHashResult => {
   return useMemo(() => {
     if (currentApi && isApiReady) {
       try {
-        const hash = (currentApi.genesisHash as BlockHash).toHex();
+        const hash = currentApi.genesisHash;
         return { data: hash, isLoading: false };
       } catch (e) {
         console.error("[useGenesisHash] Error fetching genesisHash:", e);

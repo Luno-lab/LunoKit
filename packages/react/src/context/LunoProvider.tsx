@@ -1,5 +1,5 @@
 import React, {ReactNode, useCallback, useEffect, useMemo} from 'react';
-import { ApiPromise } from '@polkadot/api';
+import { DedotClient } from 'dedot';
 import type { Chain, Config, Transport } from '@luno-kit/core';
 import { useLunoStore } from '../store'
 import { PERSIST_KEY } from '../constants'
@@ -49,29 +49,32 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
   }, [configFromProps]);
 
   useEffect(() => {
-    let currentApiInstance: ApiPromise | null = null;
+    let currentApiInstance: DedotClient | null = null;
 
     const handleApiConnected = () => {
       if (currentApiInstance) {
         _setIsApiConnected(true)
+        // _setIsApiReady(true);
+
         console.log(`[LunoProvider] API (re)connected: ${configFromProps.transports[currentChainId!]}`);
 
-        currentApiInstance.isReady
-          .then(() => {
-            console.log('[LunoProvider] API confirmed ready after reconnection');
-            _setIsApiReady(true);
-            _setApiError(null);
-          })
-          .catch((error) => {
-            console.error('[LunoProvider] API failed to become ready after reconnection:', error);
-            _setApiError(error);
-          });
+        // currentApiInstance.isReady
+        //   .then(() => {
+        //     console.log('[LunoProvider] API confirmed ready after reconnection');
+        //     _setIsApiReady(true);
+        //     _setApiError(null);
+        //   })
+        //   .catch((error) => {
+        //     console.error('[LunoProvider] API failed to become ready after reconnection:', error);
+        //     _setApiError(error);
+        //   });
       }
     };
 
-    const handleApiReady = () => {
+    const handleApiReady = async () => {
       if (currentApiInstance) {
-        console.log(`[LunoProvider] API READY: ${currentApiInstance.runtimeChain?.toString()}`);
+        const runtimeVersion = await currentApiInstance.getRuntimeVersion()
+        console.log(`[LunoProvider] API READY: ${runtimeVersion.specVersion}`);
         _setIsApiReady(true);
         _setApiError(null);
       }
@@ -81,7 +84,8 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
       if (currentApiInstance) {
         _setIsApiConnected(false)
         _setApiError(error);
-        console.error(`[LunoProvider] API error on:`, error.target.url || error.currentTarget.url);
+        // console.error(`[LunoProvider] API error on:`, error.target.url || error.currentTarget.url);
+        console.error(`[LunoProvider] API error on:`, error);
       }
     };
 
@@ -92,15 +96,15 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
       }
     };
 
-    if (currentApi && currentApi.isConnected && currentApi.genesisHash) {
-      if (currentApi.genesisHash.toHex() === currentChainId ) {
+    if (currentApi && currentApi.status === 'connected' && currentApi.genesisHash) {
+      if (currentApi.genesisHash === currentChainId ) {
         console.log('[LunoProvider] API is already connected to the target chain and ready. No action needed.');
         return;
       }
     }
 
     if (!configFromProps || !currentChainId) {
-      if (currentApi && currentApi.isConnected) {
+      if (currentApi && currentApi.status === 'connected') {
         currentApi.disconnect().catch(console.error);
       }
       clearApiState()
@@ -113,15 +117,15 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     const transportConfig: Transport | undefined = configFromProps.transports[currentChainId];
 
     if (!chainConfig || !transportConfig) {
-      if (currentApi && currentApi.isConnected) {
+      if (currentApi && currentApi.status === 'connected') {
         currentApi.disconnect().catch(console.error);
       }
       clearApiState()
       throw new Error(`Configuration missing for chainId: ${currentChainId}`)
     }
 
-    if (currentApi && currentApi.isConnected) {
-      console.log('[LunoProvider] Disconnecting API from previous render cycle:', currentApi.runtimeChain?.toString());
+    if (currentApi && currentApi.status === 'connected') {
+      console.log('[LunoProvider] Disconnecting API from previous render cycle:', currentApi.chainSpec.chainName());
       currentApi.disconnect().catch(e => console.error('[LunoProvider] Error disconnecting previous API:', e));
     }
 
@@ -131,14 +135,8 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     const provider = wsProvider(transportConfig);
 
     try {
-      const newApi = new ApiPromise({
-        provider,
-        registry: configFromProps.registry,
-        types: configFromProps.types,
-        typesBundle: configFromProps.typesBundle,
-        rpc: configFromProps.rpc,
-        // signer: configFromProps.signer,
-      });
+      const newApi = new DedotClient(provider);
+
       currentApiInstance = newApi;
       _setApi(newApi);
 
@@ -162,7 +160,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
         instanceToClean.off('disconnected', handleApiDisconnected);
         instanceToClean.off('connected', handleApiConnected);
 
-        if (instanceToClean.isConnected) {
+        if (instanceToClean.status === 'connected') {
           instanceToClean.disconnect().catch(e => console.error('[LunoProvider] Error disconnecting API in cleanup:', e));
         }
       }
@@ -208,7 +206,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
   useEffect(() => {
     if (isApiReady && currentApi && currentChain && currentChain.ss58Format) {
       try {
-        const apiSs58 = currentApi.registry.chainSS58;
+        const apiSs58 = currentApi.consts.system.ss58Prefix;
 
         if (apiSs58 && apiSs58 !== currentChain.ss58Format) {
           console.error(

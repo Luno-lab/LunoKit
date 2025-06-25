@@ -13,6 +13,7 @@ export * from './useDisconnect';
 export * from './useGenesisHash';
 export * from './useRuntimeVersion';
 export * from './useSendTransaction';
+export * from './useSendTransactionHash';
 export * from './useSignMessage';
 export * from './useSs58Format';
 export * from './useStatus';

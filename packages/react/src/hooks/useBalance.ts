@@ -1,10 +1,63 @@
 import { useSubscription, UseSubscriptionResult } from './useSubscription';
-import { formatBalance } from '@polkadot/util';
-import type { DeriveBalancesAll } from '@polkadot/api-derive/types';
-import type { ApiPromise } from '@polkadot/api';
-import { useLuno } from './useLuno';
-import { AccountBalance } from '@luno-kit/core'
-import { AccountId } from '@polkadot/types/interfaces'
+import type { AccountBalance } from '@luno-kit/core';
+import type { DedotClient } from 'dedot';
+import { useLuno } from './useLuno'
+import { formatBalance } from '@luno-kit/core'
+
+interface AccountData {
+  data: {
+    free: bigint | string | number;
+    reserved: bigint | string | number;
+    frozen: bigint | string | number;
+  };
+}
+
+interface BalanceLock {
+  id: string | number;
+  amount: bigint | string | number;
+  reasons?: string | number;
+}
+
+export interface ChainProperties {
+  isEthereum?: boolean;
+  ss58Format?: number;
+  tokenDecimals?: number | Array<number>;
+  tokenSymbol?: string | Array<string>;
+  [prop: string]: any;
+}
+
+const DEFAULT_TOKEN_DECIMALS = 10
+
+const transformBalance = (results: any[]) => {
+  const accountInfo: AccountData = results[0];
+  const locks: BalanceLock[] = results[1];
+  const properties: ChainProperties = results[2]
+
+  const decimals = (typeof properties.tokenDecimals === 'number'
+    ? properties.tokenDecimals : properties.tokenDecimals?.[0]) ?? DEFAULT_TOKEN_DECIMALS
+
+  const free = accountInfo.data.free;
+  const reserved = accountInfo.data.reserved;
+  const frozen = accountInfo.data.frozen;
+  const total = BigInt(free) + BigInt(reserved);
+
+  const transferable = free > frozen ? BigInt(free) - BigInt(frozen) : 0n;
+
+  return {
+    free,
+    total,
+    reserved,
+    transferable,
+    formattedTransferable: formatBalance(transferable, decimals),
+    formattedTotal: formatBalance(total, decimals),
+    locks: locks.map(lock => ({
+      id: lock.id,
+      amount: lock.amount,
+      reason: lock.reasons,
+      lockHuman: formatBalance(lock.amount, decimals)
+    }))
+  } as AccountBalance;
+}
 
 export interface UseBalanceProps {
   address?: string;
@@ -15,63 +68,22 @@ export type UseBalanceResult = UseSubscriptionResult<AccountBalance>;
 export const useBalance = ({ address }: UseBalanceProps): UseBalanceResult => {
   const { currentApi, isApiReady } = useLuno();
 
-  const transform = (balancesAll: DeriveBalancesAll, api: ApiPromise): AccountBalance => {
-    const decimals = api.registry.chainDecimals[0];
-    const symbol = api.registry.chainTokens[0];
-
-    const freeBalanceBn = balancesAll.freeBalance;
-    const reservedBalanceBn = balancesAll.reservedBalance;
-    const availableBalanceBn = balancesAll.availableBalance;
-
-    const free = BigInt(freeBalanceBn.toString());
-    const reserved = BigInt(reservedBalanceBn.toString());
-    const transferable = BigInt(availableBalanceBn.toString());
-    const total = BigInt(freeBalanceBn.add(reservedBalanceBn).toString());
-
-    const options = { forceUnit: '-', withSi: false, decimals };
-    const formattedTransferable = formatBalance(transferable, options);
-    const formattedTotal = formatBalance(total, options);
-
-    const locks = (balancesAll.lockedBreakdown || []).map((lock) => {
-      let reasonStr = 'Unknown';
-      if (lock.reasons) {
-        if (lock.reasons.isFee) reasonStr = 'Fee';
-        else if (lock.reasons.isMisc) reasonStr = 'Misc';
-        else if (lock.reasons.isVesting) reasonStr = 'Vesting';
-        else if (lock.reasons.isDemocracy) reasonStr = 'Democracy';
-        else if (lock.reasons.isPhragmen) reasonStr = 'Election';
-        else if (lock.reasons.isStaking) reasonStr = 'Staking';
-        else {
-          reasonStr = lock.reasons.type;
-        }
-      }
-
-      return {
-        id: lock.id.toHex(),
-        amount: BigInt(lock.amount.toString()),
-        reason: reasonStr,
-        lockHuman: lock.id.toHuman() as string,
-      };
-    });
-
-    return {
-      free,
-      total,
-      reserved,
-      transferable,
-      formattedTransferable,
-      formattedTotal,
-      locks: locks.length > 0 ? locks : undefined,
-    };
-  };
-
-  return useSubscription<[string | AccountId], DeriveBalancesAll, AccountBalance>({
-    factory: (api: ApiPromise) => api.derive.balances.all,
-    params: [address as string | AccountId],
+  return useSubscription<
+    [Array<any>],
+    Array<any>,
+    AccountBalance
+  >({
+    factory: (api: DedotClient) => api.queryMulti,
+    params: (api: DedotClient) => [
+      [
+        { fn: api.query.system.account, args: [address] },
+        { fn: api.query.balances.locks, args: [address] },
+        { fn: api.rpc.system_properties, args: [] },
+      ]
+    ],
     options: {
-      enabled: !!address && !!currentApi && isApiReady,
-      transform: transform,
-      defaultValue: undefined,
+      enabled: !!currentApi && isApiReady && !!address,
+      transform: transformBalance
     }
   });
-};
+}

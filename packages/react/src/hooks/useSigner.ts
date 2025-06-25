@@ -1,8 +1,7 @@
-// packages/react/src/hooks/useSigner.ts
 import { useState, useEffect } from 'react';
 import { useLuno } from './useLuno';
 import { useAccount } from './useAccount';
-import type { Signer as InjectedSigner } from '@polkadot/api/types';
+import type { InjectedSigner } from 'dedot/types';
 
 export interface UseSignerResult {
   signer?: InjectedSigner;

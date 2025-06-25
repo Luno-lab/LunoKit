@@ -1,20 +1,18 @@
-// packages/react/src/hooks/useBlockNumber.ts
 import { useSubscription, UseSubscriptionResult } from './useSubscription';
-import type { BlockNumber } from '@polkadot/types/interfaces';
+import type { BlockNumber } from 'dedot/codecs';
 import { useLuno } from './useLuno';
-import {ApiPromise} from '@polkadot/api'
 
 export type UseBlockNumberResult = UseSubscriptionResult<number>;
 
 export const useBlockNumber = (): UseBlockNumberResult => {
   const { currentApi, isApiReady } = useLuno();
 
-  const transform = (blockNumberBn: BlockNumber): number => {
-    return blockNumberBn.toNumber();
+  const transform = (blockNumberBn: BlockNumber): BlockNumber => {
+    return blockNumberBn;
   };
 
-  return useSubscription<[], BlockNumber, number>({
-    factory: (api: ApiPromise) => api.derive.chain.bestNumber,
+  return useSubscription<[], BlockNumber, BlockNumber>({
+    factory: api => api.query.system.number,
     params: [],
     options: {
       enabled: !!currentApi && isApiReady,

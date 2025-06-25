@@ -1,8 +1,8 @@
-import {create} from 'zustand';
-import type {LunoState} from '../types';
-import {ConnectionStatus} from '../types';
-import type {Account, LunoStorage} from '@luno-kit/core';
-import {PERSIST_KEY} from '../constants';
+import { create } from 'zustand';
+import type { LunoState } from '../types';
+import { ConnectionStatus } from '../types';
+import type { Account } from '@luno-kit/core';
+import { PERSIST_KEY } from '../constants';
 import { isSameAddress } from '@luno-kit/core/utils';
 
 interface StoredAccountInfo {

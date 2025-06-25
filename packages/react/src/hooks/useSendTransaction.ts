@@ -1,27 +1,28 @@
-import type {Signer as InjectedSigner, SubmittableExtrinsic} from '@polkadot/api/types';
-import type { ISubmittableResult } from '@polkadot/types/types';
+import type { Callback, ISubmittableExtrinsic, ISubmittableResult } from 'dedot/types';
+import { IEventRecord as EventRecord } from 'dedot/types'
 import { useLuno } from './useLuno';
-import {
-  useLunoMutation,
-  type LunoMutationOptions,
-} from './useLunoMutation';
-import { DispatchError, EventRecord, DispatchInfo } from '@polkadot/types/interfaces'
-import { getReadableDispatchError } from '../utils'
-import type { HexString } from '@polkadot/util/types'
+import { type LunoMutationOptions, useLunoMutation} from './useLunoMutation';
+import { DispatchError, DispatchInfo } from 'dedot/codecs';
+import { getReadableDispatchError } from '../utils';
+import type { HexString } from 'dedot/utils';
+import { useCallback, useState } from 'react';
+import { TxStatus } from '../types';
+
+export type DetailedTxStatus = 'idle' | 'broadcasting' | 'inBlock' | 'finalized' | 'invalid' | 'dropped';
 
 export interface TransactionReceipt {
   transactionHash: HexString;
   blockHash: HexString;
   blockNumber?: number;
   readonly events: EventRecord[];
-  status: 'Success' | 'Failed';
+  status: 'failed' | 'success';
   dispatchError?: DispatchError;
   errorMessage?: string;
   dispatchInfo?: DispatchInfo;
 }
 
 export interface SendTransactionVariables {
-  extrinsic: SubmittableExtrinsic<'promise'>;
+  extrinsic: ISubmittableExtrinsic;
 }
 
 export type UseSendTransactionOptions = LunoMutationOptions<
@@ -49,16 +50,19 @@ export interface UseSendTransactionResult {
   status: 'idle' | 'pending' | 'error' | 'success';
   reset: () => void;
   variables: SendTransactionVariables | undefined;
+  txStatus: TxStatus;
+  detailedStatus: DetailedTxStatus;
 }
 
-export function useSendTransaction(
-  hookLevelConfig?: UseSendTransactionOptions
+export function useSendTransaction (
+  hookLevelConfig?: UseSendTransactionOptions,
 ): UseSendTransactionResult {
   const { account, activeConnector, currentApi, isApiReady } = useLuno();
 
-  const sendTransactionFn = async (
-    variables: SendTransactionVariables
-  ): Promise<TransactionReceipt> => {
+  const [txStatus, setTxStatus] = useState<TxStatus>('idle');
+  const [detailedTxStatus, setDetailedTxStatus] = useState<DetailedTxStatus>('idle');
+
+  const sendTransactionFn = useCallback(async (variables: SendTransactionVariables): Promise<TransactionReceipt> => {
     if (!currentApi || !isApiReady) {
       throw new Error('[useSendTransaction]: Polkadot API is not ready.');
     }
@@ -79,68 +83,55 @@ export function useSendTransaction(
       throw new Error('[useSendTransaction]: Could not retrieve signer from the injector.');
     }
 
-    return new Promise<TransactionReceipt>((resolve, reject) => {
-      let unsubscribe: () => void;
-
-      variables.extrinsic
-        .signAndSend(
-          account.address,
-          { signer: signer as InjectedSigner },
-          ({ status, dispatchError, events, dispatchInfo, txHash}: ISubmittableResult) => {
-            console.log(`Current transaction status: ${status.type}`);
-
-            const resolveAndUnsubscribe = (receipt: TransactionReceipt) => {
-              if (unsubscribe) unsubscribe();
-              resolve(receipt);
-            };
-
-            const rejectAndUnsubscribe = (error: any) => {
-              if (unsubscribe) unsubscribe();
-              reject(error);
-            };
-
-            if (status.isInvalid || status.isDropped || status.isUsurped) {
-              rejectAndUnsubscribe(new Error(`[useSendTransaction]: Transaction ${status.type}: ${txHash.toHex()}`));
-              return;
-            }
-
-            if (status.isInBlock || status.isFinalized) {
-              if (dispatchError) {
-                resolveAndUnsubscribe({
-                  transactionHash: txHash.toHex(),
-                  blockHash: status.asInBlock.toHex(),
-                  events,
-                  status: 'Failed',
-                  dispatchError,
-                  errorMessage: getReadableDispatchError(currentApi, dispatchError),
-                  dispatchInfo,
-                });
-              } else {
-                // const successEvent = events.find(({ event }) => currentApi.events.system.ExtrinsicSuccess.is(event));
-
-                resolveAndUnsubscribe({
-                  transactionHash: txHash.toHex(),
-                  blockHash: status.asInBlock.toHex(),
-                  events,
-                  status: 'Success',
-                  dispatchError: undefined,
-                  errorMessage: undefined,
-                  dispatchInfo,
-                });
-
-              }
-            }
+    try {
+      setTxStatus('signing');
+      setDetailedTxStatus('idle')
+      const result = await variables.extrinsic
+        .signAndSend(account.address, { signer: signer }, ({ status }) => {
+          switch (status.type) {
+            case 'Broadcasting':
+              setTxStatus('pending')
+              setDetailedTxStatus('broadcasting');
+              break;
+            case 'BestChainBlockIncluded':
+              setTxStatus('pending')
+              setDetailedTxStatus('inBlock');
+              break;
+            case 'Finalized':
+              setTxStatus('success')
+              setDetailedTxStatus('finalized');
+              break;
+            case 'Invalid':
+              setTxStatus('failed')
+              setDetailedTxStatus('invalid')
+              break;
+            case 'Drop':
+              setTxStatus('failed')
+              setDetailedTxStatus('dropped');
+              break;
           }
-        )
-        .then((unsub: () => void) => {
-          unsubscribe = unsub;
         })
-        .catch((error: any) => {
-          console.error('[useSendTransaction]: Error in signAndSend promise:', error);
-          reject(error);
-        });
-    });
-  };
+        .untilFinalized()
+      console.log('=======result=======', result)
+
+      const { status, dispatchError, events, dispatchInfo, txHash } = result;
+
+      return {
+        transactionHash: txHash,
+        blockHash: (status as any)?.value?.blockHash,
+        blockNumber: (status as any)?.value?.blockNumber,
+        events,
+        status: dispatchError ? 'failed' : 'success',
+        dispatchError,
+        errorMessage: dispatchError ? getReadableDispatchError(currentApi, dispatchError) : undefined,
+        dispatchInfo,
+      };
+
+    } catch (error) {
+      setTxStatus('failed');
+      throw error;
+    }
+  }, [currentApi, isApiReady, activeConnector, account, setTxStatus, setDetailedTxStatus]);
 
   const mutationResult = useLunoMutation<
     TransactionReceipt,
@@ -161,5 +152,7 @@ export function useSendTransaction(
     reset: mutationResult.reset,
     status: mutationResult.status,
     variables: mutationResult.variables,
+    txStatus: txStatus,
+    detailedStatus: detailedTxStatus
   };
 }
