@@ -14,6 +14,8 @@ export default defineConfig((options) => ( {
   external: [
     'react',
     'react-dom',
+    '@luno-kit/react',
+    '@tanstack/react-query',
   ],
   tsconfig: './tsconfig.json',
   loader: {

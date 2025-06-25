@@ -3,15 +3,17 @@ import {
   useAccount,
   useChain,
   useBalance,
-  ConnectionStatus, useChains, useActiveConnector
+  ConnectionStatus,
+  useChains,
+  useActiveConnector,
+  formatAddress,
 } from '@luno-kit/react';
-import type { Account, Chain, AccountBalance, Connector } from '@luno-kit/core'
+import type { Account, Chain, AccountBalance, Connector } from '@luno-kit/react'
 import {
   useConnectModal,
   useAccountModal,
   useChainModal,
 } from '../providers/ModalContext';
-import {formatAddress} from '@luno-kit/core'
 
 export interface UseConnectButtonReturn {
   connectionStatus: ConnectionStatus;

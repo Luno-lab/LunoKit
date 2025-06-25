@@ -1,7 +1,7 @@
 import React, {useMemo, useState} from 'react'
 import { cs } from '../../utils'
 import { useApi, useChain, useChains, useSwitchChain } from '@luno-kit/react'
-import type { Chain } from '@luno-kit/core'
+import type { Chain } from '@luno-kit/react'
 import { ChainIcon } from '../ChainIcon'
 import { Loading } from '../../assets/icons'
 

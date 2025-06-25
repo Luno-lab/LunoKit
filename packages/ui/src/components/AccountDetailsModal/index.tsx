@@ -8,7 +8,7 @@ import { MainView } from './MainView';
 import { SwitchAccountView } from './SwitchAccountView';
 import { SwitchChainView } from './SwitchChainView';
 import { Copy } from '../Copy'
-import { formatAddress } from '@luno-kit/core'
+import { formatAddress } from '@luno-kit/react'
 
 export enum AccountModalView {
   main = 'main',

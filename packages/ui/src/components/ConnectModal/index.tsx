@@ -4,7 +4,7 @@ import { useConnect, useConnectors } from '@luno-kit/react';
 import { Dialog, DialogClose, DialogTitle, ModalSize } from '../Dialog';
 import { cs } from '../../utils';
 import { useConnectModal } from '../../providers/ModalContext'
-import type { Connector } from '@luno-kit/core'
+import type { Connector } from '@luno-kit/react'
 import { Close, Loading } from '../../assets/icons'
 import { SpiralAnimation } from '../SpiralAnimation'
 import { transitionClassName } from '../ConnectButton'
