@@ -16,7 +16,7 @@ export function getReadableDispatchError(api: DedotClient, dispatchError: Dispat
     } catch (e) {
       console.error("[useSendTransaction]: Error finding meta dispatch error:", e?.message || e);
       const modData = dispatchError.asModule;
-      message = `[useSendTransaction]: Module Error (pallet: ${modData.index.toString()}, error: ${modData.error.toHuman()})`; // .toHuman() can be more informative
+      message = `[useSendTransaction]: Module Error (pallet: ${modData.index.toString()}, error: ${modData.error.toHuman()})`;
     }
   } else if (dispatchError.isToken) {
     message = `[useSendTransaction]: Token Error: ${dispatchError.asToken.type}`;

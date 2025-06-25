@@ -12,6 +12,7 @@ export const useBlockNumber = (): UseBlockNumberResult => {
   };
 
   return useSubscription<[], BlockNumber, BlockNumber>({
+    queryKey: '/block-number',
     factory: api => api.query.system.number,
     params: [],
     options: {

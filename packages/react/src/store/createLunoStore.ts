@@ -282,7 +282,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
   },
 
   disconnect: async () => {
-    const {activeConnector, status, config } = get();
+    const { activeConnector, status, config } = get();
 
     if (!activeConnector || status === ConnectionStatus.Disconnecting || status === ConnectionStatus.Disconnected) {
       console.log('[LunoStore] No active connector or already disconnected/disconnecting. Disconnect action aborted.');
@@ -307,12 +307,12 @@ export const useLunoStore = create<LunoState>((set, get) => ({
 
       cleanupActiveConnectorListeners()
 
-      set({ status: ConnectionStatus.Disconnected, activeConnector: undefined, accounts: [] })
+      set({ status: ConnectionStatus.Disconnected, activeConnector: undefined, accounts: [], account: undefined })
       if (get().status !== ConnectionStatus.Disconnected) {
         console.warn("[LunoStore] disconnect method called, but status is not yet 'disconnected' (event handler might be delayed or did not fire). Check connector events.");
       }
     } catch (err: any) {
-      set({status: ConnectionStatus.Connected }); // Revert status if disconnect call failed
+      set({status: ConnectionStatus.Connected });
       throw new Error(`[LunoStore] Error disconnecting from ${activeConnector.name}:${err?.message || err}`)
     }
   },
@@ -337,7 +337,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
     set({
       currentChainId: newChainId,
       currentChain: newChain,
-      currentApi: undefined, // Clear currentApi, Provider will set the new one.
+      currentApi: undefined,
       isApiReady: false,
     });
 

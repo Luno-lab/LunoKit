@@ -67,8 +67,9 @@ export function useSendTransactionHash (
 
     try {
       setTxStatus('signing');
-      return await variables.extrinsic
-        .signAndSend(account.address, { signer: signer });
+      const txHash = await variables.extrinsic
+        .signAndSend(account.address, { signer: signer }).catch(e => { throw e });
+      return txHash
     } catch (error) {
       setTxStatus('failed');
       throw error;

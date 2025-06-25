@@ -1,7 +1,7 @@
 import {
   useMutation,
   type UseMutationOptions,
-  type MutateOptions as ReactQueryMutateOptions, // Alias to avoid confusion
+  type MutateOptions as ReactQueryMutateOptions,
 } from '@tanstack/react-query';
 
 export type LunoMutationOptions<

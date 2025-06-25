@@ -1,7 +1,9 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useLuno } from './useLuno';
 import type { Callback } from 'dedot/types'
 import type { DedotClient } from 'dedot';
+import type { Unsub } from 'dedot/types';
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 type SubscriptionFn<TArgs extends any[], TData> =
   (...params: [...TArgs, Callback<TData>]) => Promise<() => Promise<void>>;
@@ -15,9 +17,15 @@ export interface UseSubscriptionOptions<TData, TTransformed = TData> {
 type ApiBoundSubscriptionFactory<TArgs extends any[], TData> =
   (api: DedotClient) => SubscriptionFn<TArgs, TData>;
 
+export interface QueryMultiItem {
+  fn: any;
+  args: any[];
+}
+
 export interface UseSubscriptionProps<TArgs extends any[], TData, TTransformed = TData> {
-  factory: ApiBoundSubscriptionFactory<TArgs, TData>;
-  params?: TArgs | ((api: DedotClient) => TArgs);
+  queryKey: string | number;
+  factory: ApiBoundSubscriptionFactory<TArgs, TData> | ((api: DedotClient) => any);
+  params?: TArgs | ((api: DedotClient) => QueryMultiItem[]);
   options?: UseSubscriptionOptions<TData, TTransformed>;
 }
 
@@ -30,111 +38,73 @@ export interface UseSubscriptionResult<TTransformed> {
 const defaultTransform = <T>(data: T): T => data;
 
 export const useSubscription = <TArgs extends any[], TData, TTransformed = TData>(
-  { factory, params, options = {} }: UseSubscriptionProps<TArgs, TData, TTransformed>
+  { queryKey: userQueryKey, factory, params, options = {} }: UseSubscriptionProps<TArgs, TData, TTransformed>
 ): UseSubscriptionResult<TTransformed> => {
   const { currentApi, isApiReady } = useLuno();
+  const queryClient = useQueryClient();
   const {
     enabled = true,
     transform = defaultTransform as (data: TData) => TTransformed,
     defaultValue,
   } = options;
 
-  const [data, setData] = useState<TTransformed | undefined>(defaultValue);
-  const [error, setError] = useState<Error | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState<boolean>(enabled);
-  const unsubscribeRef = useRef<(() => Promise<void>) | null>(null);
-  const transformRef = useRef(transform);
-  useEffect(() => { transformRef.current = transform; }, [transform]);
-
   const resolvedParams = useMemo(() => {
     if (!params || !currentApi || !isApiReady) return undefined;
-    return typeof params === 'function' ? params(currentApi) : params;
+    return typeof params === 'function' ? [params(currentApi)] : params;
   }, [params, currentApi, isApiReady]);
 
-  const stableParamsKey = useMemo(() =>
-      resolvedParams ? JSON.stringify(resolvedParams) : '[]',
-    [resolvedParams]
-  );
-
-  const factoryFn = useMemo(() => {
-    if (!factory || !currentApi || !isApiReady) return
-    return factory(currentApi)
-  }, [factory, currentApi, isApiReady])
+  const queryKey = useMemo(() => [
+    userQueryKey,
+    resolvedParams,
+    currentApi?.genesisHash
+  ], [userQueryKey, resolvedParams, currentApi?.genesisHash]);
 
   useEffect(() => {
-    const cleanup = async () => {
-      if (unsubscribeRef.current) {
-        await unsubscribeRef.current();
-        unsubscribeRef.current = null;
-      }
-    };
-
-    const canSubscribe = enabled && factoryFn && resolvedParams !== undefined;
-
-    if (!canSubscribe) {
-      cleanup();
-      setIsLoading(enabled && defaultValue === undefined);
-      setData(defaultValue);
-      setError(undefined);
+    if (!enabled || !factory || !currentApi || !resolvedParams || !isApiReady) {
       return;
     }
 
-    cleanup();
-    setIsLoading(true);
-    setError(undefined);
-    setData(defaultValue);
-
-    let unsubCalled = false;
-    const performUnsub = async () => {
-      if (!unsubCalled) {
-        await cleanup();
-        unsubCalled = true;
-      }
-    };
+    const factoryFn = factory(currentApi);
+    const boundFn = typeof factoryFn === 'function' ? factoryFn.bind(currentApi) : factoryFn;
 
     const callback: Callback<TData> = (result: TData) => {
       try {
-        if (!unsubscribeRef.current && !unsubCalled) {
-          return;
-        }
-        const transformedData = transformRef.current(result);
-        setData(transformedData);
-        setError(undefined);
-        setIsLoading(false);
-      } catch (transformError) {
-        console.error("[useSubscription] Error during data transformation:", transformError);
-        setError(transformError instanceof Error ? transformError : new Error('Data transformation failed'));
-        setIsLoading(false);
+        const transformedData = transform(result);
+        queryClient.setQueryData(queryKey, transformedData);
+      } catch (err) {
+        console.error('Transform error:', err);
       }
     };
 
-    (async () => {
-      try {
-        if (!factoryFn) {
-          console.error("Factory became undefined unexpectedly");
-          return;
-        }
+    let unsubscribe: (() => Promise<void>) | null = null;
 
-        const unsubscribe = await factoryFn(...resolvedParams!, callback);
-
-        if (!unsubCalled) {
-          unsubscribeRef.current = unsubscribe;
-        } else {
-          await unsubscribe();
-        }
-      } catch (subError) {
-        console.error("[useSubscription] Error setting up subscription:", subError);
-        setError(subError instanceof Error ? subError : new Error('Subscription setup failed'));
-        setIsLoading(false);
-        await performUnsub();
-      }
-    })();
+    boundFn(...resolvedParams, callback)
+      .then((unsub: Unsub) => {
+        unsubscribe = unsub;
+      })
+      .catch((err: Error) => {
+        console.error('[useSubscription] error:', err);
+      });
 
     return () => {
-      performUnsub();
+      if (unsubscribe) {
+        unsubscribe();
+      }
     };
+  }, [queryKey, enabled, transform, queryClient]);
 
-  }, [factoryFn, stableParamsKey, enabled, defaultValue]);
+  const { data, error, isLoading } = useQuery({
+    queryKey,
+    queryFn: () => {
+      return Promise.resolve(defaultValue);
+    },
+    enabled: false,
+    initialData: defaultValue,
+  });
 
-  return { data, error, isLoading };
+  return {
+    data: data as TTransformed | undefined,
+    error: error as Error | undefined,
+    isLoading: enabled && isApiReady && !data
+  };
 };

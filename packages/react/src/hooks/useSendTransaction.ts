@@ -1,7 +1,7 @@
-import type { Callback, ISubmittableExtrinsic, ISubmittableResult } from 'dedot/types';
+import type { ISubmittableExtrinsic } from 'dedot/types';
 import { IEventRecord as EventRecord } from 'dedot/types'
 import { useLuno } from './useLuno';
-import { type LunoMutationOptions, useLunoMutation} from './useLunoMutation';
+import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
 import { DispatchError, DispatchInfo } from 'dedot/codecs';
 import { getReadableDispatchError } from '../utils';
 import type { HexString } from 'dedot/utils';
@@ -86,33 +86,33 @@ export function useSendTransaction (
     try {
       setTxStatus('signing');
       setDetailedTxStatus('idle')
-      const result = await variables.extrinsic
-        .signAndSend(account.address, { signer: signer }, ({ status }) => {
-          switch (status.type) {
-            case 'Broadcasting':
-              setTxStatus('pending')
-              setDetailedTxStatus('broadcasting');
-              break;
-            case 'BestChainBlockIncluded':
-              setTxStatus('pending')
-              setDetailedTxStatus('inBlock');
-              break;
-            case 'Finalized':
-              setTxStatus('success')
-              setDetailedTxStatus('finalized');
-              break;
-            case 'Invalid':
-              setTxStatus('failed')
-              setDetailedTxStatus('invalid')
-              break;
-            case 'Drop':
-              setTxStatus('failed')
-              setDetailedTxStatus('dropped');
-              break;
-          }
-        })
-        .untilFinalized()
-      console.log('=======result=======', result)
+      const signedExtrinsic = await variables.extrinsic
+        .sign(account.address, { signer })
+        .catch(e => { throw e });
+
+      const result = await signedExtrinsic.send(({ status }) => {
+        switch (status.type) {
+          case 'Broadcasting':
+            setDetailedTxStatus('broadcasting');
+            break;
+          case 'BestChainBlockIncluded':
+            setDetailedTxStatus('inBlock');
+            break;
+          case 'Finalized':
+            setTxStatus('success');
+            setDetailedTxStatus('finalized');
+            break;
+          case 'Invalid':
+            setTxStatus('failed')
+            setDetailedTxStatus('invalid')
+            break;
+          case 'Drop':
+            setTxStatus('failed');
+            setDetailedTxStatus('dropped');
+            break;
+        }
+      })
+        .untilFinalized();
 
       const { status, dispatchError, events, dispatchInfo, txHash } = result;
 

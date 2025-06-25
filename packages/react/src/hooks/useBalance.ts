@@ -1,4 +1,4 @@
-import { useSubscription, UseSubscriptionResult } from './useSubscription';
+import { QueryMultiItem, useSubscription, UseSubscriptionResult } from './useSubscription';
 import type { AccountBalance } from '@luno-kit/core';
 import type { DedotClient } from 'dedot';
 import { useLuno } from './useLuno'
@@ -19,22 +19,16 @@ interface BalanceLock {
 }
 
 export interface ChainProperties {
-  isEthereum?: boolean;
   ss58Format?: number;
-  tokenDecimals?: number | Array<number>;
-  tokenSymbol?: string | Array<string>;
-  [prop: string]: any;
+  tokenDecimals?: number;
+  tokenSymbol?: string;
 }
 
 const DEFAULT_TOKEN_DECIMALS = 10
 
-const transformBalance = (results: any[]) => {
+const transformBalance = (results: any[], chainProperties: ChainProperties) => {
   const accountInfo: AccountData = results[0];
   const locks: BalanceLock[] = results[1];
-  const properties: ChainProperties = results[2]
-
-  const decimals = (typeof properties.tokenDecimals === 'number'
-    ? properties.tokenDecimals : properties.tokenDecimals?.[0]) ?? DEFAULT_TOKEN_DECIMALS
 
   const free = accountInfo.data.free;
   const reserved = accountInfo.data.reserved;
@@ -48,13 +42,13 @@ const transformBalance = (results: any[]) => {
     total,
     reserved,
     transferable,
-    formattedTransferable: formatBalance(transferable, decimals),
-    formattedTotal: formatBalance(total, decimals),
+    formattedTransferable: formatBalance(transferable, chainProperties.tokenDecimals),
+    formattedTotal: formatBalance(total, chainProperties.tokenDecimals),
     locks: locks.map(lock => ({
       id: lock.id,
       amount: lock.amount,
       reason: lock.reasons,
-      lockHuman: formatBalance(lock.amount, decimals)
+      lockHuman: formatBalance(lock.amount, chainProperties.tokenDecimals)
     }))
   } as AccountBalance;
 }
@@ -66,24 +60,29 @@ export interface UseBalanceProps {
 export type UseBalanceResult = UseSubscriptionResult<AccountBalance>;
 
 export const useBalance = ({ address }: UseBalanceProps): UseBalanceResult => {
-  const { currentApi, isApiReady } = useLuno();
+  const { currentApi, isApiReady, currentChain } = useLuno();
 
   return useSubscription<
-    [Array<any>],
-    Array<any>,
+    QueryMultiItem[],
+    [AccountData, BalanceLock[]],
     AccountBalance
   >({
+    queryKey: '/native-balance',
     factory: (api: DedotClient) => api.queryMulti,
     params: (api: DedotClient) => [
-      [
-        { fn: api.query.system.account, args: [address] },
-        { fn: api.query.balances.locks, args: [address] },
-        { fn: api.rpc.system_properties, args: [] },
-      ]
+      { fn: api.query.system.account, args: [address] },
+      { fn: api.query.balances.locks, args: [address] },
     ],
     options: {
       enabled: !!currentApi && isApiReady && !!address,
-      transform: transformBalance
+      transform: (results, ) => {
+        const chainProperties: ChainProperties = {
+          tokenDecimals: currentChain?.nativeCurrency?.decimals ?? DEFAULT_TOKEN_DECIMALS,
+          tokenSymbol: currentChain?.nativeCurrency?.symbol,
+          ss58Format: currentChain?.ss58Format,
+        };
+        return transformBalance(results, chainProperties)
+      }
     }
   });
 }
