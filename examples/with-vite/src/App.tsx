@@ -12,7 +12,7 @@ import {
   useSwitchChain,
   useSignMessage,
   useSendTransaction,
-  useApi
+  useApi, useBlockNumber
 } from '@luno-kit/react';
 import './App.css';
 
@@ -23,11 +23,12 @@ const App: React.FC = () => {
   const { disconnect } = useDisconnect();
   const { chain: currentChain } = useChain();
   const chains = useChains();
-  const { data: balance } = useBalance({ address });
+  const { data: balance, error } = useBalance({ address });
   const { switchChainAsync } = useSwitchChain();
   const { signMessageAsync, data: signMessageData } = useSignMessage();
-  const { sendTransactionAsync, data: sendTransactionData, isPending: isSendingTransaction } = useSendTransaction();
+  const { sendTransactionAsync, data: sendTransactionData, isPending: isSendingTransaction, detailedStatus } = useSendTransaction();
   const { api, isApiReady, apiError, isApiConnected } = useApi();
+  const { data: blockNumber } = useBlockNumber()
 
   const { themeMode, toggleTheme } = useLunoTheme();
 
@@ -74,12 +75,12 @@ const App: React.FC = () => {
 
     try {
       const decimals = currentChain.nativeCurrency.decimals || 12;
-      const amountInPlanck = parseFloat(transferForm.amount) * Math.pow(10, decimals);
+      const amountInPlanck = BigInt(parseFloat(transferForm.amount) * Math.pow(10, decimals));
       const result = await sendTransactionAsync({
         extrinsic: api.tx.balances.transferKeepAlive(transferForm.to, amountInPlanck)
       });
 
-      if (result.status === 'Success') {
+      if (result.status === 'success') {
         showNotification('Transfer successful', `TxHash: ${result.transactionHash.slice(0, 10)}...`);
         setTransferForm({ to: '', amount: '' });
       } else {
@@ -327,6 +328,14 @@ const App: React.FC = () => {
                         <div className="result-item">
                           <span className="label">Hash:</span>
                           <span className="value">{sendTransactionData.transactionHash.slice(0, 20)}...</span>
+                        </div>
+                      </div>
+                    )}
+                    {detailedStatus && (
+                      <div className="transaction-result">
+                        <div className="result-item">
+                          <span className="label">DetailedStatus:</span>
+                          <span className="value">{detailedStatus}</span>
                         </div>
                       </div>
                     )}
