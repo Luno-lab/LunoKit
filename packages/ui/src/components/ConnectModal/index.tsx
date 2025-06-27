@@ -1,4 +1,3 @@
-// packages/ui/src/components/ConnectModal/index.tsx
 import React, {useState} from 'react';
 import { useConnect, useConnectors } from '@luno-kit/react';
 import { Dialog, DialogClose, DialogTitle, ModalSize } from '../Dialog';
@@ -148,7 +147,7 @@ interface ConnectorItemProps {
   onConnect: () => void;
 }
 
-const ConnectorItem: React.FC<ConnectorItemProps> = ({ connector, onConnect }) => {
+const ConnectorItem: React.FC<ConnectorItemProps> = React.memo(({ connector, onConnect }) => {
   return (
     <button
       onClick={onConnect}
@@ -169,4 +168,4 @@ const ConnectorItem: React.FC<ConnectorItemProps> = ({ connector, onConnect }) =
       <span className="font-[600] leading-primary text-primary text-modalFont">{connector.name}</span>
     </button>
   );
-};
+});

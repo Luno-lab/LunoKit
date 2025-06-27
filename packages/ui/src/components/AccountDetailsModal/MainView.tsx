@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, { useMemo } from 'react';
 import { cs } from '../../utils';
 import { Arrow, Disconnect, List, Switch } from '../../assets/icons';
 import { ChainIcon } from '../ChainIcon';

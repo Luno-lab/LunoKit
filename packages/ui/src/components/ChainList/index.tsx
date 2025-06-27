@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react'
+import React, { useMemo, useState } from 'react'
 import { cs } from '../../utils'
 import { useApi, useChain, useChains, useSwitchChain } from '@luno-kit/react'
 import type { Chain } from '@luno-kit/react'
@@ -106,12 +106,12 @@ interface ChainItemProps {
   onSelect: (chain: Chain) => void;
 }
 
-const ChainItem: React.FC<ChainItemProps> = ({
-  chain,
-  isSelected,
-  isLoading,
-  onSelect
-}) => {
+const ChainItem: React.FC<ChainItemProps> = React.memo(({
+                                                          chain,
+                                                          isSelected,
+                                                          isLoading,
+                                                          onSelect
+                                                        }) => {
   return (
     <button
       onClick={() => onSelect(chain)}
@@ -148,10 +148,10 @@ const ChainItem: React.FC<ChainItemProps> = ({
               <span className="ping-animation"></span>
               <span className="status-dot"></span>
             </span>
-            )
+          )
         : null
       }
 
     </button>
   );
-};
+});

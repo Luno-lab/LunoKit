@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, { useCallback } from 'react';
 import { useAccount, useAccounts, useActiveConnector, useBalance, useChain } from '@luno-kit/react';
 import { cs } from '../../utils';
 import { formatAddress } from '@luno-kit/react';
@@ -37,14 +37,16 @@ export const SwitchAccountView: ViewComponent = ({ onBack }) => {
 
 SwitchAccountView.title = 'Switch Accounts';
 
-const AccountItem = ({
-  isSelected,
-  account,
-  selectAccount
-}: {
+interface AccountItemProps {
   isSelected: boolean;
   account: Account;
   selectAccount: (acc: Account) => void
+}
+
+const AccountItem: React.FC<AccountItemProps> = React.memo(({
+  isSelected,
+  account,
+  selectAccount
 }) => {
   const { chain } = useChain();
   const address = account.address;
@@ -82,4 +84,4 @@ const AccountItem = ({
       )}
     </div>
   );
-};
+});
