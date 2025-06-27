@@ -33,6 +33,11 @@ Luno Kit is a React library that makes it easy to add Polkadot wallet connection
 - 🌐 **Multi-chain Support** - Polkadot, Kusama, parachains and custom chains
 - ⚙️ **Custom Chain Support** - Easy integration with any Substrate-based chain
 
+## ⚡ Quick Demo
+
+**[🚀 Try it live](https://demo.lunolab.xyz/)** - Experience Luno Kit in action!
+
+*This is the online version of our `with-vite` example - connect your Polkadot wallet and explore all features.*
 
 ## Installation & Usage
 
@@ -143,21 +148,13 @@ function App() {
 
 For full documentation and examples, visit [our documentation site](#) (coming soon).
 
-### Try it out
-
-You can try out Luno with these CodeSandbox examples:
-
-* [with Create React App](#) (coming soon)
-* [with Next.js](#) (coming soon)
-* [with Vite](#) (coming soon)
-
 ## Examples
 
 The following examples are provided in the `examples` folder:
 
 * `with-vite` - Vite integration (✅ Ready to run)
-* `with-next` - Next.js integration
-* `with-cra` - Create React App integration
+* `with-next` - Next.js integration (coming soon)
+* `with-cra` - Create React App integration (coming soon)
 
 ### Running examples
 
