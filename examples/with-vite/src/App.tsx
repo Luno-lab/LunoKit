@@ -12,7 +12,7 @@ import {
   useSwitchChain,
   useSignMessage,
   useSendTransaction,
-  useApi, useBlockNumber
+  useApi,
 } from '@luno-kit/react';
 import './App.css';
 
@@ -23,12 +23,11 @@ const App: React.FC = () => {
   const { disconnect } = useDisconnect();
   const { chain: currentChain } = useChain();
   const chains = useChains();
-  const { data: balance, error } = useBalance({ address });
+  const { data: balance } = useBalance({ address });
   const { switchChainAsync } = useSwitchChain();
   const { signMessageAsync, data: signMessageData } = useSignMessage();
   const { sendTransactionAsync, data: sendTransactionData, isPending: isSendingTransaction, detailedStatus } = useSendTransaction();
   const { api, isApiReady, apiError, isApiConnected } = useApi();
-  const { data: blockNumber } = useBlockNumber()
 
   const { themeMode, toggleTheme } = useLunoTheme();
 
