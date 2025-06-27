@@ -1,6 +1,6 @@
 import { useLuno } from './useLuno';
 import type { Connector } from '@luno-kit/core';
-import {ConnectionStatus} from '../types'
+import { ConnectionStatus } from '../types'
 import { useLunoMutation, type LunoMutationOptions } from './useLunoMutation';
 
 export interface ConnectVariables {
