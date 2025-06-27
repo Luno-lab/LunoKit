@@ -389,17 +389,16 @@ const App: React.FC = () => {
           <div className="code-grid">
             <div className="code-card">
               <h3>Installation</h3>
-              <pre><code>{`pnpm add @luno-kit/ui @luno-kit/react
-pnpm add @tanstack/react-query @polkadot/api`}</code></pre>
+              <pre><code>{`pnpm add @luno-kit/ui @luno-kit/react @tanstack/react-query`}</code></pre>
             </div>
             <div className="code-card">
               <h3>Basic Usage</h3>
-              <pre><code>{`import { ConnectButton } from '@luno-kit/ui';
-import { LunoProvider } from '@luno-kit/react';
+              <pre><code>{`import { LunoKitProvider, ConnectButton } from '@luno-kit/ui';
+import '@luno-kit/ui/dist/styles.css';
 
-<LunoProvider config={config}>
+<LunoKitProvider config={config}>
   <ConnectButton />
-</LunoProvider>`}</code></pre>
+</LunoKitProvider>`}</code></pre>
             </div>
           </div>
         </div>
