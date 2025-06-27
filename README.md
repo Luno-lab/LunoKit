@@ -15,12 +15,6 @@
 
 </div>
 
-<div align="center">
-
-**English** | [中文](./README.zh-CN.md)
-
-</div>
-
 Luno Kit is a React library that makes it easy to add Polkadot wallet connection to your dapp.
 
 * 🎨 **Beautiful UI components** - Ready-to-use wallet connection button
@@ -29,17 +23,41 @@ Luno Kit is a React library that makes it easy to add Polkadot wallet connection
 * 🌐 **Multi-chain ready** - Polkadot, Kusama and parachain support
 * 🦄 **Built for React** - TypeScript-first with modern React patterns
 
+## Features
+
+- 🔌 **Unified Wallet Interface** - Single API for all Polkadot ecosystem wallets
+- 🎨 **Customizable Themes** - Complete design system with dark/light mode
+- ⚡ **TypeScript First** - Full type safety and IntelliSense support
+- 📱 **Responsive Design** - Mobile-first UI components
+- 🔄 **Real-time Updates** - Automatic balance and account updates
+- 🌐 **Multi-chain Support** - Polkadot, Kusama, parachains and custom chains
+- ⚙️ **Custom Chain Support** - Easy integration with any Substrate-based chain
+
+
 ## Installation & Usage
 
 ### UI Components Only
 ```bash
-pnpm add @luno-kit/ui @tanstack/react-query @polkadot/api @polkadot/types @polkadot/util
+# pnpm
+pnpm add @luno-kit/ui @luno-kit/react @tanstack/react-query
+
+# yarn
+yarn add @luno-kit/ui @luno-kit/react @tanstack/react-query
+
+# npm
+npm install @luno-kit/ui @luno-kit/react @tanstack/react-query
 ```
 
 ### With React Hooks
 ```bash
-# If you want to use React hooks directly
-pnpm add @luno-kit/react @luno-kit/ui @tanstack/react-query @polkadot/api @polkadot/types @polkadot/util
+# pnpm
+pnpm add @luno-kit/react @tanstack/react-query
+
+# yarn
+yarn add @luno-kit/react @tanstack/react-query
+
+# npm
+npm install @luno-kit/react @tanstack/react-query
 ```
 
 ## Quick start
@@ -48,19 +66,31 @@ pnpm add @luno-kit/react @luno-kit/ui @tanstack/react-query @polkadot/api @polka
 
 ```tsx
 import { LunoKitProvider, ConnectButton } from '@luno-kit/ui'
-import { createConfig, polkadot, kusama, wsProvider, polkadotjs, subwallet } from '@luno-kit/core'
-import type { Config } from '@luno-kit/core'
+import { createConfig, defineChain, kusama, polkadot, polkadotjs, subwallet, westend, paseo } from '@luno-kit/react'
+import '@luno-kit/ui/dist/styles.css'
 
-const config: Config = createConfig({
-  appName: 'My Polkadot App',
-  chains: [polkadot, kusama],
+const config = createConfig({
+  appName: 'My Luno App',
+  chains: [polkadot, kusama, westend, paseo],
   connectors: [polkadotjs(), subwallet()],
   autoConnect: true,
-  transports: {
-    [polkadot.genesisHash]: wsProvider('wss://polkadot.api.onfinality.io/public-ws'),
-    [kusama.genesisHash]: wsProvider('wss://kusama-rpc.polkadot.io'),
-  }
 })
+
+/* 
+// Custom chain example:
+const customChain = defineChain({
+  genesisHash: '0x1234...', // Your chain's genesis hash
+  name: 'My Custom Chain',
+  nativeCurrency: { name: 'Custom Token', symbol: 'CUSTOM', decimals: 12 },
+  rpcUrls: { webSocket: ['wss://my-chain-rpc.example.com'] },
+  ss58Format: 42,
+  blockExplorers: { default: { name: 'Explorer', url: 'https://explorer.example.com' } },
+  chainIconUrl: 'https://example.com/icon.png',
+  testnet: true
+})
+
+// Then use: chains: [customChain]
+*/
 
 function App() {
   return (
@@ -75,16 +105,16 @@ function App() {
 
 ```tsx
 import { LunoKitProvider } from '@luno-kit/ui'
-import { useAccount, useBalance, useConnect } from '@luno-kit/react'
+import { useAccount, useBalance, useConnect, ConnectionStatus } from '@luno-kit/react'
 
 function WalletInfo() {
-  const { account, isConnected } = useAccount()
-  const { balance } = useBalance()
-  const { connect, connectors } = useConnect()
+  const { account } = useAccount()
+  const { data: balance } = useBalance({ address });
+  const { connect, connectors, status } = useConnect()
 
-  if (!isConnected) {
+  if (status !== ConnectionStatus.Connected) {
     return (
-      <button onClick={() => connect(connector[0].Id)}>
+      <button onClick={() => connect({ connectorId: connectors[0].id })}>
         Connect Wallet
       </button>
     )
@@ -125,8 +155,8 @@ You can try out Luno with these CodeSandbox examples:
 
 The following examples are provided in the `examples` folder:
 
+* `with-vite` - Vite integration (✅ Ready to run)
 * `with-next` - Next.js integration
-* `with-vite` - Vite integration
 * `with-cra` - Create React App integration
 
 ### Running examples
@@ -134,6 +164,9 @@ The following examples are provided in the `examples` folder:
 To run an example locally:
 
 ```bash
+git clone https://github.com/Luno-lab/LunoKit.git
+cd LunoKit
+
 # Install dependencies
 pnpm install
 
@@ -158,7 +191,7 @@ pnpm --filter with-vite dev
 * `useActiveConnector()` - Get currently active connector
 
 #### Connection Management
-* `useConnect()` - Connect to wallets
+* `useConnect()` - Connect to wallets and manage connection state
 * `useConnectors()` - Get available connectors
 * `useDisconnect()` - Disconnect from wallet
 * `useStatus()` - Get connection status
@@ -178,18 +211,18 @@ pnpm --filter with-vite dev
 * `useSubscription()` - Subscribe to blockchain data
 
 #### Transactions & Signing
-* `useSendTransaction()` - Send transactions
+* `useSendTransaction()` - Send transactions and get full result
+* `useSendTransactionHash()` - Send transactions and get transaction hash
 * `useSignMessage()` - Sign messages
-* `useLunoMutation()` - Handle async mutations
+* `useSigner()` - Get signer instance
 
 #### Configuration & Utils
 * `useConfig()` - Get Luno configuration
-* `useLuno()` - Get Luno store instance
 
 ## Package Structure
 
-- `@luno-kit/ui` - UI component library (includes all dependencies, ready to use)
-- `@luno-kit/react` - React Hooks and Provider
+- `@luno-kit/ui` - UI component library with built-in components
+- `@luno-kit/react` - React Hooks and Provider (core functionality, includes dedot integration)
 - `@luno-kit/core` - Core connectors and utilities
 
 ## Contributing
