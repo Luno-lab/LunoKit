@@ -1,6 +1,12 @@
-import type { InjectedWindow } from 'dedot/types';
+import { Injected } from 'dedot/types';
 
 declare global {
-  interface Window extends InjectedWindow {
+  interface Window {
+    injectedWeb3?: Record<string, {
+      enable: (appName: string) => Promise<Injected>;
+      version: string;
+    }>;
   }
 }
+
+export {};

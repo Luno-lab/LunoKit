@@ -48,7 +48,6 @@ export class SubWalletConnector extends BaseConnector {
     }
 
     try {
-      //@ts-ignore
       this.specificInjector = await window.injectedWeb3[this.id].enable(appName);
 
       if (!this.specificInjector) {
