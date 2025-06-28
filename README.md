@@ -226,24 +226,4 @@ pnpm --filter with-vite dev
 
 Please read our [contributing guidelines](CONTRIBUTING.md) before submitting PRs.
 
-## License
 
-Licensed under the Apache 2.0 License, Copyright © 2024-present Luno Labs.
-
-See [LICENSE](LICENSE) for more information.
-
-## About
-
-The best way to connect Polkadot wallets 🚀
-
-### Keywords
-
-polkadot  substrate  react  ui  components  luno  wallet  dapp  web3
-
-### Resources
-
-Readme
-
-### License
-
-Apache 2.0 license

@@ -107,11 +107,11 @@ interface ChainItemProps {
 }
 
 const ChainItem: React.FC<ChainItemProps> = React.memo(({
-                                                          chain,
-                                                          isSelected,
-                                                          isLoading,
-                                                          onSelect
-                                                        }) => {
+  chain,
+  isSelected,
+  isLoading,
+  onSelect
+}) => {
   return (
     <button
       onClick={() => onSelect(chain)}

@@ -14,8 +14,7 @@
   "bugs": {
     "url": "https://github.com/Luno-lab/LunoKit/issues"
   },
-  "license": "Apache-2.0",
-  "author": "wbh1328551759",
+  "license": "MIT",
   "sideEffects": [
     "**/*.css"
   ],
