@@ -23,11 +23,5 @@
   "engines": {
     "node": ">=16.0.0",
     "pnpm": ">=8.0.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "@polkadot/extension-dapp": "0.58.8",
-      "@polkadot/extension-inject": "0.58.8"
-    }
   }
 }

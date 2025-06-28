@@ -1,11 +1,12 @@
-# LunoKit ( In Development )
+- # LunoKit ( In Development )
+> ⚠️ **Early Development**
 
 <div align="center">
 
 [![npm version](https://img.shields.io/npm/v/@luno-kit/ui.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@luno-kit/ui)
 [![npm downloads](https://img.shields.io/npm/dm/@luno-kit/ui.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@luno-kit/ui)
 [![bundle size](https://img.shields.io/bundlephobia/minzip/@luno-kit/ui?style=flat&colorA=000000&colorB=000000)](https://bundlephobia.com/package/@luno-kit/ui)
-[![license](https://img.shields.io/badge/license-Apache%202.0-black?style=flat&colorA=000000&colorB=000000)](https://github.com/Luno-lab/LunoKit/blob/main/LICENSE)
+[![license](https://img.shields.io/badge/license-MIT-black?style=flat&colorA=000000&colorB=000000)](https://github.com/Luno-lab/LunoKit/blob/main/LICENSE)
 
 [![typescript](https://img.shields.io/badge/TypeScript-Ready-black?style=flat&colorA=000000&colorB=000000&logo=typescript)](https://www.typescriptlang.org/)
 [![react](https://img.shields.io/badge/React-18+-black?style=flat&colorA=000000&colorB=000000&logo=react)](https://reactjs.org/)
@@ -38,6 +39,13 @@ Luno Kit is a React library that makes it easy to add Polkadot wallet connection
 **[🚀 Try it live](https://demo.lunolab.xyz/)** - Experience Luno Kit in action!
 
 *This is the online version of our `with-vite` example - connect your Polkadot wallet and explore all features.*
+
+### 🎮 What you can try:
+- 🔌 Connect Polkadot{.js} or SubWallet
+- 🌐 Switch between Polkadot, Kusama, Westend, Paseo chains
+- 💰 View account balances
+- ✍️ Sign messages
+- 💸 Send transactions
 
 ## Installation & Usage
 
@@ -183,9 +191,9 @@ pnpm --filter with-vite dev
 > **Note:** To use these hooks directly, you need to install `@luno-kit/react` separately.
 
 #### Account Management
-* `useAccount()` - Get current account information
-* `useAccounts()` - Get all connected accounts
-* `useActiveConnector()` - Get currently active connector
+* `useAccount()` - Get current connected account information and formatted address
+* `useAccounts()` - Get all available accounts from connected wallet
+* `useActiveConnector()` - Get currently active wallet connector instance
 
 #### Connection Management
 * `useConnect()` - Connect to wallets and manage connection state
@@ -222,8 +230,7 @@ pnpm --filter with-vite dev
 - `@luno-kit/react` - React Hooks and Provider (core functionality, includes dedot integration)
 - `@luno-kit/core` - Core connectors and utilities
 
-## Contributing
+## License
 
-Please read our [contributing guidelines](CONTRIBUTING.md) before submitting PRs.
-
+Licensed under the [MIT License](LICENSE).
 
