@@ -38,12 +38,6 @@ export class PolkadotJsConnector extends BaseConnector {
       throw new Error(`${this.name} extension not found or not enabled.`);
     }
 
-    if (!window.injectedWeb3 || !window.injectedWeb3[this.id]) {
-      throw new Error(
-        `The '${this.id}' extension is not installed. Please install it to connect.`
-      );
-    }
-
     try {
       this.specificInjector = await window.injectedWeb3[this.id]!.enable(appName);
 
@@ -84,9 +78,14 @@ export class PolkadotJsConnector extends BaseConnector {
   }
 
   public async signMessage(message: string, address: string): Promise<string | undefined> {
+    if (!address || !message) return undefined;
     const signer = await this.getSigner();
     if (!signer || !signer?.signRaw) {
       throw new Error('Signer is not available or does not support signRaw.');
+    }
+    const accounts = await this.getAccounts();
+    if (!accounts.some(acc => acc.address.toLowerCase() === address.toLowerCase())) {
+      throw new Error(`Address ${address} is not managed by ${this.name}.`);
     }
 
     try {
@@ -94,8 +93,7 @@ export class PolkadotJsConnector extends BaseConnector {
       const result = await signer.signRaw({ address, data: dataHex, type: 'bytes' });
       return result.signature;
     } catch (error) {
-      console.error(`Connector ${this.id}: Failed to sign message:`, error);
-      return undefined;
+      throw new Error(`Connector ${this.id}: Failed to sign message: ${error.message}`);
     }
   }
 
