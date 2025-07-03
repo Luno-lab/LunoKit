@@ -328,6 +328,12 @@ const App: React.FC = () => {
                           <span className="label">Hash:</span>
                           <span className="value">{sendTransactionData.transactionHash.slice(0, 20)}...</span>
                         </div>
+                        {sendTransactionData.errorMessage && (
+                          <div className="result-item">
+                            <span className="label">error:</span>
+                            <span className="value">{sendTransactionData.errorMessage}</span>
+                          </div>
+                        )}
                       </div>
                     )}
                     {detailedStatus && (
