@@ -18,11 +18,11 @@ export interface LunoStorage {
 // export type Transport = WsProvider;
 export type Transport = string;
 
-type LunoApiOptions = Pick<ApiOptions,
+type LunoApiOptions = Partial<Pick<ApiOptions,
   | 'cacheMetadata'
   | 'metadata'
   | 'scaledResponses'
-> & {
+>> & {
   customTypes?: Record<string, AnyShape>;
   customRpc?: Record<string, any>;
 };

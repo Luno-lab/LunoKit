@@ -48,7 +48,6 @@
     "lint": "eslint src",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:ui": "vitest run --ui",
     "clean": "rm -rf dist",
     "generate:logos": "node scripts/convertLogos.mjs"
   },
@@ -59,7 +58,6 @@
     "@dedot/chaintypes": "^0.116.0",
     "@types/node": "^18.19.86",
     "@vitest/coverage-v8": "3.2.4",
-    "@vitest/ui": "3.2.4",
     "dedot": "^0.13.1",
     "eslint": "^8.56.0",
     "tsup": "^8.0.2",
