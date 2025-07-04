@@ -7,7 +7,6 @@ import type {
   RawStorage,
 } from '../types';
 import { createStorage } from './createStorage'
-import {AnyShape} from 'dedot/shape'
 
 const noopStorage: RawStorage = {
   getItem: async (_key: string) => null,

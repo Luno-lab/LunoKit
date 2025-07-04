@@ -88,7 +88,7 @@ export function mapInjectedAccounts(injectedAccounts: InjectedAccount[], sourceI
 
       return mappedAccount;
     });
-  } catch (e) {
+  } catch (e: any) {
     throw new Error(`Failed to map injected accounts: ${e.message}`);
   }
 }

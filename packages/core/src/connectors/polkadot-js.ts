@@ -39,7 +39,7 @@ export class PolkadotJsConnector extends BaseConnector {
     }
 
     try {
-      this.specificInjector = await window.injectedWeb3[this.id]!.enable(appName);
+      this.specificInjector = await window.injectedWeb3![this.id]!.enable(appName);
 
       if (!this.specificInjector) {
         throw new Error(`Failed to enable the '${this.id}' extension.`);
@@ -92,7 +92,7 @@ export class PolkadotJsConnector extends BaseConnector {
       const dataHex = stringToHex(message);
       const result = await signer.signRaw({ address, data: dataHex, type: 'bytes' });
       return result.signature;
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(`Connector ${this.id}: Failed to sign message: ${error.message}`);
     }
   }
