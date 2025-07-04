@@ -1,10 +1,10 @@
 import React, { ReactNode, useCallback, useEffect, useMemo } from 'react';
-import { DedotClient } from 'dedot';
 import type { Chain, Config, Transport } from '@luno-kit/core';
 import { useLunoStore } from '../store'
 import { PERSIST_KEY } from '../constants'
 import { LunoContext, LunoContextState } from './LunoContext'
-import { wsProvider } from '@luno-kit/core'
+import { useIsInitialized } from '../hooks/useIsInitialized'
+import { createApi } from '../utils'
 
 interface LunoProviderProps {
   config: Config;
@@ -17,7 +17,6 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     _setApi,
     _setIsApiReady,
     _setApiError,
-    _setIsApiConnected,
     setAccount,
     currentChainId,
     config: configInStore,
@@ -29,17 +28,16 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     account,
     currentChain,
     isApiReady,
-    isApiConnected,
     apiError,
     disconnect,
     switchChain,
   } = useLunoStore()
+  const { markAsInitialized, isInitialized } = useIsInitialized()
 
   const clearApiState = useCallback(() => {
     _setApi(undefined);
-    _setIsApiConnected(false)
     _setIsApiReady(false)
-  }, [_setApi, _setIsApiConnected, _setIsApiReady])
+  }, [_setApi, _setIsApiReady])
 
   useEffect(() => {
     if (configFromProps) {
@@ -49,15 +47,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
   }, [configFromProps]);
 
   useEffect(() => {
-    let currentApiInstance: DedotClient | null = null;
-
-    if (currentApi && currentApi.status === 'connected' && currentApi.genesisHash) {
-      if (currentApi.genesisHash === currentChainId ) {
-        console.log('[LunoProvider] API is already connected to the target chain and ready. No action needed.');
-        return;
-      }
-    }
-
+    if (isInitialized) return
     if (!configFromProps || !currentChainId) {
       if (currentApi && currentApi.status === 'connected') {
         currentApi.disconnect().catch(console.error);
@@ -76,38 +66,26 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
         currentApi.disconnect().catch(console.error);
       }
       clearApiState()
-      throw new Error(`Configuration missing for chainId: ${currentChainId}`)
+      return
     }
 
     if (currentApi && currentApi.status === 'connected') {
-      console.log('[LunoProvider] Disconnecting API from previous render cycle:', currentApi.chainSpec.chainName());
+      console.log('[LunoProvider]: Disconnecting API from previous render cycle:', currentApi.chainSpec.chainName());
       currentApi.disconnect().catch(e => console.error('[LunoProvider] Error disconnecting previous API:', e));
     }
 
     clearApiState()
 
-    console.log(`[LunoProvider] Constructing new ApiPromise for chain: ${chainConfig.name} (${currentChainId})`);
-    const provider = wsProvider(transportConfig);
-
-    try {
-      const newApi = new DedotClient(provider);
-
-      newApi.connect().then(() => {
-        currentApiInstance = newApi;
-        _setApi(newApi);
-        _setIsApiConnected(true)
+    createApi({ config: configFromProps, chainId: currentChainId })
+      .then(api => {
+        _setApi(api);
         _setIsApiReady(true)
       })
-
-
-    } catch (error: any) {
-      clearApiState()
-      throw new Error(`[LunoProvider] Failed to construct ApiPromise for ${chainConfig.name}: ${error?.message || error}`)
-    }
-
-    return () => {
-      clearApiState()
-    };
+      .catch(e => {
+        clearApiState()
+        _setApiError(e)
+      })
+      .finally(() => markAsInitialized())
   }, [configFromProps, currentChainId]);
 
   useEffect(() => {
@@ -183,14 +161,13 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     currentChainId,
     currentChain,
     currentApi,
-    isApiConnected,
     isApiReady,
     connect,
     disconnect,
     switchChain,
     apiError,
   }), [
-    configInStore, status, activeConnector, accounts, account, currentChainId, currentChain, currentApi, isApiReady, isApiConnected, apiError,
+    configInStore, status, activeConnector, accounts, account, currentChainId, currentChain, currentApi, isApiReady, apiError,
     connect, disconnect, switchChain, setAccount
   ]);
 

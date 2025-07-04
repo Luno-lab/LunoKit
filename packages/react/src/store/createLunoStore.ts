@@ -4,6 +4,7 @@ import { ConnectionStatus } from '../types';
 import type { Account } from '@luno-kit/core';
 import { PERSIST_KEY } from '../constants';
 import { isSameAddress } from '@luno-kit/core/utils';
+import {createApi} from '../utils'
 
 interface StoredAccountInfo {
   publicKey?: string;
@@ -35,7 +36,6 @@ export const useLunoStore = create<LunoState>((set, get) => ({
   currentChain: undefined,
   currentApi: undefined,
   isApiReady: false,
-  isApiConnected: false,
   apiError: null,
 
   _setConfig: async (newConfig) => {
@@ -65,10 +65,6 @@ export const useLunoStore = create<LunoState>((set, get) => ({
 
   _setApi: (apiInstance) => {
     set({currentApi: apiInstance});
-  },
-
-  _setIsApiConnected: (isConnected) => {
-    set ({isApiConnected: isConnected})
   },
 
   _setIsApiReady: (isReady) => {
@@ -318,7 +314,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
   },
 
   switchChain: async (newChainId: string) => {
-    const {config, currentChainId} = get();
+    const {config, currentChainId, currentApi} = get();
 
     if (!config) {
       throw new Error('[LunoStore] LunoConfig has not been initialized. Cannot switch chain.');
@@ -333,19 +329,33 @@ export const useLunoStore = create<LunoState>((set, get) => ({
       throw new Error(`[LunoStore] Chain with ID "${newChainId}" not found in LunoConfig.`);
     }
 
+    if (currentApi && currentApi.status === 'connected') {
+      await currentApi.disconnect();
+    }
+
     console.log(`[LunoStore] Attempting to switch chain to ${newChain.name} (ID: ${newChainId})`);
     set({
       currentChainId: newChainId,
       currentChain: newChain,
       currentApi: undefined,
       isApiReady: false,
+      apiError: null,
     });
 
     try {
+      const newApi = await createApi({ config, chainId: newChainId });
+
+      set({
+        currentApi: newApi,
+        isApiReady: true,
+      });
+
       await config.storage.setItem(PERSIST_KEY.LAST_CHAIN_ID, newChainId);
-      console.log(`[LunoStore] Persisted new chainId: ${newChainId} after chain switch.`);
     } catch (e) {
-      throw new Error(`[LunoStore] Failed to persist new chainId to storage: ${e?.message || e}`);
+      set({
+        apiError: e,
+        isApiReady: false,
+      })
     }
   },
   _setApiError: (err) => {

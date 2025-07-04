@@ -24,7 +24,6 @@ export interface LunoState {
   currentChainId?: string;
   currentChain?: Chain;
   currentApi?: DedotClient;
-  isApiConnected: boolean;
   isApiReady: boolean;
   apiError: Error | null
 
@@ -37,7 +36,6 @@ export interface LunoState {
 
   _setApi: (api?: DedotClient) => void;
 
-  _setIsApiConnected: (isApiConnected: boolean) => void;
   _setIsApiReady: (isApiReady: boolean) => void;
   _setApiError: (error: Error | null) => void
 
