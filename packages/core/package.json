@@ -55,18 +55,18 @@
     "eventemitter3": "5.0.1"
   },
   "devDependencies": {
-    "@dedot/chaintypes": "^0.116.0",
+    "@dedot/chaintypes": "^0.123.0",
     "@types/node": "^18.19.86",
     "@vitest/coverage-v8": "3.2.4",
-    "dedot": "^0.13.1",
+    "dedot": "^0.13.2",
     "eslint": "^8.56.0",
     "tsup": "^8.0.2",
     "typescript": "^5.3.3",
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "@dedot/chaintypes": "^0.116.0",
-    "dedot": "^0.13.1"
+    "@dedot/chaintypes": "^0.123.0",
+    "dedot": "^0.13.2"
   },
   "engines": {
     "node": ">=20.0.0",
