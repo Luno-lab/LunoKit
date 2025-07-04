@@ -91,10 +91,10 @@ const SelectItem = ({ children, onClick }: { children: React.ReactNode; onClick?
     <div
       onClick={() => onClick?.()}
       className={cs(
-        'cursor-pointer bg-connectorItemBackground p-[14px] w-full rounded-sm border-none',
-        'hover:opacity-90 transition-transform active:scale-[0.95]',
-        'text-left flex items-center gap-[8px] font-[500]',
-        onClick ? 'cursor-pointer' : 'cursor-auto'
+        'w-full p-[14px] rounded-sm border-none text-left flex items-center gap-[8px] font-[500]',
+  'bg-[var(--color-connectorItemBackground)] hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)]',
+  'transition-colors duration-200',
+  onClick ? 'cursor-pointer' : 'cursor-auto'
       )}
     >
       {children}

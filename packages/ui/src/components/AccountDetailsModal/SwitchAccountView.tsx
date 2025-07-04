@@ -22,7 +22,7 @@ export const SwitchAccountView: ViewComponent = ({ onBack }) => {
   }, [onBack])
 
   return (
-    <div className="flex flex-col gap-[4px] pt-[12px] overflow-auto max-h-[400px] scrollbar-thin">
+    <div className="flex flex-col gap-[4px] pt-[12px] overflow-auto max-h-[400px] no-scrollbar">
       {accounts.map((acc) => (
         <AccountItem
           key={acc.address}
@@ -57,11 +57,14 @@ const AccountItem: React.FC<AccountItemProps> = React.memo(({
     <div
       onClick={() => selectAccount(account)}
       className={cs(
-        'bg-connectorItemBackground px-[14px] py-[10px] w-full rounded-sm border-none',
-        'hover:opacity-90 transition-transform active:scale-[0.95]',
-        'text-left flex items-center justify-between gap-[8px]',
-        isSelected ? 'cursor-auto' : 'cursor-pointer'
-      )}
+        'px-[14px] py-[10px] w-full rounded-sm border-none',
+         'bg-[var(--color-connectorItemBackground)]',
+         'text-left flex items-center justify-between gap-[8px]',
+         'transition-colors duration-200',
+         isSelected ? 'cursor-auto'
+         : 'cursor-pointer hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)]'
+)}
+
     >
       <div className="flex items-center gap-[8px]">
         <div className="shrink-0 w-[24px] h-[24px] bg-pink-500 rounded-full flex items-center justify-center">
