@@ -1,5 +1,5 @@
 import { Config, wsProvider } from '@luno-kit/core'
-import { DedotClient } from 'dedot'
+import { ApiOptions, DedotClient } from 'dedot'
 
 interface CreateApiOptions {
   config: Config;
@@ -18,7 +18,20 @@ export const createApi = async ({
   }
 
   const provider = wsProvider(transportConfig);
-  const newApi = new DedotClient(provider);
+
+  const apiOptions: ApiOptions = {
+    provider,
+    cacheMetadata: config.cacheMetadata,
+    metadata: config.metadata,
+    scaledResponses: {
+      ...config.scaledResponses,
+      ...config.customTypes,
+    },
+    runtimeApis: config.runtimeApis,
+    cacheStorage: config.cacheStorage,
+  };
+
+  const newApi = new DedotClient(apiOptions);
 
   try {
     await newApi.connect();

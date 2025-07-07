@@ -2,24 +2,27 @@ import type { DispatchError } from 'dedot/codecs'
 import type { DedotClient } from 'dedot'
 
 export function getReadableDispatchError(api: DedotClient, dispatchError: DispatchError): string {
-  let message: string = dispatchError.type;
-
-  if (dispatchError.isModule) {
+  if (dispatchError.type === 'Module') {
     try {
-      const mod = dispatchError.asModule;
+      const errorMeta = api.registry.findErrorMeta(dispatchError);
+      if (errorMeta) {
+        const { docs, name, pallet, fields, fieldCodecs } = errorMeta;
+        return `[useSendTransaction]: ${pallet}.${name} error,  ${docs.join(' ')}`;
+      }
 
-      const decoded = api.registry.findMetaError(mod as any);
-
-      const { docs, name, section } = decoded;
-
-      message = `${section}.${name}${docs.length ? ` - "${docs.join(' ')}"` : ''}`;
+      return `[useSendTransaction]: Module Error (index: ${dispatchError.value.index}, error: ${dispatchError.value.error})`;
     } catch (e) {
-      console.error("[useSendTransaction]: Error finding meta dispatch error:", e?.message || e);
-      const modData = dispatchError.asModule;
-      message = `[useSendTransaction]: Module Error (pallet: ${modData.index.toString()}, error: ${modData.error.toHuman()})`;
+      const { value: { error, index } } = dispatchError;
+
+      return `[useSendTransaction]: Module Error (index: ${index}, error: ${error}) - Failed to decode: ${e instanceof Error ? e.message : 'Unknown error'}`;
     }
-  } else if (dispatchError.isToken) {
-    message = `[useSendTransaction]: Token Error: ${dispatchError.asToken.type}`;
+  } else if (dispatchError.type === 'Token') {
+    return `[useSendTransaction]: Token Error: ${dispatchError.value}`;
   }
-  return message;
+
+  if ('value' in dispatchError) {
+    return `[useSendTransaction]: ${dispatchError.type} Error: ${dispatchError.value}`;
+  }
+
+  return `[useSendTransaction]: Error: ${dispatchError.type}`;
 }
