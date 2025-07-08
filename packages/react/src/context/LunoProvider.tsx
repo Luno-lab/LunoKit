@@ -92,12 +92,12 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     const performAutoConnect = async () => {
 
       if (!configFromProps.autoConnect) {
-        console.log('[LunoProvider][AutoConnect] AutoConnect disabled or config not set.');
+        console.log('[LunoProvider]: AutoConnect disabled or config not set.');
         return;
       }
 
       if (!configFromProps.storage) {
-        console.warn('[LunoProvider][AutoConnect] Storage not available, cannot auto-connect.');
+        console.warn('[LunoProvider]: AutoConnect Storage not available, cannot auto-connect.');
         return;
       }
 
@@ -106,13 +106,13 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
         const lastChainId = await configFromProps.storage.getItem(PERSIST_KEY.LAST_CHAIN_ID);
 
         if (lastConnectorId && lastChainId) {
-          console.log(`[LunoProvider][AutoConnect] Found persisted session: Connector ID "${lastConnectorId}", Chain ID "${lastChainId}"`);
+          console.log(`[LunoProvider]: AutoConnect Found persisted session: Connector ID "${lastConnectorId}", Chain ID "${lastChainId}"`);
           await connect(lastConnectorId, lastChainId);
         } else {
-          console.log('[LunoProvider][AutoConnect] No persisted session found or missing data.');
+          console.log('[LunoProvider]: AutoConnect No persisted session found or missing data.');
         }
       } catch (error) {
-        console.error('[LunoProvider][AutoConnect] Error during auto-connect process:', error);
+        console.error('[LunoProvider]: AutoConnect Error during auto-connect process:', error);
       }
     };
 
@@ -124,27 +124,26 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
 
 
   useEffect(() => {
-    if (isApiReady && currentApi && currentChain && currentChain.ss58Format) {
+    if (isApiReady && currentApi && currentChain && currentChain.ss58Format !== undefined && currentChain.ss58Format !== null) {
       try {
         const apiSs58 = currentApi.consts.system.ss58Prefix;
 
-        if (apiSs58 && apiSs58 !== currentChain.ss58Format) {
+        if ((apiSs58 !== null && apiSs58 !== undefined) && apiSs58 !== currentChain.ss58Format) {
           console.error(
-            `[LunoProvider] SS58 Format Mismatch for chain "${currentChain.name}" (genesisHash: ${currentChain.genesisHash}):\n` +
+            `[LunoProvider]: SS58 Format Mismatch for chain "${currentChain.name}" (genesisHash: ${currentChain.genesisHash}):\n` +
             `  - Configured SS58Format: ${currentChain.ss58Format}\n` +
             `  - Node Runtime SS58Format: ${apiSs58}\n` +
             `Please verify your Luno configuration for this chain to ensure correct address display and interaction.`
           );
-        } else if (!apiSs58) {
+        } else if (apiSs58 === null || apiSs58 === undefined) {
           console.warn(
-            `[LunoProvider] Could not determine SS58 format from the API for chain "${currentChain.name}". ` +
+            `[LunoProvider]: Could not determine SS58 format from the API for chain "${currentChain.name}". ` +
             `Cannot validate configured SS58Format (${currentChain.ss58Format}). The application will use the configured value.`
           );
-        } else {
         }
       } catch (e) {
         console.error(
-          `[LunoProvider] Error retrieving SS58 format from API for chain "${currentChain.name}" while attempting validation:`,
+          `[LunoProvider]: Error retrieving SS58 format from API for chain "${currentChain.name}" while attempting validation:`,
           e
         );
       }

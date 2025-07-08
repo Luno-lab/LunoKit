@@ -19,7 +19,7 @@ export interface LunoState {
 
   accounts: Account[];
   account?: Account;
-  setAccount: (accountOrPubkey?: Account | HexString) => void;
+  setAccount: (accountOrPubkey?: Account | HexString) => Promise<void>;
 
   currentChainId?: string;
   currentChain?: Chain;
