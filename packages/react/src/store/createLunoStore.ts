@@ -207,12 +207,6 @@ export const useLunoStore = create<LunoState>((set, get) => ({
         }
       });
 
-      set({
-        activeConnector: connector,
-        accounts: accountsFromWallet,
-        status: ConnectionStatus.Connected,
-      });
-
       let selectedAccount = accountsFromWallet[0];
 
       try {
@@ -236,7 +230,12 @@ export const useLunoStore = create<LunoState>((set, get) => ({
         console.warn('[LunoStore] Failed to restore selected account from storage:', e);
       }
 
-      set({ account: selectedAccount });
+      set({
+        activeConnector: connector,
+        accounts: accountsFromWallet,
+        status: ConnectionStatus.Connected,
+        account: selectedAccount
+      });
 
       try {
         config.storage.setItem(PERSIST_KEY.LAST_CONNECTOR_ID, connector.id);

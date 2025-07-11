@@ -61,6 +61,7 @@ export function useSendTransaction (
 
   const [txStatus, setTxStatus] = useState<TxStatus>('idle');
   const [detailedTxStatus, setDetailedTxStatus] = useState<DetailedTxStatus>('idle');
+  const [txError, setTxError] = useState<Error | null>(null);
 
   const sendTransactionFn = useCallback(async (variables: SendTransactionVariables): Promise<TransactionReceipt> => {
     if (!currentApi || !isApiReady) {
@@ -100,6 +101,7 @@ export function useSendTransaction (
 
             const rejectAndUnsubscribe = (error: Error) => {
               if (unsubscribe) unsubscribe();
+              setTxError(error);
               reject(error);
             };
 
@@ -156,6 +158,7 @@ export function useSendTransaction (
         .catch((error: any) => {
           setTxStatus('failed');
           console.error('[useSendTransaction]: Error in signAndSend promise:', error?.message || error);
+          setTxError(error);
           reject(error);
         });
     });
@@ -172,8 +175,8 @@ export function useSendTransaction (
     sendTransaction: mutationResult.mutate,
     sendTransactionAsync: mutationResult.mutateAsync,
     data: mutationResult.data,
-    error: mutationResult.error,
-    isError: mutationResult.isError,
+    error: txError || mutationResult.error,
+    isError: Boolean(txError) || mutationResult.isError,
     isIdle: mutationResult.isIdle,
     isPending: mutationResult.isPending,
     isSuccess: mutationResult.isSuccess,

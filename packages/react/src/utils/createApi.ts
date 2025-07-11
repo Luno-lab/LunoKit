@@ -35,6 +35,17 @@ export const createApi = async ({
 
   try {
     await newApi.connect();
+
+    const actualGenesisHash = await newApi.chainSpec.genesisHash();
+
+    if (actualGenesisHash !== chainId) {
+      await newApi.disconnect();
+      throw new Error(
+        `Chain genesis hash mismatch. Expected: ${chainId}, Got: ${actualGenesisHash}. ` +
+        'This might indicate connecting to the wrong network or incorrect chain configuration.'
+      );
+    }
+
     return newApi;
   } catch (error: Error) {
     throw new Error(`Failed to connect to ${chainConfig.name}: ${error?.message || error}`);

@@ -9,10 +9,10 @@ export type LunoMutationOptions<
   TError = Error,
   TVariables = void,
   TContext = unknown,
-> = Pick<
+> = Partial<Pick<
   ReactQueryMutateOptions<TData, TError, TVariables, TContext>,
   'onSuccess' | 'onError' | 'onSettled'
->;
+>>;
 
 export interface LunoMutationResult<
   TData = unknown,
@@ -70,6 +70,8 @@ export function useLunoMutation<
 
   const mutation = useMutation<TData, TError, TVariables, TContext>({
     mutationFn,
+    retry: false,
+    throwOnError: false,
     ...tanstackMutationHookOptions,
   });
 
