@@ -22,7 +22,7 @@ export const SwitchAccountView: ViewComponent = ({ onBack }) => {
   }, [onBack])
 
   return (
-    <div className="flex flex-col gap-[4px] pt-[12px] overflow-auto max-h-[400px] no-scrollbar">
+    <div className="flex flex-col gap-[6px] pt-[12px] overflow-auto max-h-[400px] no-scrollbar">
       {accounts.map((acc) => (
         <AccountItem
           key={acc.address}
@@ -75,7 +75,13 @@ const AccountItem: React.FC<AccountItemProps> = React.memo(({
             {account.name || formatAddress(address)}
           </span>
           <span className="text-sm text-secondaryFont text-accent leading-accent font-[500]">
-            {balance?.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
+            {balance === undefined ? (
+              <div className="animate-pulse rounded w-[60px] h-[18px]" style={{ background: 'var(--color-connectorItemActive)' }} />
+            ) : (
+              <>
+                {balance?.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
+              </>
+            )}
           </span>
         </div>
       </div>
