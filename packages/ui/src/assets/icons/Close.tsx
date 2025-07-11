@@ -3,21 +3,13 @@ import type { SVGProps } from "react";
 const SvgClose = (props: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="1em"
-    height="1em"
-    fill="none"
-    stroke="currentColor"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    strokeWidth={2}
-    aria-hidden="true"
-    style={{
-      color: "#7c7a85",
-    }}
-    viewBox="0 0 24 24"
+    width="20"
+    height="20"
+    fill="currentColor"
+    viewBox="0 0 256 256"
     {...props}
   >
-    <path d="M18 6 6 18M6 6l12 12" />
+    <path d="M208.49,191.51a12,12,0,0,1-17,17L128,145,64.49,208.49a12,12,0,0,1-17-17L111,128,47.51,64.49a12,12,0,0,1,17-17L128,111l63.51-63.52a12,12,0,0,1,17,17L145,128Z"></path>
   </svg>
 );
 export default SvgClose;

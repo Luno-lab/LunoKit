@@ -124,10 +124,14 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
 
         {showBalance && (
           <div className={sizeConfig.balance}>
-            <span className="">
-              {balance?.formattedTransferable || balance?.formattedTotal || 0}
-              {'  '}{currentChain?.nativeCurrency?.symbol || ''}
-            </span>
+            {balance === undefined ? (
+              <div className="animate-pulse rounded w-[80px] h-[20px]" style={{ background: 'var(--color-connectorItemActive)' }} />
+            ) : (
+              <span className="">
+                {balance?.formattedTransferable || balance?.formattedTotal || 0}
+                {'  '}{currentChain?.nativeCurrency?.symbol || ''}
+              </span>
+            )}
           </div>
         )}
 

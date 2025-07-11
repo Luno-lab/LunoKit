@@ -26,11 +26,11 @@ export const Copy: React.FC<CopyProps> = ({ copyText }) => {
     <>
       {isCopied
         ? (
-          <Success className={'w-[15px] h-[15px] cursor-auto text-accentFont'} />
+          <Success className={'cursor-auto text-accentFont'} />
         )
         : (
           <CopyIcon
-            className="w-[13px] h-[13px] cursor-pointer"
+            className="cursor-pointer"
             onClick={() => copyText && copyToClipboard(copyText)}
           />
         )}
