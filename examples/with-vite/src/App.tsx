@@ -27,7 +27,7 @@ const App: React.FC = () => {
   const { switchChainAsync } = useSwitchChain();
   const { signMessageAsync, data: signMessageData } = useSignMessage();
   const { sendTransactionAsync, data: sendTransactionData, isPending: isSendingTransaction, detailedStatus } = useSendTransaction();
-  const { api, isApiReady, apiError, isApiConnected } = useApi();
+  const { api, isApiReady, apiError } = useApi();
 
   const { themeMode, toggleTheme } = useLunoTheme();
 
@@ -363,12 +363,6 @@ const App: React.FC = () => {
                     <span className="label">API Ready:</span>
                     <span className={`status ${isApiReady ? 'connected' : 'disconnected'}`}>
                       {isApiReady ? '✅ Ready' : '⏳ Loading...'}
-                    </span>
-                  </div>
-                  <div className="status-item">
-                    <span className="label">Connection:</span>
-                    <span className={`status ${isApiConnected ? 'connected' : 'disconnected'}`}>
-                      {isApiConnected ? '✅ Connected' : '❌ Disconnected'}
                     </span>
                   </div>
                   <div className="status-item">
