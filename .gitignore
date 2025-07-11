@@ -46,3 +46,4 @@ dist-ssr
 /packages/*/dist
 
 .cursor/rules/
+.cursor/
