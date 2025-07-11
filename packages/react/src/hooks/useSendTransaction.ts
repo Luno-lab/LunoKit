@@ -155,10 +155,10 @@ export function useSendTransaction (
         .then((unsub: () => void) => {
           unsubscribe = unsub;
         })
-        .catch((error: any) => {
+        .catch((error) => {
           setTxStatus('failed');
           console.error('[useSendTransaction]: Error in signAndSend promise:', error?.message || error);
-          setTxError(error);
+          setTxError(error as Error);
           reject(error);
         });
     });

@@ -9,7 +9,7 @@ export interface UseGenesisHashResult {
 
 export const useGenesisHash = (): UseGenesisHashResult => {
   const { currentApi, isApiReady } = useLuno();
-  const [data, setData] = useState<string | undefined>();
+  const [data, setData] = useState<HexString | undefined>();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

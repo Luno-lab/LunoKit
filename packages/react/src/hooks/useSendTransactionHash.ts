@@ -67,7 +67,7 @@ export function useSendTransactionHash (
         .signAndSend(account.address, { signer: signer }).catch(e => { throw e });
       return txHash as HexString
     } catch (error) {
-      setTxError(error)
+      setTxError(error as Error)
       throw error;
     }
   }, [currentApi, isApiReady, activeConnector, account]);
