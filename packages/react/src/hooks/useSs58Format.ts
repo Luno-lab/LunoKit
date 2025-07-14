@@ -31,5 +31,5 @@ export const useSs58Format = (): UseSs58FormatResult => {
     } else {
       return { data: undefined, isLoading: true };
     }
-  }, [currentApi, isApiReady]);
+  }, [currentApi, isApiReady, configuredSs58Fallback]);
 };

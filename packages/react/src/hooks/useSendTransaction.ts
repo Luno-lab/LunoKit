@@ -1,4 +1,4 @@
-import type { ISubmittableExtrinsic } from 'dedot/types';
+import type { ISubmittableExtrinsic, ISubmittableResult } from 'dedot/types';
 import { IEventRecord as EventRecord } from 'dedot/types'
 import { useLuno } from './useLuno';
 import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
@@ -61,6 +61,7 @@ export function useSendTransaction (
 
   const [txStatus, setTxStatus] = useState<TxStatus>('idle');
   const [detailedTxStatus, setDetailedTxStatus] = useState<DetailedTxStatus>('idle');
+  const [txError, setTxError] = useState<Error | null>(null);
 
   const sendTransactionFn = useCallback(async (variables: SendTransactionVariables): Promise<TransactionReceipt> => {
     if (!currentApi || !isApiReady) {
@@ -83,54 +84,84 @@ export function useSendTransaction (
       throw new Error('[useSendTransaction]: Could not retrieve signer from the injector.');
     }
 
-    try {
-      setTxStatus('signing');
-      setDetailedTxStatus('idle')
-      const signedExtrinsic = await variables.extrinsic
-        .sign(account.address, { signer })
-        .catch(e => { throw e });
+    setTxStatus('signing');
+    setDetailedTxStatus('idle')
 
-      const result = await signedExtrinsic.send(({ status }) => {
-        switch (status.type) {
-          case 'Broadcasting':
-            setDetailedTxStatus('broadcasting');
-            break;
-          case 'BestChainBlockIncluded':
-            setDetailedTxStatus('inBlock');
-            break;
-          case 'Finalized':
-            setTxStatus('success');
-            setDetailedTxStatus('finalized');
-            break;
-          case 'Invalid':
-            setTxStatus('failed')
-            setDetailedTxStatus('invalid')
-            break;
-          case 'Drop':
-            setTxStatus('failed');
-            setDetailedTxStatus('dropped');
-            break;
-        }
-      })
-        .untilFinalized();
+    return new Promise<TransactionReceipt>((resolve, reject) => {
+      let unsubscribe: (() => void) | undefined;
 
-      const { status, dispatchError, events, dispatchInfo, txHash } = result;
+      variables.extrinsic
+        .signAndSend(
+          account.address, { signer },
+          ({ status, dispatchError, events, dispatchInfo, txHash, txIndex }: ISubmittableResult) => {
+            const resolveAndUnsubscribe = (receipt: TransactionReceipt) => {
+              if (unsubscribe) unsubscribe();
+              resolve(receipt);
+            };
 
-      return {
-        transactionHash: txHash,
-        blockHash: (status as any)?.value?.blockHash,
-        blockNumber: (status as any)?.value?.blockNumber,
-        events,
-        status: dispatchError ? 'failed' : 'success',
-        dispatchError,
-        errorMessage: dispatchError ? getReadableDispatchError(currentApi, dispatchError) : undefined,
-        dispatchInfo,
-      };
+            const rejectAndUnsubscribe = (error: Error) => {
+              if (unsubscribe) unsubscribe();
+              setTxError(error);
+              reject(error);
+            };
 
-    } catch (error) {
-      setTxStatus('failed');
-      throw error;
-    }
+            switch (status.type) {
+              case 'Broadcasting':
+                setDetailedTxStatus('broadcasting');
+                break;
+              case 'BestChainBlockIncluded':
+                setDetailedTxStatus('inBlock');
+                break;
+              case 'Finalized':
+                setTxStatus('success');
+                setDetailedTxStatus('finalized');
+                if (dispatchError) {
+                  resolveAndUnsubscribe({
+                    transactionHash: txHash,
+                    blockHash: status.value?.blockHash,
+                    blockNumber: status.value?.blockNumber,
+                    events,
+                    status: 'failed',
+                    dispatchError,
+                    errorMessage: getReadableDispatchError(currentApi, dispatchError),
+                    dispatchInfo,
+                  });
+                } else {
+                  resolveAndUnsubscribe({
+                    transactionHash: txHash,
+                    blockHash: status.value?.blockHash,
+                    blockNumber: status.value?.blockNumber,
+                    events,
+                    status: 'success',
+                    dispatchError: undefined,
+                    errorMessage: undefined,
+                    dispatchInfo,
+                  });
+                }
+                break;
+              case 'Invalid':
+                setTxStatus('failed')
+                setDetailedTxStatus('invalid')
+                rejectAndUnsubscribe(new Error(`Transaction invalid: ${txHash}`));
+                break;
+              case 'Drop':
+                setTxStatus('failed');
+                setDetailedTxStatus('dropped');
+                rejectAndUnsubscribe(new Error(`Transaction dropped: ${txHash}`));
+                break;
+            }
+          }
+        )
+        .then((unsub: () => void) => {
+          unsubscribe = unsub;
+        })
+        .catch((error) => {
+          setTxStatus('failed');
+          console.error('[useSendTransaction]: Error in signAndSend promise:', error?.message || error);
+          setTxError(error as Error);
+          reject(error);
+        });
+    });
   }, [currentApi, isApiReady, activeConnector, account, setTxStatus, setDetailedTxStatus]);
 
   const mutationResult = useLunoMutation<
@@ -144,8 +175,8 @@ export function useSendTransaction (
     sendTransaction: mutationResult.mutate,
     sendTransactionAsync: mutationResult.mutateAsync,
     data: mutationResult.data,
-    error: mutationResult.error,
-    isError: mutationResult.isError,
+    error: txError || mutationResult.error,
+    isError: Boolean(txError) || mutationResult.isError,
     isIdle: mutationResult.isIdle,
     isPending: mutationResult.isPending,
     isSuccess: mutationResult.isSuccess,

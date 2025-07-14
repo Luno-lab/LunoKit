@@ -23,7 +23,7 @@ export const useAccount = (): UseAccountResult => {
         address: newAddress,
       };
     } catch (error) {
-      console.error(`[useAccount] Failed to re-format address for account with publicKey ${account.publicKey}:`, error);
+      console.error(`[useAccount]: Failed to re-format address for account with publicKey ${account.publicKey}:`, error);
       return { ...account };
     }
   }, [account, currentChain, currentChain?.ss58Format])

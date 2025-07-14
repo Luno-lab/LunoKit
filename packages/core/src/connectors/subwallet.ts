@@ -37,18 +37,8 @@ export class SubWalletConnector extends BaseConnector {
       throw new Error(`${this.name} extension not found or not enabled.`);
     }
 
-    if (!window.injectedWeb3 || !window.injectedWeb3[this.id]) {
-      throw new Error(
-        `The '${this.id}' extension is not installed. Please install it to connect.`
-      );
-    }
-
-    if (!window.injectedWeb3[this.id].enable) {
-      throw new Error(`Failed to enable the '${this.id}' extension.`);
-    }
-
     try {
-      this.specificInjector = await window.injectedWeb3[this.id].enable(appName);
+      this.specificInjector = await window.injectedWeb3![this.id].enable(appName);
 
       if (!this.specificInjector) {
         throw new Error(`Failed to enable the '${this.id}' extension.`);
@@ -73,7 +63,7 @@ export class SubWalletConnector extends BaseConnector {
 
       return [...this.accounts];
 
-    } catch (error) {
+    } catch (error: any) {
       console.error(`Connector ${this.id}: Connection failed:`, error);
       await this.cleanup();
       throw error;
@@ -87,21 +77,21 @@ export class SubWalletConnector extends BaseConnector {
   }
 
   public async signMessage(message: string, address: string): Promise<string | undefined> {
+    if (!address || !message) return undefined;
     const signer = await this.getSigner();
     if (!signer?.signRaw) {
       throw new Error('Signer is not available or does not support signRaw.');
     }
     const accounts = await this.getAccounts();
-    if (!accounts.some(acc => acc.address === address)) {
+    if (!accounts.some(acc => acc.address.toLowerCase() === address.toLowerCase())) {
       throw new Error(`Address ${address} is not managed by ${this.name}.`);
     }
     try {
       const dataHex = stringToHex(message);
       const result = await signer.signRaw({ address, data: dataHex, type: 'bytes' });
       return result.signature;
-    } catch (error) {
-      console.error(`Connector ${this.id}: Failed to sign message:`, error);
-      return undefined;
+    } catch (error: any) {
+      throw new Error(`Connector ${this.id}: Failed to sign message: ${error.message}`);
     }
   }
 

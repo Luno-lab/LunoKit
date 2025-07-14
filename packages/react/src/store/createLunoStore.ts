@@ -3,7 +3,8 @@ import type { LunoState } from '../types';
 import { ConnectionStatus } from '../types';
 import type { Account } from '@luno-kit/core';
 import { PERSIST_KEY } from '../constants';
-import { isSameAddress } from '@luno-kit/core/utils';
+import { isSameAddress } from '@luno-kit/core';
+import { createApi } from '../utils'
 
 interface StoredAccountInfo {
   publicKey?: string;
@@ -35,13 +36,19 @@ export const useLunoStore = create<LunoState>((set, get) => ({
   currentChain: undefined,
   currentApi: undefined,
   isApiReady: false,
-  isApiConnected: false,
   apiError: null,
 
   _setConfig: async (newConfig) => {
     cleanupActiveConnectorListeners();
 
-    const storedChainId = await newConfig.storage.getItem(PERSIST_KEY.LAST_CHAIN_ID);
+
+    let storedChainId: string | null = null;
+    try {
+      storedChainId = await newConfig.storage.getItem(PERSIST_KEY.LAST_CHAIN_ID);
+    } catch (e) {
+      console.warn('[LunoStore] Failed to read stored chain ID from storage:', e);
+    }
+
     const normalizedStoredChainId = storedChainId?.toLowerCase();
 
     const initialChainId =
@@ -67,15 +74,11 @@ export const useLunoStore = create<LunoState>((set, get) => ({
     set({currentApi: apiInstance});
   },
 
-  _setIsApiConnected: (isConnected) => {
-    set ({isApiConnected: isConnected})
-  },
-
   _setIsApiReady: (isReady) => {
     set({isApiReady: isReady});
   },
 
-  setAccount: (accountOrPublicKey) => {
+  setAccount: async (accountOrPublicKey) => {
     if (!accountOrPublicKey) return
 
     const { accounts, config } = get();
@@ -88,8 +91,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
     const nextAccount = accounts.find(acc => acc.publicKey?.toLowerCase() === targetPublicKey);
 
     if (!nextAccount) {
-      console.warn('[LunoStore] setAccount: The provided account or address is not in the current accounts list. Ignored.');
-      return;
+      throw new Error('[LunoStore] setAccount: The provided account or address is not in the current accounts list. Ignored.');
     }
 
     set({ account: nextAccount });
@@ -102,7 +104,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
           name: nextAccount.name,
           source: nextAccount.meta.source,
         };
-        config.storage.setItem(PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO, JSON.stringify(accountInfo));
+        await config.storage.setItem(PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO, JSON.stringify(accountInfo));
         console.log(`[LunoStore] Persisted selected account: ${nextAccount.address}`);
       } catch (e) {
         console.error('[LunoStore] Failed to persist selected account:', e);
@@ -205,12 +207,6 @@ export const useLunoStore = create<LunoState>((set, get) => ({
         }
       });
 
-      set({
-        activeConnector: connector,
-        accounts: accountsFromWallet,
-        status: ConnectionStatus.Connected,
-      });
-
       let selectedAccount = accountsFromWallet[0];
 
       try {
@@ -234,7 +230,12 @@ export const useLunoStore = create<LunoState>((set, get) => ({
         console.warn('[LunoStore] Failed to restore selected account from storage:', e);
       }
 
-      set({ account: selectedAccount });
+      set({
+        activeConnector: connector,
+        accounts: accountsFromWallet,
+        status: ConnectionStatus.Connected,
+        account: selectedAccount
+      });
 
       try {
         config.storage.setItem(PERSIST_KEY.LAST_CONNECTOR_ID, connector.id);
@@ -313,12 +314,12 @@ export const useLunoStore = create<LunoState>((set, get) => ({
       }
     } catch (err: any) {
       set({status: ConnectionStatus.Connected });
-      throw new Error(`[LunoStore] Error disconnecting from ${activeConnector.name}:${err?.message || err}`)
+      throw new Error(`[LunoStore] Error disconnecting from ${activeConnector.name}: ${err?.message || err}`)
     }
   },
 
   switchChain: async (newChainId: string) => {
-    const {config, currentChainId} = get();
+    const {config, currentChainId, currentApi} = get();
 
     if (!config) {
       throw new Error('[LunoStore] LunoConfig has not been initialized. Cannot switch chain.');
@@ -333,19 +334,37 @@ export const useLunoStore = create<LunoState>((set, get) => ({
       throw new Error(`[LunoStore] Chain with ID "${newChainId}" not found in LunoConfig.`);
     }
 
-    console.log(`[LunoStore] Attempting to switch chain to ${newChain.name} (ID: ${newChainId})`);
-    set({
-      currentChainId: newChainId,
-      currentChain: newChain,
-      currentApi: undefined,
-      isApiReady: false,
-    });
-
     try {
+      try {
+        if (currentApi && currentApi.status === 'connected') {
+          await currentApi.disconnect();
+        }
+      } catch (e) {
+        console.warn('[LunoStore] Failed to disconnect from previous chain:', e);
+      }
+
+      console.log(`[LunoStore] Attempting to switch chain to ${newChain.name} (ID: ${newChainId})`);
+      set({
+        currentChainId: newChainId,
+        currentChain: newChain,
+        currentApi: undefined,
+        isApiReady: false,
+        apiError: null,
+      });
+
+      const newApi = await createApi({ config, chainId: newChainId });
+
+      set({
+        currentApi: newApi,
+        isApiReady: true,
+      });
+
       await config.storage.setItem(PERSIST_KEY.LAST_CHAIN_ID, newChainId);
-      console.log(`[LunoStore] Persisted new chainId: ${newChainId} after chain switch.`);
     } catch (e) {
-      throw new Error(`[LunoStore] Failed to persist new chainId to storage: ${e?.message || e}`);
+      set({
+        apiError: e,
+        isApiReady: false,
+      })
     }
   },
   _setApiError: (err) => {

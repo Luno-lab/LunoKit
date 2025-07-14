@@ -16,7 +16,7 @@ export const useAccounts = (): UseAccountsResult => {
     if (!currentChain || currentChain?.ss58Format === undefined) return accounts ?? []
     return (accounts || []).map(acc => {
       if (!acc.publicKey) {
-        console.warn(`[useAccounts] Account ${acc.name || acc.address} is missing publicKey. Cannot re-format address.`);
+        console.warn(`[useAccounts]: Account ${acc.name || acc.address} is missing publicKey. Cannot re-format address.`);
         return acc;
       }
 
@@ -27,7 +27,7 @@ export const useAccounts = (): UseAccountsResult => {
           address: newAddress,
         };
       } catch (error) {
-        console.error(`[useAccounts] Failed to re-format address for account with publicKey ${acc.publicKey}:`, error);
+        console.error(`[useAccounts]: Failed to re-format address for account with publicKey ${acc.publicKey}:`, error);
         return { ...acc };
       }
     })

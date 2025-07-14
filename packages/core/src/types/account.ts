@@ -73,21 +73,6 @@ export interface AccountBalance {
 }
 
 /**
- * SS58 address format constants
- * see: https://github.com/paritytech/substrate/wiki/External-Address-Format-(SS58)
- */
-export enum SS58_FORMAT {
-  /** Polkadot account */
-  POLKADOT = 0,
-
-  /** Kusama account */
-  KUSAMA = 2,
-
-  /** general Substrate format (for most testnets) */
-  SUBSTRATE = 42,
-}
-
-/**
  * account type enum
  */
 export enum ACCOUNT_TYPE {

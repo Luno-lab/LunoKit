@@ -7,7 +7,6 @@ import type {
   RawStorage,
 } from '../types';
 import { createStorage } from './createStorage'
-import {AnyShape} from 'dedot/shape'
 
 const noopStorage: RawStorage = {
   getItem: async (_key: string) => null,
@@ -35,12 +34,6 @@ function generateTransportsFromChains(chains: readonly Chain[]): Record<string, 
   }
 
   return transports;
-}
-
-function convertCustomTypesToShapes(customTypes?: Record<string, any>): Record<string, AnyShape> | undefined {
-  if (!customTypes) return undefined;
-
-  return customTypes as Record<string, AnyShape>;
 }
 
 export function createConfig(parameters: CreateConfigParameters): Config {
