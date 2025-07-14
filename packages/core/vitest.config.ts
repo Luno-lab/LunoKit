@@ -1,18 +1,17 @@
-import { defineConfig } from 'vitest/config'
+import baseConfig from '../../vitest.base.config';
+import { mergeConfig } from 'vitest/config';
 
-export default defineConfig({
+export default mergeConfig(baseConfig, {
   test: {
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
       exclude: [
         'node_modules/',
         'dist/',
         '**/*.d.ts',
         '**/*.test.ts',
         'scripts/',
-        '*.config.ts'
-      ]
-    }
-  }
-})
+        '*.config.ts',
+      ],
+    },
+  },
+});

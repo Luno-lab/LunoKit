@@ -46,3 +46,4 @@ dist-ssr
 /packages/*/dist
 
 PROJECT_CONTEXT.md
+/.cursor

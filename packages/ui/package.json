@@ -35,10 +35,10 @@
     "svgr": "svgr --typescript --icon --out-dir src/assets/icons src/assets"
   },
   "peerDependencies": {
+    "@luno-kit/react": "workspace:*",
     "@tanstack/react-query": ">=5.0.0",
     "react": ">=18.0.0",
-    "react-dom": ">=18.0.0",
-    "@luno-kit/react": "workspace:*"
+    "react-dom": ">=18.0.0"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
@@ -63,7 +63,8 @@
     "tailwindcss": "^4.1.7",
     "tsup": "^8.0.2",
     "typescript": "^5.3.3",
-    "vite": "^5.1.4"
+    "vite": "^5.1.4",
+    "vitest": "^3.2.4"
   },
   "publishConfig": {
     "access": "public"

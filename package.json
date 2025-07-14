@@ -7,7 +7,7 @@
     "clean": "pnpm --filter './packages/**' run clean",
     "dev": "pnpm --filter './packages/**' dev",
     "lint": "pnpm --filter './packages/**' lint",
-    "test": "pnpm --filter './packages/**' test",
+    "test": "vitest run",
     "changeset": "changeset",
     "publish-packages": "pnpm build && changeset publish"
   },

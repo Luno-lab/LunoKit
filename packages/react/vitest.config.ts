@@ -1,13 +1,12 @@
-import { defineConfig } from 'vitest/config';
+import baseConfig from '../../vitest.base.config';
+import { mergeConfig } from 'vitest/config';
 
-export default defineConfig({
+export default mergeConfig(baseConfig, {
   test: {
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/test-setup.ts'],
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
       exclude: [
         'node_modules/',
         'src/test-setup.ts',
