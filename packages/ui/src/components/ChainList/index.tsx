@@ -117,14 +117,15 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
       onClick={() => onSelect(chain)}
       disabled={isSelected || isLoading}
       className={cs(
-        'flex items-center justify-between p-[8px] bg-connectorItemBackground rounded-sm',
-        'transition-transform',
-        isSelected || isLoading
-          ? 'cursor-default'
-          : 'cursor-pointer hover:opacity-90 active:scale-[0.95]',
-        isLoading && 'opacity-80'
+  'flex items-center justify-between p-[8px] rounded-sm',
+  'bg-[var(--color-connectorItemBackground)]',
+  'transition-colors duration-200',
+  (isSelected || isLoading)
+    ? 'cursor-default'
+    : 'cursor-pointer hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)]',
+  isLoading && 'opacity-80'
+)}
 
-      )}
     >
       <div className="flex items-center gap-[8px]">
         <ChainIcon
