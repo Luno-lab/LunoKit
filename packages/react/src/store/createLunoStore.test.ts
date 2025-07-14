@@ -3,13 +3,13 @@ import { useLunoStore } from './createLunoStore';
 import { ConnectionStatus } from '../types';
 import { PERSIST_KEY } from '../constants';
 import { createApi } from '../utils';
-import { isSameAddress } from '@luno-kit/core/utils';
+import { isSameAddress } from '@luno-kit/core';
 
 vi.mock('../utils', () => ({
   createApi: vi.fn(),
 }));
 
-vi.mock('@luno-kit/core/utils', () => ({
+vi.mock('@luno-kit/core', () => ({
   isSameAddress: vi.fn(),
 }));
 
