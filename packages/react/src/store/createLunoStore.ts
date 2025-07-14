@@ -3,8 +3,8 @@ import type { LunoState } from '../types';
 import { ConnectionStatus } from '../types';
 import type { Account } from '@luno-kit/core';
 import { PERSIST_KEY } from '../constants';
-import { isSameAddress } from '@luno-kit/core/utils';
-import {createApi} from '../utils'
+import { isSameAddress } from '@luno-kit/core';
+import { createApi } from '../utils'
 
 interface StoredAccountInfo {
   publicKey?: string;
