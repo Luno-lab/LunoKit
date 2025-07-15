@@ -44,7 +44,7 @@ export const MainView: React.FC<MainViewProps> = ({
         key: 'View on Explorer',
         content: (
           <>
-            <List className="w-[16px] h-[16px]" />
+            <List />
             <span className="text-primary text-modalFont">View on Explorer</span>
           </>
         ),
@@ -54,7 +54,7 @@ export const MainView: React.FC<MainViewProps> = ({
         key: 'Switch Account',
         content: (
           <>
-            <Switch className="w-[16px] h-[16px]" />
+            <Switch />
             <span className="text-primary text-modalFont">Switch Account</span>
           </>
         ),
@@ -70,7 +70,7 @@ export const MainView: React.FC<MainViewProps> = ({
 
   return (
     <div className="flex flex-col items-center gap-[26px] w-full">
-      <div className="flex flex-col gap-[4px] w-full">
+      <div className="flex flex-col gap-[6px] w-full">
         {items.map(i => (
           <SelectItem key={i.key} onClick={i.onClick}>
             {i.content}
@@ -79,7 +79,7 @@ export const MainView: React.FC<MainViewProps> = ({
       </div>
 
       <SelectItem onClick={handleDisconnect}>
-        <Disconnect className="w-[16px] h-[16px]" />
+        <Disconnect  />
         <span className="font-[500] text-primary text-modalFont">Disconnect</span>
       </SelectItem>
     </div>
@@ -88,16 +88,18 @@ export const MainView: React.FC<MainViewProps> = ({
 
 const SelectItem = ({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) => {
   return (
-    <div
+    <button
+      type="button"
       onClick={() => onClick?.()}
       className={cs(
         'w-full p-[14px] rounded-sm border-none text-left flex items-center gap-[8px] font-[500]',
-  'bg-[var(--color-connectorItemBackground)] hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)]',
-  'transition-colors duration-200',
-  onClick ? 'cursor-pointer' : 'cursor-auto'
+        'bg-[var(--color-connectorItemBackground)] hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)]',
+        'transition-colors duration-200',
+        onClick ? 'cursor-pointer' : 'cursor-auto'
       )}
+      aria-label={typeof children === 'string' ? children : undefined}
     >
       {children}
-    </div>
+    </button>
   );
 };

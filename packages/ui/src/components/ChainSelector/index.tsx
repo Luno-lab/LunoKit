@@ -20,7 +20,7 @@ export const ChainSelector: React.FC<ChainSelectorProps> = ({ onClose }: ChainSe
         </DialogClose>
       </div>
 
-      <ChainList onChainSwitched={onClose} />
+      <ChainList />
     </>
   )
 }
