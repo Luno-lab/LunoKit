@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useRef, useState} from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLuno } from './useLuno';
 import type { Callback } from 'dedot/types'
 import type { DedotClient } from 'dedot';
@@ -102,7 +102,7 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
         setError(undefined);
       }
     };
-  }, [queryKey, enabled, transform, queryClient]);
+  }, [JSON.stringify(queryKey), enabled, queryClient]);
 
   const { data, isLoading } = useQuery({
     queryKey,
