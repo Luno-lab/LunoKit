@@ -54,17 +54,18 @@ const AccountItem: React.FC<AccountItemProps> = React.memo(({
   const connector = useActiveConnector()
 
   return (
-    <div
+    <button
+      type="button"
       onClick={() => selectAccount(account)}
       className={cs(
         'px-[14px] py-[10px] w-full rounded-sm border-none',
-         'bg-[var(--color-connectorItemBackground)]',
-         'text-left flex items-center justify-between gap-[8px]',
-         'transition-colors duration-200',
-         isSelected ? 'cursor-auto'
-         : 'cursor-pointer hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)]'
-)}
-
+        'bg-[var(--color-connectorItemBackground)]',
+        'text-left flex items-center justify-between gap-[8px]',
+        'transition-colors duration-200',
+        isSelected ? 'cursor-auto' : 'cursor-pointer hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)]'
+      )}
+      aria-label={account.name || address}
+      disabled={isSelected}
     >
       <div className="flex items-center gap-[8px]">
         <div className="shrink-0 w-[24px] h-[24px] bg-pink-500 rounded-full flex items-center justify-center">
@@ -91,6 +92,6 @@ const AccountItem: React.FC<AccountItemProps> = React.memo(({
           <div className="rounded-full bg-accentFont w-[10px] h-[10px]" />
         </div>
       )}
-    </div>
+    </button>
   );
 });

@@ -13,28 +13,27 @@ export const Copy: React.FC<CopyProps> = ({ copyText }) => {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(text);
         setIsCopied(true);
-
         setTimeout(() => setIsCopied(false), 2000);
+        return true;
       }
       throw new Error('Your browser has no navigator clipboard api!')
     } catch (err) {
       console.error('Copy failed:', err);
+      return false;
     }
   }, [])
 
   return (
-    <>
+    <button
+      type="button"
+      className="cursor-pointer bg-transparent border-none p-0 m-0 inline-flex items-center justify-center"
+      onClick={() => !isCopied && copyText && copyToClipboard(copyText)}
+      aria-label="Copy address to clipboard"
+      disabled={isCopied}
+    >
       {isCopied
-        ? (
-          <Success className={'cursor-auto text-accentFont'} />
-        )
-        : (
-          <CopyIcon
-            className="cursor-pointer"
-            onClick={() => copyText && copyToClipboard(copyText)}
-          />
-        )}
-    </>
-
+        ? <Success className="text-accentFont" width={16} height={16} />
+        : <CopyIcon width={16} height={16} />}
+    </button>
   )
 }

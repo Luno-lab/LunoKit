@@ -88,16 +88,18 @@ export const MainView: React.FC<MainViewProps> = ({
 
 const SelectItem = ({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) => {
   return (
-    <div
+    <button
+      type="button"
       onClick={() => onClick?.()}
       className={cs(
         'w-full p-[14px] rounded-sm border-none text-left flex items-center gap-[8px] font-[500]',
-  'bg-[var(--color-connectorItemBackground)] hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)]',
-  'transition-colors duration-200',
-  onClick ? 'cursor-pointer' : 'cursor-auto'
+        'bg-[var(--color-connectorItemBackground)] hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)]',
+        'transition-colors duration-200',
+        onClick ? 'cursor-pointer' : 'cursor-auto'
       )}
+      aria-label={typeof children === 'string' ? children : undefined}
     >
       {children}
-    </div>
+    </button>
   );
 };
