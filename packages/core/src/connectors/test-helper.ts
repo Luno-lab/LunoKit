@@ -1,12 +1,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import type { BaseConnector } from './base'
 
-interface ConnectorTestConfig {
-  id: string
-  name: string
-  iconMockValue: string
-  createConnector: () => BaseConnector
-  factoryFunction: () => BaseConnector
+interface ConnectorTestConfig<T> {
+  getConnector: () => T;
+  expected: {
+    id: string;
+    name: string;
+    icon: string;
+  };
 }
 
 interface MockInjector {
@@ -19,18 +20,22 @@ interface MockInjector {
   }
 }
 
-export function createConnectorTestSuite(config: ConnectorTestConfig) {
+export function createConnectorTestSuite<T extends BaseConnector>(
+  config: ConnectorTestConfig<T>
+) {
   return () => {
-    let connector: BaseConnector
+    let connector: T;
     let mockInjectedWeb3: Record<string, any>
     let mockInjector: MockInjector
     let originalWindow: any
 
     const TEST_ADDRESS = '1FRMM8PEiWXYax7rpS6X4XZX1aAAxSWx1CrKTyrVYhV24fg'
 
+    const { id, name, icon} = config.expected
+
     beforeEach(() => {
-      connector = config.createConnector()
-      originalWindow = global.window
+      connector = config.getConnector();
+      originalWindow = globalThis.window
 
       mockInjector = {
         accounts: {
@@ -43,12 +48,12 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
       }
 
       mockInjectedWeb3 = {
-        [config.id]: {
+        [id]: {
           enable: vi.fn(),
         }
       }
 
-      Object.defineProperty(global, 'window', {
+      Object.defineProperty(globalThis, 'window', {
         value: { injectedWeb3: mockInjectedWeb3 },
         writable: true,
         configurable: true,
@@ -58,7 +63,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
     })
 
     afterEach(() => {
-      Object.defineProperty(global, 'window', {
+      Object.defineProperty(globalThis, 'window', {
         value: originalWindow,
         writable: true,
         configurable: true,
@@ -68,9 +73,9 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
 
     describe('basic properties', () => {
       it('should have correct connector metadata', () => {
-        expect(connector.id).toBe(config.id)
-        expect(connector.name).toBe(config.name)
-        expect(connector.icon).toBe(config.iconMockValue)
+        expect(connector.id).toBe(id)
+        expect(connector.name).toBe(name)
+        expect(connector.icon).toBe(icon)
       })
     })
 
@@ -80,7 +85,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
       })
 
       it('should return false in non-browser environment', () => {
-        Object.defineProperty(global, 'window', {
+        Object.defineProperty(globalThis, 'window', {
           value: undefined,
           writable: true,
           configurable: true,
@@ -89,7 +94,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
       })
 
       it('should return false when injectedWeb3 is undefined', () => {
-        Object.defineProperty(global, 'window', {
+        Object.defineProperty(globalThis, 'window', {
           value: {},
           writable: true,
           configurable: true,
@@ -98,7 +103,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
       })
 
       it('should return false when extension not found', () => {
-        Object.defineProperty(global, 'window', {
+        Object.defineProperty(globalThis, 'window', {
           value: { injectedWeb3: {} },
           writable: true,
           configurable: true,
@@ -120,7 +125,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
 
     describe('connection flow', () => {
       beforeEach(() => {
-        mockInjectedWeb3[config.id].enable.mockResolvedValue(mockInjector)
+        mockInjectedWeb3[id].enable.mockResolvedValue(mockInjector)
         mockInjector.accounts.get.mockResolvedValue([
           { address: TEST_ADDRESS, name: 'Test Account' }
         ])
@@ -130,7 +135,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
       it('should connect successfully with valid setup', async () => {
         const accounts = await connector.connect('test-app')
 
-        expect(mockInjectedWeb3[config.id].enable).toHaveBeenCalledWith('test-app')
+        expect(mockInjectedWeb3[id].enable).toHaveBeenCalledWith('test-app')
         expect(mockInjector.accounts.get).toHaveBeenCalled()
         expect(accounts).toHaveLength(1)
         expect(accounts[0].address).toBe(TEST_ADDRESS)
@@ -140,18 +145,18 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
         await connector.connect('test-app')
         const accounts = await connector.connect('test-app')
         expect(accounts).toHaveLength(1)
-        expect(mockInjectedWeb3[config.id].enable).toHaveBeenCalledTimes(1)
+        expect(mockInjectedWeb3[id].enable).toHaveBeenCalledTimes(1)
       })
 
       it('should throw error when extension not available', async () => {
         vi.spyOn(connector, 'isAvailable').mockResolvedValue(false)
         await expect(connector.connect('test-app')).rejects.toThrow(
-          `${config.name} extension not found or not enabled.`
+          `${name} extension not found or not enabled.`
         )
       })
 
       it('should throw error when injectedWeb3 not found', async () => {
-        Object.defineProperty(global, 'window', {
+        Object.defineProperty(globalThis, 'window', {
           value: {
             injectedWeb3: {
               'other-wallet': { enable: vi.fn() },
@@ -163,15 +168,15 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
         })
 
         await expect(connector.connect('test-app')).rejects.toThrow(
-          `${config.name} extension not found or not enabled.`
+          `${name} extension not found or not enabled.`
         )
       })
 
       it('should throw error when enable fails', async () => {
-        mockInjectedWeb3[config.id].enable.mockResolvedValue(null)
+        mockInjectedWeb3[id].enable.mockResolvedValue(null)
 
         await expect(connector.connect('test-app')).rejects.toThrow(
-          `Failed to enable the '${config.id}' extension.`
+          `Failed to enable the '${id}' extension.`
         )
       })
 
@@ -179,12 +184,12 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
         mockInjector.accounts.get.mockResolvedValue([])
 
         await expect(connector.connect('test-app')).rejects.toThrow(
-          `No accounts found in ${config.name}. Make sure accounts are visible and access is granted.`
+          `No accounts found in ${name}. Make sure accounts are visible and access is granted.`
         )
       })
 
       it('should cleanup on connection failure', async () => {
-        mockInjectedWeb3[config.id].enable.mockRejectedValue(new Error('Enable failed'))
+        mockInjectedWeb3[id].enable.mockRejectedValue(new Error('Enable failed'))
 
         await expect(connector.connect('test-app')).rejects.toThrow('Enable failed')
 
@@ -215,14 +220,14 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
       it('should set correct source metadata for accounts', async () => {
         const accounts = await connector.connect('test-app')
         accounts.forEach(account => {
-          expect(account.meta?.source).toBe(config.id)
+          expect(account.meta?.source).toBe(id)
         })
       })
     })
 
     describe('message signing', () => {
       beforeEach(async () => {
-        mockInjectedWeb3[config.id].enable.mockResolvedValue(mockInjector)
+        mockInjectedWeb3[id].enable.mockResolvedValue(mockInjector)
         mockInjector.accounts.get.mockResolvedValue([
           { address: TEST_ADDRESS, name: 'Test' }
         ])
@@ -248,7 +253,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
 
         await expect(
           connector.signMessage('hello', TEST_ADDRESS)
-        ).rejects.toThrow(`Connector ${config.id}: Failed to sign message: User rejected signing`)
+        ).rejects.toThrow(`Connector ${id}: Failed to sign message: User rejected signing`)
       })
 
       it('should throw error when signer not available', async () => {
@@ -282,7 +287,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
       it('should throw error when signing with unmanaged address', async () => {
         await expect(
           connector.signMessage('hello world', 'unmanaged-address-12345')
-        ).rejects.toThrow(`Address unmanaged-address-12345 is not managed by ${config.name}.`)
+        ).rejects.toThrow(`Address unmanaged-address-12345 is not managed by ${name}.`)
       })
 
       it('should handle case-insensitive address validation', async () => {
@@ -297,7 +302,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
 
     describe('disconnection', () => {
       it('should cleanup all resources on disconnect', async () => {
-        mockInjectedWeb3[config.id].enable.mockResolvedValue(mockInjector)
+        mockInjectedWeb3[id].enable.mockResolvedValue(mockInjector)
         mockInjector.accounts.get.mockResolvedValue([
           { address: TEST_ADDRESS, name: 'Test' }
         ])
@@ -328,7 +333,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
       it('should handle account changes', async () => {
         let subscriptionCallback: any
 
-        mockInjectedWeb3[config.id].enable.mockResolvedValue(mockInjector)
+        mockInjectedWeb3[id].enable.mockResolvedValue(mockInjector)
         mockInjector.accounts.get.mockResolvedValue([
           { address: TEST_ADDRESS, name: 'Test' }
         ])
