@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useLuno } from './useLuno';
 import { useAccount } from './useAccount';
-import type { InjectedSigner } from 'dedot/types';
+import { Signer } from '@luno-kit/core'
 
 export interface UseSignerResult {
-  signer?: InjectedSigner;
+  signer?: Signer;
   isLoading: boolean;
 }
 
@@ -12,7 +12,7 @@ export const useSigner = (): UseSignerResult => {
   const { activeConnector } = useLuno();
   const { account } = useAccount();
 
-  const [signer, setSigner] = useState<InjectedSigner | undefined>(undefined);
+  const [signer, setSigner] = useState<Signer | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export const useSigner = (): UseSignerResult => {
     setIsLoading(true);
 
     activeConnector.getSigner()
-      .then(signer => setSigner(signer as InjectedSigner))
+      .then(signer => setSigner(signer as Signer))
       .catch(() => setSigner(undefined))
       .finally(() => setIsLoading(false));
 

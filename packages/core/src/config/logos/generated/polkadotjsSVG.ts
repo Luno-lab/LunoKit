@@ -1,5 +1,5 @@
-// Copyright 2024 Luno contributors
-// SPDX-License-Identifier: Apache-2.0
+// Copyright 2025 Luno contributors
+// SPDX-License-Identifier: MIT
 
 // Do not edit. Auto-generated via node scripts/convertLogos.mjs
 

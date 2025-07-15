@@ -1,4 +1,4 @@
-import type {LunoStorage, RawStorage} from '../types'
+import type { LunoStorage, RawStorage } from '../types'
 
 // Defines the parameters for the createStorage function.
 export interface CreateStorageParameters {

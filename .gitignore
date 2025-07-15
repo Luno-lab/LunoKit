@@ -45,5 +45,6 @@ dist-ssr
 /.vscode
 /packages/*/dist
 
-.cursor/rules/
-.cursor/
+PROJECT_CONTEXT.md
+/.cursor
+

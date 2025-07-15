@@ -14,7 +14,6 @@ export interface LunoContextState {
   currentChainId?: string;
   currentChain?: Chain;
   currentApi?: DedotClient;
-  isApiConnected: boolean;
   isApiReady: boolean;
   apiError: Error | null;
 

@@ -16,7 +16,8 @@ export const Copy: React.FC<CopyProps> = ({ copyText }) => {
         setTimeout(() => setIsCopied(false), 2000);
         return true;
       }
-      throw new Error('Your browser has no navigator clipboard api!')
+      // Fallback if clipboard API is not available
+      return false;
     } catch (err) {
       console.error('Copy failed:', err);
       return false;

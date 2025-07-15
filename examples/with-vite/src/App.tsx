@@ -29,7 +29,7 @@ const App: React.FC = () => {
   const { switchChainAsync } = useSwitchChain();
   const { signMessageAsync, data: signMessageData } = useSignMessage();
   const { sendTransactionAsync, data: sendTransactionData, isPending: isSendingTransaction, detailedStatus } = useSendTransaction();
-  const { api, isApiReady, apiError, isApiConnected } = useApi();
+  const { api, isApiReady, apiError } = useApi();
 
   const { themeMode, toggleTheme } = useLunoTheme();
 
@@ -132,8 +132,241 @@ const App: React.FC = () => {
                   <span className="card-icon">🎨</span>
                   <h3>Theme Control</h3>
                 </div>
+<<<<<<< HEAD
                 <div className="card-content">
                   <div className="theme-section">
+=======
+              </div>
+            </div>
+
+            {/* Wallet Status Card */}
+            <div className="feature-card">
+              <div className="card-header">
+                <span className="card-icon">💳</span>
+                <h3>Wallet Connection</h3>
+              </div>
+              <div className="card-content">
+                <div className="status-item">
+                  <span className="label">Status:</span>
+                  <span className={`status ${status.toLowerCase()}`}>
+                    {status === ConnectionStatus.Connected ? '✅ Connected' : '❌ Disconnected'}
+                  </span>
+                </div>
+                {status === ConnectionStatus.Connected && (
+                  <button className="disconnect-btn" onClick={() => disconnect()}>
+                    Disconnect
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Chains Card */}
+            <div className="feature-card">
+              <div className="card-header">
+                <span className="card-icon">🔗</span>
+                <h3>Chain Management</h3>
+              </div>
+              <div className="card-content">
+                {currentChain ? (
+                  <div className="chain-info">
+                    <div className="current-chain">
+                      <span className="chain-name">{currentChain.name}</span>
+                      <span className="chain-indicator">⚪</span>
+                    </div>
+                    {chains && chains.length > 1 && (
+                      <div className="chain-list">
+                        {chains.filter(c => c.genesisHash !== currentChain.genesisHash).map(chain => (
+                          <button
+                            key={chain.genesisHash}
+                            className="chain-switch-btn"
+                            onClick={async () => await switchChainAsync({ chainId: chain.genesisHash })}
+                          >
+                            Switch to {chain.name}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <span className="no-data">Connect wallet first</span>
+                )}
+              </div>
+            </div>
+
+            {/* Balance Card */}
+            <div className="feature-card">
+              <div className="card-header">
+                <span className="card-icon">💰</span>
+                <h3>Balance</h3>
+              </div>
+              <div className="card-content">
+                {address ? (
+                  <div className="balance-info">
+                    <div className="balance-amount">
+                      {balance?.formattedTotal ?? 0}
+                    </div>
+                    <div className="balance-symbol">
+                      {currentChain?.nativeCurrency.symbol}
+                    </div>
+                  </div>
+                ) : (
+                  <span className="no-data">Connect wallet first</span>
+                )}
+              </div>
+            </div>
+
+            {/* Account Card */}
+            <div className="feature-card">
+              <div className="card-header">
+                <span className="card-icon">👤</span>
+                <h3>Account Management</h3>
+              </div>
+              <div className="card-content">
+                {account ? (
+                  <div className="account-info">
+                    <div className="account-name">{account.name || 'Unnamed'}</div>
+                    <div className="account-address">{address}</div>
+                    {accounts.length > 1 && (
+                      <div className="account-list">
+                        {accounts.filter(acc => acc.publicKey !== account.publicKey).map(acc => (
+                          <button
+                            key={acc.publicKey}
+                            className="account-switch-btn"
+                            onClick={() => selectAccount(acc.publicKey)}
+                          >
+                            Switch to {acc.name || 'Unnamed'}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <span className="no-data">Connect wallet first</span>
+                )}
+              </div>
+            </div>
+
+            {/* Sign Message Card */}
+            <div className="feature-card">
+              <div className="card-header">
+                <span className="card-icon">✍️</span>
+                <h3>Sign Message</h3>
+              </div>
+              <div className="card-content">
+                {status === ConnectionStatus.Connected ? (
+                  <div className="sign-section">
+                    <button
+                      className="sign-btn"
+                      onClick={handleSignMessage}
+                    >
+                      Sign Test Message
+                    </button>
+                    {signMessageData && (
+                      <div className="sign-result">
+                        <div className="result-item">
+                          <span className="label">Signature:</span>
+                          <span className="value">{signMessageData.signature.slice(0, 20)}...</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <span className="no-data">Connect wallet first</span>
+                )}
+              </div>
+            </div>
+
+            {/* Send Transaction Card */}
+            <div className="feature-card">
+              <div className="card-header">
+                <span className="card-icon">💸</span>
+                <h3>Send Transaction</h3>
+              </div>
+              <div className="card-content">
+                {status === ConnectionStatus.Connected ? (
+                  <div className="transaction-section">
+                    <div className="transfer-form">
+                      <div className="form-group">
+                        <label className="form-label">To Address:</label>
+                        <input
+                          type="text"
+                          className="form-input"
+                          placeholder="..."
+                          value={transferForm.to}
+                          onChange={(e) => setTransferForm(prev => ({ ...prev, to: e.target.value }))}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Amount ({currentChain?.nativeCurrency.symbol}):</label>
+                        <input
+                          type="text"
+                          className="form-input"
+                          placeholder="1.0"
+                          value={transferForm.amount}
+                          onChange={(e) => setTransferForm(prev => ({ ...prev, amount: e.target.value }))}
+                        />
+                      </div>
+                      <button
+                        className="transfer-btn"
+                        onClick={handleSendTransaction}
+                        disabled={!transferForm.to || !transferForm.amount || !isApiReady || isSendingTransaction}
+                      >
+                        {isSendingTransaction ? 'Sending...' : 'Send Transaction'}
+                      </button>
+                    </div>
+                    {sendTransactionData && (
+                      <div className="transaction-result">
+                        <div className="result-item">
+                          <span className="label">Status:</span>
+                          <span className="value">{sendTransactionData.status}</span>
+                        </div>
+                        <div className="result-item">
+                          <span className="label">Hash:</span>
+                          <span className="value">{sendTransactionData.transactionHash.slice(0, 20)}...</span>
+                        </div>
+                        {sendTransactionData.errorMessage && (
+                          <div className="result-item">
+                            <span className="label">error:</span>
+                            <span className="value">{sendTransactionData.errorMessage}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {detailedStatus && (
+                      <div className="transaction-result">
+                        <div className="result-item">
+                          <span className="label">DetailedStatus:</span>
+                          <span className="value">{detailedStatus}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <span className="no-data">Connect wallet first</span>
+                )}
+              </div>
+            </div>
+
+            {/* API Status Card */}
+            <div className="feature-card">
+              <div className="card-header">
+                <span className="card-icon">🔌</span>
+                <h3>API Status</h3>
+              </div>
+              <div className="card-content">
+                <div className="api-status">
+                  <div className="status-item">
+                    <span className="label">API Ready:</span>
+                    <span className={`status ${isApiReady ? 'connected' : 'disconnected'}`}>
+                      {isApiReady ? '✅ Ready' : '⏳ Loading...'}
+                    </span>
+                  </div>
+                  <div className="status-item">
+                    <span className="label">Network:</span>
+                    <span className="value">{currentChain?.name || 'None'}</span>
+                  </div>
+                  {apiError && (
+>>>>>>> 823b3ab19e9642ab48a74a95cfe30472d56ac3fa
                     <div className="status-item">
                       <span className="label">Current Theme:</span>
                       <span className="value">{themeMode.charAt(0).toUpperCase() + themeMode.slice(1)}</span>

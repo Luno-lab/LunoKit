@@ -1,25 +1,32 @@
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useLuno } from './useLuno';
-import type { BlockHash } from 'dedot/codecs';
+import { HexString } from 'dedot/utils'
 
 export interface UseGenesisHashResult {
-  data?: string;
+  data?: HexString;
   isLoading: boolean;
 }
 
 export const useGenesisHash = (): UseGenesisHashResult => {
   const { currentApi, isApiReady } = useLuno();
+  const [data, setData] = useState<HexString | undefined>();
+  const [isLoading, setIsLoading] = useState(true);
 
-  return useMemo(() => {
+  useEffect(() => {
     if (currentApi && isApiReady) {
-      try {
-        const hash = currentApi.genesisHash;
-        return { data: hash, isLoading: false };
-      } catch (e) {
-        console.error("[useGenesisHash] Error fetching genesisHash:", e);
-        return { data: undefined, isLoading: false };
-      }
+      currentApi.chainSpec.genesisHash()
+        .then((hash: HexString) => {
+          setData(hash);
+        })
+        .catch((e: Error) => {
+          console.error("[useGenesisHash] Error fetching genesisHash:", e);
+          setData(undefined);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
-    return { data: undefined, isLoading: true };
   }, [currentApi, isApiReady]);
+
+  return { data, isLoading };
 };
