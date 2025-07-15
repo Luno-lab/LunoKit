@@ -1328,7 +1328,6 @@ packages:
 
   '@stagewise/toolbar@0.5.1':
     resolution: {integrity: sha512-4B7g5fuFAs30Di0J9Lb1rt7uSWx/WcnXB+WGlyB7VbVhBEqkpnKPlytDl+yQIgnrHobcfwr0BTmzmmAXb/kc8A==}
-
   '@storybook/core@8.6.14':
     resolution: {integrity: sha512-1P/w4FSNRqP8j3JQBOi3yGt8PVOgSRbP66Ok520T78eJBeqx9ukCfl912PQZ7SPbW3TIunBwLXMZOjZwBB/JmA==}
     peerDependencies:
@@ -4798,6 +4797,21 @@ snapshots:
       react: 19.1.0
 
   '@stagewise/toolbar@0.5.1': {}
+
+  '@sinclair/typebox@0.27.8': {}
+
+  '@stagewise-plugins/react@0.5.1(@stagewise/toolbar@0.5.1)':
+    dependencies:
+      '@stagewise/toolbar': 0.5.1
+
+  '@stagewise/toolbar-react@0.5.1(@types/react@19.1.8)(react@19.1.0)':
+    dependencies:
+      '@stagewise/toolbar': 0.5.1
+      '@types/react': 19.1.8
+      react: 19.1.0
+
+  '@stagewise/toolbar@0.5.1': {}
+
 
   '@storybook/core@8.6.14(prettier@3.6.2)(storybook@8.6.14(prettier@3.6.2))':
     dependencies:

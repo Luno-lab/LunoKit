@@ -132,6 +132,10 @@ const App: React.FC = () => {
                   <span className="card-icon">🎨</span>
                   <h3>Theme Control</h3>
                 </div>
+<<<<<<< HEAD
+                <div className="card-content">
+                  <div className="theme-section">
+=======
               </div>
             </div>
 
