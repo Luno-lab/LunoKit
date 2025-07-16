@@ -5,7 +5,8 @@
 
 [![npm version](https://img.shields.io/npm/v/@luno-kit/ui.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@luno-kit/ui)
 [![npm downloads](https://img.shields.io/npm/dm/@luno-kit/ui.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@luno-kit/ui)
-[![bundle size](https://img.shields.io/bundlephobia/minzip/@luno-kit/ui?style=flat&colorA=000000&colorB=000000)](https://bundlephobia.com/package/@luno-kit/ui)
+[![codecov](https://codecov.io/gh/Luno-lab/LunoKit/branch/main/graph/badge.svg)](https://codecov.io/gh/Luno-lab/LunoKit)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Luno-lab/LunoKit)
 [![license](https://img.shields.io/badge/license-MIT-black?style=flat&colorA=000000&colorB=000000)](https://github.com/Luno-lab/LunoKit/blob/main/LICENSE)
 
 [![typescript](https://img.shields.io/badge/TypeScript-Ready-black?style=flat&colorA=000000&colorB=000000&logo=typescript)](https://www.typescriptlang.org/)
