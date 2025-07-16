@@ -6,4 +6,5 @@ export const subwalletConnector = () => {
     id: 'subwallet-js',
     name: 'SubWallet',
     icon: subwalletSVG,
-  });
+  })
+};
