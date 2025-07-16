@@ -117,14 +117,15 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
       onClick={() => onSelect(chain)}
       disabled={isSelected || isLoading}
       className={cs(
-        'flex items-center justify-between p-[8px] bg-connectorItemBackground rounded-sm',
-        'transition-transform',
-        isSelected || isLoading
-          ? 'cursor-default'
-          : 'cursor-pointer hover:opacity-90 active:scale-[0.95]',
-        isLoading && 'opacity-80'
+  'flex items-center justify-between p-[8px] rounded-sm',
+  'bg-[var(--color-connectorItemBackground)]',
+  'transition-colors duration-200',
+  (isSelected || isLoading)
+    ? 'cursor-default'
+    : 'cursor-pointer hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)]',
+  isLoading && 'opacity-80'
+)}
 
-      )}
     >
       <div className="flex items-center gap-[8px]">
         <ChainIcon
@@ -140,9 +141,32 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
         </div>
       </div>
 
+      <div className="flex items-center justify-center h-[20px]">
+        {isSelected
+          ? isLoading
+            ? (
+              <>
+                <span className="text-[var(--color-accentFont)] text-[12px] mr-[6px]">Switching</span>
+                <Loading
+                  className="text-[var(--color-accentFont)] animate-[spin_2s_linear_infinite]"
+                  width="15px"
+                  height="15px"
+                />
+              </>
+            )
+            : (
+              <span className="status-dot-container">
+                <span className="ping-animation"></span>
+                <span className="status-dot"></span>
+              </span>
+            )
+          : null
+        }
+      </div>
+{/* 
       {isSelected
         ? isLoading
-          ? <Loading className={'w-[16px] h-[16px] text-secondaryFont animate-[spin_2s_linear_infinite]'}/>
+          ? <Loading className={'text-secondaryFont animate-[spin_2s_linear_infinite]'}/>
           : (
             <span className="status-dot-container">
               <span className="ping-animation"></span>
@@ -150,7 +174,7 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
             </span>
           )
         : null
-      }
+      } */}
 
     </button>
   );

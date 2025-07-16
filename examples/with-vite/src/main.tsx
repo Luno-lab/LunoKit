@@ -2,12 +2,12 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { createConfig, kusama, polkadot, polkadotjs, subwallet, westend, paseo } from '@luno-kit/react'
+import { createConfig, kusama, polkadot, westend, paseo, polkagateConnector, subwalletConnector, talismanConnector, polkadotjsConnector } from '@luno-kit/react'
 import { LunoKitProvider } from '@luno-kit/ui'
 import '@luno-kit/ui/dist/styles.css'
 
 const connectors = [
-  polkadotjs(), subwallet()
+  polkadotjsConnector(), subwalletConnector(), talismanConnector(), polkagateConnector()
 ]
 
 const lunoConfig = createConfig({

@@ -74,10 +74,10 @@ export const AccountDetailsModal: React.FC = () => {
       )}>
         <div className="flex items-stretch justify-between w-full">
           {currentView === AccountModalView.main ? (
-            <div className={'flex items-center gap-[8px]'}>
+            <div className={'flex items-center gap-[12px]'}>
               {activeConnector?.icon && (
-                <div className={'flex items-center justify-center rounded-full overflow-hidden w-[46px] h-[46px]'}>
-                  <img src={activeConnector.icon} alt=""/>
+                <div className={'flex items-center justify-center w-[55px] h-[55px]'}>
+                  <img src={activeConnector.icon} alt="" />
                 </div>
               )}
               <div className="flex flex-col items-start gap-[8px] w-full">
@@ -88,17 +88,26 @@ export const AccountDetailsModal: React.FC = () => {
                 </span>
                   <Copy copyText={address}/>
                 </div>
-                <div className="text-secondaryFont leading-secondary text-secondary font-[500]">
-                  {balance?.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
+                <div className="text-secondaryFont leading-secondary text-secondary font-[500] min-h-[20px]">
+                  {balance === undefined ? (
+                    <div className="animate-pulse rounded w-[80px] h-[20px]" style={{ background: 'var(--color-connectorItemActive)' }} />
+                  ) : (
+                    <>
+                      {balance?.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
+                    </>
+                  )}
                 </div>
               </div>
             </div>
           ) : (
             <>
-              <div className="flex items-center justify-center max-w-[16px] cursor-pointer"
-                   onClick={() => handleViewChange(AccountModalView.main)}>
-                <Back className="w-full"/>
-              </div>
+              <button
+                className="flex items-center justify-center w-[30px] h-[30px] cursor-pointer rounded-sm border-none hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)] transition-colors duration-200"
+                onClick={() => handleViewChange(AccountModalView.main)}
+                aria-label="Back"
+              >
+                <Back  />
+              </button>
               <DialogTitle
                 className="text-title leading-title text-modalFont font-[600] transition-opacity duration-300">
                 {viewTitle}
@@ -106,8 +115,8 @@ export const AccountDetailsModal: React.FC = () => {
             </>
           )}
 
-          <DialogClose className="z-10 cursor-pointer flex items-start">
-            <Close className="w-[24px] h-[24px]"/>
+          <DialogClose className="z-10 flex items-center justify-center h-[30px] w-[30px] rounded-sm border-none hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)] transition-colors duration-200 cursor-pointer">
+            <Close />
           </DialogClose>
         </div>
 

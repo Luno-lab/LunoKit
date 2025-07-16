@@ -7,12 +7,15 @@
   box-sizing: border-box;
 }
 
+
 [data-theme='light'] {
   --color-primaryFont: #211F26;
   --color-accentFont: #3385FF;
   --color-secondaryFont: rgba(60, 66, 66, 0.6);
   --color-modal-bg: white;
-  --color-connectorItemBackground: #F1EFF3;
+  --color-connectorItemBackground: rgba(0,0,0,0.035);
+  --color-connectorItemHover: rgba(0,0,0,0.08);
+  --color-connectorItemActive: rgba(0,0,0,0.1);
   --color-connectButtonBackground: #F1EFF3;
   --shadow-connectButton: 0px 10px 20px 0px rgba(0,0,0,0.1);
   --shadow-accountButton: 00px 10px 20px 0px rgba(0,0,0,0.1);
@@ -30,7 +33,9 @@
   --color-accentFont: #8A6EAC;
   --color-secondaryFont: rgba(255,255,255,0.5);
   --color-modal-bg: #3A3B43;
-  --color-connectorItemBackground: #4A4B51;
+  --color-connectorItemBackground: rgba(255,255,255,0.035);
+  --color-connectorItemHover: rgba(255,255,255,0.09);
+  --color-connectorItemActive: rgba(255,255,255,0.1);
   --color-connectButtonBackground: #4A4B51;
   --shadow-connectButton: 0px 4px 12px rgba(0, 0, 0, 0.1);
   --shadow-accountButton: 0px 5px 10px 0px rgba(0,0,0,0.1);
@@ -116,7 +121,7 @@
 .luno-kit .chain-icon-text {
   font-family: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
-  font-size: calc(100% * 0.9);
+  font-size: calc(100% * 0.8);
   line-height: 1;
   position: absolute;
   top: 50%;

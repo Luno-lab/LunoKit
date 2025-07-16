@@ -3,7 +3,6 @@ import { useLuno } from './useLuno';
 import { type LunoMutationOptions, useLunoMutation} from './useLunoMutation';
 import type { HexString } from 'dedot/utils';
 import { useCallback, useState } from 'react';
-import { TxStatus } from '../types';
 
 export interface SendTransactionHashVariables {
   extrinsic: ISubmittableExtrinsic;
@@ -34,15 +33,13 @@ export interface UseSendTransactionHashResult {
   status: 'idle' | 'pending' | 'error' | 'success';
   reset: () => void;
   variables: SendTransactionHashVariables | undefined;
-  txStatus: TxStatus;
 }
 
 export function useSendTransactionHash (
   hookLevelConfig?: UseSendTransactionHashOptions,
 ): UseSendTransactionHashResult {
   const { account, activeConnector, currentApi, isApiReady } = useLuno();
-
-  const [txStatus, setTxStatus] = useState<TxStatus>('idle');
+  const [txError, setTxError] = useState<Error | null>(null);
 
   const sendTransactionFn = useCallback(async (variables: SendTransactionHashVariables): Promise<HexString> => {
     if (!currentApi || !isApiReady) {
@@ -66,15 +63,14 @@ export function useSendTransactionHash (
     }
 
     try {
-      setTxStatus('signing');
       const txHash = await variables.extrinsic
         .signAndSend(account.address, { signer: signer }).catch(e => { throw e });
-      return txHash
+      return txHash as HexString
     } catch (error) {
-      setTxStatus('failed');
+      setTxError(error as Error)
       throw error;
     }
-  }, [currentApi, isApiReady, activeConnector, account, setTxStatus]);
+  }, [currentApi, isApiReady, activeConnector, account]);
 
   const mutationResult = useLunoMutation<
     HexString,
@@ -87,14 +83,13 @@ export function useSendTransactionHash (
     sendTransaction: mutationResult.mutate,
     sendTransactionAsync: mutationResult.mutateAsync,
     data: mutationResult.data,
-    error: mutationResult.error,
-    isError: mutationResult.isError,
+    error: txError || mutationResult.error,
+    isError: Boolean(txError) || mutationResult.isError,
     isIdle: mutationResult.isIdle,
     isPending: mutationResult.isPending,
     isSuccess: mutationResult.isSuccess,
     reset: mutationResult.reset,
     status: mutationResult.status,
     variables: mutationResult.variables,
-    txStatus: txStatus,
   };
 }

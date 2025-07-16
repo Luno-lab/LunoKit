@@ -44,3 +44,6 @@ dist-ssr
 /.idea
 /.vscode
 /packages/*/dist
+
+PROJECT_CONTEXT.md
+/.cursor

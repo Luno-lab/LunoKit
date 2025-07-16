@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLuno } from './useLuno';
 import type { Callback } from 'dedot/types'
 import type { DedotClient } from 'dedot';
@@ -25,7 +25,7 @@ export interface QueryMultiItem {
 export interface UseSubscriptionProps<TArgs extends any[], TData, TTransformed = TData> {
   queryKey: string | number;
   factory: ApiBoundSubscriptionFactory<TArgs, TData> | ((api: DedotClient) => any);
-  params?: TArgs | ((api: DedotClient) => QueryMultiItem[]);
+  params: TArgs | ((api: DedotClient) => QueryMultiItem[]);
   options?: UseSubscriptionOptions<TData, TTransformed>;
 }
 
@@ -40,6 +40,7 @@ const defaultTransform = <T>(data: T): T => data;
 export const useSubscription = <TArgs extends any[], TData, TTransformed = TData>(
   { queryKey: userQueryKey, factory, params, options = {} }: UseSubscriptionProps<TArgs, TData, TTransformed>
 ): UseSubscriptionResult<TTransformed> => {
+  const [error, setError] = useState<Error | undefined>(undefined)
   const { currentApi, isApiReady } = useLuno();
   const queryClient = useQueryClient();
   const {
@@ -47,6 +48,7 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
     transform = defaultTransform as (data: TData) => TTransformed,
     defaultValue,
   } = options;
+  const isSubscribed = useRef(false)
 
   const resolvedParams = useMemo(() => {
     if (!params || !currentApi || !isApiReady) return undefined;
@@ -60,40 +62,49 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
   ], [userQueryKey, resolvedParams, currentApi?.genesisHash]);
 
   useEffect(() => {
-    if (!enabled || !factory || !currentApi || !resolvedParams || !isApiReady) {
+    if (!enabled || !factory || !currentApi || !resolvedParams || !isApiReady || isSubscribed.current) {
       return;
     }
-
-    const factoryFn = factory(currentApi);
-    const boundFn = typeof factoryFn === 'function' ? factoryFn.bind(currentApi) : factoryFn;
-
-    const callback: Callback<TData> = (result: TData) => {
-      try {
-        const transformedData = transform(result);
-        queryClient.setQueryData(queryKey, transformedData);
-      } catch (err) {
-        console.error('Transform error:', err);
-      }
-    };
-
     let unsubscribe: (() => Promise<void>) | null = null;
 
-    boundFn(...resolvedParams, callback)
-      .then((unsub: Unsub) => {
-        unsubscribe = unsub;
-      })
-      .catch((err: Error) => {
-        console.error('[useSubscription] error:', err);
-      });
+    isSubscribed.current = true
+
+    try {
+      const factoryFn = factory(currentApi);
+      const boundFn = typeof factoryFn === 'function' ? factoryFn.bind(currentApi) : factoryFn;
+
+      const callback: Callback<TData> = (result: TData) => {
+        try {
+          const transformedData = transform(result);
+          queryClient.setQueryData(queryKey, transformedData);
+          setError(undefined);
+        } catch (err) {
+          setError(new Error(`[useSubscription]: ${err}`));
+        }
+      };
+
+
+      boundFn(...resolvedParams, callback)
+        .then((unsub: Unsub) => {
+          unsubscribe = unsub;
+        })
+        .catch((err: Error) => {
+          setError(new Error(`[useSubscription]: ${err}`));
+        });
+    } catch (err) {
+      setError(new Error(`[useSubscription]: ${err}`));
+    }
 
     return () => {
       if (unsubscribe) {
         unsubscribe();
+        isSubscribed.current = false
+        setError(undefined);
       }
     };
-  }, [queryKey, enabled, transform, queryClient]);
+  }, [JSON.stringify(queryKey), enabled, queryClient]);
 
-  const { data, error, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey,
     queryFn: () => {
       return Promise.resolve(defaultValue);
@@ -105,6 +116,6 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
   return {
     data: data as TTransformed | undefined,
     error: error as Error | undefined,
-    isLoading: enabled && isApiReady && !data
+    isLoading: !!(enabled && isApiReady && !data)
   };
 };

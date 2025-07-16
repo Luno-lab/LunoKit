@@ -6,7 +6,7 @@ export function formatBalance(
   decimals: number = 0,
   fixedDecimals: number = 4
 ): string {
-  if (value === undefined || value === null) {
+  if (value === undefined || value === null || value === '') {
     return '0';
   }
 
@@ -24,7 +24,6 @@ export function formatBalance(
     return whole.toString();
   }
 
-  // 函数式处理，避免 let
   const paddedFraction = fraction.toString().padStart(decimals, '0');
   const truncatedFraction = paddedFraction
     .substring(0, fixedDecimals)
@@ -45,16 +44,9 @@ export function formatAddress(
   if (address.length <= prefixLength + suffixLength) return address;
 
   const prefix = address.slice(0, prefixLength);
-  const suffix = address.slice(-suffixLength);
+  const suffix = suffixLength > 0 ? address.slice(-suffixLength) : '';
 
   return `${prefix}...${suffix}`;
-}
-
-/**
- * format timestamp
- */
-export function formatTimestamp(timestamp: number): string {
-  return new Date(timestamp).toLocaleString();
 }
 
 export { formatBalance as formatBalanceWithUnit } from 'dedot/utils';

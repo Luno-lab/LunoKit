@@ -59,7 +59,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
           <div className={'flex flex-col items-start gap-[16px] w-full'}>
             <div className={'flex flex-col items-start gap-[12px] w-full'}>
               <div className={'text-primary text-modalFont font-[600] leading-primary'}>Installed</div>
-              <div className={'flex flex-col items-start gap-[4px] w-full'}>
+              <div className={'flex flex-col items-start gap-[6px] w-full'}>
                 {installedConnectors.map(i => (
                   <ConnectorItem key={i.id} connector={i} onConnect={() => handleConnect(i)}/>
                 ))}
@@ -152,12 +152,16 @@ const ConnectorItem: React.FC<ConnectorItemProps> = React.memo(({ connector, onC
     <button
       onClick={onConnect}
       className={cs(
-        'cursor-pointer bg-connectorItemBackground p-[8px] w-full flex items-center gap-[12px] rounded-sm border-none',
-        'hover:opacity-80 hover:scale-[1.03] transition-transform active:scale-[0.95]',
-        'text-left'
+        // 'cursor-pointer bg-connectorItemBackground p-[8px] w-full flex items-center gap-[12px] rounded-sm border-none',
+        // 'hover:opacity-80 hover:scale-[1.03] transition-transform active:scale-[0.95]',
+        // 'text-left'
+        'cursor-pointer p-[8px] w-full flex items-center gap-[12px] rounded-sm border-none',
+  'bg-[var(--color-connectorItemBackground)] hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)]',
+  'transition-colors duration-200',
+  'text-left'
       )}
     >
-      <div className={'w-[24px] h-[24px] overflow-hidden rounded-full'}>
+      <div className={'w-[24px] h-[24px]'}>
         <img
           src={connector.icon}
           alt={connector.name}
