@@ -38,6 +38,12 @@ importers:
       '@luno-kit/ui':
         specifier: workspace:0.0.1
         version: link:../../packages/ui
+      '@stagewise-plugins/react':
+        specifier: ^0.5.1
+        version: 0.5.1(@stagewise/toolbar@0.5.1)
+      '@stagewise/toolbar-react':
+        specifier: ^0.5.1
+        version: 0.5.1(@types/react@19.1.8)(react@19.1.0)
       '@tanstack/react-query':
         specifier: ^5.14.2
         version: 5.81.5(react@19.1.0)
@@ -1308,6 +1314,23 @@ packages:
 
   '@scure/base@1.2.6':
     resolution: {integrity: sha512-g/nm5FgUa//MCj1gV09zTJTaM6KBAHqLN907YVQqf7zC49+DcO4B1so4ZX07Ef10Twr6nuqYEH9GEggFXA4Fmg==}
+
+  '@sinclair/typebox@0.27.8':
+    resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
+
+  '@stagewise-plugins/react@0.5.1':
+    resolution: {integrity: sha512-8OeM/nF8qyn8zBQxTtupG49sXBm9sCxugTl6KTkjgQacg7mP7zN/F5iHKFHwE4HnyZMoC0UjWt/HeRyxnQsYiQ==}
+    peerDependencies:
+      '@stagewise/toolbar': 0.5.1
+
+  '@stagewise/toolbar-react@0.5.1':
+    resolution: {integrity: sha512-R25kkgU22ueO+jcb5Uc47NrxQVnKxmoepJzjs2bROUiVeU5wIb1MNiioKzN5IA2TucY75Sq8Q7TjHGYyHuFOpQ==}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      react: '>=18.0.0'
+
+  '@stagewise/toolbar@0.5.1':
+    resolution: {integrity: sha512-4B7g5fuFAs30Di0J9Lb1rt7uSWx/WcnXB+WGlyB7VbVhBEqkpnKPlytDl+yQIgnrHobcfwr0BTmzmmAXb/kc8A==}
 
   '@storybook/core@8.6.14':
     resolution: {integrity: sha512-1P/w4FSNRqP8j3JQBOi3yGt8PVOgSRbP66Ok520T78eJBeqx9ukCfl912PQZ7SPbW3TIunBwLXMZOjZwBB/JmA==}
@@ -4765,6 +4788,20 @@ snapshots:
     optional: true
 
   '@scure/base@1.2.6': {}
+
+  '@sinclair/typebox@0.27.8': {}
+
+  '@stagewise-plugins/react@0.5.1(@stagewise/toolbar@0.5.1)':
+    dependencies:
+      '@stagewise/toolbar': 0.5.1
+
+  '@stagewise/toolbar-react@0.5.1(@types/react@19.1.8)(react@19.1.0)':
+    dependencies:
+      '@stagewise/toolbar': 0.5.1
+      '@types/react': 19.1.8
+      react: 19.1.0
+
+  '@stagewise/toolbar@0.5.1': {}
 
   '@storybook/core@8.6.14(prettier@3.6.2)(storybook@8.6.14(prettier@3.6.2))':
     dependencies:

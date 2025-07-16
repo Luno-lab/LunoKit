@@ -12,7 +12,7 @@ interface SwitchChainViewProps {
 export const SwitchChainView: ViewComponent = ({ onBack }) => {
   return (
     <div className={'flex flex-col gap-[14px] '}>
-      <ChainList onChainSwitched={onBack} />
+      <ChainList />
     </div>
   )
 }

@@ -1,6 +1,5 @@
 import { expect, afterEach, test, vi } from 'vitest';
-import { mockConfig, MockConnector } from '../test-utils';
-import { renderHook } from '../test-utils';
+import { mockConfig, MockConnector, renderHook } from '../test-utils';
 import { act, waitFor } from '@testing-library/react';
 import { useConnect } from './useConnect';
 import { useSignMessage } from './useSignMessage';

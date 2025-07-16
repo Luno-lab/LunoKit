@@ -84,50 +84,48 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
   const sizeConfig = sizes[size];
 
   return (
-    <div
-      className={cs(
-        'text-modalFont flex items-center bg-transparent font-[600]',
-        sizeConfig.connected,
-        className
-      )}
-      role="button"
-      tabIndex={0}
-      aria-label="Account details"
-    >
+    <div className={cs('text-modalFont flex items-center bg-transparent font-[600]', sizeConfig.connected, className)}>
       {chainStatus !== 'none' && (
-        <div
+        <button
+          type="button"
           onClick={() => openChainModal?.()}
           className={cs(
             'flex items-center rounded-sm cursor-pointer',
             'bg-chainButton shadow-accountButton',
             sizeConfig.chain,
             transitionClassName,
-          )}>
-            {(chainStatus === 'full' || chainStatus === 'icon')
-              ? <ChainIcon chainIconUrl={chainIconUrl} chainName={chainName} className={sizeConfig.icon}/>
-              : null}
-
-          {(chainStatus === 'full' || chainStatus === 'name') && (
-            <span className={''}>{currentChain?.name || 'Unknown Chain'}</span>
           )}
-        </div>
+          aria-label="Switch chain"
+        >
+          {(chainStatus === 'full' || chainStatus === 'icon')
+            ? <ChainIcon chainIconUrl={chainIconUrl} chainName={chainName} className={sizeConfig.icon}/>
+            : null}
+          {(chainStatus === 'full' || chainStatus === 'name') && (
+            <span>{currentChain?.name || 'Unknown Chain'}</span>
+          )}
+        </button>
       )}
 
-
-      <div
+      <button
+        type="button"
         onClick={() => openAccountModal?.()}
         className={cs(
-        'flex items-center cursor-pointer rounded-sm py-1px bg-chainButton shadow-accountButton',
-        transitionClassName,
+          'flex items-center cursor-pointer rounded-sm py-1px bg-chainButton shadow-accountButton',
+          transitionClassName,
         )}
+        aria-label="Open account modal"
       >
 
         {showBalance && (
           <div className={sizeConfig.balance}>
-            <span className="">
-              {balance?.formattedTransferable || balance?.formattedTotal || 0}
-              {'  '}{currentChain?.nativeCurrency?.symbol || ''}
-            </span>
+            {balance === undefined ? (
+              <div className="animate-pulse rounded w-[80px] h-[20px]" style={{ background: 'var(--color-connectorItemActive)' }} />
+            ) : (
+              <span className="">
+                {balance?.formattedTransferable || balance?.formattedTotal || 0}
+                {'  '}{currentChain?.nativeCurrency?.symbol || ''}
+              </span>
+            )}
           </div>
         )}
 
@@ -144,7 +142,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
             aria-label="Wallet icon placeholder"
             className={''}>{displayAddress}</span>
         </div>
-      </div>
+      </button>
     </div>
   );
 };

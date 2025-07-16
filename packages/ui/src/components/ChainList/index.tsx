@@ -141,9 +141,32 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
         </div>
       </div>
 
+      <div className="flex items-center justify-center h-[20px]">
+        {isSelected
+          ? isLoading
+            ? (
+              <>
+                <span className="text-[var(--color-accentFont)] text-[12px] mr-[6px]">Switching</span>
+                <Loading
+                  className="text-[var(--color-accentFont)] animate-[spin_2s_linear_infinite]"
+                  width="15px"
+                  height="15px"
+                />
+              </>
+            )
+            : (
+              <span className="status-dot-container">
+                <span className="ping-animation"></span>
+                <span className="status-dot"></span>
+              </span>
+            )
+          : null
+        }
+      </div>
+{/* 
       {isSelected
         ? isLoading
-          ? <Loading className={'w-[16px] h-[16px] text-secondaryFont animate-[spin_2s_linear_infinite]'}/>
+          ? <Loading className={'text-secondaryFont animate-[spin_2s_linear_infinite]'}/>
           : (
             <span className="status-dot-container">
               <span className="ping-animation"></span>
@@ -151,7 +174,7 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
             </span>
           )
         : null
-      }
+      } */}
 
     </button>
   );

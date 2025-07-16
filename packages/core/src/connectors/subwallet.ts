@@ -7,4 +7,3 @@ export const subwalletConnector = () => {
     name: 'SubWallet',
     icon: subwalletSVG,
   });
-}
