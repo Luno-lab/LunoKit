@@ -1,11 +1,10 @@
 import { expect, afterEach, test, vi } from 'vitest';
-import { mockConfig, MockConnector } from '../test-utils';
-import { renderHook } from '../test-utils';
+import { mockConfig, MockConnector, renderHook } from '../test-utils';
 import { act, waitFor } from '@testing-library/react';
 import { useConnect } from './useConnect';
 import { useSignMessage } from './useSignMessage';
-import { useAccount } from './useAccount';
 import { ConnectionStatus } from '../types';
+import { useLuno } from './useLuno'
 
 const connector = mockConfig.connectors[0] as MockConnector;
 const TEST_MESSAGE = 'Hello Polkadot';
@@ -18,9 +17,9 @@ afterEach(async () => {
 
 test('useSignMessage', async () => {
   const { result } = renderHook(() => ({
-    useAccount: useAccount(),
     useConnect: useConnect(),
     useSignMessage: useSignMessage(),
+    useLuno: useLuno(),
   }), {
     config: mockConfig
   });
@@ -89,7 +88,7 @@ test('useSignMessage', async () => {
 
   expect(result.current.useSignMessage.data).toBeDefined();
   expect(result.current.useSignMessage.data?.rawMessage).toBe(TEST_MESSAGE);
-  expect(result.current.useSignMessage.data?.addressUsed).toBe(result.current.useAccount.address);
+  expect(result.current.useSignMessage.data?.addressUsed).toBe(result.current.useLuno.account.address);
   expect(result.current.useSignMessage.data?.signature).toContain('signed_by_mock');
 
   await act(async () => {

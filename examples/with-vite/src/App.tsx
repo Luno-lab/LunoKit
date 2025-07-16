@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ConnectButton, useLunoTheme } from '@luno-kit/ui';
 import {
   useAccount,
@@ -40,7 +40,6 @@ const App: React.FC = () => {
 
   const showNotification = (title: string, message?: string) => {
     if (Notification.permission === 'granted') {
-      console.log('message', message)
       new Notification(title, { body: message });
     } else {
       alert(`${title}: ${message || ''}`);
@@ -92,7 +91,7 @@ const App: React.FC = () => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (Notification.permission === 'default') {
       Notification.requestPermission();
     }
@@ -239,7 +238,7 @@ const App: React.FC = () => {
                         <div className="account-list">
                           {accounts.filter(acc => acc.publicKey !== account.publicKey).map(acc => (
                             <button
-                              key={acc.publicKey}
+                              key={acc.publicKey as string}
                               className="account-switch-btn"
                               onClick={() => selectAccount(acc.publicKey)}
                             >
