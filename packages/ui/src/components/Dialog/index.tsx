@@ -13,6 +13,17 @@ interface DialogProps {
   overlayClassName?: string;
 }
 
+interface DialogTitleProps {
+  children: ReactNode;
+  className?: string;
+}
+
+interface DialogCloseProps {
+  children: ReactNode;
+  className?: string;
+  onClick?: () => void;
+}
+
 const DialogRoot: React.FC<DialogProps> = ({
   open,
   onOpenChange,
@@ -23,13 +34,13 @@ const DialogRoot: React.FC<DialogProps> = ({
   return (
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay
-          className={cs(
+        {React.createElement(DialogPrimitive.Overlay as any, {
+          className: cs(
             'fixed inset-0 z-[100] bg-modalBackdrop luno-kit',
             'data-[state=open]:[animation:overlay-in_150ms_ease-out]',
             overlayClassName
-          )}
-        />
+          )
+        })}
         <DialogPrimitive.Content
           className={cs(
             'luno-kit font-base fixed left-1/2 top-1/2 z-[200] -translate-x-1/2 -translate-y-1/2 text-modalFont text-primary leading-primary',
@@ -46,8 +57,14 @@ const DialogRoot: React.FC<DialogProps> = ({
   );
 };
 
-export const Dialog = DialogRoot;
-export const DialogClose = DialogPrimitive.Close;
-export const DialogTitle = DialogPrimitive.Title;
+const DialogTitleWrapper: React.FC<DialogTitleProps> = ({ children, className }) => 
+  React.createElement(DialogPrimitive.Title as any, { className }, children);
 
-export type { DialogProps };
+const DialogCloseWrapper: React.FC<DialogCloseProps> = ({ children, className, onClick }) => 
+  React.createElement(DialogPrimitive.Close as any, { className, onClick }, children);
+
+export const Dialog = DialogRoot;
+export const DialogClose = DialogCloseWrapper;
+export const DialogTitle = DialogTitleWrapper;
+
+export type { DialogProps, DialogTitleProps, DialogCloseProps };

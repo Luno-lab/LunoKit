@@ -1,7 +1,8 @@
 import React, { ReactNode, useState } from 'react';
 import { LunoProvider } from '@luno-kit/react';
 import type { Config as LunoCoreConfig } from '@luno-kit/react'
-import { QueryClient, QueryClientProvider, type QueryClientConfig } from '@tanstack/react-query';
+// @ts-ignore - @tanstack/react-query v5 API changes
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ModalProvider } from './ModalContext';
 import { ThemeProvider, ThemeMode } from './ThemeContext';
 import { ConnectModal, AccountDetailsModal, ChainModal } from '../components'
@@ -10,7 +11,7 @@ import { ModalSize } from '../components/Dialog'
 export interface LunoKitProviderProps {
   children: ReactNode;
   config: LunoCoreConfig & { modalSize?: ModalSize };
-  queryClientConfig?: QueryClientConfig;
+  queryClientConfig?: any;
   // theme?: ThemeMode | LunoTheme;
   theme?: ThemeMode;
 }

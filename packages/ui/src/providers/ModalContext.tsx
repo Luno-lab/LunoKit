@@ -11,6 +11,7 @@ function useModalVisibility() {
 interface ModalContextValue {
   isConnectModalOpen: boolean;
   openConnectModal?: () => void;
+  closeConnectModal: () => void;
 
   isAccountModalOpen: boolean;
   openAccountModal?: () => void;
