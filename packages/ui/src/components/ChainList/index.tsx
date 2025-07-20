@@ -67,8 +67,8 @@ export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched }: ChainLi
             className={cs(
               'px-[14px] flex items-center justify-center cursor-pointer min-w-[48px] min-h-[24px] rounded-sm text-[12px] leading-[16px] font-[500] transition-colors',
               activeFilter === tab.key
-                ? 'bg-chainSelected text-modalFont'
-                : 'bg-transparent text-secondaryFont hover:text-modalFont'
+                ? 'bg-navigationButtonBackground text-modalText'
+                : 'bg-transparent text-modalTextSecondary hover:text-modalText'
             )}
           >
             {tab.label}
@@ -90,7 +90,7 @@ export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched }: ChainLi
 
       {filteredChains.length === 0 && (
         <div className="flex items-center justify-center py-12">
-          <span className="text-secondaryFont text-sm">
+          <span className="text-modalTextSecondary text-sm">
             No {activeFilter === ChainFilter.all ? 'chains' : activeFilter.toLowerCase()} available
           </span>
         </div>
@@ -118,11 +118,11 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
       disabled={isSelected || isLoading}
       className={cs(
   'flex items-center justify-between p-[8px] rounded-sm',
-  'bg-[var(--color-connectorItemBackground)]',
+  'bg-networkSelectItemBackground',
   'transition-colors duration-200',
   (isSelected || isLoading)
     ? 'cursor-default'
-    : 'cursor-pointer hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)]',
+    : 'cursor-pointer hover:bg-networkSelectItemBackgroundHover',
   isLoading && 'opacity-80'
 )}
 
@@ -135,7 +135,7 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
         />
 
         <div className="flex flex-col items-start">
-          <span className="font-[500] text-primary text-modalFont leading-primary">
+          <span className="font-[500] text-primary text-modalText">
             {chain.name}
           </span>
         </div>
@@ -146,9 +146,9 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
           ? isLoading
             ? (
               <>
-                <span className="text-[var(--color-accentFont)] text-[12px] mr-[6px]">Switching</span>
+                <span className="text-accentColor text-sm leading-sm mr-[6px]">Switching</span>
                 <Loading
-                  className="text-[var(--color-accentFont)] animate-[spin_2s_linear_infinite]"
+                  className="text-accentColor animate-[spin_2s_linear_infinite]"
                   width="15px"
                   height="15px"
                 />

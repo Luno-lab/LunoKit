@@ -69,8 +69,9 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
         type="button"
         onClick={() => openConnectModal?.()}
         className={cs(
-          'cursor-pointer font-[600] inline-flex items-center justify-center border border-transparent rounded-sm focus:outline-none',
-          'text-primaryFont bg-connectButtonBackground shadow-connectButton active:scale-[0.95]',
+          'cursor-pointer font-[600] inline-flex items-center justify-center focus:outline-none',
+          'text-connectButtonText bg-connectButtonBackground shadow-button active:scale-[0.95]',
+          'rounded-connectButton',
           transitionClassName,
           sizes[size].button,
           className
@@ -84,14 +85,14 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
   const sizeConfig = sizes[size];
 
   return (
-    <div className={cs('text-modalFont flex items-center bg-transparent font-[600]', sizeConfig.connected, className)}>
+    <div className={cs('text-modalText flex items-center bg-transparent font-[600]', sizeConfig.connected, className)}>
       {chainStatus !== 'none' && (
         <button
           type="button"
           onClick={() => openChainModal?.()}
           className={cs(
-            'flex items-center rounded-sm cursor-pointer',
-            'bg-chainButton shadow-accountButton',
+            'flex items-center rounded-currentNetworkButton cursor-pointer',
+            'bg-currentNetworkButtonBackground shadow-button',
             sizeConfig.chain,
             transitionClassName,
           )}
@@ -110,7 +111,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
         type="button"
         onClick={() => openAccountModal?.()}
         className={cs(
-          'flex items-center cursor-pointer rounded-sm py-1px bg-chainButton shadow-accountButton',
+          'flex items-center cursor-pointer rounded-connectButton py-1px bg-connectButtonBackground shadow-button',
           transitionClassName,
         )}
         aria-label="Open account modal"
@@ -119,7 +120,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
         {showBalance && (
           <div className={sizeConfig.balance}>
             {balance === undefined ? (
-              <div className="animate-pulse rounded w-[80px] h-[20px]" style={{ background: 'var(--color-connectorItemActive)' }} />
+              <div className="animate-pulse rounded w-[80px] h-[20px] bg-accountActionItemBackgroundHover" />
             ) : (
               <span className="">
                 {balance?.formattedTransferable || balance?.formattedTotal || 0}
@@ -130,7 +131,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
         )}
 
         <div className={cs(
-          "flex items-center bg-deepBackground rounded-sm m-[2px]",
+          "flex items-center bg-connectButtonInnerBackground border-2 border-connectButtonBackground rounded-connectButton",
           sizeConfig.account,
         )}>
           {accountStatus === 'full' && (

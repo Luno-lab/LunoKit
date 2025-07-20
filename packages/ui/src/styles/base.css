@@ -7,48 +7,8 @@
   box-sizing: border-box;
 }
 
-
-[data-theme='light'] {
-  --color-primaryFont: #211F26;
-  --color-accentFont: #3385FF;
-  --color-secondaryFont: rgba(60, 66, 66, 0.6);
-  --color-modal-bg: white;
-  --color-connectorItemBackground: rgba(0,0,0,0.035);
-  --color-connectorItemHover: rgba(0,0,0,0.08);
-  --color-connectorItemActive: rgba(0,0,0,0.1);
-  --color-connectButtonBackground: #F1EFF3;
-  --shadow-connectButton: 0px 10px 20px 0px rgba(0,0,0,0.1);
-  --shadow-accountButton: 00px 10px 20px 0px rgba(0,0,0,0.1);
-  --color-deepBackground: #f6f6f6;
-  --color-chainButton: #FFFFFF;
-
-  --color-modalFont: #25292E;
-  --color-modalLine: rgba(0, 0, 0, 0.06);
-
-  --color-chainSelected: rgba(0,0,0,0.15);
-}
-
-[data-theme='dark'] {
-  --color-primaryFont: #FFFFFF;
-  --color-accentFont: #8A6EAC;
-  --color-secondaryFont: rgba(255,255,255,0.5);
-  --color-modal-bg: #3A3B43;
-  --color-connectorItemBackground: rgba(255,255,255,0.035);
-  --color-connectorItemHover: rgba(255,255,255,0.09);
-  --color-connectorItemActive: rgba(255,255,255,0.1);
-  --color-connectButtonBackground: #4A4B51;
-  --shadow-connectButton: 0px 4px 12px rgba(0, 0, 0, 0.1);
-  --shadow-accountButton: 0px 5px 10px 0px rgba(0,0,0,0.1);
-  --color-deepBackground: #3A3B43;
-  --color-chainButton: #4A4B51;
-
-  --color-modalFont: #FFFFFF;
-  --color-modalLine: rgba(74,75,88,0.75);
-
-  --color-chainSelected: rgba(0,0,0,0.15);
-}
-
 @theme inline {
+  /* Spacing */
   --spacing-1: 4px;
   --spacing-1\.5: 6px;
   --spacing-2: 8px;
@@ -58,7 +18,8 @@
   --spacing-5: 20px;
   --spacing-6: 24px;
 
-  --text-sm: 14px;
+  /* Typography */
+  --text-sm: 12px;
   --leading-sm: 18px;
   --text-primary: 16px;
   --leading-primary: 20px;
@@ -71,34 +32,71 @@
   --text-accent: 12px;
   --leading-accent: 18px;
 
-  --shadow-primary: 0px 10px 20px 0px rgba(0,0,0,0.1);
-  --radius-primary: 8px;
-  --radius-sm: 6px;
-
-  --color-primaryFont: var(--color-primaryFont);
-  --color-accentFont: var(--color-accentFont);
-  --color-secondaryFont: var(--color-secondaryFont);
-  --color-modal-bg: var(--color-modal-bg);
-  --color-connectorItemBackground: var(--color-connectorItemBackground);
+  /* 映射到你的类型定义中的变量名 */
+  /* Colors */
+  --color-accentColor: var(--color-accentColor);
+  --color-walletSelectItemBackground: var(--color-walletSelectItemBackground);
+  --color-walletSelectItemBackgroundHover: var(--color-walletSelectItemBackgroundHover);
+  --color-walletSelectItemText: var(--color-walletSelectItemText);
   --color-connectButtonBackground: var(--color-connectButtonBackground);
+  --color-connectButtonInnerBackground: var(--color-connectButtonInnerBackground);
+  --color-connectButtonText: var(--color-connectButtonText);
+  --color-accountActionItemBackground: var(--color-accountActionItemBackground);
+  --color-accountActionItemBackgroundHover: var(--color-accountActionItemBackgroundHover);
+  --color-accountActionItemText: var(--color-accountActionItemText);
+  --color-accountSelectItemBackground: var(--color-accountSelectItemBackground);
+  --color-accountSelectItemBackgroundHover: var(--color-accountSelectItemBackgroundHover);
+  --color-accountSelectItemText: var(--color-accountSelectItemText);
+  --color-currentNetworkButtonBackground: var(--color-currentNetworkButtonBackground);
+  --color-currentNetworkButtonText: var(--color-currentNetworkButtonText);
+  --color-networkSelectItemBackground: var(--color-networkSelectItemBackground);
+  --color-networkSelectItemBackgroundHover: var(--color-networkSelectItemBackgroundHover);
+  --color-networkSelectItemText: var(--color-networkSelectItemText);
+  --color-navigationButtonBackground: var(--color-navigationButtonBackground);
+  --color-separatorLine: var(--color-separatorLine);
+  --color-modalBackground: var(--color-modalBackground);
+  --color-modalBackdrop: var(--color-modalBackdrop);
+  --color-modalBorder: var(--color-modalBorder);
+  --color-modalText: var(--color-modalText);
+  --color-modalTextSecondary: var(--color-modalTextSecondary);
+  --color-modalControlButtonBackgroundHover: var(--color-modalControlButtonBackgroundHover);
+  --color-modalControlButtonText: var(--color-modalControlButtonText);
+  --color-success: var(--color-success);
+  --color-successForeground: var(--color-successForeground);
+  --color-warning: var(--color-warning);
+  --color-warningForeground: var(--color-warningForeground);
+  --color-error: var(--color-error);
+  --color-errorForeground: var(--color-errorForeground);
+  --color-info: var(--color-info);
+  --color-infoForeground: var(--color-infoForeground);
+  --color-skeleton: var(--color-skeleton);
 
-  --shadow-connectButton: var(--shadow-connectButton);
-  --shadow-accountButton: var(--shadow-accountButton);
-  --color-deepBackground: var(--color-deepBackground);
-  --color-chainButton: var(--color-chainButton);
+  /* Fonts */
+  --font-body: var(--font-body);
+  --font-heading: var(--font-heading);
+  --font-mono: var(--font-mono);
 
-  --color-modalBackdrop: rgba(0, 0, 0, 0.3);
+  /* Radii */
+  --radius-walletSelectItem: var(--radius-walletSelectItem);
+  --radius-connectButton: var(--radius-connectButton);
+  --radius-modalControlButton: var(--radius-modalControlButton);
+  --radius-accountActionItem: var(--radius-accountActionItem);
+  --radius-accountSelectItem: var(--radius-accountSelectItem);
+  --radius-currentNetworkButton: var(--radius-currentNetworkButton);
+  --radius-networkSelectItem: var(--radius-networkSelectItem);
+  --radius-modal: var(--radius-modal);
 
-  --color-modalFont: var(--color-modalFont);
-  --color-modalLine: var(--color-modalLine);
+  /* Shadows */
+  --shadow-button: var(--shadow-button);
+  --shadow-modal: var(--shadow-modal);
 
-  --color-chainSelected: var(--color-chainSelected);
+  /* Blurs */
+  --blur-modalOverlay: var(--blur-modalOverlay);
 }
-
 
 .luno-kit .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-modalLine) transparent;
+  scrollbar-color: var(--color-separatorLine) transparent;
 }
 
 .luno-kit .custom-scrollbar::-webkit-scrollbar {
@@ -110,12 +108,12 @@
 }
 
 .luno-kit .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: var(--color-modalLine);
+  background-color: var(--color-separatorLine);
   border-radius: 3px;
 }
 
 .luno-kit .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: var(--color-secondaryFont);
+  background-color: var(--color-modalTextSecondary);
 }
 
 .luno-kit .chain-icon-text {
@@ -144,7 +142,7 @@
   height: 100%;
   width: 100%;
   border-radius: 50%;
-  background-color: var(--color-accentFont);
+  background-color: var(--color-accentColor);
   opacity: 0.75;
   animation: ping 1.2s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
@@ -155,7 +153,7 @@
   border-radius: 50%;
   height: 100%;
   width: 100%;
-  background-color: var(--color-accentFont);
+  background-color: var(--color-accentColor);
 }
 
 .scrollbar-thin::-webkit-scrollbar {

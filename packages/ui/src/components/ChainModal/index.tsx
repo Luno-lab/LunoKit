@@ -1,17 +1,35 @@
 import React from 'react';
-import { Dialog } from '../Dialog';
-import { useChainModal } from '../../providers/ModalContext';
-import { ChainSelector } from '../ChainSelector'
+import { useChains, useChain } from '@luno-kit/react';
+import { Dialog, DialogTitle } from '../Dialog';
+import { ChainList } from '../ChainList';
+import { cs } from '../../utils';
 
-export const ChainModal: React.FC = () => {
-  const { isOpen, close } = useChainModal();
+export interface ChainModalProps {
+  size?: 'compact' | 'wide';
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export const ChainModal: React.FC<ChainModalProps> = ({ 
+  size = 'wide',
+  open,
+  onOpenChange
+}) => {
+  const chains = useChains();
+  const { chain } = useChain();
+
   return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={(open) => !open && close()}
-    >
-      <div className="flex flex-col w-[360px] max-h-[500px] p-[16px] gap-[14px] text-modalFont">
-        <ChainSelector onClose={close} />
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <div className="flex flex-col w-[360px] max-h-[500px] p-[16px] gap-[14px] text-modalText">
+        <DialogTitle className="text-title leading-title text-modalText font-[600]">
+          Select Network
+        </DialogTitle>
+        
+        <ChainList 
+          onChainSwitched={(chain) => {
+            console.log('Chain switched to:', chain.name);
+          }}
+        />
       </div>
     </Dialog>
   );

@@ -30,7 +30,7 @@ export const MainView: React.FC<MainViewProps> = ({
                 chainIconUrl={chain?.chainIconUrl}
                 chainName={chain?.name}
               />
-              <span className="text-primary text-modalFont">{chain?.name || 'Polkadot'}</span>
+              <span className="text-primary text-modalText">{chain?.name || 'Polkadot'}</span>
             </div>
             <div
               className={'flex items-center justify-center'}>
@@ -45,7 +45,7 @@ export const MainView: React.FC<MainViewProps> = ({
         content: (
           <>
             <List />
-            <span className="text-primary text-modalFont">View on Explorer</span>
+            <span className="text-primary text-accountActionItemText">View on Explorer</span>
           </>
         ),
         onClick: () => window.open(getExplorerUrl(chain?.blockExplorers?.default?.url!, address, 'address'))
@@ -55,7 +55,7 @@ export const MainView: React.FC<MainViewProps> = ({
         content: (
           <>
             <Switch />
-            <span className="text-primary text-modalFont">Switch Account</span>
+            <span className="text-primary text-accountActionItemText">Switch Account</span>
           </>
         ),
         onClick: () => onViewChange(AccountModalView.switchAccount)
@@ -80,7 +80,7 @@ export const MainView: React.FC<MainViewProps> = ({
 
       <SelectItem onClick={handleDisconnect}>
         <Disconnect  />
-        <span className="font-[500] text-primary text-modalFont">Disconnect</span>
+        <span className="font-[500] text-primary text-accountActionItemText">Disconnect</span>
       </SelectItem>
     </div>
   );
@@ -93,7 +93,7 @@ const SelectItem = ({ children, onClick }: { children: React.ReactNode; onClick?
       onClick={() => onClick?.()}
       className={cs(
         'w-full p-[14px] rounded-sm border-none text-left flex items-center gap-[8px] font-[500]',
-        'bg-[var(--color-connectorItemBackground)] hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)]',
+        'bg-accountActionItemBackground hover:bg-accountActionItemBackgroundHover',
         'transition-colors duration-200',
         onClick ? 'cursor-pointer' : 'cursor-auto'
       )}

@@ -43,22 +43,22 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
       <div className={cs('flex items-stretch justify-between max-h-[504px] max-w-[724px]')}>
         <div className={cs(
           'flex flex-col items-start py-[16px] px-[18px] min-w-[287px]',
-          isWide && 'border-r-[1px] border-r-solid border-r-modalLine'
+          isWide && 'border-r-[1px] border-r-solid border-r-separatorLine'
           )}>
           <div className={'flex items-center justify-between'}>
-            <DialogTitle className="text-title leading-title text-modalFont font-[700] pb-[24px]">
+            <DialogTitle className="text-title leading-title text-modalText font-[700] pb-[24px]">
               Connect Wallet
             </DialogTitle>
             {!isWide && (
-              <DialogClose className={'z-[10] cursor-pointer'}>
-                <Close className={'w-[24px] h-[24px]'}/>
+              <DialogClose className={'z-10 w-[30px] h-[30px] flex items-center justify-center cursor-pointer rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover  transition-colors duration-200'}>
+                <Close/>
               </DialogClose>
             )}
           </div>
 
           <div className={'flex flex-col items-start gap-[16px] w-full'}>
             <div className={'flex flex-col items-start gap-[12px] w-full'}>
-              <div className={'text-primary text-modalFont font-[600] leading-primary'}>Installed</div>
+              <div className={'text-primary text-modalText font-[600] leading-primary'}>Installed</div>
               <div className={'flex flex-col items-start gap-[6px] w-full'}>
                 {installedConnectors.map(i => (
                   <ConnectorItem key={i.id} connector={i} onConnect={() => handleConnect(i)}/>
@@ -68,7 +68,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
             {moreConnectors.length > 0 && (
               <div className={'flex flex-col items-start gap-[12px] w-full'}>
-                <div className={'text-primary text-modalFont font-[600] leading-primary'}>More</div>
+                <div className={'text-primary text-modalText font-[600] leading-primary'}>More</div>
                 <div className={'flex flex-col items-start gap-[4px] w-full'}>
                   {moreConnectors.map(i => (
                     <ConnectorItem key={i.id} connector={i} onConnect={() => handleConnect(i)}/>
@@ -85,8 +85,8 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
             <div className={'w-full'}>
               <div className={'flex items-center justify-between'}>
                 <div/>
-                <DialogClose className={'z-10 cursor-pointer'}>
-                  <Close className={'w-[24px] h-[24px]'}/>
+                <DialogClose className={'z-10 w-[30px] h-[30px] flex items-center justify-center cursor-pointer rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover  transition-colors duration-200'}>
+                  <Close />
                 </DialogClose>
               </div>
             </div>
@@ -98,7 +98,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
                   <div className={'w-[102px] h-[102px] pb-[8px]'}>
                     <img src={selectedConnector.icon} className={'w-full h-full'} alt=""/>
                   </div>
-                  <p className={'pb-[10px] text-primary leading-primary text-modalFont font-[600]'}>
+                  <p className={'pb-[10px] text-primary leading-primary text-modalText font-[600]'}>
                     Opening {selectedConnector.name}...
                   </p>
                   <p className={'pb-[10px] text-secondaryFont text-secondary leading-secondary font-[500]'}>
@@ -124,10 +124,10 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
                     <SpiralAnimation />
                   </div>
 
-                  <p className={'cursor-pointer pb-[16px] text-primary leading-primary text-accentFont font-[700] text-center'}>
+                  <p className={'cursor-pointer pb-[16px] text-primary leading-primary text-accentColor font-[700] text-center'}>
                     New to wallets?
                   </p>
-                  <p className={'text-secondaryFont text-secondary leading-secondary font-[500] text-center'}>
+                  <p className={'text-modalTextSecondary text-secondary leading-secondary font-[500] text-center'}>
                     Your gateway to the decentralized world Connect a wallet to get started
                   </p>
                 </>
@@ -152,13 +152,9 @@ const ConnectorItem: React.FC<ConnectorItemProps> = React.memo(({ connector, onC
     <button
       onClick={onConnect}
       className={cs(
-        // 'cursor-pointer bg-connectorItemBackground p-[8px] w-full flex items-center gap-[12px] rounded-sm border-none',
-        // 'hover:opacity-80 hover:scale-[1.03] transition-transform active:scale-[0.95]',
-        // 'text-left'
-        'cursor-pointer p-[8px] w-full flex items-center gap-[12px] rounded-sm border-none',
-  'bg-[var(--color-connectorItemBackground)] hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)]',
-  'transition-colors duration-200',
-  'text-left'
+        'cursor-pointer bg-walletSelectItemBackground p-[8px] w-full flex items-center gap-[12px] rounded-sm border-none',
+        'hover:bg-walletSelectItemBackgroundHover transition-transform active:scale-[0.95]',
+        'text-left'
       )}
     >
       <div className={'w-[24px] h-[24px]'}>
@@ -169,7 +165,7 @@ const ConnectorItem: React.FC<ConnectorItemProps> = React.memo(({ connector, onC
         />
       </div>
 
-      <span className="font-[600] leading-primary text-primary text-modalFont">{connector.name}</span>
+      <span className="font-[600] leading-primary text-primary text-modalText">{connector.name}</span>
     </button>
   );
 });

@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { useAccount, useActiveConnector, useBalance, useChain } from '@luno-kit/react';
+import { useAccount, useActiveConnector, useBalance, useChain, useDisconnect } from '@luno-kit/react';
 import { Dialog, DialogClose, DialogTitle } from '../Dialog';
 import { cs } from '../../utils';
 import { useAccountModal } from '../../providers/ModalContext';
@@ -21,6 +21,7 @@ export const AccountDetailsModal: React.FC = () => {
   const { address } = useAccount();
   const { chain } = useChain();
   const { data: balance } = useBalance({ address });
+  const { disconnect } = useDisconnect();
   const activeConnector = useActiveConnector()
 
   const [currentView, setCurrentView] = useState<AccountModalView>(AccountModalView.main);
@@ -34,9 +35,18 @@ export const AccountDetailsModal: React.FC = () => {
     setCurrentView(AccountModalView.main);
   }, [close]);
 
+  const handleDisconnect = async () => {
+    try {
+      await disconnect();
+      close();
+    } catch (error) {
+      console.error('Failed to disconnect:', error);
+    }
+  };
+
   const viewTitle = useMemo(() => {
     const titleMap = {
-      [AccountModalView.switchAccount]: SwitchAccountView.title,
+      [AccountModalView.switchAccount]: 'Switch Account',
       [AccountModalView.switchChain]: SwitchChainView.title,
       [AccountModalView.main]: null
     };
@@ -69,7 +79,8 @@ export const AccountDetailsModal: React.FC = () => {
       }}
     >
       <div className={cs(
-        'flex flex-col w-[360px] max-h-[500px] p-[16px]  text-modalFont',
+        'flex flex-col w-[360px] max-h-[500px] p-[16px] text-modalText',
+        'bg-modalBackground rounded-modal shadow-modal',
         currentView === AccountModalView.main ? 'gap-[26px]' : 'gap-[14px]'
       )}>
         <div className="flex items-stretch justify-between w-full">
@@ -83,14 +94,14 @@ export const AccountDetailsModal: React.FC = () => {
               <div className="flex flex-col items-start gap-[8px] w-full">
                 <DialogTitle className={'sr-only'}>Account Details</DialogTitle>
                 <div className="flex items-center gap-[6px] w-full">
-                <span className="text-primary leading-primary text-modalFont font-[600]">
+                <span className="text-primary text-modalText font-[600]">
                   {formatAddress(address)}
                 </span>
                   <Copy copyText={address}/>
                 </div>
-                <div className="text-secondaryFont leading-secondary text-secondary font-[500] min-h-[20px]">
+                <div className="text-secondary text-modalTextSecondary font-[500] min-h-[20px]">
                   {balance === undefined ? (
-                    <div className="animate-pulse rounded w-[80px] h-[20px]" style={{ background: 'var(--color-connectorItemActive)' }} />
+                    <div className="animate-pulse rounded w-[80px] h-[20px] bg-skeleton" />
                   ) : (
                     <>
                       {balance?.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
@@ -102,20 +113,20 @@ export const AccountDetailsModal: React.FC = () => {
           ) : (
             <>
               <button
-                className="flex items-center justify-center w-[30px] h-[30px] cursor-pointer rounded-sm border-none hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)] transition-colors duration-200"
+                className="flex items-center justify-center w-[30px] h-[30px] cursor-pointer rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover  transition-colors duration-200"
                 onClick={() => handleViewChange(AccountModalView.main)}
                 aria-label="Back"
               >
                 <Back  />
               </button>
               <DialogTitle
-                className="text-title leading-title text-modalFont font-[600] transition-opacity duration-300">
+                className="text-title leading-title text-modalText font-[600] transition-opacity duration-300">
                 {viewTitle}
               </DialogTitle>
             </>
           )}
 
-          <DialogClose className="z-10 flex items-center justify-center h-[30px] w-[30px] rounded-sm border-none hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)] transition-colors duration-200 cursor-pointer">
+          <DialogClose className="z-10 flex items-center justify-center h-[30px] w-[30px] rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover  transition-colors duration-200 cursor-pointer">
             <Close />
           </DialogClose>
         </div>

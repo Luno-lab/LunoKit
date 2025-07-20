@@ -33,7 +33,7 @@ export const Copy: React.FC<CopyProps> = ({ copyText }) => {
       disabled={isCopied}
     >
       {isCopied
-        ? <Success className="text-accentFont" width={16} height={16} />
+        ? <Success className="text-accentColor" width={16} height={16} />
         : <CopyIcon width={16} height={16} />}
     </button>
   )

@@ -58,11 +58,11 @@ const AccountItem: React.FC<AccountItemProps> = React.memo(({
       type="button"
       onClick={() => selectAccount(account)}
       className={cs(
-        'px-[14px] py-[10px] w-full rounded-sm border-none',
-        'bg-[var(--color-connectorItemBackground)]',
+        'px-[14px] py-[10px] w-full rounded-accountSelectItem border-none',
+        'bg-accountSelectItemBackground',
         'text-left flex items-center justify-between gap-[8px]',
         'transition-colors duration-200',
-        isSelected ? 'cursor-auto' : 'cursor-pointer hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)]'
+        isSelected ? 'cursor-auto' : 'cursor-pointer hover:bg-accountSelectItemBackgroundHover'
       )}
       aria-label={account.name || address}
       disabled={isSelected}
@@ -72,12 +72,12 @@ const AccountItem: React.FC<AccountItemProps> = React.memo(({
           {connector?.icon && <img src={connector?.icon} alt="luno account"/>}
         </div>
         <div className="flex flex-col items-start">
-          <span className="font-[500] text-secondary leading-secondary text-modalFont">
+          <span className="font-[500] text-secondary leading-secondary text-accountSelectItemText">
             {account.name || formatAddress(address)}
           </span>
-          <span className="text-sm text-secondaryFont text-accent leading-accent font-[500]">
+          <span className="text-sm text-modalTextSecondary font-[500]">
             {balance === undefined ? (
-              <div className="animate-pulse rounded w-[60px] h-[18px]" style={{ background: 'var(--color-connectorItemActive)' }} />
+              <div className="animate-pulse rounded w-[60px] h-[18px] bg-skeleton" />
             ) : (
               <>
                 {balance?.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
@@ -88,8 +88,8 @@ const AccountItem: React.FC<AccountItemProps> = React.memo(({
       </div>
 
       {isSelected && (
-        <div className="border-[1px] border-solid border-accentFont rounded-full overflow-hidden flex items-center justify-center w-[18px] h-[18px]">
-          <div className="rounded-full bg-accentFont w-[10px] h-[10px]" />
+        <div className="border-[1px] border-solid border-accentColor rounded-full overflow-hidden flex items-center justify-center w-[18px] h-[18px]">
+          <div className="rounded-full bg-accentColor w-[10px] h-[10px]" />
         </div>
       )}
     </button>
