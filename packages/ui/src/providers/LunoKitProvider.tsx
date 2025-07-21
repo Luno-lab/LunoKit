@@ -43,9 +43,9 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
 
 
 const RenderModals: React.FC<{modalSize?: ModalSize}> = ({ modalSize }: { modalSize?: ModalSize }) => {
-  const { isOpen: isConnectModalOpen } = useConnectModal();
-  const { isOpen: isAccountModalOpen } = useAccountModal();
-  const { isOpen: isChainModalOpen } = useChainModal();
+  const { isOpen: isConnectModalOpen, close: closeConnectModal } = useConnectModal();
+  const { isOpen: isAccountModalOpen, close: closeAccountModal } = useAccountModal();
+  const { isOpen: isChainModalOpen, close: closeChainModal } = useChainModal();
 
   return (
     <>
@@ -56,7 +56,13 @@ const RenderModals: React.FC<{modalSize?: ModalSize}> = ({ modalSize }: { modalS
         <AccountDetailsModal />
       )}
       {isChainModalOpen && (
-        <ChainModal size={modalSize} />
+        <ChainModal
+          size={modalSize}
+          open={isChainModalOpen}
+          onOpenChange={(open) => {
+            if (!open) closeChainModal();
+          }}
+        />
       )}
     </>
   );

@@ -94,26 +94,14 @@
   --blur-modalOverlay: var(--blur-modalOverlay);
 }
 
-.luno-kit .custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-separatorLine) transparent;
+
+.luno-kit * {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
-.luno-kit .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.luno-kit .custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.luno-kit .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: var(--color-separatorLine);
-  border-radius: 3px;
-}
-
-.luno-kit .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: var(--color-modalTextSecondary);
+.luno-kit *::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
 }
 
 .luno-kit .chain-icon-text {
