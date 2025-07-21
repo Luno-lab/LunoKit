@@ -43,6 +43,7 @@
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
     "clsx": "^2.1.0",
+    "cuer": "0.0.2",
     "tailwind-merge": "^2.2.1"
   },
   "devDependencies": {
