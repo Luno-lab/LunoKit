@@ -14,7 +14,6 @@ export interface LunoKitProviderProps {
   config: LunoCoreConfig & { modalSize?: ModalSize };
   queryClientConfig?: any;
   theme?: LunokitTheme | LunokitThemeOverrides; // Support both complete themes and partial overrides
-  defaultTheme?: ThemeMode; // 新增：设置默认主题模式
 }
 
 export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
@@ -22,16 +21,15 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
   config,
   queryClientConfig,
   theme,
-  defaultTheme = 'light', // 默认值为 light，保持向后兼容
 }) => {
   const [queryClient] = useState(() => new QueryClient(queryClientConfig));
 
   return (
     <QueryClientProvider client={queryClient}>
       <LunoProvider config={config}>
-        <ThemeProvider theme={theme} defaultTheme={defaultTheme}>
+        <ThemeProvider theme={theme}>
           <ModalProvider>
-            <div className={'font-base luno-kit'} data-theme={theme ? undefined : defaultTheme}>
+            <div className={'font-base luno-kit'} data-theme={theme ? undefined : "light"}>
               {children}
             </div>
             <RenderModals modalSize={config.modalSize} />
