@@ -1,18 +1,9 @@
 import { BaseConnector } from './base';
 import type { IUniversalProvider, Metadata } from '@walletconnect/universal-provider';
 import { SessionTypes } from '@walletconnect/types'
-import type { Account, Chain, Signer } from '../types';
+import type { Account, Chain, Signer, WalletConnectConnectorOptions } from '../types';
 import { walletconnectSVG } from '../config/logos/generated';
 import { SignerResult, SignerPayloadJSON } from 'dedot/types'
-
-interface WalletConnectConnectorOptions {
-  id?: string;
-  name?: string;
-  icon?: string;
-  projectId: string;
-  relayUrl?: string;
-  metadata?: Metadata;
-}
 
 export class WalletConnectConnector extends BaseConnector {
   readonly id: string;
