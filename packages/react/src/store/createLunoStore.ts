@@ -199,7 +199,9 @@ export const useLunoStore = create<LunoState>((set, get) => ({
       connector.on('disconnect', handleDisconnect);
       activeConnectorUnsubscribeFunctions.push(() => connector.off('disconnect', handleDisconnect));
 
-      const accountsFromWallet = await connector.connect(config.appName);
+      const chainIdToUse = targetChainId || get().currentChainId || config.chains[0]?.genesisHash;
+
+      const accountsFromWallet = await connector.connect(config.appName, config.chains, chainIdToUse);
 
       accountsFromWallet.forEach(acc => {
         if (!acc.publicKey) {
@@ -319,7 +321,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
   },
 
   switchChain: async (newChainId: string) => {
-    const {config, currentChainId, currentApi} = get();
+    const {config, currentChainId, currentApi, activeConnector, account, accounts} = get();
 
     if (!config) {
       throw new Error('[LunoStore] LunoConfig has not been initialized. Cannot switch chain.');
@@ -333,6 +335,11 @@ export const useLunoStore = create<LunoState>((set, get) => ({
     if (!newChain) {
       throw new Error(`[LunoStore] Chain with ID "${newChainId}" not found in LunoConfig.`);
     }
+
+    const prevAccountIndex = accounts.findIndex(acc => acc.address === account.address)
+
+    const newAccounts = await activeConnector.updateAccountsForChain(newChainId);
+    set({ accounts: newAccounts, account: newAccounts[prevAccountIndex] });
 
     try {
       try {
