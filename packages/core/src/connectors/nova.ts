@@ -9,7 +9,6 @@ interface WalletConnectConfig {
 }
 
 export const novaConnector = (config: WalletConnectConfig) => {
-  console.log('config', config)
   return new WalletConnectConnector({
     id: 'nova',
     name: 'Nova Wallet',

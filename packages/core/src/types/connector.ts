@@ -1,7 +1,8 @@
 import type { EventEmitter } from 'eventemitter3';
 import type { Account } from './account';
 import type { Signer } from './signer';
-import type {Chain} from './chain'
+import type { Chain } from './chain'
+import type { Metadata } from '@walletconnect/universal-provider'
 
 export interface Connector extends EventEmitter {
   readonly id: string;
@@ -25,4 +26,13 @@ export interface Connector extends EventEmitter {
   off(event: 'disconnect', listener: () => void): this;
   off(event: 'accountsChanged', listener: (accounts: Account[]) => void): this;
   off(event: string | symbol, listener: (...args: any[]) => void): this;
+}
+
+export interface WalletConnectConnectorOptions {
+  id?: string;
+  name?: string;
+  icon?: string;
+  projectId: string;
+  relayUrl?: string;
+  metadata?: Metadata;
 }
