@@ -17,10 +17,30 @@ const lunoConfig = createConfig({
   autoConnect: true,
 });
 
+
+
 createRoot(document.getElementById('root')!).render(
-  <LunoKitProvider 
+    <LunoKitProvider 
     config={lunoConfig}
-    defaultTheme="dark"
+  //   theme={{ dark: {
+  //     colors: {
+  //       accentColor: '#AC1824',
+  //     },
+  //     radii: {
+  //       modal:'30px'
+  //     }
+  //   },
+  //   light: {
+  //     colors: {
+  //       accentColor: '#C5CF4E',
+  //     },
+  //     radii: {
+  //       modal:'1px'
+  //     }
+  //   }
+  // }}
+  //  theme={{dark:{}}}
+
   >
     <StrictMode>
       <App/>

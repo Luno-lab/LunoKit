@@ -1,8 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode, useMemo, useCallback, useEffect } from 'react';
 import type { LunokitTheme, LunokitThemeOverrides, PartialLunokitTheme, ThemeMode } from './types';
 
-const THEME_STORAGE_KEY = 'luno.themeMode';
-
 // All theme variable names for cleanup
 const ALL_THEME_VARS = [
   '--color-accentColor', '--color-walletSelectItemBackground', '--color-walletSelectItemBackgroundHover', '--color-walletSelectItemText',
@@ -71,16 +69,17 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   const systemTheme = useSystemTheme();
   
   const [themeMode, setThemeModeState] = useState<ThemeMode>(() => {
-    if (typeof window !== 'undefined') {
-      const storedMode = localStorage.getItem(THEME_STORAGE_KEY) as ThemeMode | null;
-      if (storedMode && ['light', 'dark'].includes(storedMode)) {
-        return storedMode; // localStorage 优先级最高
+    // If only dark theme is provided, default to dark
+    if (themeOverrides && !isCompleteTheme(themeOverrides)) {
+      const overrides = themeOverrides as LunokitThemeOverrides;
+      if (overrides.dark && !overrides.light) {
+        return 'dark';
       }
     }
-    return 'light'; 
+    return 'light';
   });
 
-  // Check if both light and dark themes are provided
+  // Check if both light and dark are provided
   const hasBothLightAndDark = useMemo(() => {
     if (!themeOverrides || isCompleteTheme(themeOverrides)) {
       return false; // Complete themes don't support auto-switching
@@ -94,9 +93,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   useEffect(() => {
     if (hasBothLightAndDark) {
       setThemeModeState(systemTheme);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(THEME_STORAGE_KEY, systemTheme);
-      }
     }
   }, [systemTheme, hasBothLightAndDark]);
 
@@ -180,50 +176,54 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       // Partial override: KEEP data-theme and inject only overridden variables
       root.setAttribute('data-theme', themeMode);
       
-      // Clear all custom variables first
-      ALL_THEME_VARS.forEach(varName => {
-        root.style.removeProperty(varName);
-      });
-      
-      // Inject only the overridden variables
-      if (themeInfo.partialOverrides.colors) {
-        Object.entries(themeInfo.partialOverrides.colors).forEach(([key, value]) => {
-          if (value) {
-            root.style.setProperty(`--color-${key}`, value);
-          }
+      // Only clear and inject if there are actual overrides
+      const hasOverrides = Object.keys(themeInfo.partialOverrides).length > 0;
+      if (hasOverrides) {
+        // Clear all custom variables first
+        ALL_THEME_VARS.forEach(varName => {
+          root.style.removeProperty(varName);
         });
-      }
-      
-      if (themeInfo.partialOverrides.fonts) {
-        Object.entries(themeInfo.partialOverrides.fonts).forEach(([key, value]) => {
-          if (value) {
-            root.style.setProperty(`--font-${key}`, value);
-          }
-        });
-      }
-      
-      if (themeInfo.partialOverrides.radii) {
-        Object.entries(themeInfo.partialOverrides.radii).forEach(([key, value]) => {
-          if (value) {
-            root.style.setProperty(`--radius-${key}`, value);
-          }
-        });
-      }
-      
-      if (themeInfo.partialOverrides.shadows) {
-        Object.entries(themeInfo.partialOverrides.shadows).forEach(([key, value]) => {
-          if (value) {
-            root.style.setProperty(`--shadow-${key}`, value);
-          }
-        });
-      }
-      
-      if (themeInfo.partialOverrides.blurs) {
-        Object.entries(themeInfo.partialOverrides.blurs).forEach(([key, value]) => {
-          if (value) {
-            root.style.setProperty(`--blur-${key}`, value);
-          }
-        });
+        
+        // Inject only the overridden variables
+        if (themeInfo.partialOverrides.colors) {
+          Object.entries(themeInfo.partialOverrides.colors).forEach(([key, value]) => {
+            if (value) {
+              root.style.setProperty(`--color-${key}`, value);
+            }
+          });
+        }
+        
+        if (themeInfo.partialOverrides.fonts) {
+          Object.entries(themeInfo.partialOverrides.fonts).forEach(([key, value]) => {
+            if (value) {
+              root.style.setProperty(`--font-${key}`, value);
+            }
+          });
+        }
+        
+        if (themeInfo.partialOverrides.radii) {
+          Object.entries(themeInfo.partialOverrides.radii).forEach(([key, value]) => {
+            if (value) {
+              root.style.setProperty(`--radius-${key}`, value);
+            }
+          });
+        }
+        
+        if (themeInfo.partialOverrides.shadows) {
+          Object.entries(themeInfo.partialOverrides.shadows).forEach(([key, value]) => {
+            if (value) {
+              root.style.setProperty(`--shadow-${key}`, value);
+            }
+          });
+        }
+        
+        if (themeInfo.partialOverrides.blurs) {
+          Object.entries(themeInfo.partialOverrides.blurs).forEach(([key, value]) => {
+            if (value) {
+              root.style.setProperty(`--blur-${key}`, value);
+            }
+          });
+        }
       }
       
     } else {
@@ -239,9 +239,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
   const setThemeMode = useCallback((mode: ThemeMode) => {
     setThemeModeState(mode);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(THEME_STORAGE_KEY, mode);
-    }
   }, []);
 
   const contextValue = useMemo(() => ({
