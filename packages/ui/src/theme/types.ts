@@ -87,13 +87,6 @@ export type PartialLunokitTheme = {
   blurs?: Partial<LunokitTheme['blurs']>;
 };
 
-// Theme configuration with separate light/dark overrides
-export interface LunokitThemeConfig {
-  lightMode: LunokitTheme;
-  darkMode: LunokitTheme;
-  id?: string;
-}
-
 // Simplified theme configuration supporting partial overrides
 export interface LunokitThemeOverrides {
   // Complete custom theme (overrides both light and dark)
@@ -104,4 +97,4 @@ export interface LunokitThemeOverrides {
   dark?: PartialLunokitTheme;
 }
 
-export type ThemeMode = 'light' | 'dark' | 'auto'; 
+export type ThemeMode = 'light' | 'dark'; 

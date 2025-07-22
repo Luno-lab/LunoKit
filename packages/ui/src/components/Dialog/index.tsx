@@ -44,7 +44,7 @@ const DialogRoot: React.FC<DialogProps> = ({
         <DialogPrimitive.Content
           className={cs(
             'luno-kit font-base fixed left-1/2 top-1/2 z-[200] -translate-x-1/2 -translate-y-1/2 text-modalText text-primary leading-primary',
-            'rounded-md bg-modalBackground shadow-primary focus:outline-none',
+            'rounded-modal bg-modalBackground shadow-primary focus:outline-none',
             'transition-all duration-200',
             'data-[state=open]:[animation:dialog-in_150ms_ease-out]',
             contentClassName

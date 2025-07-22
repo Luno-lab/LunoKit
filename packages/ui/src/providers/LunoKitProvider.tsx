@@ -5,8 +5,7 @@ import type { Config as LunoCoreConfig } from '@luno-kit/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ModalProvider, useConnectModal, useAccountModal, useChainModal } from './ModalContext';
 import { ThemeProvider } from '../theme/context';
-import { lunokitLightTheme } from '../theme/defaultTheme';
-import type { LunokitTheme, LunokitThemeOverrides } from '../theme/types';
+import type { LunokitTheme, LunokitThemeOverrides, ThemeMode } from '../theme/types';
 import { ConnectModal, AccountDetailsModal, ChainModal } from '../components'
 import { ModalSize } from '../components/Dialog'
 
@@ -15,22 +14,24 @@ export interface LunoKitProviderProps {
   config: LunoCoreConfig & { modalSize?: ModalSize };
   queryClientConfig?: any;
   theme?: LunokitTheme | LunokitThemeOverrides; // Support both complete themes and partial overrides
+  defaultTheme?: ThemeMode; // 新增：设置默认主题模式
 }
 
 export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
   children,
   config,
   queryClientConfig,
-  theme, // Support both old and new theme formats
+  theme,
+  defaultTheme = 'light', // 默认值为 light，保持向后兼容
 }) => {
   const [queryClient] = useState(() => new QueryClient(queryClientConfig));
 
   return (
     <QueryClientProvider client={queryClient}>
       <LunoProvider config={config}>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme} defaultTheme={defaultTheme}>
           <ModalProvider>
-            <div className={'font-base luno-kit'} data-theme={theme ? undefined : 'light'}>
+            <div className={'font-base luno-kit'} data-theme={theme ? undefined : defaultTheme}>
               {children}
             </div>
             <RenderModals modalSize={config.modalSize} />
