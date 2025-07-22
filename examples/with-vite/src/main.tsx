@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { createConfig, kusama, polkadot, polkadotjs, subwallet, westend, paseo } from '@luno-kit/react'
-import { LunoKitProvider } from '@luno-kit/ui'
+import { LunoKitProvider, lunokitDarkTheme } from '@luno-kit/ui'
 import '@luno-kit/ui/dist/styles.css'
 
 const connectors = [
@@ -18,7 +18,9 @@ const lunoConfig = createConfig({
 });
 
 createRoot(document.getElementById('root')!).render(
-  <LunoKitProvider config={lunoConfig}>
+  <LunoKitProvider 
+    config={lunoConfig} 
+  >
     <StrictMode>
       <App/>
     </StrictMode>

@@ -78,10 +78,30 @@ export interface LunokitTheme {
   };
 }
 
+// Partial theme for overriding specific properties
+export type PartialLunokitTheme = {
+  colors?: Partial<LunokitTheme['colors']>;
+  fonts?: Partial<LunokitTheme['fonts']>;
+  radii?: Partial<LunokitTheme['radii']>;
+  shadows?: Partial<LunokitTheme['shadows']>;
+  blurs?: Partial<LunokitTheme['blurs']>;
+};
+
+// Theme configuration with separate light/dark overrides
 export interface LunokitThemeConfig {
   lightMode: LunokitTheme;
   darkMode: LunokitTheme;
   id?: string;
+}
+
+// Simplified theme configuration supporting partial overrides
+export interface LunokitThemeOverrides {
+  // Complete custom theme (overrides both light and dark)
+  theme?: LunokitTheme;
+  
+  // Partial overrides for specific modes
+  light?: PartialLunokitTheme;
+  dark?: PartialLunokitTheme;
 }
 
 export type ThemeMode = 'light' | 'dark' | 'auto'; 
