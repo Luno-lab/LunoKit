@@ -31,7 +31,7 @@ const App: React.FC = () => {
   const { sendTransactionAsync, data: sendTransactionData, isPending: isSendingTransaction, detailedStatus } = useSendTransaction();
   const { api, isApiReady, apiError } = useApi();
 
-  const { themeMode, toggleTheme } = useLunoTheme();
+  const { themeMode, setThemeMode, isAutoMode } = useLunoTheme();
 
   const [transferForm, setTransferForm] = useState({
     to: '',
@@ -140,7 +140,7 @@ const App: React.FC = () => {
                     </div>
                     <button
                       className="chain-switch-btn"
-                      onClick={toggleTheme}
+                      onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')}
                     >
                       Switch to {themeMode === 'dark' ? 'Light' : 'Dark'} Theme
                     </button>

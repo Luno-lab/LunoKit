@@ -26,8 +26,8 @@ const ALL_THEME_VARS = [
 interface ThemeContextValue {
   themeMode: ThemeMode;
   setThemeMode: (mode: ThemeMode) => void;
-  toggleTheme: () => void;
   currentTheme: LunokitTheme | null; // null for default themes
+  isAutoMode: boolean; // 是否处于自动跟随系统模式
 }
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
@@ -43,11 +43,35 @@ const isCompleteTheme = (theme: LunokitTheme | LunokitThemeOverrides): theme is 
   return 'colors' in theme && 'fonts' in theme && 'radii' in theme && 'shadows' in theme && 'blurs' in theme;
 };
 
+// Hook to detect system theme
+const useSystemTheme = () => {
+  const [systemTheme, setSystemTheme] = useState<'light' | 'dark'>('light');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    const updateTheme = (e: MediaQueryListEvent | MediaQueryList) => {
+      setSystemTheme(e.matches ? 'dark' : 'light');
+    };
+
+    updateTheme(mediaQuery);
+    mediaQuery.addEventListener('change', updateTheme);
+    
+    return () => mediaQuery.removeEventListener('change', updateTheme);
+  }, []);
+
+  return systemTheme;
+};
+
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ 
   children, 
   theme: themeOverrides,
   defaultTheme = 'light' // 默认值为 light，保持向后兼容
 }) => {
+  const systemTheme = useSystemTheme();
+  
   const [themeMode, setThemeModeState] = useState<ThemeMode>(() => {
     if (typeof window !== 'undefined') {
       const storedMode = localStorage.getItem(THEME_STORAGE_KEY) as ThemeMode | null;
@@ -57,6 +81,26 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     }
     return defaultTheme; // 使用传入的默认主题，而不是硬编码的 'light'
   });
+
+  // Check if both light and dark themes are provided
+  const hasBothLightAndDark = useMemo(() => {
+    if (!themeOverrides || isCompleteTheme(themeOverrides)) {
+      return false; // Complete themes don't support auto-switching
+    }
+    
+    const overrides = themeOverrides as LunokitThemeOverrides;
+    return !!(overrides.light && overrides.dark);
+  }, [themeOverrides]);
+
+  // Auto-follow system theme if both light and dark are provided
+  useEffect(() => {
+    if (hasBothLightAndDark) {
+      setThemeModeState(systemTheme);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(THEME_STORAGE_KEY, systemTheme);
+      }
+    }
+  }, [systemTheme, hasBothLightAndDark]);
 
   // Determine theme type and get relevant data
   const themeInfo = useMemo(() => {
@@ -202,22 +246,12 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     }
   }, []);
 
-  const toggleTheme = useCallback(() => {
-    setThemeModeState(prevMode => {
-      const newMode = prevMode === 'light' ? 'dark' : 'light';
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(THEME_STORAGE_KEY, newMode);
-      }
-      return newMode;
-    });
-  }, []);
-
   const contextValue = useMemo(() => ({
     themeMode,
     setThemeMode,
-    toggleTheme,
     currentTheme,
-  }), [themeMode, setThemeMode, toggleTheme, currentTheme]);
+    isAutoMode: hasBothLightAndDark,
+  }), [themeMode, setThemeMode, currentTheme, hasBothLightAndDark]);
 
   return React.createElement(ThemeContext.Provider, { value: contextValue }, children);
 };
