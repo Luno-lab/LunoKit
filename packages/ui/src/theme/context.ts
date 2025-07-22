@@ -27,7 +27,7 @@ interface ThemeContextValue {
   themeMode: ThemeMode;
   setThemeMode: (mode: ThemeMode) => void;
   currentTheme: LunokitTheme | null; // null for default themes
-  isAutoMode: boolean; // 是否处于自动跟随系统模式
+  isAutoMode: boolean; 
 }
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
@@ -35,7 +35,6 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 interface ThemeProviderProps {
   children: ReactNode;
   theme?: LunokitTheme | LunokitThemeOverrides;
-  defaultTheme?: ThemeMode; // 新增：默认主题模式
 }
 
 // Helper function to check if theme is complete or partial
@@ -68,7 +67,6 @@ const useSystemTheme = () => {
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ 
   children, 
   theme: themeOverrides,
-  defaultTheme = 'light' // 默认值为 light，保持向后兼容
 }) => {
   const systemTheme = useSystemTheme();
   
@@ -79,7 +77,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
         return storedMode; // localStorage 优先级最高
       }
     }
-    return defaultTheme; // 使用传入的默认主题，而不是硬编码的 'light'
+    return 'light'; 
   });
 
   // Check if both light and dark themes are provided
