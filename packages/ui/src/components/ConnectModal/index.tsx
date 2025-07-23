@@ -124,7 +124,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
                     { !isConnecting && connectError && (
                       <button
                         className={cs(
-                          'rounded-sm focus:outline-none py-[4px] px-[12px] cursor-pointer font-[600] text-primaryFont bg-connectButtonBackground shadow-connectButton active:scale-[0.95]',
+                          'rounded-connectButton focus:outline-none py-[4px] px-[12px] cursor-pointer font-[600] text-primaryFont bg-connectButtonBackground shadow-connectButton active:scale-[0.95]',
                           transitionClassName
                         )}
                         onClick={() => handleConnect(selectedConnector)}>
@@ -166,7 +166,7 @@ const ConnectorItem: React.FC<ConnectorItemProps> = React.memo(({ connector, onC
     <button
       onClick={onConnect}
       className={cs(
-        'cursor-pointer bg-walletSelectItemBackground p-2 w-full flex items-center gap-3 rounded-sm border-none',
+        'cursor-pointer bg-walletSelectItemBackground p-2 w-full flex items-center gap-3 rounded-walletSelectItem border-none',
         'hover:bg-walletSelectItemBackgroundHover transition-transform active:scale-[0.95]',
         'text-left'
       )}

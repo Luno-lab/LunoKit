@@ -92,7 +92,7 @@ const SelectItem = ({ children, onClick }: { children: React.ReactNode; onClick?
       type="button"
       onClick={() => onClick?.()}
       className={cs(
-        'w-full p-3.5 rounded-sm border-none text-left flex items-center gap-2 font-medium',
+        'w-full p-3.5 rounded-accountActionItem border-none text-left flex items-center gap-2 font-medium',
         'bg-accountActionItemBackground hover:bg-accountActionItemBackgroundHover',
         'transition-colors duration-200',
         onClick ? 'cursor-pointer' : 'cursor-auto'

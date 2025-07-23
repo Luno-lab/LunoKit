@@ -65,7 +65,7 @@ export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched }: ChainLi
             key={tab.key}
             onClick={() => setActiveFilter(tab.key)}
             className={cs(
-              'px-3.5 flex items-center justify-center cursor-pointer min-w-[48px] min-h-[24px] rounded-sm text-[12px] leading-[16px] font-medium transition-colors',
+              'px-3.5 flex items-center justify-center cursor-pointer min-w-[48px] min-h-[24px] rounded-networkSelectItem text-[12px] leading-[16px] font-medium transition-colors',
               activeFilter === tab.key
                 ? 'bg-navigationButtonBackground text-modalText'
                 : 'bg-transparent text-modalTextSecondary hover:text-modalText'
