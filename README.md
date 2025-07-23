@@ -81,7 +81,7 @@ npm install @luno-kit/react @tanstack/react-query
 ```tsx
 import { LunoKitProvider, ConnectButton } from '@luno-kit/ui'
 import { createConfig, defineChain, kusama, polkadot, polkadotjs, subwallet, westend, paseo } from '@luno-kit/react'
-import '@luno-kit/ui/dist/styles.css'
+import '@luno-kit/ui/styles.css'
 
 const config = createConfig({
   appName: 'My Luno App',
@@ -162,8 +162,10 @@ For full documentation and examples, visit [our documentation site](#) (coming s
 The following examples are provided in the `examples` folder:
 
 * `with-vite` - Vite integration (✅ Ready to run)
-* `with-next` - Next.js integration (coming soon)
-* `with-cra` - Create React App integration (coming soon)
+* `with-nextjs-app` - Next.js App Router integration (✅ Ready to run)
+* `with-nextjs-pages` - Next.js Pages Router integration (✅ Ready to run)
+* `with-cra` - Create React App integration (✅ Ready to run)
+* `with-remix` - Remix integration (coming soon)
 
 ### Running examples
 
@@ -176,8 +178,17 @@ cd LunoKit
 # Install dependencies
 pnpm install
 
-# Start with-vite server
+# Start with-vite example
 pnpm --filter with-vite dev
+
+# Start with-nextjs-app example
+pnpm --filter with-nextjs-app dev
+
+# Start with-nextjs-pages example
+pnpm --filter with-nextjs-pages dev
+
+# Start with-cra example
+pnpm --filter with-cra start
 ```
 
 ## API Reference
