@@ -392,7 +392,7 @@ const App: React.FC = () => {
               <div className="code-card">
                 <h3>Basic Usage</h3>
                 <pre><code>{`import { LunoKitProvider, ConnectButton } from '@luno-kit/ui';
-import '@luno-kit/ui/dist/styles.css';
+import '@luno-kit/ui/styles.css';
 
 <LunoKitProvider config={config}>
   <ConnectButton />
