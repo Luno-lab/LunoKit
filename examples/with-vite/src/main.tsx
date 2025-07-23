@@ -4,7 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import { createConfig, kusama, polkadot, westend, paseo, polkagateConnector, subwalletConnector, talismanConnector, polkadotjsConnector, walletConnectConnector, novaConnector } from '@luno-kit/react'
 import { LunoKitProvider } from '@luno-kit/ui'
-import '@luno-kit/ui/dist/styles.css'
+import '@luno-kit/ui/styles.css'
 
 const connectors = [
   polkadotjsConnector(),
