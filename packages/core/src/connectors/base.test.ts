@@ -28,11 +28,24 @@ class TestConnector extends BaseConnector {
   async disconnect(): Promise<void> {
     this.accounts = []
     this.signer = undefined
+    this.connectionUri = undefined
     this.emit('disconnect')
   }
 
   async signMessage(message: string, address: string): Promise<string | undefined> {
     return `signed:${message}:${address}`
+  }
+
+  setConnectionUri(uri: string) {
+    this.connectionUri = uri
+  }
+
+  hasConnectionUri(): boolean {
+    return this.connectionUri !== undefined
+  }
+
+  async updateAccountsForChain(chainId: string): Promise<Account[]> {
+    return [...this.accounts]
   }
 }
 
@@ -112,6 +125,52 @@ describe('BaseConnector', () => {
       )
 
       consoleSpy.mockRestore()
+    })
+  })
+
+  describe('connection URI management', () => {
+    it('should start with undefined connectionUri', async () => {
+      const uri = await connector.getConnectionUri()
+      expect(uri).toBeUndefined()
+    })
+
+    it('should return false for hasConnectionUri by default', () => {
+      expect(connector.hasConnectionUri()).toBe(false)
+    })
+
+    it('should return connectionUri when set', async () => {
+      const testUri = 'wc:test-connection-uri@1'
+      connector.setConnectionUri(testUri)
+
+      const uri = await connector.getConnectionUri()
+      expect(uri).toBe(testUri)
+      expect(connector.hasConnectionUri()).toBe(true)
+    })
+
+    it('should reset connectionUri after disconnect', async () => {
+      connector.setConnectionUri('wc:test@1')
+      await connector.connect('test-app')
+      await connector.disconnect()
+
+      const uri = await connector.getConnectionUri()
+      expect(uri).toBeUndefined()
+      expect(connector.hasConnectionUri()).toBe(false)
+    })
+  })
+
+  describe('chain-specific account management', () => {
+    it('should return current accounts by default for updateAccountsForChain', async () => {
+      await connector.connect('test-app')
+      const originalAccounts = await connector.getAccounts()
+
+      const chainAccounts = await connector.updateAccountsForChain('polkadot:test-chain-id')
+
+      expect(chainAccounts).toEqual(originalAccounts)
+    })
+
+    it('should handle updateAccountsForChain when not connected', async () => {
+      const chainAccounts = await connector.updateAccountsForChain('polkadot:test-chain-id')
+      expect(chainAccounts).toEqual([])
     })
   })
 

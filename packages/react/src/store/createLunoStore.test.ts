@@ -51,6 +51,7 @@ describe('createLunoStore', () => {
       disconnect: vi.fn(),
       on: vi.fn(),
       off: vi.fn(),
+      updateAccountsForChain: vi.fn(),
     };
 
     mockApi = {
@@ -456,12 +457,21 @@ describe('createLunoStore', () => {
         },
       };
 
+      mockConnector.updateAccountsForChain = vi.fn().mockResolvedValue([
+        { publicKey: '0xabc', address: 'addr1', name: 'Account 1', meta: { source: 'test' } }
+      ]);
+
       useLunoStore.setState({
         config: configWithNewChain,
         currentChainId: '0x123',
         currentChain: mockConfig.chains[0],
         currentApi: mockApi,
         isApiReady: true,
+        activeConnector: mockConnector,
+        accounts: [
+          { publicKey: '0xabc', address: 'addr1', name: 'Account 1', meta: { source: 'test' } }
+        ],
+        account: { publicKey: '0xabc', address: 'addr1', name: 'Account 1', meta: { source: 'test' } }
       });
     });
 

@@ -7,6 +7,7 @@ import type { Connector } from '@luno-kit/react'
 import { Close, Loading } from '../../assets/icons'
 import { SpiralAnimation } from '../SpiralAnimation'
 import { transitionClassName } from '../ConnectButton'
+import { QRCode } from '../QRCode'
 
 export interface ConnectModalProps {
   size?: ModalSize;
@@ -19,6 +20,9 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
   const connectors = useConnectors();
   const { connectAsync, isError: connectError, isPending: isConnecting, reset: resetConnect } = useConnect()
   const [selectedConnector, setSelectedConnector] = useState<Connector | null>(null)
+  const [qrCode, setQrCode] = useState<string | undefined>()
+
+  const showQRCode = selectedConnector?.hasConnectionUri();
 
   const isWide = size === 'wide';
 
@@ -26,8 +30,17 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
   const moreConnectors = connectors.filter(c => !c.isInstalled())
 
+  const onQrCode = async (connector: Connector) => {
+    const uri = await connector.getConnectionUri()
+
+    setQrCode(uri)
+  }
+
   const handleConnect = async (connector: Connector) => {
     setSelectedConnector(connector)
+    if (connector.hasConnectionUri()) {
+      onQrCode(connector)
+    }
     await connectAsync({ connectorId: connector.id })
     _onOpenChange(false)
   }
@@ -93,32 +106,33 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
 
             <div className={'flex items-center flex-col max-w-[312px] grow justify-center'}>
-              {selectedConnector ? (
-                <>
-                  <div className={'w-[102px] h-[102px] pb-[8px]'}>
-                    <img src={selectedConnector.icon} className={'w-full h-full'} alt=""/>
-                  </div>
-                  <p className={'pb-[10px] text-primary leading-primary text-modalFont font-[600]'}>
-                    Opening {selectedConnector.name}...
-                  </p>
-                  <p className={'pb-[10px] text-secondaryFont text-secondary leading-secondary font-[500]'}>
-                    Confirm connection in the extension
-                  </p>
-                  {isConnecting && (
-                    <Loading className={'w-[24px] h-[24px] text-secondaryFont animate-[spin_3s_linear_infinite]'}/>
-                  )}
-                  { !isConnecting && connectError && (
-                    <button
-                      className={cs(
-                        'rounded-sm focus:outline-none py-[4px] px-[12px] cursor-pointer font-[600] text-primaryFont bg-connectButtonBackground shadow-connectButton active:scale-[0.95]',
-                        transitionClassName
-                      )}
-                      onClick={() => handleConnect(selectedConnector)}>
-                      Retry
-                    </button>
-                  )}
-                </>
-              ) : (
+              {selectedConnector ?
+                showQRCode ? <QRCode logoBackground={selectedConnector.icon} uri={qrCode}/> : (
+                  <>
+                    <div className={'w-[102px] h-[102px] pb-[8px]'}>
+                      <img src={selectedConnector.icon} className={'w-full h-full'} alt=""/>
+                    </div>
+                    <p className={'pb-[10px] text-primary leading-primary text-modalFont font-[600]'}>
+                      Opening {selectedConnector.name}...
+                    </p>
+                    <p className={'pb-[10px] text-secondaryFont text-secondary leading-secondary font-[500]'}>
+                      Confirm connection in the extension
+                    </p>
+                    {isConnecting && (
+                      <Loading className={'w-[24px] h-[24px] text-secondaryFont animate-[spin_3s_linear_infinite]'}/>
+                    )}
+                    { !isConnecting && connectError && (
+                      <button
+                        className={cs(
+                          'rounded-sm focus:outline-none py-[4px] px-[12px] cursor-pointer font-[600] text-primaryFont bg-connectButtonBackground shadow-connectButton active:scale-[0.95]',
+                          transitionClassName
+                        )}
+                        onClick={() => handleConnect(selectedConnector)}>
+                        Retry
+                      </button>
+                    )}
+                  </>
+                ) : (
                 <>
                   <div className={'w-[160px] h-[160px] mb-[16px]'}>
                     <SpiralAnimation />
