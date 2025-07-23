@@ -1,5 +1,5 @@
-import React, {useCallback, useState} from 'react'
-import {Copy as CopyIcon, Success} from '../../assets/icons'
+import React, { useCallback, useState } from 'react'
+import { Copy as CopyIcon, Success } from '../../assets/icons'
 
 interface CopyProps {
   copyText?: string
@@ -16,7 +16,6 @@ export const Copy: React.FC<CopyProps> = ({ copyText }) => {
         setTimeout(() => setIsCopied(false), 2000);
         return true;
       }
-      // Fallback if clipboard API is not available
       return false;
     } catch (err) {
       console.error('Copy failed:', err);

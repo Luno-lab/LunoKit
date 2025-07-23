@@ -1,12 +1,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import type { BaseConnector } from './base'
+import { Chain, WalletConnectConnectorOptions } from '../types'
 
-interface ConnectorTestConfig {
-  id: string
-  name: string
-  iconMockValue: string
-  createConnector: () => BaseConnector
-  factoryFunction: () => BaseConnector
+interface ConnectorTestConfig<T> {
+  getConnector: () => T;
+  expected: {
+    id: string;
+    name: string;
+    icon: string;
+  };
+  extraWindowProps?: Record<string, any>;
 }
 
 interface MockInjector {
@@ -19,18 +22,22 @@ interface MockInjector {
   }
 }
 
-export function createConnectorTestSuite(config: ConnectorTestConfig) {
+export function createConnectorTestSuite<T extends BaseConnector>(
+  config: ConnectorTestConfig<T>
+) {
   return () => {
-    let connector: BaseConnector
+    let connector: T;
     let mockInjectedWeb3: Record<string, any>
     let mockInjector: MockInjector
     let originalWindow: any
 
     const TEST_ADDRESS = '1FRMM8PEiWXYax7rpS6X4XZX1aAAxSWx1CrKTyrVYhV24fg'
 
+    const { id, name, icon} = config.expected
+
     beforeEach(() => {
-      connector = config.createConnector()
-      originalWindow = global.window
+      connector = config.getConnector();
+      originalWindow = globalThis.window
 
       mockInjector = {
         accounts: {
@@ -43,13 +50,13 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
       }
 
       mockInjectedWeb3 = {
-        [config.id]: {
+        [id]: {
           enable: vi.fn(),
         }
       }
 
-      Object.defineProperty(global, 'window', {
-        value: { injectedWeb3: mockInjectedWeb3 },
+      Object.defineProperty(globalThis, 'window', {
+        value: { injectedWeb3: mockInjectedWeb3, ...config.extraWindowProps },
         writable: true,
         configurable: true,
       })
@@ -58,7 +65,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
     })
 
     afterEach(() => {
-      Object.defineProperty(global, 'window', {
+      Object.defineProperty(globalThis, 'window', {
         value: originalWindow,
         writable: true,
         configurable: true,
@@ -68,9 +75,9 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
 
     describe('basic properties', () => {
       it('should have correct connector metadata', () => {
-        expect(connector.id).toBe(config.id)
-        expect(connector.name).toBe(config.name)
-        expect(connector.icon).toBe(config.iconMockValue)
+        expect(connector.id).toBe(id)
+        expect(connector.name).toBe(name)
+        expect(connector.icon).toBe(icon)
       })
     })
 
@@ -80,7 +87,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
       })
 
       it('should return false in non-browser environment', () => {
-        Object.defineProperty(global, 'window', {
+        Object.defineProperty(globalThis, 'window', {
           value: undefined,
           writable: true,
           configurable: true,
@@ -89,7 +96,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
       })
 
       it('should return false when injectedWeb3 is undefined', () => {
-        Object.defineProperty(global, 'window', {
+        Object.defineProperty(globalThis, 'window', {
           value: {},
           writable: true,
           configurable: true,
@@ -98,7 +105,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
       })
 
       it('should return false when extension not found', () => {
-        Object.defineProperty(global, 'window', {
+        Object.defineProperty(globalThis, 'window', {
           value: { injectedWeb3: {} },
           writable: true,
           configurable: true,
@@ -120,7 +127,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
 
     describe('connection flow', () => {
       beforeEach(() => {
-        mockInjectedWeb3[config.id].enable.mockResolvedValue(mockInjector)
+        mockInjectedWeb3[id].enable.mockResolvedValue(mockInjector)
         mockInjector.accounts.get.mockResolvedValue([
           { address: TEST_ADDRESS, name: 'Test Account' }
         ])
@@ -130,7 +137,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
       it('should connect successfully with valid setup', async () => {
         const accounts = await connector.connect('test-app')
 
-        expect(mockInjectedWeb3[config.id].enable).toHaveBeenCalledWith('test-app')
+        expect(mockInjectedWeb3[id].enable).toHaveBeenCalledWith('test-app')
         expect(mockInjector.accounts.get).toHaveBeenCalled()
         expect(accounts).toHaveLength(1)
         expect(accounts[0].address).toBe(TEST_ADDRESS)
@@ -140,18 +147,18 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
         await connector.connect('test-app')
         const accounts = await connector.connect('test-app')
         expect(accounts).toHaveLength(1)
-        expect(mockInjectedWeb3[config.id].enable).toHaveBeenCalledTimes(1)
+        expect(mockInjectedWeb3[id].enable).toHaveBeenCalledTimes(1)
       })
 
       it('should throw error when extension not available', async () => {
         vi.spyOn(connector, 'isAvailable').mockResolvedValue(false)
         await expect(connector.connect('test-app')).rejects.toThrow(
-          `${config.name} extension not found or not enabled.`
+          `${name} extension not found or not enabled.`
         )
       })
 
       it('should throw error when injectedWeb3 not found', async () => {
-        Object.defineProperty(global, 'window', {
+        Object.defineProperty(globalThis, 'window', {
           value: {
             injectedWeb3: {
               'other-wallet': { enable: vi.fn() },
@@ -163,15 +170,15 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
         })
 
         await expect(connector.connect('test-app')).rejects.toThrow(
-          `${config.name} extension not found or not enabled.`
+          `${name} extension not found or not enabled.`
         )
       })
 
       it('should throw error when enable fails', async () => {
-        mockInjectedWeb3[config.id].enable.mockResolvedValue(null)
+        mockInjectedWeb3[id].enable.mockResolvedValue(null)
 
         await expect(connector.connect('test-app')).rejects.toThrow(
-          `Failed to enable the '${config.id}' extension.`
+          `Failed to enable the '${id}' extension.`
         )
       })
 
@@ -179,12 +186,12 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
         mockInjector.accounts.get.mockResolvedValue([])
 
         await expect(connector.connect('test-app')).rejects.toThrow(
-          `No accounts found in ${config.name}. Make sure accounts are visible and access is granted.`
+          `No accounts found in ${name}. Make sure accounts are visible and access is granted.`
         )
       })
 
       it('should cleanup on connection failure', async () => {
-        mockInjectedWeb3[config.id].enable.mockRejectedValue(new Error('Enable failed'))
+        mockInjectedWeb3[id].enable.mockRejectedValue(new Error('Enable failed'))
 
         await expect(connector.connect('test-app')).rejects.toThrow('Enable failed')
 
@@ -215,14 +222,14 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
       it('should set correct source metadata for accounts', async () => {
         const accounts = await connector.connect('test-app')
         accounts.forEach(account => {
-          expect(account.meta?.source).toBe(config.id)
+          expect(account.meta?.source).toBe(id)
         })
       })
     })
 
     describe('message signing', () => {
       beforeEach(async () => {
-        mockInjectedWeb3[config.id].enable.mockResolvedValue(mockInjector)
+        mockInjectedWeb3[id].enable.mockResolvedValue(mockInjector)
         mockInjector.accounts.get.mockResolvedValue([
           { address: TEST_ADDRESS, name: 'Test' }
         ])
@@ -248,7 +255,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
 
         await expect(
           connector.signMessage('hello', TEST_ADDRESS)
-        ).rejects.toThrow(`Connector ${config.id}: Failed to sign message: User rejected signing`)
+        ).rejects.toThrow(`Connector ${id}: Failed to sign message: User rejected signing`)
       })
 
       it('should throw error when signer not available', async () => {
@@ -282,7 +289,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
       it('should throw error when signing with unmanaged address', async () => {
         await expect(
           connector.signMessage('hello world', 'unmanaged-address-12345')
-        ).rejects.toThrow(`Address unmanaged-address-12345 is not managed by ${config.name}.`)
+        ).rejects.toThrow(`Address unmanaged-address-12345 is not managed by ${name}.`)
       })
 
       it('should handle case-insensitive address validation', async () => {
@@ -297,7 +304,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
 
     describe('disconnection', () => {
       it('should cleanup all resources on disconnect', async () => {
-        mockInjectedWeb3[config.id].enable.mockResolvedValue(mockInjector)
+        mockInjectedWeb3[id].enable.mockResolvedValue(mockInjector)
         mockInjector.accounts.get.mockResolvedValue([
           { address: TEST_ADDRESS, name: 'Test' }
         ])
@@ -328,7 +335,7 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
       it('should handle account changes', async () => {
         let subscriptionCallback: any
 
-        mockInjectedWeb3[config.id].enable.mockResolvedValue(mockInjector)
+        mockInjectedWeb3[id].enable.mockResolvedValue(mockInjector)
         mockInjector.accounts.get.mockResolvedValue([
           { address: TEST_ADDRESS, name: 'Test' }
         ])
@@ -353,28 +360,340 @@ export function createConnectorTestSuite(config: ConnectorTestConfig) {
   }
 }
 
-export function createConnectorFactoryTestSuite(
-  factoryFunction: () => BaseConnector,
-  expectedClass: any,
-  expectedId: string,
-  expectedName: string
+interface WalletConnectTestConfig<T> {
+  getConnector: (options: WalletConnectConnectorOptions) => T;
+  expected: {
+    id: string;
+    name: string;
+    icon: string;
+  };
+}
+
+interface MockWalletConnectProvider {
+  init: any;
+  disconnect: any;
+  client?: {
+    connect: any;
+    request: any;
+  };
+  session?: {
+    topic: string;
+    namespaces: {
+      polkadot: {
+        accounts: string[];
+      };
+    };
+  };
+}
+
+export function createWalletConnectTestSuite<T extends BaseConnector>(
+  config: WalletConnectTestConfig<T>
 ) {
   return () => {
-    it('should create new connector instance', () => {
-      const connector = factoryFunction()
-      expect(connector).toBeInstanceOf(expectedClass)
-    })
+    let connector: T;
+    let mockProvider: MockWalletConnectProvider;
+    let originalWindow: any;
 
-    it('should create different instances each time', () => {
-      const connector1 = factoryFunction()
-      const connector2 = factoryFunction()
-      expect(connector1).not.toBe(connector2)
-    })
+    const TEST_ADDRESS = '1FRMM8PEiWXYax7rpS6X4XZX1aAAxSWx1CrKTyrVYhV24fg';
+    const TEST_PROJECT_ID = 'test-project-id';
+    const TEST_CHAINS = [
+      {
+        genesisHash: '0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e',
+        name: 'Polkadot'
+      }
+    ] as Chain[];
+    const TEST_SESSION = {
+      topic: 'test-topic',
+      namespaces: {
+        polkadot: {
+          accounts: [`polkadot:e143f23803ac50e8f6f8e62695d1ce9e:${TEST_ADDRESS}`]
+        }
+      }
+    };
 
-    it('should create instances with correct configuration', () => {
-      const connector = factoryFunction()
-      expect(connector.id).toBe(expectedId)
-      expect(connector.name).toBe(expectedName)
-    })
-  }
+    const { id, name, icon } = config.expected;
+
+    beforeEach(() => {
+      originalWindow = globalThis.window;
+
+      Object.defineProperty(globalThis, 'window', {
+        value: {
+          location: { origin: 'http://localhost:3000' }
+        },
+        writable: true,
+        configurable: true,
+      });
+
+      mockProvider = {
+        init: vi.fn(),
+        disconnect: vi.fn().mockResolvedValue(undefined),
+        client: {
+          connect: vi.fn(),
+          request: vi.fn(),
+        },
+        session: undefined
+      };
+
+      vi.doMock('@walletconnect/universal-provider', () => ({
+        UniversalProvider: {
+          init: mockProvider.init
+        }
+      }));
+
+      mockProvider.init.mockResolvedValue(mockProvider);
+
+      connector = config.getConnector({
+        projectId: TEST_PROJECT_ID,
+        relayUrl: 'wss://relay.walletconnect.com'
+      });
+
+      vi.clearAllMocks();
+    });
+
+    afterEach(() => {
+      Object.defineProperty(globalThis, 'window', {
+        value: originalWindow,
+        writable: true,
+        configurable: true,
+      });
+      vi.restoreAllMocks();
+      vi.doUnmock('@walletconnect/universal-provider');
+    });
+
+    describe('basic properties', () => {
+      it('should have correct connector metadata', () => {
+        expect(connector.id).toBe(id);
+        expect(connector.name).toBe(name);
+        expect(connector.icon).toBe(icon);
+      });
+    });
+
+    describe('installation and availability', () => {
+      it('should always be installed', () => {
+        expect(connector.isInstalled()).toBe(true);
+      });
+
+      it('should always be available', async () => {
+        expect(await connector.isAvailable()).toBe(true);
+      });
+    });
+
+    describe('connection flow', () => {
+      it('should throw error when projectId missing', async () => {
+        const connectorWithoutProject = config.getConnector({
+          projectId: ''
+        });
+
+        await expect(
+          connectorWithoutProject.connect('test-app', TEST_CHAINS)
+        ).rejects.toThrow(`${name} requires a projectId`);
+      });
+
+      it('should throw error when chains missing', async () => {
+        await expect(
+          connector.connect('test-app', [])
+        ).rejects.toThrow(`${name} requires chains configuration`);
+      });
+
+      it('should connect with existing session', async () => {
+        mockProvider.session = TEST_SESSION;
+
+        const accounts = await connector.connect('test-app', TEST_CHAINS);
+
+        expect(mockProvider.client!.connect).not.toHaveBeenCalled();
+        expect(accounts).toHaveLength(1);
+        expect(accounts[0].address).toBe(TEST_ADDRESS);
+        expect(accounts[0].meta?.source).toBe(id);
+      });
+
+      it('should connect with new session and emit events', async () => {
+        mockProvider.session = undefined;
+        mockProvider.client!.connect.mockResolvedValue({
+          uri: 'wc:test-uri@1',
+          approval: () => Promise.resolve(TEST_SESSION)
+        });
+
+        const connectSpy = vi.fn();
+        const getUriSpy = vi.fn();
+        connector.on('connect', connectSpy);
+        connector.on('get_uri', getUriSpy);
+
+        const accounts = await connector.connect('test-app', TEST_CHAINS);
+
+        expect(mockProvider.init).toHaveBeenCalledWith({
+          projectId: TEST_PROJECT_ID,
+          relayUrl: 'wss://relay.walletconnect.com',
+          metadata: expect.objectContaining({
+            name: 'test-app'
+          })
+        });
+        expect(mockProvider.client!.connect).toHaveBeenCalled();
+        expect(getUriSpy).toHaveBeenCalledWith('wc:test-uri@1');
+        expect(connectSpy).toHaveBeenCalledWith([
+          expect.objectContaining({
+            address: TEST_ADDRESS
+          })
+        ]);
+        expect(accounts).toHaveLength(1);
+        expect(accounts[0].address).toBe(TEST_ADDRESS);
+      });
+    });
+
+    describe('connection URI management', () => {
+      it('should always have connection URI capability', () => {
+        expect(connector.hasConnectionUri()).toBe(true);
+      });
+
+      it('should return connection URI for new connection', async () => {
+        mockProvider.session = undefined;
+        mockProvider.client!.connect.mockResolvedValue({
+          uri: 'wc:test-uri@1',
+          approval: () => Promise.resolve(TEST_SESSION)
+        });
+
+        const connectPromise = connector.connect('test-app', TEST_CHAINS);
+        const uriPromise = connector.getConnectionUri();
+
+        await connectPromise;
+        const uri = await uriPromise;
+
+        expect(uri).toBe('wc:test-uri@1');
+      });
+    });
+
+    describe('account management', () => {
+      beforeEach(async () => {
+        mockProvider.session = TEST_SESSION;
+        await connector.connect('test-app', TEST_CHAINS);
+      });
+
+      it('should return connected accounts', async () => {
+        const accounts = await connector.getAccounts();
+        expect(accounts).toHaveLength(1);
+        expect(accounts[0].address).toBe(TEST_ADDRESS);
+      });
+
+      it('should update accounts for specific chain', async () => {
+        const updatedAccounts = await connector.updateAccountsForChain?.(
+          '0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e'
+        );
+
+        expect(updatedAccounts).toHaveLength(1);
+        expect(updatedAccounts![0].address).toBe(TEST_ADDRESS);
+      });
+
+      it('should throw error when updating accounts without connection', async () => {
+        const unconnectedConnector = config.getConnector({
+          projectId: TEST_PROJECT_ID
+        });
+
+        await expect(
+          unconnectedConnector.updateAccountsForChain?.('test-chain-id')
+        ).rejects.toThrow('WalletConnect not connected');
+      });
+    });
+
+    describe('signing', () => {
+      beforeEach(async () => {
+        mockProvider.session = TEST_SESSION;
+        await connector.connect('test-app', TEST_CHAINS);
+      });
+
+      it('should sign message successfully', async () => {
+        mockProvider.client!.request.mockResolvedValue({
+          signature: '0xtest-signature'
+        });
+
+        const signature = await connector.signMessage('hello world', TEST_ADDRESS);
+
+        expect(signature).toBe('0xtest-signature');
+        expect(mockProvider.client!.request).toHaveBeenCalledWith({
+          topic: 'test-topic',
+          chainId: expect.stringContaining('polkadot:'),
+          request: {
+            method: 'polkadot_signMessage',
+            params: {
+              address: TEST_ADDRESS,
+              message: 'hello world',
+              type: 'bytes'
+            }
+          }
+        });
+      });
+
+      it('should get signer for transaction signing', async () => {
+        const signer = await connector.getSigner();
+
+        expect(signer).toBeDefined();
+        expect(signer!.signPayload).toBeDefined();
+      });
+
+      it('should sign transaction payload', async () => {
+        mockProvider.client!.request.mockResolvedValue({
+          signature: '0xtest-tx-signature'
+        });
+
+        const signer = await connector.getSigner();
+        const mockPayload = {
+          address: TEST_ADDRESS,
+          genesisHash: '0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e',
+          method: '0x123',
+          nonce: '0x00',
+          specVersion: '0x1234',
+          transactionVersion: '0x01',
+          blockHash: '0xabc',
+          blockNumber: '0x123',
+          era: '0x00'
+        };
+
+        const result = await signer!.signPayload(mockPayload);
+
+        expect(result.signature).toBe('0xtest-tx-signature');
+        expect(mockProvider.client!.request).toHaveBeenCalledWith({
+          topic: 'test-topic',
+          chainId: expect.stringContaining('polkadot:e143f23803ac50e8f6f8e62695d1ce9e'),
+          request: {
+            method: 'polkadot_signTransaction',
+            params: {
+              address: TEST_ADDRESS,
+              transactionPayload: mockPayload
+            }
+          }
+        });
+      });
+
+      it('should throw error when signing without connection', async () => {
+        await connector.disconnect();
+
+        await expect(
+          connector.signMessage('hello', TEST_ADDRESS)
+        ).rejects.toThrow('Provider not initialized or not connected');
+      });
+    });
+
+    describe('disconnection', () => {
+      it('should disconnect when connected', async () => {
+        mockProvider.session = TEST_SESSION;
+        await connector.connect('test-app', TEST_CHAINS);
+
+        const disconnectSpy = vi.fn();
+        connector.on('disconnect', disconnectSpy);
+
+        await connector.disconnect();
+
+        expect(mockProvider.disconnect).toHaveBeenCalled();
+        expect(disconnectSpy).toHaveBeenCalled();
+
+        const accounts = await connector.getAccounts();
+        const signer = await connector.getSigner();
+        expect(accounts).toEqual([]);
+        expect(signer).toBeUndefined();
+      });
+
+      it('should handle disconnect when not connected', async () => {
+        await connector.disconnect();
+        expect(mockProvider.disconnect).not.toHaveBeenCalled();
+      });
+    });
+  };
 }

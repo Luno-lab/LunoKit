@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createConfig } from './createConfig'
-import { polkadotjs, subwallet } from '../connectors'
+import { polkadotjsConnector, subwalletConnector } from '../connectors'
 import { polkadot, kusama } from '../chains'
 import type { Chain, CreateConfigParameters, LunoStorage } from '../types'
 
@@ -22,7 +22,7 @@ vi.mock('../config/logos/generated', () => ({
 }))
 
 describe('createConfig', () => {
-  const mockConnectors = [polkadotjs(), subwallet()]
+  const mockConnectors = [polkadotjsConnector(), subwalletConnector()]
 
   const mockChains = [polkadot, kusama]
 
@@ -64,7 +64,7 @@ describe('createConfig', () => {
     it('should create config with valid parameters', () => {
       const params: CreateConfigParameters = {
         chains: [polkadot],
-        connectors: [polkadotjs()]
+        connectors: [polkadotjsConnector()]
       }
 
       const config = createConfig(params)
@@ -110,7 +110,7 @@ describe('createConfig', () => {
       const params: CreateConfigParameters = {
         appName: 'Custom App',
         chains: [polkadot],
-        connectors: [polkadotjs()],
+        connectors: [polkadotjsConnector()],
         storage: mockStorage,
         autoConnect: false,
         cacheMetadata: true,
@@ -140,7 +140,7 @@ describe('createConfig', () => {
 
       const params: CreateConfigParameters = {
         chains: [polkadot],
-        connectors: [polkadotjs()],
+        connectors: [polkadotjsConnector()],
         transports: customTransports
       }
 
@@ -157,7 +157,7 @@ describe('createConfig', () => {
     it('should throw error when chains array is empty', () => {
       const params: CreateConfigParameters = {
         chains: [],
-        connectors: [polkadotjs()]
+        connectors: [polkadotjsConnector()]
       }
 
       expect(() => createConfig(params)).toThrow(
@@ -179,7 +179,7 @@ describe('createConfig', () => {
     it('should throw error when no transports available', () => {
       const params: CreateConfigParameters = {
         chains: [mockChainWithoutWs],
-        connectors: [polkadotjs()],
+        connectors: [polkadotjsConnector()],
         transports: {}
       }
 
@@ -204,7 +204,7 @@ describe('createConfig', () => {
 
       const params: CreateConfigParameters = {
         chains: [chainWithoutTransport],
-        connectors: [polkadotjs()],
+        connectors: [polkadotjsConnector()],
         transports: {
           'custom-hash': 'wss://custom.endpoint.com'
         }
@@ -220,7 +220,7 @@ describe('createConfig', () => {
     it('should generate transports from chain WebSocket URLs', () => {
       const params: CreateConfigParameters = {
         chains: [polkadot],
-        connectors: [polkadotjs()]
+        connectors: [polkadotjsConnector()]
       }
 
       const config = createConfig(params)
@@ -233,7 +233,7 @@ describe('createConfig', () => {
 
       const params: CreateConfigParameters = {
         chains: [mockChainWithoutWs],
-        connectors: [polkadotjs()],
+        connectors: [polkadotjsConnector()],
         transports: {
           [mockChainWithoutWs.genesisHash]: 'wss://custom.endpoint.com'
         }
@@ -252,7 +252,7 @@ describe('createConfig', () => {
 
       const params: CreateConfigParameters = {
         chains: [chainWithWs, chainWithoutWs],
-        connectors: [polkadotjs()],
+        connectors: [polkadotjsConnector()],
         transports: {
           [chainWithoutWs.genesisHash]: 'wss://fallback.endpoint.com'
         }
@@ -271,7 +271,7 @@ describe('createConfig', () => {
     it('should freeze chains array', () => {
       const params: CreateConfigParameters = {
         chains: [polkadot],
-        connectors: [polkadotjs()]
+        connectors: [polkadotjsConnector()]
       }
 
       const config = createConfig(params)
@@ -282,7 +282,7 @@ describe('createConfig', () => {
     it('should freeze connectors array', () => {
       const params: CreateConfigParameters = {
         chains: [polkadot],
-        connectors: [polkadotjs()]
+        connectors: [polkadotjsConnector()]
       }
 
       const config = createConfig(params)
@@ -293,7 +293,7 @@ describe('createConfig', () => {
     it('should freeze transports object', () => {
       const params: CreateConfigParameters = {
         chains: [polkadot],
-        connectors: [polkadotjs()]
+        connectors: [polkadotjsConnector()]
       }
 
       const config = createConfig(params)
@@ -307,7 +307,7 @@ describe('createConfig', () => {
     it('should handle undefined optional parameters gracefully', () => {
       const params: CreateConfigParameters = {
         chains: [polkadot],
-        connectors: [polkadotjs()],
+        connectors: [polkadotjsConnector()],
         customTypes: undefined,
         customRpc: undefined,
         cacheMetadata: undefined,
@@ -327,7 +327,7 @@ describe('createConfig', () => {
     it('should handle chains with testnet property', () => {
       const params: CreateConfigParameters = {
         chains: [mockChainWithoutWs],
-        connectors: [polkadotjs()],
+        connectors: [polkadotjsConnector()],
         transports: {
           [mockChainWithoutWs.genesisHash]: 'wss://testnet.endpoint.com'
         }
@@ -344,7 +344,7 @@ describe('createConfig', () => {
       const params: CreateConfigParameters = {
         appName: 'My dApp',
         chains: [polkadot, kusama],
-        connectors: [polkadotjs(), subwallet()],
+        connectors: [polkadotjsConnector(), subwalletConnector()],
         autoConnect: true,
         cacheMetadata: true
       }
@@ -376,7 +376,7 @@ describe('createConfig', () => {
 
       const params: CreateConfigParameters = {
         chains: [polkadot],
-        connectors: [polkadotjs()]
+        connectors: [polkadotjsConnector()]
       }
 
       const config = createConfig(params)
@@ -396,7 +396,7 @@ describe('createConfig', () => {
 
       const params: CreateConfigParameters = {
         chains: [polkadot],
-        connectors: [polkadotjs()]
+        connectors: [polkadotjsConnector()]
       }
 
       const config = createConfig(params)
