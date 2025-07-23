@@ -42,11 +42,11 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
     <Dialog open={isOpen} onOpenChange={_onOpenChange}>
       <div className={cs('flex items-stretch justify-between max-h-[504px] max-w-[724px]')}>
         <div className={cs(
-          'flex flex-col items-start py-[16px] px-[18px] min-w-[287px]',
+          'flex flex-col items-start py-4 px-5 min-w-[287px]',
           isWide && 'border-r-[1px] border-r-solid border-r-separatorLine'
           )}>
           <div className={'flex items-center justify-between'}>
-            <DialogTitle className="text-title leading-title text-modalText font-[700] pb-[24px]">
+            <DialogTitle className="text-lg leading-lg text-modalText font-bold pb-6">
               Connect Wallet
             </DialogTitle>
             {!isWide && (
@@ -56,10 +56,10 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
             )}
           </div>
 
-          <div className={'flex flex-col items-start gap-[16px] w-full'}>
-            <div className={'flex flex-col items-start gap-[12px] w-full'}>
-              <div className={'text-primary text-modalText font-[600] leading-primary'}>Installed</div>
-              <div className={'flex flex-col items-start gap-[6px] w-full'}>
+          <div className={'flex flex-col items-start gap-4 w-full'}>
+            <div className={'flex flex-col items-start gap-3 w-full'}>
+              <div className={'text-base text-modalText font-semibold leading-base'}>Installed</div>
+              <div className={'flex flex-col items-start gap-1.5 w-full'}>
                 {installedConnectors.map(i => (
                   <ConnectorItem key={i.id} connector={i} onConnect={() => handleConnect(i)}/>
                 ))}
@@ -67,9 +67,9 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
             </div>
 
             {moreConnectors.length > 0 && (
-              <div className={'flex flex-col items-start gap-[12px] w-full'}>
-                <div className={'text-primary text-modalText font-[600] leading-primary'}>More</div>
-                <div className={'flex flex-col items-start gap-[4px] w-full'}>
+              <div className={'flex flex-col items-start gap-3 w-full'}>
+                <div className={'text-base text-modalText font-semibold leading-base'}>More</div>
+                <div className={'flex flex-col items-start gap-1 w-full'}>
                   {moreConnectors.map(i => (
                     <ConnectorItem key={i.id} connector={i} onConnect={() => handleConnect(i)}/>
                   ))}
@@ -81,7 +81,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
         </div>
 
         {isWide && (
-          <div className={'flex flex-col items-center p-[16px] min-h-[472px] w-[400px]'}>
+          <div className={'flex flex-col items-center p-4 min-h-[472px] w-[400px]'}>
             <div className={'w-full'}>
               <div className={'flex items-center justify-between'}>
                 <div/>
@@ -95,13 +95,13 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
             <div className={'flex items-center flex-col max-w-[312px] grow justify-center'}>
               {selectedConnector ? (
                 <>
-                  <div className={'w-[102px] h-[102px] pb-[8px]'}>
+                  <div className={'w-[102px] h-[102px] pb-2'}>
                     <img src={selectedConnector.icon} className={'w-full h-full'} alt=""/>
                   </div>
-                  <p className={'pb-[10px] text-primary leading-primary text-modalText font-[600]'}>
+                  <p className={'pb-2.5 text-base leading-base text-modalText font-semibold'}>
                     Opening {selectedConnector.name}...
                   </p>
-                  <p className={'pb-[10px] text-secondaryFont text-secondary leading-secondary font-[500]'}>
+                  <p className={'pb-2.5 text-secondaryFont text-sm leading-sm font-medium'}>
                     Confirm connection in the extension
                   </p>
                   {isConnecting && (
@@ -110,7 +110,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
                   { !isConnecting && connectError && (
                     <button
                       className={cs(
-                        'rounded-sm focus:outline-none py-[4px] px-[12px] cursor-pointer font-[600] text-primaryFont bg-connectButtonBackground shadow-connectButton active:scale-[0.95]',
+                        'rounded-sm focus:outline-none py-1 px-3 cursor-pointer font-semibold text-primaryFont bg-connectButtonBackground shadow-connectButton active:scale-[0.95]',
                         transitionClassName
                       )}
                       onClick={() => handleConnect(selectedConnector)}>
@@ -120,14 +120,14 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
                 </>
               ) : (
                 <>
-                  <div className={'w-[160px] h-[160px] mb-[16px]'}>
+                  <div className={'w-[160px] h-[160px] mb-4'}>
                     <SpiralAnimation />
                   </div>
 
-                  <p className={'cursor-pointer pb-[16px] text-primary leading-primary text-accentColor font-[700] text-center'}>
+                  <p className={'cursor-pointer pb-[16px] text-base leading-base text-accentColor font-bold text-center'}>
                     New to wallets?
                   </p>
-                  <p className={'text-modalTextSecondary text-secondary leading-secondary font-[500] text-center'}>
+                  <p className={'text-modalTextSecondary text-sm leading-sm font-medium text-center'}>
                     Your gateway to the decentralized world Connect a wallet to get started
                   </p>
                 </>
@@ -152,7 +152,7 @@ const ConnectorItem: React.FC<ConnectorItemProps> = React.memo(({ connector, onC
     <button
       onClick={onConnect}
       className={cs(
-        'cursor-pointer bg-walletSelectItemBackground p-[8px] w-full flex items-center gap-[12px] rounded-sm border-none',
+        'cursor-pointer bg-walletSelectItemBackground p-2 w-full flex items-center gap-3 rounded-sm border-none',
         'hover:bg-walletSelectItemBackgroundHover transition-transform active:scale-[0.95]',
         'text-left'
       )}
@@ -165,7 +165,7 @@ const ConnectorItem: React.FC<ConnectorItemProps> = React.memo(({ connector, onC
         />
       </div>
 
-      <span className="font-[600] leading-primary text-primary text-modalText">{connector.name}</span>
+      <span className="font-semibold leading-base text-base text-modalText">{connector.name}</span>
     </button>
   );
 });

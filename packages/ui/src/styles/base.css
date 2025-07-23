@@ -63,6 +63,35 @@
   
   /* Blurs */
   --blur-modalOverlay: var(--blur-modalOverlay);
+  
+  /* Typography */
+  --text-xs: 12px;
+  --leading-xs: 18px;
+  --text-sm: 14px;
+  --leading-sm: 18px;
+  --text-base: 16px;
+  --leading-base: 20px;
+  --text-lg: 18px;
+  --leading-lg: 24px;
+
+  /* Font Weights */
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Spacing */
+  --spacing-1: 4px;
+  --spacing-1\.5: 6px;
+  --spacing-2: 8px;
+  --spacing-2\.5: 10px;
+  --spacing-3: 12px;
+  --spacing-3\.5: 14px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+
+
+
 }
 
 @custom-variant light (&:where([data-theme=light], [data-theme=light] *));
@@ -83,20 +112,6 @@
   --spacing-4: 16px;
   --spacing-5: 20px;
   --spacing-6: 24px;
-
-  /* Typography */
-  --text-sm: 12px;
-  --leading-sm: 18px;
-  --text-primary: 16px;
-  --leading-primary: 20px;
-  --text-lg: 18px;
-  --leading-lg: 24px;
-  --text-title: 18px;
-  --leading-title: 24px;
-  --text-secondary: 14px;
-  --leading-secondary: 18px;
-  --text-accent: 12px;
-  --leading-accent: 18px;
 
   /* Light Theme Colors */
   --color-accentColor: #3385FF;
@@ -170,20 +185,6 @@
   --spacing-4: 16px;
   --spacing-5: 20px;
   --spacing-6: 24px;
-
-  /* Typography */
-  --text-sm: 12px;
-  --leading-sm: 18px;
-  --text-primary: 16px;
-  --leading-primary: 20px;
-  --text-lg: 18px;
-  --leading-lg: 24px;
-  --text-title: 18px;
-  --leading-title: 24px;
-  --text-secondary: 14px;
-  --leading-secondary: 18px;
-  --text-accent: 12px;
-  --leading-accent: 18px;
 
   /* Dark Theme Colors */
   --color-accentColor: #8A6EAC;

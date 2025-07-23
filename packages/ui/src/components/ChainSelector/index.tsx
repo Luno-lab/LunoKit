@@ -13,18 +13,18 @@ export const ChainSelector: React.FC<ChainSelectorProps> = ({ onClose }) => {
 
   return (
     <Dialog>
-      <div className="flex flex-col gap-[16px] p-[16px]">
-        <DialogTitle className="text-title leading-title text-modalText font-[600]">
+      <div className="flex flex-col gap-4 p-4">
+        <DialogTitle className="text-lg leading-lg text-modalText font-semibold">
           Select Network
         </DialogTitle>
         
-        <div className="flex items-center gap-[12px] p-[12px] rounded-sm bg-chainSelectItemBackground">
+        <div className="flex items-center gap-3 p-3 rounded-sm bg-chainSelectItemBackground">
           <ChainIcon
             className="w-[24px] h-[24px]"
             chainIconUrl={chain?.chainIconUrl}
             chainName={chain?.name}
           />
-          <span className="text-modalText font-[500]">
+          <span className="text-modalText font-medium">
             {chain?.name || 'Select a network'}
           </span>
         </div>

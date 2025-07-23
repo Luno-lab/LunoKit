@@ -24,7 +24,7 @@ export const ChainIcon: React.FC<ChainIconProps> = ({
 
   return (
     <div className={cs(
-      'w-full h-full bg-gray-500 text-modalText font-[600]',
+      'w-full h-full bg-gray-500 text-modalText font-semibold',
       'flex items-center justify-center rounded-full',
       className
     )}>

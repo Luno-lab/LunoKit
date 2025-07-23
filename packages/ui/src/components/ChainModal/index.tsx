@@ -21,10 +21,10 @@ export const ChainModal: React.FC<ChainModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <div className="flex flex-col w-[360px] max-h-[500px] p-[16px] gap-[14px] text-modalText">
+      <div className="flex flex-col w-[360px] max-h-[500px] p-4 gap-3.5 text-modalText">
         <div className="flex items-center justify-between w-full">
           <div className="w-[30px]" /> {/* 占位符，保持标题居中 */}
-          <DialogTitle className="text-title leading-title text-modalText font-[600] transition-opacity duration-300">
+          <DialogTitle className="text-lg leading-lg text-modalText font-semibold transition-opacity duration-300">
             Select Network
           </DialogTitle>
           <DialogClose className="z-10 flex items-center justify-center h-[30px] w-[30px] rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover transition-colors duration-200 cursor-pointer">

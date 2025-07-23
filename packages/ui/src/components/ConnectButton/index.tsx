@@ -5,28 +5,28 @@ import {ChainIcon} from '../ChainIcon'
 
 const sizes: Record<'sm' | 'md' | 'lg', Record<string, string>> = {
   sm: {
-    button: 'px-2.5 text-sm leading-sm min-h-[36px]',
-    connected: 'text-sm leading-sm gap-[10px]',
+    button: 'px-2.5 text-xs leading-xs min-h-[36px]',
+    connected: 'text-xs leading-xs gap-2.5',
     icon: 'w-[20px] h-[20px]',
-    chain: 'py-[6px] px-6 gap-[4px]',
-    account: 'py-[4px] px-2.5 gap-[4px]',
-    balance: 'p-[6px] pl-[10px]',
+    chain: 'py-1.5 px-6 gap-1',
+    account: 'py-1 px-2.5 gap-1',
+    balance: 'p-1.5 pl-2.5',
   },
   md: {
-    button: 'px-3.5 text-primary leading-primary min-h-[40px]',
-    connected: 'text-primary leading-primary gap-[12px]',
+    button: 'px-3.5 text-base leading-base min-h-[40px]',
+    connected: 'text-base leading-base gap-3',
     icon: 'w-[24px] h-[24px]',
-    chain: 'py-[8px] px-2.5 gap-[6px]',
-    account: 'py-[6px] px-2 gap-[6px]',
-    balance: 'p-[8px] pl-[12px]',
+    chain: 'py-2 px-2.5 gap-1.5',
+    account: 'py-1.5 px-2 gap-1.5',
+    balance: 'p-2 pl-3',
   },
   lg: {
-    button: 'px-4.5 text-title leading-title min-h-[46px]' ,
-    connected: 'text-title leading-title gap-[14px]',
+    button: 'px-4.5 text-lg leading-lg min-h-[46px]' ,
+    connected: 'text-lg leading-lg gap-3.5',
     icon: 'w-[28px] h-[28px]',
-    chain: 'py-[10px] px-3 gap-[8px]',
-    account: 'py-[8px] px-2.5 gap-[8px]',
-    balance: 'p-[10px] pl-[14px]',
+    chain: 'py-2.5 px-3 gap-2',
+    account: 'py-2 px-2.5 gap-2',
+    balance: 'p-2.5 pl-3.5',
   },
 };
 
@@ -69,7 +69,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
         type="button"
         onClick={() => openConnectModal?.()}
         className={cs(
-          'cursor-pointer font-[600] inline-flex items-center justify-center focus:outline-none',
+          'cursor-pointer font-semibold inline-flex items-center justify-center focus:outline-none',
           'text-connectButtonText bg-connectButtonBackground shadow-button active:scale-[0.95]',
           'rounded-connectButton',
           transitionClassName,
@@ -85,7 +85,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
   const sizeConfig = sizes[size];
 
   return (
-    <div className={cs('text-modalText flex items-center bg-transparent font-[600]', sizeConfig.connected, className)}>
+    <div className={cs('text-modalText flex items-center bg-transparent font-semibold', sizeConfig.connected, className)}>
       {chainStatus !== 'none' && (
         <button
           type="button"

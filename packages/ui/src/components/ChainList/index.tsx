@@ -59,13 +59,13 @@ export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched }: ChainLi
 
   return (
     <>
-      <div className="flex items-center gap-[6px] w-full">
+      <div className="flex items-center gap-1.5 w-full">
         {FILTER_TABS.map(tab => (
           <button
             key={tab.key}
             onClick={() => setActiveFilter(tab.key)}
             className={cs(
-              'px-[14px] flex items-center justify-center cursor-pointer min-w-[48px] min-h-[24px] rounded-sm text-[12px] leading-[16px] font-[500] transition-colors',
+              'px-3.5 flex items-center justify-center cursor-pointer min-w-[48px] min-h-[24px] rounded-sm text-[12px] leading-[16px] font-medium transition-colors',
               activeFilter === tab.key
                 ? 'bg-navigationButtonBackground text-modalText'
                 : 'bg-transparent text-modalTextSecondary hover:text-modalText'
@@ -76,7 +76,7 @@ export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched }: ChainLi
         ))}
       </div>
 
-      <div className="flex flex-col gap-[6px] overflow-y-auto custom-scrollbar max-h-[450px]">
+      <div className="flex flex-col gap-1.5 overflow-y-auto custom-scrollbar max-h-[450px]">
         {filteredChains.map(chain => (
           <ChainItem
             key={chain.genesisHash}
@@ -90,7 +90,7 @@ export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched }: ChainLi
 
       {filteredChains.length === 0 && (
         <div className="flex items-center justify-center py-12">
-          <span className="text-modalTextSecondary text-sm">
+          <span className="text-modalTextSecondary text-xs">
             No {activeFilter === ChainFilter.all ? 'chains' : activeFilter.toLowerCase()} available
           </span>
         </div>
@@ -117,7 +117,7 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
       onClick={() => onSelect(chain)}
       disabled={isSelected || isLoading}
       className={cs(
-  'flex items-center justify-between p-[8px] rounded-sm',
+  'flex items-center justify-between p-2 rounded-sm',
   'bg-networkSelectItemBackground',
   'transition-colors duration-200',
   (isSelected || isLoading)
@@ -127,7 +127,7 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
 )}
 
     >
-      <div className="flex items-center gap-[8px]">
+      <div className="flex items-center gap-2">
         <ChainIcon
           className={'w-[24px] bg-modal-bg h-[24px] flex items-center justify-center'}
           chainIconUrl={chain?.chainIconUrl}
@@ -135,7 +135,7 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
         />
 
         <div className="flex flex-col items-start">
-          <span className="font-[500] text-primary text-modalText">
+          <span className="font-medium text-base text-modalText">
             {chain.name}
           </span>
         </div>
@@ -146,7 +146,7 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
           ? isLoading
             ? (
               <>
-                <span className="text-accentColor text-sm leading-sm mr-[6px]">Switching</span>
+                <span className="text-accentColor text-xs leading-xs mr-1.5">Switching</span>
                 <Loading
                   className="text-accentColor animate-[spin_2s_linear_infinite]"
                   width="15px"

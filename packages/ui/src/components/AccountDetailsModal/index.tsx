@@ -79,27 +79,27 @@ export const AccountDetailsModal: React.FC = () => {
       }}
     >
       <div className={cs(
-        'flex flex-col w-[360px] max-h-[500px] p-[16px] text-modalText',
+        'flex flex-col w-[360px] max-h-[500px] p-4 text-modalText',
         'bg-modalBackground rounded-modal shadow-modal',
-        currentView === AccountModalView.main ? 'gap-[26px]' : 'gap-[14px]'
+        currentView === AccountModalView.main ? 'gap-6' : 'gap-3.5'
       )}>
         <div className="flex items-stretch justify-between w-full">
           {currentView === AccountModalView.main ? (
-            <div className={'flex items-center gap-[12px]'}>
+            <div className={'flex items-center gap-3'}>
               {activeConnector?.icon && (
                 <div className={'flex items-center justify-center w-[55px] h-[55px]'}>
                   <img src={activeConnector.icon} alt="" />
                 </div>
               )}
-              <div className="flex flex-col items-start gap-[8px] w-full">
+              <div className="flex flex-col items-start gap-2 w-full">
                 <DialogTitle className={'sr-only'}>Account Details</DialogTitle>
-                <div className="flex items-center gap-[6px] w-full">
-                <span className="text-primary text-modalText font-[600]">
+                <div className="flex items-center gap-1.5 w-full">
+                <span className="text-base text-modalText font-semibold">
                   {formatAddress(address)}
                 </span>
                   <Copy copyText={address}/>
                 </div>
-                <div className="text-secondary text-modalTextSecondary font-[500] min-h-[20px]">
+                <div className="text-sm text-modalTextSecondary font-medium min-h-[20px]">
                   {balance === undefined ? (
                     <div className="animate-pulse rounded w-[80px] h-[20px] bg-skeleton" />
                   ) : (
@@ -120,7 +120,7 @@ export const AccountDetailsModal: React.FC = () => {
                 <Back  />
               </button>
               <DialogTitle
-                className="text-title leading-title text-modalText font-[600] transition-opacity duration-300">
+                className="text-lg leading-lg text-modalText font-semibold transition-opacity duration-300">
                 {viewTitle}
               </DialogTitle>
             </>
