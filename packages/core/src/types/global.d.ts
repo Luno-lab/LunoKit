@@ -6,6 +6,9 @@ declare global {
       enable: (appName: string) => Promise<Injected>;
       version: string;
     }>;
+    walletExtension: {
+      isNovaWallet: boolean;
+    }
   }
 }
 
