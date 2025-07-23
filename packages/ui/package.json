@@ -10,6 +10,7 @@
     "components",
     "luno"
   ],
+  "type": "module",
   "homepage": "https://github.com/Luno-lab/LunoKit",
   "bugs": {
     "url": "https://github.com/Luno-lab/LunoKit/issues"
@@ -24,6 +25,14 @@
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
   "scripts": {
     "build": "pnpm build:js && pnpm build:css",
     "build:css": "pnpm exec tailwindcss -i ./src/styles/styles.css -o ./dist/styles.css --minify",
@@ -51,18 +60,18 @@
     "@svgr/cli": "8.1.0",
     "@tailwindcss/cli": "^4.0.0",
     "@tailwindcss/postcss": "^4.0.0",
-    "@tanstack/react-query": "^5.14.2",
+    "@tanstack/react-query": "catalog:",
     "@types/node": "22.15.21",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "autoprefixer": "^10.4.17",
     "concurrently": "^8.2.2",
     "postcss": "^8.4.35",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "storybook": "^8.0.0",
     "tailwindcss": "^4.1.7",
-    "tsup": "^8.0.2",
+    "tsup": "catalog:",
     "typescript": "^5.3.3",
     "vitest": "^3.2.4"
   },
