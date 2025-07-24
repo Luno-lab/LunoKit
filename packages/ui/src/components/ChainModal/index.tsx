@@ -23,7 +23,7 @@ export const ChainModal: React.FC<ChainModalProps> = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <div className="flex flex-col w-[360px] max-h-[500px] p-4 gap-3.5 text-modalText">
         <div className="flex items-center justify-between w-full">
-          <div className="w-[30px]" /> {/* 占位符，保持标题居中 */}
+          <div className="w-[30px]" /> {/* Placeholder to keep title centered */}
           <DialogTitle className="text-lg leading-lg text-modalText font-semibold transition-opacity duration-300">
             Select Network
           </DialogTitle>

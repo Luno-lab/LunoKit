@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { useAccount, useActiveConnector, useBalance, useChain, useDisconnect } from '@luno-kit/react';
+import React, { useCallback, useMemo, useState, useRef } from 'react';
+import { useAccount, useActiveConnector, useBalance, useChain } from '@luno-kit/react';
 import { Dialog, DialogClose, DialogTitle } from '../Dialog';
 import { cs } from '../../utils';
 import { useAccountModal } from '../../providers/ModalContext';
@@ -21,36 +21,62 @@ export const AccountDetailsModal: React.FC = () => {
   const { address } = useAccount();
   const { chain } = useChain();
   const { data: balance } = useBalance({ address });
-  const { disconnect } = useDisconnect();
   const activeConnector = useActiveConnector()
 
   const [currentView, setCurrentView] = useState<AccountModalView>(AccountModalView.main);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const currentViewRef = useRef<HTMLDivElement>(null);
 
   const handleViewChange = useCallback((view: AccountModalView) => {
+    if (view === currentView || isAnimating) return;
+    
+    setIsAnimating(true);
+    
+    if (!containerRef.current) {
+      setCurrentView(view);
+      setIsAnimating(false);
+      return;
+    }
+
+    const container = containerRef.current;
+    const currentHeight = container.offsetHeight;
+    
     setCurrentView(view);
-  }, []);
+    
+    // Wait for React to render new content, then animate height
+    requestAnimationFrame(() => {
+      if (!container || !currentViewRef.current) {
+        setIsAnimating(false);
+        return;
+      }
+      
+      const newHeight = currentViewRef.current.offsetHeight;
+      
+      container.animate([
+        { height: currentHeight + 'px' },
+        { height: newHeight + 'px' }
+      ], {
+        duration: 200,
+        easing: 'ease-out',
+        fill: 'forwards'
+      }).addEventListener('finish', () => {
+        setIsAnimating(false);
+      });
+    });
+  }, [currentView, isAnimating]);
 
   const handleModalClose = useCallback(() => {
     close();
     setCurrentView(AccountModalView.main);
+    setIsAnimating(false);
   }, [close]);
 
-  const handleDisconnect = async () => {
-    try {
-      await disconnect();
-      close();
-    } catch (error) {
-      console.error('Failed to disconnect:', error);
-    }
-  };
 
   const viewTitle = useMemo(() => {
-    const titleMap = {
-      [AccountModalView.switchAccount]: 'Switch Account',
-      [AccountModalView.switchChain]: SwitchChainView.title,
-      [AccountModalView.main]: null
-    };
-    return titleMap[currentView];
+    if (currentView === AccountModalView.switchAccount) return 'Switch Account';
+    if (currentView === AccountModalView.switchChain) return SwitchChainView.title;
+    return null;
   }, [currentView]);
 
   const viewComponents = useMemo(() => ({
@@ -67,6 +93,7 @@ export const AccountDetailsModal: React.FC = () => {
       <SwitchChainView onBack={() => handleViewChange(AccountModalView.main)} />
     )
   }), [handleViewChange, handleModalClose]);
+
 
   return (
     <Dialog
@@ -131,19 +158,13 @@ export const AccountDetailsModal: React.FC = () => {
           </DialogClose>
         </div>
 
-        <div className="relative overflow-hidden">
-          {Object.entries(viewComponents).map(([view, component]) => (
-            <div
-              key={view}
-              className={cs(
-                currentView === view
-                  ? "opacity-100 transition-opacity duration-200 ease-in-out"
-                  : "opacity-0 absolute inset-0 pointer-events-none"
-              )}
-            >
-              {component}
-            </div>
-          ))}
+        <div 
+          ref={containerRef}
+          className="relative overflow-hidden"
+        >
+          <div ref={currentViewRef}>
+            {viewComponents[currentView]}
+          </div>
         </div>
       </div>
     </Dialog>
