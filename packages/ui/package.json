@@ -67,7 +67,6 @@
     "autoprefixer": "^10.4.17",
     "concurrently": "^8.2.2",
     "postcss": "^8.4.35",
-    "postcss-import": "^16.1.1",
     "react": "catalog:",
     "react-dom": "catalog:",
     "storybook": "^8.0.0",
