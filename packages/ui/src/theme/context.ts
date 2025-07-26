@@ -1,6 +1,37 @@
 import React, { createContext, useState, useContext, ReactNode, useMemo, useCallback, useEffect } from 'react';
 import type { LunokitTheme, LunokitThemeOverrides, PartialLunokitTheme, ThemeMode } from './types';
 
+// Theme preference storage
+interface ThemePreference {
+  mode: 'manual' | 'auto';
+  manualTheme?: ThemeMode;
+  autoMode: boolean;
+}
+
+const THEME_STORAGE_KEY = 'lunokit-theme-preference';
+
+const saveThemePreference = (preference: ThemePreference) => {
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(preference));
+    } catch (e) {
+      // Ignore localStorage errors
+    }
+  }
+};
+
+const loadThemePreference = (): ThemePreference | null => {
+  if (typeof window !== 'undefined') {
+    try {
+      const saved = localStorage.getItem(THEME_STORAGE_KEY);
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+  return null;
+};
+
 // All theme variable names for cleanup
 const ALL_THEME_VARS = [
   '--color-accentColor', '--color-walletSelectItemBackground', '--color-walletSelectItemBackgroundHover', '--color-walletSelectItemText',
@@ -23,7 +54,7 @@ const ALL_THEME_VARS = [
 
 interface ThemeContextValue {
   themeMode: ThemeMode;
-  setThemeMode: (mode: ThemeMode) => void;
+  setThemeChoice: (choice: 'light' | 'dark' | 'auto') => void; // User explicit choice
   currentTheme: LunokitTheme | null; // null for default themes
   isAutoMode: boolean; 
 }
@@ -68,33 +99,66 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 }) => {
   const systemTheme = useSystemTheme();
   
-  const [themeMode, setThemeModeState] = useState<ThemeMode>(() => {
-    // If only dark theme is provided, default to dark
-    if (themeOverrides && !isCompleteTheme(themeOverrides)) {
-      const overrides = themeOverrides as LunokitThemeOverrides;
-      if (overrides.dark && !overrides.light) {
-        return 'dark';
-      }
+  // Load user preference first
+  const userPreference = loadThemePreference();
+  
+  const [autoMode, setAutoModeState] = useState<boolean>(() => {
+    // 1. Check user preference first
+    if (userPreference) {
+      return userPreference.autoMode;
     }
-    return 'light';
-  });
-
-  // Check if both light and dark are provided
-  const hasBothLightAndDark = useMemo(() => {
+    
+    // 2. Check theme config
     if (!themeOverrides || isCompleteTheme(themeOverrides)) {
       return false; // Complete themes don't support auto-switching
     }
     
     const overrides = themeOverrides as LunokitThemeOverrides;
-    return !!(overrides.light && overrides.dark);
-  }, [themeOverrides]);
+    return overrides.autoMode ?? false; // Default to false
+  });
+  
+  const [themeMode, setThemeModeState] = useState<ThemeMode>(() => {
+    // 1. Check user preference first
+    if (userPreference) {
+      if (userPreference.mode === 'auto') {
+        return systemTheme || 'light';
+      } else {
+        return userPreference.manualTheme || 'light';
+      }
+    }
+    
+    // 2. Use theme config
+    if (!themeOverrides || isCompleteTheme(themeOverrides)) {
+      return 'light';
+    }
+    
+    const overrides = themeOverrides as LunokitThemeOverrides;
+    const isAutoModeEnabled = overrides.autoMode ?? false;
+    
+    // For autoMode, use systemTheme if available, otherwise use defaultMode
+    if (isAutoModeEnabled) {
+      return systemTheme || overrides.defaultMode || 'light';
+    }
+    
+    // For manual mode, use explicit defaultMode, or fallback logic
+    if (overrides.defaultMode) {
+      return overrides.defaultMode;
+    }
+    
+    // Legacy fallback: if only dark theme is provided, default to dark
+    if (overrides.dark && !overrides.light) {
+      return 'dark';
+    }
+    
+    return 'light';
+  });
 
-  // Auto-follow system theme if both light and dark are provided
+  // Auto-follow system theme when autoMode is enabled
   useEffect(() => {
-    if (hasBothLightAndDark) {
+    if (autoMode) {
       setThemeModeState(systemTheme);
     }
-  }, [systemTheme, hasBothLightAndDark]);
+  }, [systemTheme, autoMode]);
 
   // Determine theme type and get relevant data
   const themeInfo = useMemo(() => {
@@ -237,16 +301,31 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     }
   }, [themeInfo, themeMode]);
 
-  const setThemeMode = useCallback((mode: ThemeMode) => {
-    setThemeModeState(mode);
+  // User explicit choice handler (saves to localStorage)
+  const setThemeChoice = useCallback((choice: 'light' | 'dark' | 'auto') => {
+    if (choice === 'auto') {
+      setAutoModeState(true);
+      saveThemePreference({
+        mode: 'auto',
+        autoMode: true
+      });
+    } else {
+      setAutoModeState(false);
+      setThemeModeState(choice);
+      saveThemePreference({
+        mode: 'manual',
+        manualTheme: choice,
+        autoMode: false
+      });
+    }
   }, []);
 
   const contextValue = useMemo(() => ({
     themeMode,
-    setThemeMode,
+    setThemeChoice,
     currentTheme,
-    isAutoMode: hasBothLightAndDark,
-  }), [themeMode, setThemeMode, currentTheme, hasBothLightAndDark]);
+    isAutoMode: autoMode,
+  }), [themeMode, setThemeChoice, currentTheme, autoMode]);
 
   return React.createElement(ThemeContext.Provider, { value: contextValue }, children);
 };
