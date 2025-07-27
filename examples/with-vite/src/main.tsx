@@ -28,27 +28,27 @@ createRoot(document.getElementById('root')!).render(
     <LunoKitProvider 
     config={lunoConfig}
     theme={{ 
-      // defaultMode:'light',
-    //   dark: {
-    //   colors: {
-    //     accentColor: '#AC1824',
-    //   },
-    //   radii: {
-    //     modal:'30px'
-    //   }
-    // },
-    // light: {
-    //   colors: {
-    //     accentColor: '#C5CF4E',
-    //   },
-    //   radii: {
-    //     modal:'1px'
-    //   }
-    // }
+      defaultMode:'dark',
+      dark: {
+      colors: {
+        accentColor: '#AC1824',
+      },
+      radii: {
+        modal:'30px'
+      }
+    },
+    light: {
+      colors: {
+        accentColor: '#C5CF4E',
+      },
+      radii: {
+        modal:'1px'
+      }
+    }
   }}
 
 // theme={{ 
-//     autoMode:true,
+//     defaultMode:'dark',
 //   }}
 
 

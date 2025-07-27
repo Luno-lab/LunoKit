@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode, useMemo, useCallback, useEffect } from 'react';
 import type { LunokitTheme, LunokitThemeOverrides, PartialLunokitTheme, ThemeMode } from './types';
+import type { LunoStorage } from '@luno-kit/react';
 
 // Theme preference storage
 interface ThemePreference {
@@ -10,26 +11,21 @@ interface ThemePreference {
 
 const THEME_STORAGE_KEY = 'lunokit-theme-preference';
 
-const saveThemePreference = (preference: ThemePreference) => {
-  if (typeof window !== 'undefined') {
-    try {
-      localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(preference));
-    } catch (e) {
-      // Ignore localStorage errors
-    }
+const saveThemePreference = async (preference: ThemePreference, storage: LunoStorage) => {
+  try {
+    await storage.setItem(THEME_STORAGE_KEY, JSON.stringify(preference));
+  } catch (e) {
+    // Ignore storage errors
   }
 };
 
-const loadThemePreference = (): ThemePreference | null => {
-  if (typeof window !== 'undefined') {
-    try {
-      const saved = localStorage.getItem(THEME_STORAGE_KEY);
-      return saved ? JSON.parse(saved) : null;
-    } catch (e) {
-      return null;
-    }
+const loadThemePreference = async (storage: LunoStorage): Promise<ThemePreference | null> => {
+  try {
+    const saved = await storage.getItem(THEME_STORAGE_KEY);
+    return saved ? JSON.parse(saved) : null;
+  } catch (e) {
+    return null;
   }
-  return null;
 };
 
 // All theme variable names for cleanup
@@ -64,6 +60,7 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 interface ThemeProviderProps {
   children: ReactNode;
   theme?: LunokitTheme | LunokitThemeOverrides;
+  storage: LunoStorage;
 }
 
 // Helper function to check if theme is complete or partial
@@ -96,62 +93,58 @@ const useSystemTheme = () => {
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ 
   children, 
   theme: themeOverrides,
+  storage,
 }) => {
   const systemTheme = useSystemTheme();
   
   // Load user preference first
-  const userPreference = loadThemePreference();
+  const [userPreference, setUserPreference] = useState<ThemePreference | null>(null);
   
-  const [autoMode, setAutoModeState] = useState<boolean>(() => {
-    // 1. Check user preference first
-    if (userPreference) {
-      return userPreference.autoMode;
-    }
-    
-    // 2. Check theme config
-    if (!themeOverrides || isCompleteTheme(themeOverrides)) {
-      return false; // Complete themes don't support auto-switching
-    }
-    
-    const overrides = themeOverrides as LunokitThemeOverrides;
-    return overrides.autoMode ?? false; // Default to false
-  });
+  useEffect(() => {
+    loadThemePreference(storage).then(setUserPreference);
+  }, [storage]);
   
-  const [themeMode, setThemeModeState] = useState<ThemeMode>(() => {
-    // 1. Check user preference first
-    if (userPreference) {
+  const [autoMode, setAutoModeState] = useState<boolean>(false);
+  const [themeMode, setThemeModeState] = useState<ThemeMode>('light');
+
+  // Initialize theme state when userPreference is loaded
+  useEffect(() => {
+    if (userPreference !== null) {
+      // User preference is loaded
+      setAutoModeState(userPreference.autoMode);
+      
       if (userPreference.mode === 'auto') {
-        return systemTheme || 'light';
+        setThemeModeState(systemTheme || 'light');
       } else {
-        return userPreference.manualTheme || 'light';
+        setThemeModeState(userPreference.manualTheme || 'light');
+      }
+    } else {
+      // No user preference, use theme config defaults
+      if (!themeOverrides || isCompleteTheme(themeOverrides)) {
+        setAutoModeState(false);
+        setThemeModeState('light');
+      } else {
+        const overrides = themeOverrides as LunokitThemeOverrides;
+        const isAutoModeEnabled = overrides.autoMode ?? false;
+        setAutoModeState(isAutoModeEnabled);
+        
+        // For autoMode, use systemTheme if available, otherwise use defaultMode
+        if (isAutoModeEnabled) {
+          setThemeModeState(systemTheme || overrides.defaultMode || 'light');
+        } else {
+          // For manual mode, use explicit defaultMode, or fallback logic
+          if (overrides.defaultMode) {
+            setThemeModeState(overrides.defaultMode);
+          } else if (overrides.dark && !overrides.light) {
+            // Legacy fallback: if only dark theme is provided, default to dark
+            setThemeModeState('dark');
+          } else {
+            setThemeModeState('light');
+          }
+        }
       }
     }
-    
-    // 2. Use theme config
-    if (!themeOverrides || isCompleteTheme(themeOverrides)) {
-      return 'light';
-    }
-    
-    const overrides = themeOverrides as LunokitThemeOverrides;
-    const isAutoModeEnabled = overrides.autoMode ?? false;
-    
-    // For autoMode, use systemTheme if available, otherwise use defaultMode
-    if (isAutoModeEnabled) {
-      return systemTheme || overrides.defaultMode || 'light';
-    }
-    
-    // For manual mode, use explicit defaultMode, or fallback logic
-    if (overrides.defaultMode) {
-      return overrides.defaultMode;
-    }
-    
-    // Legacy fallback: if only dark theme is provided, default to dark
-    if (overrides.dark && !overrides.light) {
-      return 'dark';
-    }
-    
-    return 'light';
-  });
+  }, [userPreference, themeOverrides, systemTheme]);
 
   // Auto-follow system theme when autoMode is enabled
   useEffect(() => {
@@ -301,24 +294,28 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     }
   }, [themeInfo, themeMode]);
 
-  // User explicit choice handler (saves to localStorage)
+  // User explicit choice handler (saves to storage)
   const setThemeChoice = useCallback((choice: 'light' | 'dark' | 'auto') => {
     if (choice === 'auto') {
       setAutoModeState(true);
-      saveThemePreference({
-        mode: 'auto',
+      const preference = {
+        mode: 'auto' as const,
         autoMode: true
-      });
+      };
+      setUserPreference(preference);
+      saveThemePreference(preference, storage);
     } else {
       setAutoModeState(false);
       setThemeModeState(choice);
-      saveThemePreference({
-        mode: 'manual',
+      const preference = {
+        mode: 'manual' as const,
         manualTheme: choice,
         autoMode: false
-      });
+      };
+      setUserPreference(preference);
+      saveThemePreference(preference, storage);
     }
-  }, []);
+  }, [storage]);
 
   const contextValue = useMemo(() => ({
     themeMode,
@@ -327,7 +324,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     isAutoMode: autoMode,
   }), [themeMode, setThemeChoice, currentTheme, autoMode]);
 
-  return React.createElement(ThemeContext.Provider, { value: contextValue }, children);
+  return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
 };
 
 export const useLunoTheme = (): ThemeContextValue => {

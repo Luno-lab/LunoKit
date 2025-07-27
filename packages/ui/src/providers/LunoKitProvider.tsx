@@ -3,16 +3,17 @@ import { LunoProvider } from '@luno-kit/react';
 import type { Config as LunoCoreConfig } from '@luno-kit/react'
 // @ts-ignore - @tanstack/react-query v5 API changes
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ModalProvider, useConnectModal, useAccountModal, useChainModal } from './ModalContext';
+import { ModalProvider} from './ModalContext';
 import { ThemeProvider } from '../theme/context';
-import type { LunokitTheme, LunokitThemeOverrides, ThemeMode } from '../theme/types';
+import type { LunokitTheme, LunokitThemeOverrides } from '../theme/types';
 import { ConnectModal, AccountDetailsModal, ChainModal } from '../components'
 import { ModalSize } from '../components/Dialog'
 
 export interface LunoKitProviderProps {
   children: ReactNode;
   config: LunoCoreConfig & { modalSize?: ModalSize };
-  queryClientConfig?: any;
+  // @ts-ignore - @tanstack/react-query v5 API changes
+  queryClientConfig?: QueryClientConfig;
   theme?: LunokitTheme | LunokitThemeOverrides; // Support both complete themes and partial overrides
 }
 
@@ -27,7 +28,7 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
   return (
     <QueryClientProvider client={queryClient}>
       <LunoProvider config={config}>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme} storage={config.storage}>
           <ModalProvider>
             <div className={'font-base luno-kit'}>
               {children}
@@ -42,27 +43,12 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
 
 
 const RenderModals: React.FC<{modalSize?: ModalSize}> = ({ modalSize }: { modalSize?: ModalSize }) => {
-  const { isOpen: isConnectModalOpen, close: closeConnectModal } = useConnectModal();
-  const { isOpen: isAccountModalOpen, close: closeAccountModal } = useAccountModal();
-  const { isOpen: isChainModalOpen, close: closeChainModal } = useChainModal();
 
   return (
-    <>
-      {isConnectModalOpen && (
-        <ConnectModal size={modalSize} />
-      )}
-      {isAccountModalOpen && (
-        <AccountDetailsModal />
-      )}
-      {isChainModalOpen && (
-        <ChainModal
-          size={modalSize}
-          open={isChainModalOpen}
-          onOpenChange={(open) => {
-            if (!open) closeChainModal();
-          }}
-        />
-      )}
-    </>
+   <>
+  <ConnectModal size={modalSize} />
+  <AccountDetailsModal />
+  <ChainModal />
+</>
   );
 }
