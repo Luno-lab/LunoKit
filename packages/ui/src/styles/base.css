@@ -104,7 +104,33 @@
 /* Default Light Theme Variables */
 :root {
 
-  /* Light Theme Colors */
+ 
+
+  /* Fonts */
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Radii */
+  --radius-walletSelectItem: 6px;
+  --radius-connectButton: 6px;
+  --radius-modalControlButton: 6px;
+  --radius-accountActionItem: 6px;
+  --radius-accountSelectItem: 6px;
+  --radius-currentNetworkButton: 6px;
+  --radius-networkSelectItem: 6px;
+  --radius-modal: 6px;
+
+  /* Shadows */
+  --shadow-button: 0px 10px 20px 0px rgba(0,0,0,0.1);
+  --shadow-modal: 0px 20px 25px -5px rgba(0,0,0,0.1);
+
+  /* Blurs */
+  --blur-modalOverlay: blur(8px);
+}
+
+[data-theme="light"] {
+ /* Light Theme Colors */
   --color-accentColor: #3385FF;
   --color-walletSelectItemBackground: rgba(0,0,0,0.035);
   --color-walletSelectItemBackgroundHover: rgba(0,0,0,0.08);
@@ -141,28 +167,6 @@
   --color-info: #3b82f6;
   --color-infoForeground: #ffffff;
   --color-skeleton: rgba(0,0,0,0.08);
-
-  /* Fonts */
-  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-heading: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-
-  /* Radii */
-  --radius-walletSelectItem: 6px;
-  --radius-connectButton: 6px;
-  --radius-modalControlButton: 6px;
-  --radius-accountActionItem: 6px;
-  --radius-accountSelectItem: 6px;
-  --radius-currentNetworkButton: 6px;
-  --radius-networkSelectItem: 6px;
-  --radius-modal: 6px;
-
-  /* Shadows */
-  --shadow-button: 0px 10px 20px 0px rgba(0,0,0,0.1);
-  --shadow-modal: 0px 20px 25px -5px rgba(0,0,0,0.1);
-
-  /* Blurs */
-  --blur-modalOverlay: blur(8px);
 }
 
 /* Dark Theme Variables */

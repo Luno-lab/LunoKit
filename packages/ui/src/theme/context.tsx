@@ -1,15 +1,15 @@
 import React, { createContext, useState, useContext, ReactNode, useMemo, useCallback, useEffect } from 'react';
 import type { LunokitTheme, LunokitThemeOverrides, PartialLunokitTheme, ThemeMode } from './types';
 import type { LunoStorage } from '@luno-kit/react';
+import { useCSSVariableInjection } from './cssVariableInject';
 
 // Theme preference storage
 interface ThemePreference {
-  mode: 'manual' | 'auto';
-  manualTheme?: ThemeMode;
-  autoMode: boolean;
+  isAuto: boolean;
+  preferredTheme?: ThemeMode;
 }
 
-const THEME_STORAGE_KEY = 'lunokit-theme-preference';
+const THEME_STORAGE_KEY = 'lunokitTheme';
 
 const saveThemePreference = async (preference: ThemePreference, storage: LunoStorage) => {
   try {
@@ -18,35 +18,6 @@ const saveThemePreference = async (preference: ThemePreference, storage: LunoSto
     // Ignore storage errors
   }
 };
-
-const loadThemePreference = async (storage: LunoStorage): Promise<ThemePreference | null> => {
-  try {
-    const saved = await storage.getItem(THEME_STORAGE_KEY);
-    return saved ? JSON.parse(saved) : null;
-  } catch (e) {
-    return null;
-  }
-};
-
-// All theme variable names for cleanup
-const ALL_THEME_VARS = [
-  '--color-accentColor', '--color-walletSelectItemBackground', '--color-walletSelectItemBackgroundHover', '--color-walletSelectItemText',
-  '--color-connectButtonBackground', '--color-connectButtonInnerBackground', '--color-connectButtonText',
-  '--color-accountActionItemBackground', '--color-accountActionItemBackgroundHover', '--color-accountActionItemText',
-  '--color-accountSelectItemBackground', '--color-accountSelectItemBackgroundHover', '--color-accountSelectItemText',
-  '--color-currentNetworkButtonBackground', '--color-currentNetworkButtonText',
-  '--color-networkSelectItemBackground', '--color-networkSelectItemBackgroundHover', '--color-networkSelectItemText',
-  '--color-navigationButtonBackground', '--color-separatorLine',
-  '--color-modalBackground', '--color-modalBackdrop', '--color-modalBorder', '--color-modalText', '--color-modalTextSecondary',
-  '--color-modalControlButtonBackgroundHover', '--color-modalControlButtonText',
-  '--color-success', '--color-successForeground', '--color-warning', '--color-warningForeground',
-  '--color-error', '--color-errorForeground', '--color-info', '--color-infoForeground', '--color-skeleton',
-  '--font-body', '--font-heading', '--font-mono',
-  '--radius-walletSelectItem', '--radius-connectButton', '--radius-modalControlButton', '--radius-accountActionItem',
-  '--radius-accountSelectItem', '--radius-currentNetworkButton', '--radius-networkSelectItem', '--radius-modal',
-  '--shadow-button', '--shadow-modal',
-  '--blur-modalOverlay',
-];
 
 interface ThemeContextValue {
   themeMode: ThemeMode;
@@ -70,7 +41,10 @@ const isCompleteTheme = (theme: LunokitTheme | LunokitThemeOverrides): theme is 
 
 // Hook to detect system theme
 const useSystemTheme = () => {
-  const [systemTheme, setSystemTheme] = useState<'light' | 'dark'>('light');
+  const [systemTheme, setSystemTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window === 'undefined') return 'light';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  });
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -97,71 +71,68 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 }) => {
   const systemTheme = useSystemTheme();
   
-  // Load user preference first
-  const [userPreference, setUserPreference] = useState<ThemePreference | null>(null);
-  
-  useEffect(() => {
-    loadThemePreference(storage).then(setUserPreference);
-  }, [storage]);
-  
-  const [autoMode, setAutoModeState] = useState<boolean>(false);
-  const [themeMode, setThemeModeState] = useState<ThemeMode>('light');
-
-  // Initialize theme state when userPreference is loaded
-  useEffect(() => {
-    if (userPreference !== null) {
-      // User preference is loaded
-      setAutoModeState(userPreference.autoMode);
-      
-      if (userPreference.mode === 'auto') {
-        setThemeModeState(systemTheme || 'light');
-      } else {
-        setThemeModeState(userPreference.manualTheme || 'light');
-      }
-    } else {
-      // No user preference, use theme config defaults
-      if (!themeOverrides || isCompleteTheme(themeOverrides)) {
-        setAutoModeState(false);
-        setThemeModeState('light');
-      } else {
-        const overrides = themeOverrides as LunokitThemeOverrides;
-        const isAutoModeEnabled = overrides.autoMode ?? false;
-        setAutoModeState(isAutoModeEnabled);
-        
-        // For autoMode, use systemTheme if available, otherwise use defaultMode
-        if (isAutoModeEnabled) {
-          setThemeModeState(systemTheme || overrides.defaultMode || 'light');
-        } else {
-          // For manual mode, use explicit defaultMode, or fallback logic
-          if (overrides.defaultMode) {
-            setThemeModeState(overrides.defaultMode);
-          } else if (overrides.dark && !overrides.light) {
-            // Legacy fallback: if only dark theme is provided, default to dark
-            setThemeModeState('dark');
-          } else {
-            setThemeModeState('light');
+  const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('luno.lunokitTheme');
+        if (saved) {
+          const preference = JSON.parse(saved);
+          if (preference?.isAuto) {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          } else if (preference?.preferredTheme) {
+            return preference.preferredTheme;
           }
         }
+      } catch (e) {
+        // Ignore parsing errors
       }
     }
-  }, [userPreference, themeOverrides, systemTheme]);
-
-  // Auto-follow system theme when autoMode is enabled
-  useEffect(() => {
-    if (autoMode) {
-      setThemeModeState(systemTheme);
+    
+    if (!themeOverrides || isCompleteTheme(themeOverrides)) {
+      return 'light';
     }
-  }, [systemTheme, autoMode]);
+    
+    const overrides = themeOverrides as LunokitThemeOverrides;
+    return overrides.defaultMode || 'light';
+  });
+
+  const [isAutoMode, setIsAutoMode] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('luno.lunokitTheme');
+        if (saved) {
+          const preference = JSON.parse(saved);
+          return preference?.isAuto ?? false;
+        }
+      } catch (e) {
+        // Ignore parsing errors
+      }
+    }
+    
+    if (!themeOverrides || isCompleteTheme(themeOverrides)) {
+      return false;
+    }
+    
+    const overrides = themeOverrides as LunokitThemeOverrides;
+    return overrides.autoMode ?? false;
+  });
+
+  // Only listen to system theme changes for auto mode
+  useEffect(() => {
+    if (isAutoMode) {
+      setThemeMode(systemTheme || 'light');
+    }
+  }, [systemTheme, isAutoMode]);
 
   // Determine theme type and get relevant data
   const themeInfo = useMemo(() => {
     if (!themeOverrides) {
-      return { type: 'default', completeTheme: null, partialOverrides: null };
+      return { type: 'default' as const, completeTheme: null, partialOverrides: null };
     }
 
     // Handle complete custom theme
     if (isCompleteTheme(themeOverrides)) {
-      return { type: 'complete', completeTheme: themeOverrides, partialOverrides: null };
+      return { type: 'complete' as const, completeTheme: themeOverrides, partialOverrides: null };
     }
 
     // Handle theme overrides format
@@ -169,7 +140,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     
     // Apply complete theme override (highest priority)
     if (overrides.theme) {
-      return { type: 'complete', completeTheme: overrides.theme, partialOverrides: null };
+      return { type: 'complete' as const, completeTheme: overrides.theme, partialOverrides: null };
     }
 
     // For partial overrides, get the current mode's overrides
@@ -180,7 +151,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       partialOverrides = overrides.dark;
     }
 
-    return { type: 'partial', completeTheme: null, partialOverrides };
+    return { type: 'partial' as const, completeTheme: null, partialOverrides };
   }, [themeMode, themeOverrides]);
 
   // Build current theme for context (only for complete themes)
@@ -189,140 +160,33 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   }, [themeInfo]);
 
   // Inject CSS variables to DOM
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    
-    const root = document.documentElement;
-    
-    if (themeInfo.type === 'complete' && themeInfo.completeTheme) {
-      // Complete custom theme: inject all variables and remove data-theme
-      Object.entries(themeInfo.completeTheme.colors).forEach(([key, value]) => {
-        if (value) {
-          root.style.setProperty(`--color-${key}`, value);
-        }
-      });
-      
-      Object.entries(themeInfo.completeTheme.fonts).forEach(([key, value]) => {
-        if (value) {
-          root.style.setProperty(`--font-${key}`, value);
-        }
-      });
-      
-      Object.entries(themeInfo.completeTheme.radii).forEach(([key, value]) => {
-        if (value) {
-          root.style.setProperty(`--radius-${key}`, value);
-        }
-      });
-      
-      Object.entries(themeInfo.completeTheme.shadows).forEach(([key, value]) => {
-        if (value) {
-          root.style.setProperty(`--shadow-${key}`, value);
-        }
-      });
-      
-      Object.entries(themeInfo.completeTheme.blurs).forEach(([key, value]) => {
-        if (value) {
-          root.style.setProperty(`--blur-${key}`, value);
-        }
-      });
-      
-      // Remove data-theme attribute for complete custom themes
-      root.removeAttribute('data-theme');
-      
-    } else if (themeInfo.type === 'partial' && themeInfo.partialOverrides) {
-      // Partial override: KEEP data-theme and inject only overridden variables
-      root.setAttribute('data-theme', themeMode);
-      
-      // Only clear and inject if there are actual overrides
-      const hasOverrides = Object.keys(themeInfo.partialOverrides).length > 0;
-      if (hasOverrides) {
-        // Clear all custom variables first
-        ALL_THEME_VARS.forEach(varName => {
-          root.style.removeProperty(varName);
-        });
-        
-        // Inject only the overridden variables
-        if (themeInfo.partialOverrides.colors) {
-          Object.entries(themeInfo.partialOverrides.colors).forEach(([key, value]) => {
-            if (value) {
-              root.style.setProperty(`--color-${key}`, value);
-            }
-          });
-        }
-        
-        if (themeInfo.partialOverrides.fonts) {
-          Object.entries(themeInfo.partialOverrides.fonts).forEach(([key, value]) => {
-            if (value) {
-              root.style.setProperty(`--font-${key}`, value);
-            }
-          });
-        }
-        
-        if (themeInfo.partialOverrides.radii) {
-          Object.entries(themeInfo.partialOverrides.radii).forEach(([key, value]) => {
-            if (value) {
-              root.style.setProperty(`--radius-${key}`, value);
-            }
-          });
-        }
-        
-        if (themeInfo.partialOverrides.shadows) {
-          Object.entries(themeInfo.partialOverrides.shadows).forEach(([key, value]) => {
-            if (value) {
-              root.style.setProperty(`--shadow-${key}`, value);
-            }
-          });
-        }
-        
-        if (themeInfo.partialOverrides.blurs) {
-          Object.entries(themeInfo.partialOverrides.blurs).forEach(([key, value]) => {
-            if (value) {
-              root.style.setProperty(`--blur-${key}`, value);
-            }
-          });
-        }
-      }
-      
-    } else {
-      // Default theme: just set data-theme and clear custom variables
-      root.setAttribute('data-theme', themeMode);
-      
-      // Clear any previously injected custom variables
-      ALL_THEME_VARS.forEach(varName => {
-        root.style.removeProperty(varName);
-      });
-    }
-  }, [themeInfo, themeMode]);
+  useCSSVariableInjection(themeInfo, themeMode);
 
   // User explicit choice handler (saves to storage)
   const setThemeChoice = useCallback((choice: 'light' | 'dark' | 'auto') => {
-    if (choice === 'auto') {
-      setAutoModeState(true);
-      const preference = {
-        mode: 'auto' as const,
-        autoMode: true
-      };
-      setUserPreference(preference);
-      saveThemePreference(preference, storage);
+    const isAuto = choice === 'auto';
+    setIsAutoMode(isAuto);
+    
+    if (isAuto) {
+      setThemeMode(systemTheme || 'light');
     } else {
-      setAutoModeState(false);
-      setThemeModeState(choice);
-      const preference = {
-        mode: 'manual' as const,
-        manualTheme: choice,
-        autoMode: false
-      };
-      setUserPreference(preference);
-      saveThemePreference(preference, storage);
+      setThemeMode(choice);
     }
-  }, [storage]);
+    
+    const preference: ThemePreference = {
+      isAuto,
+      ...(isAuto ? {} : { preferredTheme: choice })
+    };
+    
+    saveThemePreference(preference, storage);
+  }, [storage, systemTheme]);
 
   const contextValue = useMemo(() => ({
     themeMode,
     setThemeChoice,
     currentTheme,
-    isAutoMode: autoMode,
-  }), [themeMode, setThemeChoice, currentTheme, autoMode]);
+    isAutoMode,
+  }), [themeMode, setThemeChoice, currentTheme, isAutoMode]);
 
   return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
 };
