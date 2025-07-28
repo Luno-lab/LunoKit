@@ -1,7 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode, useMemo, useCallback, useEffect } from 'react';
 import type { LunokitTheme, LunokitThemeOverrides, PartialLunokitTheme, ThemeMode } from './types';
-import type { LunoStorage } from '@luno-kit/react';
-import { useCSSVariableInjection } from './cssVariableInject';
+import { useCSSVariableInjection } from '../hooks/cssVariableInject';
 
 // Theme preference storage
 interface ThemePreference {
@@ -9,13 +8,12 @@ interface ThemePreference {
   preferredTheme?: ThemeMode;
 }
 
-const THEME_STORAGE_KEY = 'lunokitTheme';
+const THEME_STORAGE_KEY = 'luno.lastThemePreference';
 
-const saveThemePreference = async (preference: ThemePreference, storage: LunoStorage) => {
+const saveThemePreference = (preference: ThemePreference) => {
   try {
-    await storage.setItem(THEME_STORAGE_KEY, JSON.stringify(preference));
+    localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(preference));
   } catch (e) {
-    // Ignore storage errors
   }
 };
 
@@ -23,7 +21,6 @@ interface ThemeContextValue {
   themeMode: ThemeMode;
   setThemeChoice: (choice: 'light' | 'dark' | 'auto') => void; // User explicit choice
   currentTheme: LunokitTheme | null; // null for default themes
-  isAutoMode: boolean; 
 }
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
@@ -31,7 +28,6 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 interface ThemeProviderProps {
   children: ReactNode;
   theme?: LunokitTheme | LunokitThemeOverrides;
-  storage: LunoStorage;
 }
 
 // Helper function to check if theme is complete or partial
@@ -67,14 +63,13 @@ const useSystemTheme = () => {
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ 
   children, 
   theme: themeOverrides,
-  storage,
 }) => {
   const systemTheme = useSystemTheme();
   
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
     if (typeof window !== 'undefined') {
       try {
-        const saved = localStorage.getItem('luno.lunokitTheme');
+        const saved = localStorage.getItem(THEME_STORAGE_KEY);
         if (saved) {
           const preference = JSON.parse(saved);
           if (preference?.isAuto) {
@@ -99,7 +94,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   const [isAutoMode, setIsAutoMode] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       try {
-        const saved = localStorage.getItem('luno.lunokitTheme');
+        const saved = localStorage.getItem(THEME_STORAGE_KEY);
         if (saved) {
           const preference = JSON.parse(saved);
           return preference?.isAuto ?? false;
@@ -178,15 +173,14 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       ...(isAuto ? {} : { preferredTheme: choice })
     };
     
-    saveThemePreference(preference, storage);
-  }, [storage, systemTheme]);
+    saveThemePreference(preference);
+  }, [systemTheme]);
 
   const contextValue = useMemo(() => ({
     themeMode,
     setThemeChoice,
     currentTheme,
-    isAutoMode,
-  }), [themeMode, setThemeChoice, currentTheme, isAutoMode]);
+  }), [themeMode, setThemeChoice, currentTheme]);
 
   return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
 };

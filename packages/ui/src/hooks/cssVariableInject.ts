@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import type { LunokitTheme, PartialLunokitTheme, ThemeMode } from './types';
+import type { LunokitTheme, PartialLunokitTheme, ThemeMode } from '../theme/types';
 
 // All theme variable names for cleanup
 const ALL_THEME_VARS = [

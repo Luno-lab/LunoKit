@@ -2,7 +2,7 @@ import React, { ReactNode, useState } from 'react';
 import { LunoProvider } from '@luno-kit/react';
 import type { Config as LunoCoreConfig } from '@luno-kit/react'
 // @ts-ignore - @tanstack/react-query v5 API changes
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider,QueryClientCongfig } from '@tanstack/react-query';
 import { ModalProvider} from './ModalContext';
 import { ThemeProvider } from '../theme/context';
 import type { LunokitTheme, LunokitThemeOverrides } from '../theme/types';
@@ -12,8 +12,7 @@ import { ModalSize } from '../components/Dialog'
 export interface LunoKitProviderProps {
   children: ReactNode;
   config: LunoCoreConfig & { modalSize?: ModalSize };
-  // @ts-ignore - @tanstack/react-query v5 API changes
-  queryClientConfig?: QueryClientConfig;
+  queryClientConfig?: QueryClientCongfig;
   theme?: LunokitTheme | LunokitThemeOverrides; // Support both complete themes and partial overrides
 }
 
@@ -28,7 +27,7 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
   return (
     <QueryClientProvider client={queryClient}>
       <LunoProvider config={config}>
-        <ThemeProvider theme={theme} storage={config.storage}>
+        <ThemeProvider theme={theme}>
           <ModalProvider>
             <div className={'font-base luno-kit'}>
               {children}

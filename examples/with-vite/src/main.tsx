@@ -156,34 +156,31 @@ createRoot(document.getElementById('root')!).render(
     //  }}
      
      // 9. Complete theme via theme property in overrides
-     theme={{
-       light: {
-         colors: {
-           accentColor: '#9b59b6',
-           modalBackground: '#34495e',
-          
-           connectButtonBackground: '#9b59b6',
-           connectButtonText: '#ffffff',
-         },
-         fonts: {
-           body: 'Inter, sans-serif',
-           heading: 'Inter, sans-serif',
-         },
-         radii: {
-           modal: '24px',
-           connectButton: '16px',
-         },
-         shadows: {
-           modal: '0 25px 50px rgba(155, 89, 182, 0.3)',
-         },
-         blurs: {
-           modalOverlay: '12px',
-         }
-       }
-     }}
-
-   
-     
+    //  theme={{
+    //    light: {
+    //      colors: {
+    //        accentColor: '#9b59b6',
+    //        modalBackground: '#34495e',
+    //        modalText: '#ecf0f1',
+    //        connectButtonBackground: '#9b59b6',
+    //        connectButtonText: '#ffffff',
+    //      },
+    //      fonts: {
+    //        body: 'Inter, sans-serif',
+    //        heading: 'Inter, sans-serif',
+    //      },
+    //      radii: {
+    //        modal: '24px',
+    //        connectButton: '16px',
+    //      },
+    //      shadows: {
+    //        modal: '0 25px 50px rgba(155, 89, 182, 0.3)',
+    //      },
+    //      blurs: {
+    //        modalOverlay: '12px',
+    //      }
+    //    }
+    //  }}
 
   >
     <StrictMode>
