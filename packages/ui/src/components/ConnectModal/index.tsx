@@ -107,7 +107,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
             <div className={'flex items-center flex-col max-w-[312px] grow justify-center'}>
               {selectedConnector ?
-                showQRCode ? <QRCode logoBackground={selectedConnector.icon} uri={qrCode}/> : (
+                showQRCode ? <QRCode logoBackground={selectedConnector.icon} uri={qrCode} size={312}/> : (
                   <>
                     <div className={'w-[102px] h-[102px] pb-[8px]'}>
                       <img src={selectedConnector.icon} className={'w-full h-full'} alt=""/>
