@@ -24,13 +24,13 @@ export const MainView: React.FC<MainViewProps> = ({
         key: 'Chain Name',
         content: (
           <div className={'flex items-stretch w-full justify-between'}>
-            <div className={'flex items-center gap-[8px]'}>
+            <div className={'flex items-center gap-2'}>
               <ChainIcon
                 className="w-[20px] h-[20px]"
                 chainIconUrl={chain?.chainIconUrl}
                 chainName={chain?.name}
               />
-              <span className="text-primary text-modalFont">{chain?.name || 'Polkadot'}</span>
+              <span className="text-base text-modalText">{chain?.name || 'Polkadot'}</span>
             </div>
             <div
               className={'flex items-center justify-center'}>
@@ -45,7 +45,7 @@ export const MainView: React.FC<MainViewProps> = ({
         content: (
           <>
             <List />
-            <span className="text-primary text-modalFont">View on Explorer</span>
+            <span className="text-base text-accountActionItemText">View on Explorer</span>
           </>
         ),
         onClick: () => window.open(getExplorerUrl(chain?.blockExplorers?.default?.url!, address, 'address'))
@@ -55,7 +55,7 @@ export const MainView: React.FC<MainViewProps> = ({
         content: (
           <>
             <Switch />
-            <span className="text-primary text-modalFont">Switch Account</span>
+            <span className="text-base text-accountActionItemText">Switch Account</span>
           </>
         ),
         onClick: () => onViewChange(AccountModalView.switchAccount)
@@ -69,8 +69,8 @@ export const MainView: React.FC<MainViewProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center gap-[26px] w-full">
-      <div className="flex flex-col gap-[6px] w-full">
+    <div className="flex flex-col items-center gap-6 w-full">
+      <div className="flex flex-col gap-1.5 w-full">
         {items.map(i => (
           <SelectItem key={i.key} onClick={i.onClick}>
             {i.content}
@@ -80,7 +80,7 @@ export const MainView: React.FC<MainViewProps> = ({
 
       <SelectItem onClick={handleDisconnect}>
         <Disconnect  />
-        <span className="font-[500] text-primary text-modalFont">Disconnect</span>
+        <span className="font-medium text-base text-accountActionItemText">Disconnect</span>
       </SelectItem>
     </div>
   );
@@ -92,8 +92,8 @@ const SelectItem = ({ children, onClick }: { children: React.ReactNode; onClick?
       type="button"
       onClick={() => onClick?.()}
       className={cs(
-        'w-full p-[14px] rounded-sm border-none text-left flex items-center gap-[8px] font-[500]',
-        'bg-[var(--color-connectorItemBackground)] hover:bg-[var(--color-connectorItemHover)] active:bg-[var(--color-connectorItemActive)]',
+        'w-full p-3.5 rounded-accountActionItem border-none text-left flex items-center gap-2 font-medium',
+        'bg-accountActionItemBackground hover:bg-accountActionItemBackgroundHover',
         'transition-colors duration-200',
         onClick ? 'cursor-pointer' : 'cursor-auto'
       )}
