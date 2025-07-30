@@ -38,6 +38,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
   const handleConnect = async (connector: Connector) => {
     setSelectedConnector(connector)
+    setQrCode(undefined)
     if (connector.hasConnectionUri()) {
       onQrCode(connector)
     }
@@ -49,6 +50,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
     !open && close()
     resetConnect()
     setSelectedConnector(null)
+    setQrCode(undefined)
   }
 
   return (
