@@ -8,6 +8,7 @@ import { Close, Loading } from '../../assets/icons'
 import { SpiralAnimation } from '../SpiralAnimation'
 import { transitionClassName } from '../ConnectButton'
 import { QRCode } from '../QRCode'
+import { useWindowSize } from '../../hooks'
 
 export interface ConnectModalProps {
   size?: ModalSize;
@@ -24,7 +25,10 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
   const showQRCode = selectedConnector?.hasConnectionUri();
 
-  const isWide = size === 'wide';
+  const { width: windowWidth } = useWindowSize()
+
+  const isLargeWindow = windowWidth && windowWidth > 768;
+  const isWide = size === 'wide' && isLargeWindow;
 
   const installedConnectors = connectors.filter(c => c.isInstalled())
 
@@ -38,6 +42,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
   const handleConnect = async (connector: Connector) => {
     setSelectedConnector(connector)
+    setQrCode(undefined)
     if (connector.hasConnectionUri()) {
       onQrCode(connector)
     }
@@ -49,17 +54,18 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
     !open && close()
     resetConnect()
     setSelectedConnector(null)
+    setQrCode(undefined)
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={_onOpenChange}>
-      <div className={cs('flex items-stretch justify-between max-h-[504px] max-w-[724px]')}>
+      <div className={cs('flex items-stretch justify-between w-full md:max-h-[504px] md:max-w-[724px]')}>
         <div className={cs(
-          'flex flex-col items-start py-4 px-5 min-w-[287px]',
+          'flex flex-col items-start py-4 px-5 md:min-w-[360px] w-full md:w-auto',
           isWide && 'border-r-[1px] border-r-solid border-r-separatorLine'
           )}>
-          <div className={'flex items-center justify-between'}>
-            <DialogTitle className="text-lg leading-lg text-modalText font-bold pb-6">
+          <div className={cs('flex items-center justify-between w-full', !isWide && 'pb-4')}>
+            <DialogTitle className={cs('text-lg leading-lg text-modalText font-bold', isWide && 'pb-6')}>
               Connect Wallet
             </DialogTitle>
             {!isWide && (

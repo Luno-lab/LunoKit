@@ -30,9 +30,9 @@ export const AccountDetailsModal: React.FC = () => {
 
   const handleViewChange = useCallback((view: AccountModalView) => {
     if (view === currentView || isAnimating) return;
-    
+
     setIsAnimating(true);
-    
+
     if (!containerRef.current) {
       setCurrentView(view);
       setIsAnimating(false);
@@ -41,18 +41,18 @@ export const AccountDetailsModal: React.FC = () => {
 
     const container = containerRef.current;
     const currentHeight = container.offsetHeight;
-    
+
     setCurrentView(view);
-    
+
     // Wait for React to render new content, then animate height
     requestAnimationFrame(() => {
       if (!container || !currentViewRef.current) {
         setIsAnimating(false);
         return;
       }
-      
+
       const newHeight = currentViewRef.current.offsetHeight;
-      
+
       container.animate([
         { height: currentHeight + 'px' },
         { height: newHeight + 'px' }
@@ -106,8 +106,8 @@ export const AccountDetailsModal: React.FC = () => {
       }}
     >
       <div className={cs(
-        'flex flex-col w-[360px] max-h-[500px] p-4 text-modalText',
-        'bg-modalBackground rounded-modal shadow-modal',
+        'flex flex-col w-full md:w-[360px] max-h-[500px] p-4 text-modalText',
+        'bg-modalBackground shadow-modal',
         currentView === AccountModalView.main ? 'gap-6' : 'gap-3.5'
       )}>
         <div className="flex items-stretch justify-between w-full">
@@ -158,7 +158,7 @@ export const AccountDetailsModal: React.FC = () => {
           </DialogClose>
         </div>
 
-        <div 
+        <div
           ref={containerRef}
           className="relative overflow-hidden"
         >

@@ -11,7 +11,7 @@ export const ChainModal: React.FC<ChainModalProps> = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
-      <div className="flex flex-col w-[360px] max-h-[500px] p-4 gap-3.5 text-modalText">
+      <div className="flex flex-col w-full md:w-[360px] max-h-[500px] p-4 gap-3.5 text-modalText">
         <div className="flex items-center justify-between w-full">
           <div className="w-[30px]" /> {/* Placeholder to keep title centered */}
           <DialogTitle className="text-lg leading-lg text-modalText font-semibold transition-opacity duration-300">
@@ -21,7 +21,7 @@ export const ChainModal: React.FC<ChainModalProps> = () => {
             <Close />
           </DialogClose>
         </div>
-        
+
         <ChainList />
       </div>
     </Dialog>
