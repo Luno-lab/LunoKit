@@ -127,7 +127,14 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
                     {isConnecting && (
                       <Loading className={'w-[24px] h-[24px] text-secondaryFont animate-[spin_3s_linear_infinite]'}/>
                     )}
-                    { !isConnecting && connectError && (
+                    {!selectedConnector.isInstalled() && (
+                      <p
+                        onClick={() => window.open(selectedConnector.links.browserExtension)}
+                        className={'cursor-pointer pt-[16px] text-base leading-base text-accentColor font-bold text-center'}>
+                        don‘t have {selectedConnector.name}?
+                      </p>
+                    )}
+                    {!isConnecting && connectError && selectedConnector.isInstalled() && (
                       <button
                         className={cs(
                           'rounded-connectButton focus:outline-none py-[4px] px-[12px] cursor-pointer font-[600] text-primaryFont bg-connectButtonBackground shadow-connectButton active:scale-[0.95]',

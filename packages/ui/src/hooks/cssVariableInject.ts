@@ -13,7 +13,7 @@ const ALL_THEME_VARS = [
   '--color-modalBackground', '--color-modalBackdrop', '--color-modalBorder', '--color-modalText', '--color-modalTextSecondary',
   '--color-modalControlButtonBackgroundHover', '--color-modalControlButtonText',
   '--color-success', '--color-successForeground', '--color-warning', '--color-warningForeground',
-  '--color-error', '--color-errorForeground', '--color-info', '--color-infoForeground', '--color-skeleton',
+  '--color-error', '--color-errorForeground', '--color-info', '--color-infoForeground', '--color-skeleton', '--color-cutLine',
   '--font-body', '--font-heading', '--font-mono',
   '--radius-walletSelectItem', '--radius-connectButton', '--radius-modalControlButton', '--radius-accountActionItem',
   '--radius-accountSelectItem', '--radius-currentNetworkButton', '--radius-networkSelectItem', '--radius-modal', '--radius-modalMobile',

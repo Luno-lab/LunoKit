@@ -106,11 +106,11 @@ export const AccountDetailsModal: React.FC = () => {
       }}
     >
       <div className={cs(
-        'flex flex-col w-full md:w-[360px] max-h-[500px] p-4 text-modalText',
+        'flex flex-col w-full md:w-[360px] max-h-[500px] text-modalText',
         'bg-modalBackground shadow-modal',
         currentView === AccountModalView.main ? 'gap-6' : 'gap-3.5'
       )}>
-        <div className="flex items-stretch justify-between w-full">
+        <div className="flex items-stretch justify-between w-full px-4 pt-4">
           {currentView === AccountModalView.main ? (
             <div className={'flex items-center gap-3'}>
               {activeConnector?.icon && (

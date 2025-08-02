@@ -69,19 +69,22 @@ export const MainView: React.FC<MainViewProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full">
-      <div className="flex flex-col gap-1.5 w-full">
+    <div className="flex flex-col items-center gap-3 w-full">
+      <div className="flex flex-col gap-1.5 w-full px-4">
         {items.map(i => (
           <SelectItem key={i.key} onClick={i.onClick}>
             {i.content}
           </SelectItem>
         ))}
       </div>
+      <div className={'w-full mx-[-100px] h-[1px] bg-cutLine'}/>
 
-      <SelectItem onClick={handleDisconnect}>
-        <Disconnect  />
-        <span className="font-medium text-base text-accountActionItemText">Disconnect</span>
-      </SelectItem>
+      <div className={'w-full px-4 pb-4'}>
+        <SelectItem onClick={handleDisconnect}>
+          <Disconnect  />
+          <span className="font-medium text-base text-accountActionItemText">Disconnect</span>
+        </SelectItem>
+      </div>
     </div>
   );
 };
