@@ -6,5 +6,8 @@ export const polkagateConnector = () => {
     id: 'polkagate',
     name: 'Polkagate',
     icon: polkagateSVG,
+    links: {
+      browserExtension: 'https://chromewebstore.google.com/detail/polkagate-the-gateway-to/ginchbkmljhldofnbjabmeophlhdldgp'
+    }
   });
 }

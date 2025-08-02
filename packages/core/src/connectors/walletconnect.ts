@@ -101,6 +101,7 @@ export class WalletConnectConnector extends BaseConnector {
 
       const session = await approval();
       this.session = session;
+      this.provider.session = session;
 
       this.connectionUri = undefined;
 
@@ -153,7 +154,7 @@ export class WalletConnectConnector extends BaseConnector {
   public async disconnect(): Promise<void> {
     if (this.provider) {
       await Promise.race([
-        this.provider.disconnect(),
+        await this.provider.disconnect(),
         new Promise((_, reject) =>
           setTimeout(() => reject(new Error('Disconnect timeout')), 5000)
         )

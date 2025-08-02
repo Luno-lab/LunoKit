@@ -7,6 +7,9 @@ export class NovaMobileConnector extends CommonConnector {
       id: 'polkadot-js',
       name: 'Nova Wallet (Mobile)',
       icon: novaSVG,
+      links: {
+        deepLink: 'https://app.novawallet.io/open/dapp'
+      }
     });
   }
 

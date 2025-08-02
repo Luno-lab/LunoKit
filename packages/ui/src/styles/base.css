@@ -10,34 +10,34 @@
   --color-modalBorder: var(--color-modalBorder);
   --color-modalControlButtonBackgroundHover: var(--color-modalControlButtonBackgroundHover);
   --color-modalControlButtonText: var(--color-modalControlButtonText);
-  
+
   --color-connectButtonBackground: var(--color-connectButtonBackground);
   --color-connectButtonInnerBackground: var(--color-connectButtonInnerBackground);
   --color-connectButtonText: var(--color-connectButtonText);
-  
+
   --color-walletSelectItemBackground: var(--color-walletSelectItemBackground);
   --color-walletSelectItemBackgroundHover: var(--color-walletSelectItemBackgroundHover);
   --color-walletSelectItemText: var(--color-walletSelectItemText);
-  
+
   --color-accountActionItemBackground: var(--color-accountActionItemBackground);
   --color-accountActionItemBackgroundHover: var(--color-accountActionItemBackgroundHover);
   --color-accountActionItemText: var(--color-accountActionItemText);
-  
+
   --color-accountSelectItemBackground: var(--color-accountSelectItemBackground);
   --color-accountSelectItemBackgroundHover: var(--color-accountSelectItemBackgroundHover);
   --color-accountSelectItemText: var(--color-accountSelectItemText);
-  
+
   --color-currentNetworkButtonBackground: var(--color-currentNetworkButtonBackground);
   --color-currentNetworkButtonText: var(--color-currentNetworkButtonText);
-  
+
   --color-networkSelectItemBackground: var(--color-networkSelectItemBackground);
   --color-networkSelectItemBackgroundHover: var(--color-networkSelectItemBackgroundHover);
   --color-networkSelectItemText: var(--color-networkSelectItemText);
-  
+
   --color-navigationButtonBackground: var(--color-navigationButtonBackground);
   --color-separatorLine: var(--color-separatorLine);
   --color-skeleton: var(--color-skeleton);
-  
+
   --color-success: var(--color-success);
   --color-successForeground: var(--color-successForeground);
   --color-warning: var(--color-warning);
@@ -46,7 +46,9 @@
   --color-errorForeground: var(--color-errorForeground);
   --color-info: var(--color-info);
   --color-infoForeground: var(--color-infoForeground);
-  
+
+  --color-cutLine: var(--color-cutLine);
+
   /* Radius utilities */
   --radius-walletSelectItem: var(--radius-walletSelectItem);
   --radius-connectButton: var(--radius-connectButton);
@@ -56,14 +58,15 @@
   --radius-currentNetworkButton: var(--radius-currentNetworkButton);
   --radius-networkSelectItem: var(--radius-networkSelectItem);
   --radius-modal: var(--radius-modal);
-  
+  --radius-modalMobile: var(--radius-modalMobile);
+
   /* Shadow utilities */
   --shadow-button: var(--shadow-button);
   --shadow-modal: var(--shadow-modal);
-  
+
   /* Blurs */
   --blur-modalOverlay: var(--blur-modalOverlay);
-  
+
   /* Typography */
   --text-xs: 12px;
   --leading-xs: 18px;
@@ -104,7 +107,7 @@
 /* Default Light Theme Variables */
 :root {
 
- 
+
 
   /* Fonts */
   --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -120,6 +123,7 @@
   --radius-currentNetworkButton: 6px;
   --radius-networkSelectItem: 6px;
   --radius-modal: 6px;
+  --radius-modalMobile: 24px;
 
   /* Shadows */
   --shadow-button: 0px 10px 20px 0px rgba(0,0,0,0.1);
@@ -167,6 +171,7 @@
   --color-info: #3b82f6;
   --color-infoForeground: #ffffff;
   --color-skeleton: rgba(0,0,0,0.08);
+  --color-cutLine: #0000000d;
 }
 
 /* Dark Theme Variables */
@@ -209,6 +214,7 @@
   --color-info: #3b82f6;
   --color-infoForeground: #ffffff;
   --color-skeleton: rgba(255,255,255,0.09);
+  --color-cutLine: #4a4b58bf;
 
   /* Fonts */
   --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -224,6 +230,7 @@
   --radius-currentNetworkButton: 6px;
   --radius-networkSelectItem: 6px;
   --radius-modal: 6px;
+  --radius-modalMobile: 24px;
 
   /* Shadows */
   --shadow-button: 0px 4px 12px rgba(0, 0, 0, 0.3);

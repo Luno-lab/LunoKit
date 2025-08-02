@@ -52,7 +52,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
     isConnectModalOpen,
     isAccountModalOpen,
     isChainModalOpen,
-    openConnectModal: connectionStatus === ConnectionStatus.Disconnected || connectionStatus === ConnectionStatus.Disconnecting ? openConnectModal : undefined,
+    openConnectModal: connectionStatus !== ConnectionStatus.Connected ? openConnectModal : undefined,
     closeConnectModal,
     openAccountModal: connectionStatus === ConnectionStatus.Connected ? openAccountModal : undefined,
     closeAccountModal,
