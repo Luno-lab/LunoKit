@@ -3,17 +3,20 @@ import type { Account, Signer } from '../types';
 import { mapInjectedAccounts } from '../utils'
 import { Injected, InjectedAccount } from 'dedot/types'
 import { stringToHex } from 'dedot/utils'
+import { ConnectorLinks } from '../types'
 
 export interface CommonConnectorOptions {
   id: string;
   name: string;
   icon: string;
+  links: ConnectorLinks;
 }
 
 export class CommonConnector extends BaseConnector {
   readonly id: string;
   readonly name: string;
   readonly icon: string;
+  readonly links: ConnectorLinks;
 
   private unsubscribe: (() => void) | null = null;
 
@@ -24,6 +27,7 @@ export class CommonConnector extends BaseConnector {
     this.id = options.id;
     this.name = options.name;
     this.icon = options.icon;
+    this.links = options.links;
   }
 
   public isInstalled(): boolean {
