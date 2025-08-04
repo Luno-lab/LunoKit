@@ -9,6 +9,7 @@ import { SwitchAccountView } from './SwitchAccountView';
 import { SwitchChainView } from './SwitchChainView';
 import { Copy } from '../Copy'
 import { formatAddress } from '@luno-kit/react'
+import { useAnimatedViews } from '../../hooks/useAnimatedViews'
 
 export enum AccountModalView {
   main = 'main',
@@ -23,55 +24,18 @@ export const AccountDetailsModal: React.FC = () => {
   const { data: balance } = useBalance({ address });
   const activeConnector = useActiveConnector()
 
-  const [currentView, setCurrentView] = useState<AccountModalView>(AccountModalView.main);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const currentViewRef = useRef<HTMLDivElement>(null);
-
-  const handleViewChange = useCallback((view: AccountModalView) => {
-    if (view === currentView || isAnimating) return;
-
-    setIsAnimating(true);
-
-    if (!containerRef.current) {
-      setCurrentView(view);
-      setIsAnimating(false);
-      return;
-    }
-
-    const container = containerRef.current;
-    const currentHeight = container.offsetHeight;
-
-    setCurrentView(view);
-
-    // Wait for React to render new content, then animate height
-    requestAnimationFrame(() => {
-      if (!container || !currentViewRef.current) {
-        setIsAnimating(false);
-        return;
-      }
-
-      const newHeight = currentViewRef.current.offsetHeight;
-
-      container.animate([
-        { height: currentHeight + 'px' },
-        { height: newHeight + 'px' }
-      ], {
-        duration: 200,
-        easing: 'ease-out',
-        fill: 'forwards'
-      }).addEventListener('finish', () => {
-        setIsAnimating(false);
-      });
-    });
-  }, [currentView, isAnimating]);
+  const {
+    currentView,
+    containerRef,
+    currentViewRef,
+    handleViewChange,
+    resetView
+  } = useAnimatedViews({ initialView: AccountModalView.main });
 
   const handleModalClose = useCallback(() => {
     close();
-    setCurrentView(AccountModalView.main);
-    setIsAnimating(false);
+    resetView();
   }, [close]);
-
 
   const viewTitle = useMemo(() => {
     if (currentView === AccountModalView.switchAccount) return 'Switch Account';
@@ -98,12 +62,7 @@ export const AccountDetailsModal: React.FC = () => {
   return (
     <Dialog
       open={isOpen}
-      onOpenChange={(open) => {
-        if (!open) {
-          close();
-          setCurrentView(AccountModalView.main);
-        }
-      }}
+      onOpenChange={handleModalClose}
     >
       <div className={cs(
         'flex flex-col w-full md:w-[360px] max-h-[500px] text-modalText',
