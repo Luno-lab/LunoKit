@@ -6,5 +6,8 @@ export const polkadotjsConnector = () => {
     id: 'polkadot-js',
     name: 'Polkadot{.js}',
     icon: polkadotjsSVG,
+    links: {
+      browserExtension: 'https://polkadot.js.org/extension'
+    }
   });
 }

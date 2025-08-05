@@ -22,7 +22,7 @@ export const SwitchAccountView: ViewComponent = ({ onBack }) => {
   }, [onBack])
 
   return (
-    <div className="flex flex-col gap-1.5 pt-3 overflow-auto max-h-[400px] no-scrollbar">
+    <div className="flex flex-col gap-1.5 pt-3 overflow-auto max-h-[400px] no-scrollbar p-4 pt-0">
       {accounts.map((acc) => (
         <AccountItem
           key={acc.address}

@@ -1,7 +1,7 @@
 import React from 'react';
-import { useLunoWallet } from '../../hooks';
+import { useLunoWallet, useWindowSize } from '../../hooks';
 import { cs } from '../../utils';
-import {ChainIcon} from '../ChainIcon'
+import { ChainIcon } from '../ChainIcon'
 
 
 export const transitionClassName = 'transition-transform transition-[125] hover:scale-[1.03] transition-ease'
@@ -34,6 +34,9 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
     currentChain,
     activeConnector,
   } = useLunoWallet();
+  const { width: windowWidth } = useWindowSize()
+
+  const isLargeWindow = windowWidth && windowWidth > 768
 
   if (isDisconnected || !isConnected || !activeConnector) {
     return (
@@ -71,7 +74,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
           {(chainStatus === 'full' || chainStatus === 'icon')
             ? <ChainIcon chainIconUrl={chainIconUrl} chainName={chainName} className="w-[24px] h-[24px]"/>
             : null}
-          {(chainStatus === 'full' || chainStatus === 'name') && (
+          {(chainStatus === 'full' || chainStatus === 'name') && isLargeWindow && (
             <span>{currentChain?.name || 'Unknown Chain'}</span>
           )}
         </button>
@@ -87,7 +90,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
         aria-label="Open account modal"
       >
 
-        {showBalance && (
+        {showBalance && isLargeWindow && (
           <div className="p-2 pl-3">
             {balance === undefined ? (
               <div className="animate-pulse rounded w-[80px] h-[20px] bg-accountActionItemBackgroundHover" />
@@ -103,6 +106,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
         <div className={cs(
           "flex items-center bg-connectButtonInnerBackground border-2 border-connectButtonBackground rounded-connectButton",
           'py-1.5 px-2 gap-1.5',
+          showBalance && isLargeWindow ? 'bg-connectButtonInnerBackground' : 'bg-connectButtonBackground'
         )}>
           {accountStatus === 'full' && (
             <span className="w-[24px] h-[24px]">
