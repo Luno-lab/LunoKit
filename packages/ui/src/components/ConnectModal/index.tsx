@@ -52,7 +52,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
       return
     }
 
-    handleViewChange(ConnectModalView.walletView)
+    !isWide && handleViewChange(ConnectModalView.walletView)
     setSelectedConnector(connector)
     setQrCode(undefined)
     if (connector.hasConnectionUri()) {
