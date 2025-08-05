@@ -39,7 +39,7 @@ const App: React.FC = () => {
   });
 
   const showNotification = (title: string, message?: string) => {
-    if (Notification.permission === 'granted') {
+    if (Notification?.permission === 'granted') {
       new Notification(title, { body: message });
     } else {
       alert(`${title}: ${message || ''}`);
@@ -92,8 +92,8 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    if (Notification.permission === 'default') {
-      Notification.requestPermission();
+    if (Notification?.permission === 'default') {
+      Notification?.requestPermission();
     }
   }, []);
 
