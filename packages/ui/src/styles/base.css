@@ -1,5 +1,99 @@
 @import 'tailwindcss' important;
 
+@theme inline {
+  /* Color utilities */
+  --color-accentColor: var(--color-accentColor);
+  --color-modalBackground: var(--color-modalBackground);
+  --color-modalText: var(--color-modalText);
+  --color-modalTextSecondary: var(--color-modalTextSecondary);
+  --color-modalBackdrop: var(--color-modalBackdrop);
+  --color-modalBorder: var(--color-modalBorder);
+  --color-modalControlButtonBackgroundHover: var(--color-modalControlButtonBackgroundHover);
+  --color-modalControlButtonText: var(--color-modalControlButtonText);
+  
+  --color-connectButtonBackground: var(--color-connectButtonBackground);
+  --color-connectButtonInnerBackground: var(--color-connectButtonInnerBackground);
+  --color-connectButtonText: var(--color-connectButtonText);
+  
+  --color-walletSelectItemBackground: var(--color-walletSelectItemBackground);
+  --color-walletSelectItemBackgroundHover: var(--color-walletSelectItemBackgroundHover);
+  --color-walletSelectItemText: var(--color-walletSelectItemText);
+  
+  --color-accountActionItemBackground: var(--color-accountActionItemBackground);
+  --color-accountActionItemBackgroundHover: var(--color-accountActionItemBackgroundHover);
+  --color-accountActionItemText: var(--color-accountActionItemText);
+  
+  --color-accountSelectItemBackground: var(--color-accountSelectItemBackground);
+  --color-accountSelectItemBackgroundHover: var(--color-accountSelectItemBackgroundHover);
+  --color-accountSelectItemText: var(--color-accountSelectItemText);
+  
+  --color-currentNetworkButtonBackground: var(--color-currentNetworkButtonBackground);
+  --color-currentNetworkButtonText: var(--color-currentNetworkButtonText);
+  
+  --color-networkSelectItemBackground: var(--color-networkSelectItemBackground);
+  --color-networkSelectItemBackgroundHover: var(--color-networkSelectItemBackgroundHover);
+  --color-networkSelectItemText: var(--color-networkSelectItemText);
+  
+  --color-navigationButtonBackground: var(--color-navigationButtonBackground);
+  --color-separatorLine: var(--color-separatorLine);
+  --color-skeleton: var(--color-skeleton);
+  
+  --color-success: var(--color-success);
+  --color-successForeground: var(--color-successForeground);
+  --color-warning: var(--color-warning);
+  --color-warningForeground: var(--color-warningForeground);
+  --color-error: var(--color-error);
+  --color-errorForeground: var(--color-errorForeground);
+  --color-info: var(--color-info);
+  --color-infoForeground: var(--color-infoForeground);
+  
+  /* Radius utilities */
+  --radius-walletSelectItem: var(--radius-walletSelectItem);
+  --radius-connectButton: var(--radius-connectButton);
+  --radius-modalControlButton: var(--radius-modalControlButton);
+  --radius-accountActionItem: var(--radius-accountActionItem);
+  --radius-accountSelectItem: var(--radius-accountSelectItem);
+  --radius-currentNetworkButton: var(--radius-currentNetworkButton);
+  --radius-networkSelectItem: var(--radius-networkSelectItem);
+  --radius-modal: var(--radius-modal);
+  
+  /* Shadow utilities */
+  --shadow-button: var(--shadow-button);
+  --shadow-modal: var(--shadow-modal);
+  
+  /* Blurs */
+  --blur-modalOverlay: var(--blur-modalOverlay);
+  
+  /* Typography */
+  --text-xs: 12px;
+  --leading-xs: 18px;
+  --text-sm: 14px;
+  --leading-sm: 18px;
+  --text-base: 16px;
+  --leading-base: 20px;
+  --text-lg: 18px;
+  --leading-lg: 24px;
+
+  /* Font Weights */
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Spacing */
+  --spacing-1: 4px;
+  --spacing-1\.5: 6px;
+  --spacing-2: 8px;
+  --spacing-2\.5: 10px;
+  --spacing-3: 12px;
+  --spacing-3\.5: 14px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+
+
+
+}
+
 @custom-variant light (&:where([data-theme=light], [data-theme=light] *));
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
@@ -7,120 +101,150 @@
   box-sizing: border-box;
 }
 
+/* Default Light Theme Variables */
+:root {
 
-[data-theme='light'] {
-  --color-primaryFont: #211F26;
-  --color-accentFont: #3385FF;
-  --color-secondaryFont: rgba(60, 66, 66, 0.6);
-  --color-modal-bg: white;
-  --color-connectorItemBackground: rgba(0,0,0,0.035);
-  --color-connectorItemHover: rgba(0,0,0,0.08);
-  --color-connectorItemActive: rgba(0,0,0,0.1);
+ 
+
+  /* Fonts */
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Radii */
+  --radius-walletSelectItem: 6px;
+  --radius-connectButton: 6px;
+  --radius-modalControlButton: 6px;
+  --radius-accountActionItem: 6px;
+  --radius-accountSelectItem: 6px;
+  --radius-currentNetworkButton: 6px;
+  --radius-networkSelectItem: 6px;
+  --radius-modal: 6px;
+
+  /* Shadows */
+  --shadow-button: 0px 10px 20px 0px rgba(0,0,0,0.1);
+  --shadow-modal: 0px 20px 25px -5px rgba(0,0,0,0.1);
+
+  /* Blurs */
+  --blur-modalOverlay: blur(8px);
+}
+
+[data-theme="light"] {
+ /* Light Theme Colors */
+  --color-accentColor: #3385FF;
+  --color-walletSelectItemBackground: rgba(0,0,0,0.035);
+  --color-walletSelectItemBackgroundHover: rgba(0,0,0,0.08);
+  --color-walletSelectItemText: #211F26;
   --color-connectButtonBackground: #F1EFF3;
-  --shadow-connectButton: 0px 10px 20px 0px rgba(0,0,0,0.1);
-  --shadow-accountButton: 00px 10px 20px 0px rgba(0,0,0,0.1);
-  --color-deepBackground: #f6f6f6;
-  --color-chainButton: #FFFFFF;
-
-  --color-modalFont: #25292E;
-  --color-modalLine: rgba(0, 0, 0, 0.06);
-
-  --color-chainSelected: rgba(0,0,0,0.15);
-}
-
-[data-theme='dark'] {
-  --color-primaryFont: #FFFFFF;
-  --color-accentFont: #8A6EAC;
-  --color-secondaryFont: rgba(255,255,255,0.5);
-  --color-modal-bg: #3A3B43;
-  --color-connectorItemBackground: rgba(255,255,255,0.035);
-  --color-connectorItemHover: rgba(255,255,255,0.09);
-  --color-connectorItemActive: rgba(255,255,255,0.1);
-  --color-connectButtonBackground: #4A4B51;
-  --shadow-connectButton: 0px 4px 12px rgba(0, 0, 0, 0.1);
-  --shadow-accountButton: 0px 5px 10px 0px rgba(0,0,0,0.1);
-  --color-deepBackground: #3A3B43;
-  --color-chainButton: #4A4B51;
-
-  --color-modalFont: #FFFFFF;
-  --color-modalLine: rgba(74,75,88,0.75);
-
-  --color-chainSelected: rgba(0,0,0,0.15);
-}
-
-@theme inline {
-  --spacing-1: 4px;
-  --spacing-1\.5: 6px;
-  --spacing-2: 8px;
-  --spacing-2\.5: 10px;
-  --spacing-3: 12px;
-  --spacing-4: 16px;
-  --spacing-5: 20px;
-  --spacing-6: 24px;
-
-  --text-sm: 14px;
-  --leading-sm: 18px;
-  --text-primary: 16px;
-  --leading-primary: 20px;
-  --text-lg: 18px;
-  --leading-lg: 24px;
-  --text-title: 18px;
-  --leading-title: 24px;
-  --text-secondary: 14px;
-  --leading-secondary: 18px;
-  --text-accent: 12px;
-  --leading-accent: 18px;
-
-  --shadow-primary: 0px 10px 20px 0px rgba(0,0,0,0.1);
-  --radius-primary: 8px;
-  --radius-sm: 6px;
-
-  --color-primaryFont: var(--color-primaryFont);
-  --color-accentFont: var(--color-accentFont);
-  --color-secondaryFont: var(--color-secondaryFont);
-  --color-modal-bg: var(--color-modal-bg);
-  --color-connectorItemBackground: var(--color-connectorItemBackground);
-  --color-connectButtonBackground: var(--color-connectButtonBackground);
-
-  --shadow-connectButton: var(--shadow-connectButton);
-  --shadow-accountButton: var(--shadow-accountButton);
-  --color-deepBackground: var(--color-deepBackground);
-  --color-chainButton: var(--color-chainButton);
-
+  --color-connectButtonInnerBackground: rgba(0,0,0,0.06);
+  --color-connectButtonText: #211F26;
+  --color-accountActionItemBackground: rgba(0,0,0,0.035);
+  --color-accountActionItemBackgroundHover: rgba(0,0,0,0.08);
+  --color-accountActionItemText: #211F26;
+  --color-accountSelectItemBackground: rgba(0,0,0,0.035);
+  --color-accountSelectItemBackgroundHover: rgba(0,0,0,0.08);
+  --color-accountSelectItemText: #211F26;
+  --color-currentNetworkButtonBackground: #FFFFFF;
+  --color-currentNetworkButtonText: #211F26;
+  --color-networkSelectItemBackground: rgba(0,0,0,0.035);
+  --color-networkSelectItemBackgroundHover: rgba(0,0,0,0.08);
+  --color-networkSelectItemText: #211F26;
+  --color-navigationButtonBackground: rgba(0,0,0,0.15);
+  --color-separatorLine: rgba(0, 0, 0, 0.035);
+  --color-modalBackground: #ffffff;
   --color-modalBackdrop: rgba(0, 0, 0, 0.3);
+  --color-modalBorder: transparent;
+  --color-modalText: #25292E;
+  --color-modalTextSecondary: rgba(60, 66, 66, 0.6);
+  --color-modalControlButtonBackgroundHover: rgba(0,0,0,0.08);
+  --color-modalControlButtonText: #6B7280;
+  --color-success: #10b981;
+  --color-successForeground: #ffffff;
+  --color-warning: #f59e0b;
+  --color-warningForeground: #ffffff;
+  --color-error: #ef4444;
+  --color-errorForeground: #ffffff;
+  --color-info: #3b82f6;
+  --color-infoForeground: #ffffff;
+  --color-skeleton: rgba(0,0,0,0.08);
+}
 
-  --color-modalFont: var(--color-modalFont);
-  --color-modalLine: var(--color-modalLine);
+/* Dark Theme Variables */
+[data-theme="dark"] {
 
-  --color-chainSelected: var(--color-chainSelected);
+  /* Dark Theme Colors */
+  --color-accentColor: #8A6EAC;
+  --color-walletSelectItemBackground: rgba(255,255,255,0.035);
+  --color-walletSelectItemBackgroundHover: rgba(255,255,255,0.09);
+  --color-walletSelectItemText: #FFFFFF;
+  --color-connectButtonBackground: #4A4B51;
+  --color-connectButtonInnerBackground: #3A3B43;
+  --color-connectButtonText: #FFFFFF;
+  --color-accountActionItemBackground: rgba(255,255,255,0.035);
+  --color-accountActionItemBackgroundHover: rgba(255,255,255,0.09);
+  --color-accountActionItemText: #FFFFFF;
+  --color-accountSelectItemBackground: rgba(255,255,255,0.035);
+  --color-accountSelectItemBackgroundHover: rgba(255,255,255,0.09);
+  --color-accountSelectItemText: #FFFFFF;
+  --color-currentNetworkButtonBackground: #4A4B51;
+  --color-currentNetworkButtonText: #FFFFFF;
+  --color-networkSelectItemBackground: rgba(255,255,255,0.035);
+  --color-networkSelectItemBackgroundHover: rgba(255,255,255,0.09);
+  --color-networkSelectItemText: #FFFFFF;
+  --color-navigationButtonBackground: rgba(255,255,255,0.15);
+  --color-separatorLine: rgba(74,75,88,0.75);
+  --color-modalBackground: #3A3B43;
+  --color-modalBackdrop: rgba(0, 0, 0, 0.5);
+  --color-modalBorder: #374151;
+  --color-modalText: #FFFFFF;
+  --color-modalTextSecondary: rgba(255,255,255,0.5);
+  --color-modalControlButtonBackgroundHover: rgba(255,255,255,0.09);
+  --color-modalControlButtonText: #9CA3AF;
+  --color-success: #10b981;
+  --color-successForeground: #ffffff;
+  --color-warning: #f59e0b;
+  --color-warningForeground: #ffffff;
+  --color-error: #ef4444;
+  --color-errorForeground: #ffffff;
+  --color-info: #3b82f6;
+  --color-infoForeground: #ffffff;
+  --color-skeleton: rgba(255,255,255,0.09);
+
+  /* Fonts */
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Radii */
+  --radius-walletSelectItem: 6px;
+  --radius-connectButton: 6px;
+  --radius-modalControlButton: 6px;
+  --radius-accountActionItem: 6px;
+  --radius-accountSelectItem: 6px;
+  --radius-currentNetworkButton: 6px;
+  --radius-networkSelectItem: 6px;
+  --radius-modal: 6px;
+
+  /* Shadows */
+  --shadow-button: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-modal: 0px 20px 25px -5px rgba(0, 0, 0, 0.4);
+
+  /* Blurs */
+  --blur-modalOverlay: blur(8px);
 }
 
 
-.luno-kit .custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-modalLine) transparent;
+.luno-kit * {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
-.luno-kit .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.luno-kit .custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.luno-kit .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: var(--color-modalLine);
-  border-radius: 3px;
-}
-
-.luno-kit .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: var(--color-secondaryFont);
+.luno-kit *::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
 }
 
 .luno-kit .chain-icon-text {
   font-family: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-
   font-size: calc(100% * 0.8);
   line-height: 1;
   position: absolute;
@@ -144,7 +268,7 @@
   height: 100%;
   width: 100%;
   border-radius: 50%;
-  background-color: var(--color-accentFont);
+  background-color: var(--color-accentColor);
   opacity: 0.75;
   animation: ping 1.2s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
@@ -155,17 +279,6 @@
   border-radius: 50%;
   height: 100%;
   width: 100%;
-  background-color: var(--color-accentFont);
-}
-
-.scrollbar-thin::-webkit-scrollbar {
-  width: 4px;
-}
-.scrollbar-thin::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
-}
-.scrollbar-thin::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 2px;
+  background-color: var(--color-accentColor);
 }
 
