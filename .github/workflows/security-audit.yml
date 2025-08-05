@@ -26,4 +26,5 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run pnpm audit
+        working-directory: packages
         run: pnpm audit --audit-level=moderate
