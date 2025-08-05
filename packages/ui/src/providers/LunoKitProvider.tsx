@@ -1,18 +1,19 @@
 import React, { ReactNode, useState } from 'react';
 import { LunoProvider } from '@luno-kit/react';
 import type { Config as LunoCoreConfig } from '@luno-kit/react'
-import { QueryClient, QueryClientProvider, type QueryClientConfig } from '@tanstack/react-query';
-import { ModalProvider } from './ModalContext';
-import { ThemeProvider, ThemeMode } from './ThemeContext';
+// @ts-ignore - @tanstack/react-query v5 API changes
+import { QueryClient, QueryClientProvider,QueryClientCongfig } from '@tanstack/react-query';
+import { ModalProvider} from './ModalContext';
+import { ThemeProvider } from '../theme/context';
+import type { LunokitTheme, LunokitThemeOverrides } from '../theme/types';
 import { ConnectModal, AccountDetailsModal, ChainModal } from '../components'
 import { ModalSize } from '../components/Dialog'
 
 export interface LunoKitProviderProps {
   children: ReactNode;
   config: LunoCoreConfig & { modalSize?: ModalSize };
-  queryClientConfig?: QueryClientConfig;
-  // theme?: ThemeMode | LunoTheme;
-  theme?: ThemeMode;
+  queryClientConfig?: QueryClientCongfig;
+  theme?: LunokitTheme | LunokitThemeOverrides; // Support both complete themes and partial overrides
 }
 
 export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
@@ -26,7 +27,7 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
   return (
     <QueryClientProvider client={queryClient}>
       <LunoProvider config={config}>
-        <ThemeProvider initialThemeMode={theme}>
+        <ThemeProvider theme={theme}>
           <ModalProvider>
             <div className={'font-base luno-kit'}>
               {children}
@@ -41,11 +42,12 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
 
 
 const RenderModals: React.FC<{modalSize?: ModalSize}> = ({ modalSize }: { modalSize?: ModalSize }) => {
+
   return (
-    <>
-      <ConnectModal size={modalSize} />
-      <AccountDetailsModal />
-      <ChainModal />
-    </>
+   <>
+  <ConnectModal size={modalSize} />
+  <AccountDetailsModal />
+  <ChainModal />
+</>
   );
 }
