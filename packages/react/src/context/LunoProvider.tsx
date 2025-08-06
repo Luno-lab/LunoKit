@@ -70,7 +70,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
     }
 
     if (currentApi && currentApi.status === 'connected') {
-      console.log('[LunoProvider]: Disconnecting API from previous render cycle:', currentApi.chainSpec.chainName());
+      console.log('[LunoProvider]: Disconnecting API from previous render cycle:', currentApi.runtimeVersion.specName);
       currentApi.disconnect().catch(e => console.error('[LunoProvider] Error disconnecting previous API:', e));
     }
 

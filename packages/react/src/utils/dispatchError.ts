@@ -1,7 +1,7 @@
 import type { DispatchError } from 'dedot/codecs'
-import type { DedotClient } from 'dedot'
+import type { LegacyClient } from 'dedot'
 
-export function getReadableDispatchError(api: DedotClient, dispatchError: DispatchError): string {
+export function getReadableDispatchError(api: LegacyClient, dispatchError: DispatchError): string {
   if (dispatchError.type === 'Module') {
     try {
       const errorMeta = api.registry.findErrorMeta(dispatchError);

@@ -35,6 +35,9 @@ const mockApi = {
       ss58Prefix: 42,
     },
   },
+  runtimeVersion: {
+    specName: 'Test Chain'
+  },
 };
 
 class DummyConnector extends BaseConnector {
@@ -75,7 +78,7 @@ const mockStore: LunoState = {
   setAccount: vi.fn().mockResolvedValue(undefined),
   currentChainId: '0x123',
   config: undefined,
-  currentApi: null,
+  currentApi: undefined,
   connect: vi.fn().mockResolvedValue(undefined),
   status: ConnectionStatus.Disconnected,
   activeConnector: undefined,

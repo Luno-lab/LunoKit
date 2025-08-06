@@ -1,5 +1,5 @@
 import type { Config, Connector, Account, Chain } from '@luno-kit/core';
-import type { DedotClient } from 'dedot';
+import type { LegacyClient } from 'dedot';
 import type { HexString } from 'dedot/utils'
 
 export enum ConnectionStatus {
@@ -23,7 +23,7 @@ export interface LunoState {
 
   currentChainId?: string;
   currentChain?: Chain;
-  currentApi?: DedotClient;
+  currentApi?: LegacyClient;
   isApiReady: boolean;
   apiError: Error | null
 
@@ -34,7 +34,7 @@ export interface LunoState {
 
   switchChain: (newChainId: string) => Promise<void>;
 
-  _setApi: (api?: DedotClient) => void;
+  _setApi: (api?: LegacyClient) => void;
 
   _setIsApiReady: (isApiReady: boolean) => void;
   _setApiError: (error: Error | null) => void

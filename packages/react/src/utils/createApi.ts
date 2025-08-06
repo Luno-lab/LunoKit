@@ -1,5 +1,5 @@
 import { Config, wsProvider } from '@luno-kit/core'
-import { ApiOptions, DedotClient } from 'dedot'
+import { ApiOptions, LegacyClient } from 'dedot'
 
 interface CreateApiOptions {
   config: Config;
@@ -9,7 +9,7 @@ interface CreateApiOptions {
 export const createApi = async ({
   config,
   chainId,
-}: CreateApiOptions): Promise<DedotClient> => {
+}: CreateApiOptions): Promise<LegacyClient> => {
   const chainConfig = config.chains.find(c => c.genesisHash === chainId);
   const transportConfig = config.transports[chainId];
 
@@ -31,12 +31,12 @@ export const createApi = async ({
     cacheStorage: config.cacheStorage,
   };
 
-  const newApi = new DedotClient(apiOptions);
+  const newApi = new LegacyClient(apiOptions);
 
   try {
     await newApi.connect();
 
-    const actualGenesisHash = await newApi.chainSpec.genesisHash();
+    const actualGenesisHash = await newApi.rpc.chain_getBlockHash(0);
 
     if (actualGenesisHash !== chainId) {
       await newApi.disconnect();

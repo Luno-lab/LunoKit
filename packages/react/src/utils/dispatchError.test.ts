@@ -1,13 +1,13 @@
 import { describe, it, expect, vi } from 'vitest'
 import { getReadableDispatchError } from './dispatchError'
-import { DedotClient } from 'dedot'
+import { LegacyClient } from 'dedot'
 import { DispatchError } from 'dedot/codecs'
 
 const mockApi = {
   registry: {
     findErrorMeta: vi.fn()
   }
-} as unknown as DedotClient
+} as unknown as LegacyClient
 
 const createMockDispatchError = {
   module: (index: number, error: string): DispatchError => ({
