@@ -48,8 +48,14 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
   const handleConnect = async (connector: Connector) => {
     if (isMobileDevice() && connector.links.deepLink) {
-      window.location.href = `${connector.links.deepLink}?url=${window.location.href}`
-      return
+      try {
+        await connectAsync({ connectorId: connector.id });
+        _onOpenChange(false);
+        return;
+      } catch (error) {
+        window.location.href = `${connector.links.deepLink}?url=${window.location.href}`;
+        return;
+      }
     }
 
     !isWide && handleViewChange(ConnectModalView.walletView)
