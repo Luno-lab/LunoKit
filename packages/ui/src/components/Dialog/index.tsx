@@ -43,7 +43,7 @@ const DialogRoot: React.FC<DialogProps> = ({
         })}
         <DialogPrimitive.Content
           className={cs(
-            'luno-kit font-base fixed z-[200] text-modalText text-base leading-base',
+            'luno-kit font-body fixed z-[200] text-modalText text-base leading-base',
             'bg-modalBackground shadow-primary focus:outline-none overflow-hidden',
             'transition-all duration-200',
 
@@ -65,7 +65,7 @@ const DialogRoot: React.FC<DialogProps> = ({
 };
 
 const DialogTitleWrapper: React.FC<DialogTitleProps> = ({ children, className }) =>
-  React.createElement(DialogPrimitive.Title as any, { className }, children);
+  React.createElement(DialogPrimitive.Title as any, { className: cs('font-heading', className) }, children);
 
 const DialogCloseWrapper: React.FC<DialogCloseProps> = ({ children, className, onClick }) =>
   React.createElement(DialogPrimitive.Close as any, { className, onClick }, children);
