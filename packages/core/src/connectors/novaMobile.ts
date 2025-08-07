@@ -4,9 +4,10 @@ import { CommonConnector } from './common'
 export class NovaMobileConnector extends CommonConnector {
   constructor() {
     super({
-      id: 'polkadot-js',
+      id: 'nova-mobile',
       name: 'Nova Wallet (Mobile)',
       icon: novaSVG,
+      injectorId: 'polkadot-js',
       links: {
         deepLink: 'https://app.novawallet.io/open/dapp'
       }

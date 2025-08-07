@@ -41,4 +41,5 @@ export interface WalletConnectConnectorOptions {
   projectId: string;
   relayUrl?: string;
   metadata?: Metadata;
+  links?: ConnectorLinks;
 }

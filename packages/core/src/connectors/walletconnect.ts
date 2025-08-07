@@ -4,11 +4,13 @@ import { SessionTypes } from '@walletconnect/types'
 import type { Account, Chain, Signer, WalletConnectConnectorOptions } from '../types';
 import { walletconnectSVG } from '../config/logos/generated';
 import { SignerResult, SignerPayloadJSON } from 'dedot/types'
+import {ConnectorLinks} from '../types'
 
 export class WalletConnectConnector extends BaseConnector {
   readonly id: string;
   readonly name: string;
   readonly icon: string;
+  readonly links: ConnectorLinks;
 
   private provider?: IUniversalProvider;
   private projectId: string;
@@ -22,6 +24,8 @@ export class WalletConnectConnector extends BaseConnector {
     super();
     this.id = options.id || 'walletconnect';
     this.name = options.name || 'WalletConnect';
+    this.links = options.links || {};
+
     this.icon = options.icon || walletconnectSVG;
 
     this.projectId = options.projectId;

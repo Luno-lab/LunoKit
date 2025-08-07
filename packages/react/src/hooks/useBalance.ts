@@ -1,6 +1,6 @@
 import { QueryMultiItem, useSubscription, UseSubscriptionResult } from './useSubscription';
 import type { AccountBalance } from '@luno-kit/core';
-import type { DedotClient } from 'dedot';
+import type { LegacyClient } from 'dedot';
 import { useLuno } from './useLuno'
 import { formatBalance } from '@luno-kit/core'
 
@@ -68,8 +68,8 @@ export const useBalance = ({ address }: UseBalanceProps): UseBalanceResult => {
     AccountBalance
   >({
     queryKey: '/native-balance',
-    factory: (api: DedotClient) => api.queryMulti,
-    params: (api: DedotClient) => [
+    factory: (api: LegacyClient) => api.queryMulti,
+    params: (api: LegacyClient) => [
       { fn: api.query.system.account, args: [address] },
       { fn: api.query.balances.locks, args: [address] },
     ],

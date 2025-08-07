@@ -6,6 +6,8 @@ const options = {
   id: 'mock-connector',
   name: 'Mock connector',
   icon: 'mock-connector-icon',
+  injectorId: 'mock-injector',
+  links: {},
 };
 
 describe(

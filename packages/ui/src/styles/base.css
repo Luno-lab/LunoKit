@@ -93,8 +93,9 @@
   --spacing-5: 20px;
   --spacing-6: 24px;
 
-
-
+  --font-body: var(--font-body);
+  --font-heading: var(--font-heading);
+  --font-mono: var(--font-mono);
 }
 
 @custom-variant light (&:where([data-theme=light], [data-theme=light] *));
@@ -216,10 +217,6 @@
   --color-skeleton: rgba(255,255,255,0.09);
   --color-cutLine: #4a4b58bf;
 
-  /* Fonts */
-  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-heading: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
   /* Radii */
   --radius-walletSelectItem: 6px;

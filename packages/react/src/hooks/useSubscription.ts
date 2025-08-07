@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLuno } from './useLuno';
 import type { Callback } from 'dedot/types'
-import type { DedotClient } from 'dedot';
+import type { LegacyClient } from 'dedot';
 import type { Unsub } from 'dedot/types';
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 
@@ -15,7 +15,7 @@ export interface UseSubscriptionOptions<TData, TTransformed = TData> {
 }
 
 type ApiBoundSubscriptionFactory<TArgs extends any[], TData> =
-  (api: DedotClient) => SubscriptionFn<TArgs, TData>;
+  (api: LegacyClient) => SubscriptionFn<TArgs, TData>;
 
 export interface QueryMultiItem {
   fn: any;
@@ -24,8 +24,8 @@ export interface QueryMultiItem {
 
 export interface UseSubscriptionProps<TArgs extends any[], TData, TTransformed = TData> {
   queryKey: string | number;
-  factory: ApiBoundSubscriptionFactory<TArgs, TData> | ((api: DedotClient) => any);
-  params: TArgs | ((api: DedotClient) => QueryMultiItem[]);
+  factory: ApiBoundSubscriptionFactory<TArgs, TData> | ((api: LegacyClient) => any);
+  params: TArgs | ((api: LegacyClient) => QueryMultiItem[]);
   options?: UseSubscriptionOptions<TData, TTransformed>;
 }
 
