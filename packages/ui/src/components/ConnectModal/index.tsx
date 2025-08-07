@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import { useConnect, isMobileDevice } from '@luno-kit/react';
 import { Dialog, DialogClose, DialogTitle, ModalSize } from '../Dialog';
 import { cs } from '../../utils';
@@ -82,6 +82,12 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
       [ConnectModalView.walletView]: <WalletView isWide={isWide} selectedConnector={selectedConnector} qrCode={qrCode} onConnect={handleConnect} />,
     }
   }, [isWide, selectedConnector, qrCode, handleConnect])
+
+  useEffect(() => {
+    if (isWide && currentView === ConnectModalView.walletView) {
+      handleViewChange(ConnectModalView.connectOptions);
+    }
+  }, [isWide, currentView]);
 
   return (
     <Dialog open={isOpen} onOpenChange={_onOpenChange}>

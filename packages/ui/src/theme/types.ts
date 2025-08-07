@@ -3,7 +3,7 @@ export interface LunokitTheme {
   colors: {
     // Primary colors
     accentColor: string;
-    
+
     // Button related
     walletSelectItemBackground: string;
     walletSelectItemBackgroundHover: string;
@@ -31,7 +31,7 @@ export interface LunokitTheme {
     navigationButtonBackground: string;
 
     separatorLine: string;
-    
+
     // Modal related
     modalBackground: string;
     modalBackdrop: string;
@@ -40,7 +40,7 @@ export interface LunokitTheme {
     modalTextSecondary: string;
     modalControlButtonBackgroundHover: string;
     modalControlButtonText: string;
-    
+
     // Status colors
     success: string;
     successForeground: string;
@@ -53,6 +53,7 @@ export interface LunokitTheme {
 
     // Skeleton screen
     skeleton: string;
+    cutLine: string;
   };
   fonts: {
     body: string;
@@ -68,6 +69,7 @@ export interface LunokitTheme {
     currentNetworkButton: string;
     networkSelectItem: string;
     modal: string;
+    modalMobile: string;
   };
   shadows: {
     button: string;
@@ -92,13 +94,13 @@ export interface LunokitThemeOverrides {
   // Theme behavior control
   autoMode?: boolean;           // Whether to auto-follow system theme (default: false)
   defaultMode?: ThemeMode;      // Default theme mode when not auto (default: 'light')
-  
+
   // Complete custom theme (overrides both light and dark)
   theme?: LunokitTheme;
-  
+
   // Partial overrides for specific modes
   light?: PartialLunokitTheme;
   dark?: PartialLunokitTheme;
 }
 
-export type ThemeMode = 'light' | 'dark'; 
+export type ThemeMode = 'light' | 'dark' | 'auto';

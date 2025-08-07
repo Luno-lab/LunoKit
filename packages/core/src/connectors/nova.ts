@@ -33,6 +33,9 @@ export const novaConnector = (config: NovaConnectorConfig) => {
     id: 'nova',
     name: 'Nova Wallet',
     icon: novaSVG,
+    links: {
+      browserExtension: 'https://novawallet.io',
+    },
     ...config as WalletConnectConfig,
   });
 };
