@@ -6,5 +6,8 @@ export const talismanConnector = () => {
     id: 'talisman',
     name: 'Talisman',
     icon: talismanSVG,
+    links: {
+      browserExtension: 'https://chromewebstore.google.com/detail/talisman-wallet/fijngjgcjhjmmpcmkeiomlglpeiijkld'
+    }
   });
 }

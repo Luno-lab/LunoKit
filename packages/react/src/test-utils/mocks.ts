@@ -85,14 +85,15 @@ export const mockConfig = createConfig({
 });
 
 
-export function createMockApi(options: {
-  chain?: Chain;
-} = {}) {
+export function createMockApi(options: { chain: Chain }) {
   return {
     status: 'connected' as const,
     chainSpec: {
       chainName: () => options.chain?.name || 'Mock Chain',
       genesisHash: vi.fn().mockResolvedValue(options.chain?.genesisHash),
+    },
+    runtimeVersion: {
+      specName: options.chain?.name || 'Mock Chain',
     },
 
     query: {
@@ -163,6 +164,9 @@ export function createMockApi(options: {
     off: vi.fn(),
     connect: vi.fn().mockResolvedValue(undefined),
     disconnect: vi.fn().mockResolvedValue(undefined),
+    rpc: {
+      chain_getBlockHash: vi.fn().mockResolvedValue(options.chain.genesisHash),
+    },
   };
 }
 

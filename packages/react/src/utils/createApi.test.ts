@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createApi } from './createApi';
 import { Config, wsProvider } from '@luno-kit/core';
-import { DedotClient } from 'dedot';
+import { LegacyClient } from 'dedot';
 import { mockClient } from '../test-utils';
 
 vi.mock('@luno-kit/core', async (importOriginal) => {
@@ -13,12 +13,12 @@ vi.mock('@luno-kit/core', async (importOriginal) => {
 });
 
 vi.mock('dedot', () => ({
-  DedotClient: vi.fn(),
+  LegacyClient: vi.fn(),
 }));
 
 describe('createApi', () => {
   const mockWsProvider = vi.mocked(wsProvider);
-  const MockDedotClient = vi.mocked(DedotClient);
+  const MockClient = vi.mocked(LegacyClient);
   const mockPolkadotClient = mockClient.polkadot;
   const validChainId = '0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3';
 
@@ -57,7 +57,7 @@ describe('createApi', () => {
     };
 
     mockWsProvider.mockReturnValue(mockProvider);
-    MockDedotClient.mockReturnValue(mockPolkadotClient);
+    MockClient.mockReturnValue(mockPolkadotClient);
   });
 
   afterEach(() => {
@@ -74,7 +74,7 @@ describe('createApi', () => {
       const result = await createApi({ config, chainId: validChainId });
 
       expect(mockWsProvider).toHaveBeenCalledWith(config.transports[validChainId]);
-      expect(MockDedotClient).toHaveBeenCalledWith({
+      expect(MockClient).toHaveBeenCalledWith({
         provider: mockProvider,
         cacheMetadata: config.cacheMetadata,
         metadata: config.metadata,
@@ -100,7 +100,7 @@ describe('createApi', () => {
       ).rejects.toThrow(`Configuration missing for chainId: ${invalidChainId}`);
 
       expect(mockWsProvider).not.toHaveBeenCalled();
-      expect(MockDedotClient).not.toHaveBeenCalled();
+      expect(MockClient).not.toHaveBeenCalled();
     });
 
     it('should throw error when connection fails', async () => {

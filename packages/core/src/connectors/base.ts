@@ -1,5 +1,6 @@
 import type {Account, Chain, Signer} from '../types';
 import { EventEmitter } from 'eventemitter3';
+import { ConnectorLinks } from '../types'
 
 /**
  * base connector abstract class
@@ -24,6 +25,7 @@ export abstract class BaseConnector extends EventEmitter {
    */
   abstract readonly icon?: string;
 
+  readonly links: ConnectorLinks = {};
   /**
    * store the current connected accounts.
    * subclasses are responsible for maintaining this list when connecting and updating accounts.

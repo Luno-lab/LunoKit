@@ -4,10 +4,16 @@ import type { Signer } from './signer';
 import type { Chain } from './chain'
 import type { Metadata } from '@walletconnect/universal-provider'
 
+export interface ConnectorLinks {
+  browserExtension?: string;
+  deepLink?: string;
+}
+
 export interface Connector extends EventEmitter {
   readonly id: string;
   readonly name: string;
   readonly icon: string;
+  readonly links: ConnectorLinks;
   isAvailable(): Promise<boolean>;
   isInstalled: () => boolean;
   connect(appName: string, chains?: Chain[], targetChainId?: string): Promise<Array<Account>>;
@@ -35,4 +41,5 @@ export interface WalletConnectConnectorOptions {
   projectId: string;
   relayUrl?: string;
   metadata?: Metadata;
+  links?: ConnectorLinks;
 }

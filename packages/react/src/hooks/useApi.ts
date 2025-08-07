@@ -1,8 +1,8 @@
-import type { DedotClient } from 'dedot';
+import type { LegacyClient } from 'dedot';
 import { useLuno } from './useLuno';
 
 export interface UseApiResult {
-  api?: DedotClient;
+  api?: LegacyClient;
   isApiReady: boolean;
   apiError: Error | null;
 }

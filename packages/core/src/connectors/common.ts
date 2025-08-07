@@ -3,17 +3,22 @@ import type { Account, Signer } from '../types';
 import { mapInjectedAccounts } from '../utils'
 import { Injected, InjectedAccount } from 'dedot/types'
 import { stringToHex } from 'dedot/utils'
+import { ConnectorLinks } from '../types'
 
 export interface CommonConnectorOptions {
   id: string;
   name: string;
   icon: string;
+  links: ConnectorLinks;
+  injectorId?: string;
 }
 
 export class CommonConnector extends BaseConnector {
   readonly id: string;
   readonly name: string;
   readonly icon: string;
+  readonly links: ConnectorLinks;
+  protected readonly injectorId: string;
 
   private unsubscribe: (() => void) | null = null;
 
@@ -24,12 +29,14 @@ export class CommonConnector extends BaseConnector {
     this.id = options.id;
     this.name = options.name;
     this.icon = options.icon;
+    this.links = options.links;
+    this.injectorId = options.injectorId || options.id;
   }
 
   public isInstalled(): boolean {
     if (typeof window === 'undefined') return false;
     const injectedWeb3 = window.injectedWeb3;
-    return typeof injectedWeb3 === 'object' && typeof injectedWeb3[this.id] !== 'undefined';
+    return typeof injectedWeb3 === 'object' && typeof injectedWeb3[this.injectorId] !== 'undefined';
   }
 
   public async isAvailable(): Promise<boolean> {
@@ -47,7 +54,7 @@ export class CommonConnector extends BaseConnector {
     }
 
     try {
-      this.specificInjector = await window.injectedWeb3![this.id]!.enable(appName);
+      this.specificInjector = await window.injectedWeb3![this.injectorId]!.enable(appName);
 
       if (!this.specificInjector) {
         throw new Error(`Failed to enable the '${this.id}' extension.`);

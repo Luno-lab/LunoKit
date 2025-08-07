@@ -1,5 +1,4 @@
 import { Cuer } from 'cuer'
-import {Loading} from '../../assets/icons'
 
 export type ErrorCorrectionLevel = 'low' | 'medium' | 'quartile' | 'high';
 
@@ -8,17 +7,154 @@ interface Props {
   logoBackground?: string;
   logoUrl?: string | (() => Promise<string>);
   logoSize?: number;
-  size?: number;
+  size: number;
   uri?: string;
 }
 
 export const QRCode = ({
   logoBackground,
   uri,
+  size,
 }: Props) => {
   if (!uri) {
+    const QR_GRID_SIZE = 57;
+    const FINDER_SIZE_WITH_MARGIN = 8;
+    const ARENA_GRID_SIZE = Math.floor(QR_GRID_SIZE / 4);
+    
+    const cellSize = size / QR_GRID_SIZE;
+    const arenaSize = ARENA_GRID_SIZE * cellSize;
+    const arenaStart = Math.floor(QR_GRID_SIZE / 2 - ARENA_GRID_SIZE / 2);
+    const arenaEnd = arenaStart + ARENA_GRID_SIZE;
+    
+    const generateSkeletonDots = () => {
+      const dots = [];
+      for (let i = 0; i < QR_GRID_SIZE; i++) {
+        for (let j = 0; j < QR_GRID_SIZE; j++) {
+          if (i >= arenaStart && i <= arenaEnd && j >= arenaStart && j <= arenaEnd) continue;
+
+          const isInFinder = 
+            (i < FINDER_SIZE_WITH_MARGIN && j < FINDER_SIZE_WITH_MARGIN) ||
+            (i < FINDER_SIZE_WITH_MARGIN && j >= QR_GRID_SIZE - FINDER_SIZE_WITH_MARGIN) ||
+            (i >= QR_GRID_SIZE - FINDER_SIZE_WITH_MARGIN && j < FINDER_SIZE_WITH_MARGIN);
+          if (isInFinder) continue;
+
+          const cx = j + 0.5;
+          const cy = i + 0.5;
+
+          dots.push(
+            <rect
+              key={`${i}-${j}`}
+              x={cx - 0.4}
+              y={cy - 0.4}
+              width={0.8}
+              height={0.8}
+              rx={0.4}
+              fill="var(--color-walletSelectItemBackground)"
+            />
+          );
+        }
+      }
+      return dots;
+    };
+
+    const renderFinderPattern = ({ position }: { position: 'top-left' | 'top-right' | 'bottom-left' }) => {
+      const finderSize = 7 * cellSize;
+      const positionStyles = {
+        'top-left': { top: 0, left: 0 },
+        'top-right': { top: 0, right: 0 },
+        'bottom-left': { bottom: 0, left: 0 },
+      };
+
+      return (
+        <div 
+          className="absolute z-[4]"
+          style={{ 
+            width: `${finderSize}px`, 
+            height: `${finderSize}px`,
+            ...positionStyles[position]
+          }}
+        >
+          <div 
+            className="absolute inset-0"
+            style={{ 
+              borderRadius: `${2 * cellSize}px`,
+              border: `${cellSize}px solid var(--color-walletSelectItemBackground)`,
+            }}
+          />
+          <div 
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+            style={{
+              width: `${3 * cellSize}px`,
+              height: `${3 * cellSize}px`,
+              borderRadius: `${0.5 * cellSize}px`,
+              backgroundColor: 'var(--color-walletSelectItemBackground)'
+            }}
+          />
+        </div>
+      );
+    };
+
+    const renderArenaLogo = () => {
+      const logoStart = Math.ceil(QR_GRID_SIZE / 2 - ARENA_GRID_SIZE / 2) * cellSize;
+      
+      return (
+        <div 
+          className="absolute z-[4] flex items-center justify-center box-border"
+          style={{ 
+            width: `${arenaSize}px`,
+            height: `${arenaSize}px`,
+            left: `${logoStart}px`,
+            top: `${logoStart}px`,
+            borderRadius: `${cellSize}px`,
+            padding: `${cellSize / 2}px`
+          }}
+        >
+          <img
+            src={logoBackground}
+            alt="QR Code Logo"
+            className="h-full w-full object-cover"
+            style={{
+              borderRadius: `${cellSize}px`
+            }}
+          />
+        </div>
+      );
+    };
+    
     return (
-      <Loading className={'w-[48px] h-[48px] text-secondaryFont animate-[spin_1.5s_linear_infinite]'} />
+      <div 
+        className="relative overflow-hidden flex items-center justify-center"
+        style={{ 
+          width: size, 
+          height: size,
+          borderRadius: `${2 * cellSize}px`
+        }}
+      >
+        <svg 
+          className="absolute inset-0 z-[3]"
+          width={size}
+          height={size}
+          viewBox={`0 0 ${QR_GRID_SIZE} ${QR_GRID_SIZE}`}
+        >
+          {generateSkeletonDots()}
+        </svg>
+        
+        <div 
+          className="absolute inset-0 z-[100]"
+          style={{
+            background: 'linear-gradient(90deg, transparent 50%, var(--color-walletSelectItemBackgroundHover), transparent)',
+            backgroundSize: '200% 100%',
+            transform: 'scale(1.5) rotate(45deg)',
+            animation: 'shimmer 1000ms linear infinite both'
+          }}
+        />
+        
+        {renderFinderPattern({ position: 'top-left' })}
+        {renderFinderPattern({ position: 'top-right' })}
+        {renderFinderPattern({ position: 'bottom-left' })}
+        
+        {logoBackground && renderArenaLogo()}
+      </div>
     )
   }
   return (
