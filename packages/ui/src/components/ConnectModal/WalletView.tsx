@@ -7,6 +7,7 @@ import { transitionClassName } from '../ConnectButton'
 import { SpiralAnimation } from '../SpiralAnimation'
 import type { Connector } from '@luno-kit/react'
 import { useConnect } from '@luno-kit/react'
+import {Copy} from '../Copy'
 
 interface Props {
   selectedConnector: Connector | null
@@ -37,9 +38,27 @@ export const WalletView = React.memo(({ selectedConnector, onConnect, qrCode, is
       )}
 
 
-      <div className={'flex items-center flex-col max-w-[312px] grow justify-center'}>
+      <div className={'flex items-center py-12 flex-col max-w-[220px] grow justify-start'}>
         {selectedConnector ?
-          showQRCode ? <QRCode size={312} logoBackground={selectedConnector.icon} uri={qrCode}/> : (
+          showQRCode ? (
+            <div className={'flex flex-col items-center gap-4'}>
+              <QRCode size={220} logoBackground={selectedConnector.icon} uri={qrCode}/>
+              <div className={'text-secondaryFont leading-secondary font-[500] text-center'}>
+                Scan the QR Code with {selectedConnector.id === 'nova' ? 'the Nova app' : 'your phone'}
+              </div>
+              {selectedConnector.links?.browserExtension
+                ? (
+                  <p
+                    onClick={() => window.open(selectedConnector.links.browserExtension)}
+                    className={'cursor-pointer pt-[16px] text-base leading-base text-accentColor font-bold text-center'}>
+                    Don‘t have {selectedConnector.name}?
+                  </p>
+                )
+                : qrCode
+                  ? <Copy className={'text-sm leading-sm text-accentColor'} copyText={qrCode} label={'Copy Link'} />
+                  : null}
+            </div>
+          ) : (
             <>
               <div className={'w-[102px] h-[102px] pb-[8px]'}>
                 <img src={selectedConnector.icon} className={'w-full h-full'} alt=""/>
@@ -53,11 +72,11 @@ export const WalletView = React.memo(({ selectedConnector, onConnect, qrCode, is
               {isConnecting && (
                 <Loading className={'w-[24px] h-[24px] text-secondaryFont animate-[spin_3s_linear_infinite]'}/>
               )}
-              {!selectedConnector.isInstalled() && (
+              {!selectedConnector.isInstalled() && selectedConnector.links.browserExtension && (
                 <p
                   onClick={() => window.open(selectedConnector.links.browserExtension)}
                   className={'cursor-pointer pt-[16px] text-base leading-base text-accentColor font-bold text-center'}>
-                  don‘t have {selectedConnector.name}?
+                  Don‘t have {selectedConnector.name}?
                 </p>
               )}
               {!isConnecting && connectError && selectedConnector.isInstalled() && (
