@@ -7,14 +7,14 @@ interface Props {
   logoBackground?: string;
   logoUrl?: string | (() => Promise<string>);
   logoSize?: number;
-  size: number;
+  size?: number;
   uri?: string;
 }
 
 export const QRCode = ({
   logoBackground,
   uri,
-  size,
+  size = 280,
 }: Props) => {
   if (!uri) {
     const QR_GRID_SIZE = 57;

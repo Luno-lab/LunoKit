@@ -27,8 +27,8 @@ export const ConnectOptions = React.memo(({ onConnect }: Props) => {
 
   return (
     <div className={'flex flex-col items-start gap-4 w-full'}>
-      <div className={'flex flex-col items-start gap-3 w-full'}>
-        <div className={'text-base text-modalText font-semibold leading-base'}>Installed</div>
+      <div className={'flex flex-col items-start gap-2 w-full'}>
+        <div className={'text-sm text-accentColor font-semibold leading-base'}>Installed</div>
         <div className={'flex flex-col items-start gap-1.5 w-full'}>
           {installedConnectors.map(i => (
             <ConnectorItem key={i.id} connector={i} onConnect={() => onConnect(i)}/>
@@ -37,8 +37,8 @@ export const ConnectOptions = React.memo(({ onConnect }: Props) => {
       </div>
 
       {moreConnectors.length > 0 && (
-        <div className={'flex flex-col items-start gap-3 w-full'}>
-          <div className={'text-base text-modalText font-semibold leading-base'}>More</div>
+        <div className={'flex flex-col items-start gap-2 w-full'}>
+          <div className={'text-sm text-modalTextSecondary font-semibold leading-base'}>More</div>
           <div className={'flex flex-col items-start gap-1 w-full'}>
             {moreConnectors.map(i => (
               <ConnectorItem key={i.id} connector={i} onConnect={() => onConnect(i)}/>
@@ -65,7 +65,7 @@ const ConnectorItem: React.FC<ConnectorItemProps> = React.memo(({connector, onCo
         'text-left'
       )}
     >
-      <div className={'w-[24px] h-[24px]'}>
+      <div className={'w-[30px] h-[30px]'}>
         <img
           src={connector.icon}
           alt={connector.name}

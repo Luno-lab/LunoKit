@@ -38,44 +38,50 @@ export const WalletView = React.memo(({ selectedConnector, onConnect, qrCode, is
       )}
 
 
-      <div className={'flex items-center py-12 flex-col max-w-[220px] grow justify-start'}>
+      <div className={'flex items-center gap-3 flex-col max-w-[280px] grow justify-center'}>
         {selectedConnector ?
           showQRCode ? (
             <div className={'flex flex-col items-center gap-4'}>
-              <QRCode size={220} logoBackground={selectedConnector.icon} uri={qrCode}/>
-              <div className={'text-secondaryFont leading-secondary font-[500] text-center'}>
-                Scan the QR Code with {selectedConnector.id === 'nova' ? 'the Nova app' : 'your phone'}
+              <QRCode size={280} logoBackground={selectedConnector.icon} uri={qrCode}/>
+              <div className={'text-base leading-base font-medium text-center'}>
+                Scan the QR code with {selectedConnector.id === 'nova' ? 'the Nova app' : 'your phone'}
               </div>
-              {selectedConnector.links?.browserExtension
+
+                 <div className="min-h-[32px] flex items-center justify-center ">
+                      {selectedConnector.links?.browserExtension
                 ? (
                   <p
                     onClick={() => window.open(selectedConnector.links.browserExtension)}
-                    className={'cursor-pointer pt-[16px] text-base leading-base text-accentColor font-bold text-center'}>
-                    Don‘t have {selectedConnector.name}?
+                    className={'cursor-pointer text-sm text-accentColor font-medium text-center'}>
+                    Don't have {selectedConnector.name}?
                   </p>
                 )
                 : qrCode
-                  ? <Copy className={'text-sm leading-sm text-accentColor'} copyText={qrCode} label={'Copy Link'} />
+                  ? <Copy className={'text-sm leading-sm font-medium text-accentColor'} copyText={qrCode} label={'Copy Link'} />
                   : null}
+          
+              </div>
+              
+             
             </div>
           ) : (
             <>
-              <div className={'w-[102px] h-[102px] pb-[8px]'}>
+              <div className={'w-[102px] h-[102px]'}>
                 <img src={selectedConnector.icon} className={'w-full h-full'} alt=""/>
               </div>
-              <p className={'pb-[10px] text-primary leading-primary text-modalFont font-[600]'}>
+              <p className={'text-lg leading-lg text-modalFont font-bold'}>
                 Opening {selectedConnector.name}...
               </p>
-              <p className={'pb-[10px] text-secondaryFont text-secondary leading-secondary font-[500]'}>
+              <p className={'text-base text-modalTextSecondary leading-base'}>
                 Confirm connection in the extension
               </p>
               {isConnecting && (
-                <Loading className={'w-[24px] h-[24px] text-secondaryFont animate-[spin_3s_linear_infinite]'}/>
+                <Loading className={'w-[24px] h-[24px] text-base animate-[spin_3s_linear_infinite]'}/>
               )}
               {!selectedConnector.isInstalled() && selectedConnector.links.browserExtension && (
                 <p
                   onClick={() => window.open(selectedConnector.links.browserExtension)}
-                  className={'cursor-pointer pt-[16px] text-base leading-base text-accentColor font-bold text-center'}>
+                  className={'cursor-pointer pt-6 text-sm text-accentColor font-medium text-center'}>
                   Don‘t have {selectedConnector.name}?
                 </p>
               )}
@@ -96,7 +102,7 @@ export const WalletView = React.memo(({ selectedConnector, onConnect, qrCode, is
                 <SpiralAnimation/>
               </div>
 
-              <p className={'cursor-pointer pb-[16px] text-base leading-base text-accentColor font-bold text-center'}>
+              <p className={'cursor-pointer  text-base leading-base text-accentColor font-bold text-center'}>
                 New to wallets?
               </p>
               <p className={'text-modalTextSecondary text-sm leading-sm font-medium text-center'}>
