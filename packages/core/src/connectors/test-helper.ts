@@ -8,6 +8,7 @@ interface ConnectorTestConfig<T> {
     id: string;
     name: string;
     icon: string;
+    injectorId?: string;
   };
   extraWindowProps?: Record<string, any>;
 }
@@ -33,7 +34,8 @@ export function createConnectorTestSuite<T extends BaseConnector>(
 
     const TEST_ADDRESS = '1FRMM8PEiWXYax7rpS6X4XZX1aAAxSWx1CrKTyrVYhV24fg'
 
-    const { id, name, icon} = config.expected
+    const { id, name, icon, injectorId } = config.expected
+    const actualInjectorId = injectorId || id;
 
     beforeEach(() => {
       connector = config.getConnector();
@@ -50,7 +52,7 @@ export function createConnectorTestSuite<T extends BaseConnector>(
       }
 
       mockInjectedWeb3 = {
-        [id]: {
+        [actualInjectorId]: {
           enable: vi.fn(),
         }
       }
@@ -127,7 +129,7 @@ export function createConnectorTestSuite<T extends BaseConnector>(
 
     describe('connection flow', () => {
       beforeEach(() => {
-        mockInjectedWeb3[id].enable.mockResolvedValue(mockInjector)
+        mockInjectedWeb3[actualInjectorId].enable.mockResolvedValue(mockInjector)
         mockInjector.accounts.get.mockResolvedValue([
           { address: TEST_ADDRESS, name: 'Test Account' }
         ])
@@ -137,7 +139,7 @@ export function createConnectorTestSuite<T extends BaseConnector>(
       it('should connect successfully with valid setup', async () => {
         const accounts = await connector.connect('test-app')
 
-        expect(mockInjectedWeb3[id].enable).toHaveBeenCalledWith('test-app')
+        expect(mockInjectedWeb3[actualInjectorId].enable).toHaveBeenCalledWith('test-app')
         expect(mockInjector.accounts.get).toHaveBeenCalled()
         expect(accounts).toHaveLength(1)
         expect(accounts[0].address).toBe(TEST_ADDRESS)
@@ -147,7 +149,7 @@ export function createConnectorTestSuite<T extends BaseConnector>(
         await connector.connect('test-app')
         const accounts = await connector.connect('test-app')
         expect(accounts).toHaveLength(1)
-        expect(mockInjectedWeb3[id].enable).toHaveBeenCalledTimes(1)
+        expect(mockInjectedWeb3[actualInjectorId].enable).toHaveBeenCalledTimes(1)
       })
 
       it('should throw error when extension not available', async () => {
@@ -175,7 +177,7 @@ export function createConnectorTestSuite<T extends BaseConnector>(
       })
 
       it('should throw error when enable fails', async () => {
-        mockInjectedWeb3[id].enable.mockResolvedValue(null)
+        mockInjectedWeb3[actualInjectorId].enable.mockResolvedValue(null)
 
         await expect(connector.connect('test-app')).rejects.toThrow(
           `Failed to enable the '${id}' extension.`
@@ -191,7 +193,7 @@ export function createConnectorTestSuite<T extends BaseConnector>(
       })
 
       it('should cleanup on connection failure', async () => {
-        mockInjectedWeb3[id].enable.mockRejectedValue(new Error('Enable failed'))
+        mockInjectedWeb3[actualInjectorId].enable.mockRejectedValue(new Error('Enable failed'))
 
         await expect(connector.connect('test-app')).rejects.toThrow('Enable failed')
 
@@ -229,7 +231,7 @@ export function createConnectorTestSuite<T extends BaseConnector>(
 
     describe('message signing', () => {
       beforeEach(async () => {
-        mockInjectedWeb3[id].enable.mockResolvedValue(mockInjector)
+        mockInjectedWeb3[actualInjectorId].enable.mockResolvedValue(mockInjector)
         mockInjector.accounts.get.mockResolvedValue([
           { address: TEST_ADDRESS, name: 'Test' }
         ])
@@ -304,7 +306,7 @@ export function createConnectorTestSuite<T extends BaseConnector>(
 
     describe('disconnection', () => {
       it('should cleanup all resources on disconnect', async () => {
-        mockInjectedWeb3[id].enable.mockResolvedValue(mockInjector)
+        mockInjectedWeb3[actualInjectorId].enable.mockResolvedValue(mockInjector)
         mockInjector.accounts.get.mockResolvedValue([
           { address: TEST_ADDRESS, name: 'Test' }
         ])
@@ -335,7 +337,7 @@ export function createConnectorTestSuite<T extends BaseConnector>(
       it('should handle account changes', async () => {
         let subscriptionCallback: any
 
-        mockInjectedWeb3[id].enable.mockResolvedValue(mockInjector)
+        mockInjectedWeb3[actualInjectorId].enable.mockResolvedValue(mockInjector)
         mockInjector.accounts.get.mockResolvedValue([
           { address: TEST_ADDRESS, name: 'Test' }
         ])
