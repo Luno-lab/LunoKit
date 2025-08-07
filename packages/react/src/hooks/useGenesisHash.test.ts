@@ -20,12 +20,13 @@ describe('useGenesisHash', () => {
     });
 
     expect(result.current.useGenesisHash.data).toBeUndefined();
-    expect(result.current.useGenesisHash.isLoading).toBe(true);
+    expect(result.current.useGenesisHash.isLoading).toBe(false);
 
     await waitFor(() => {
       expect(result.current.useLuno.currentApi).toBeDefined();
       expect(result.current.useLuno.isApiReady).toBe(true);
     });
+    console.log('result.current.useGenesisHash', result.current.useGenesisHash)
 
     await waitFor(() => {
       expect(result.current.useGenesisHash.isLoading).toBe(false);
@@ -33,7 +34,8 @@ describe('useGenesisHash', () => {
 
     expect(result.current.useGenesisHash).toEqual({
       data: polkadot.genesisHash,
-      isLoading: false
+      isLoading: false,
+      error: null,
     });
   });
 
@@ -44,7 +46,8 @@ describe('useGenesisHash', () => {
 
     expect(result.current).toEqual({
       data: undefined,
-      isLoading: true
+      isLoading: true,
+      error: null,
     });
   });
 });

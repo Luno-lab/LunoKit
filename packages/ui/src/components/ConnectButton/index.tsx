@@ -58,7 +58,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
   }
 
   return (
-    <div className={cs('text-modalText flex items-center bg-transparent font-semibold text-base leading-base gap-3', className)}>
+    <div className={cs('text-modalText flex items-stretch bg-transparent font-semibold text-base leading-base gap-3', className)}>
       {chainStatus !== 'none' && (
         <button
           type="button"
@@ -84,7 +84,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
         type="button"
         onClick={() => openAccountModal?.()}
         className={cs(
-          'flex items-center cursor-pointer rounded-connectButton py-1px bg-connectButtonBackground shadow-button',
+          'flex items-center cursor-pointer rounded-connectButton bg-connectButtonBackground shadow-button',
           transitionClassName,
         )}
         aria-label="Open account modal"
@@ -104,9 +104,8 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
         )}
 
         <div className={cs(
-          "flex items-center bg-connectButtonInnerBackground border-2 border-connectButtonBackground rounded-connectButton",
-          'py-1.5 px-2 gap-1.5',
-          showBalance && isLargeWindow ? 'bg-connectButtonInnerBackground' : 'bg-connectButtonBackground'
+          "flex items-center bg-connectButtonInnerBackground border-2 border-connectButtonBackground rounded-connectButton gap-1.5 max-h-[40px]",
+          showBalance && isLargeWindow ? 'bg-connectButtonInnerBackground py-1.5 px-2' : 'bg-connectButtonBackground py-2 px-2.5'
         )}>
           {accountStatus === 'full' && (
             <span className="w-[24px] h-[24px]">

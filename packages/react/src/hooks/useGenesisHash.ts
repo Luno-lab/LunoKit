@@ -1,32 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useLuno } from './useLuno';
-import { HexString } from 'dedot/utils'
+import { HexString } from 'dedot/utils';
 
 export interface UseGenesisHashResult {
   data?: HexString;
+  error: Error | null;
   isLoading: boolean;
 }
 
 export const useGenesisHash = (): UseGenesisHashResult => {
-  const { currentApi, isApiReady } = useLuno();
-  const [data, setData] = useState<HexString | undefined>();
-  const [isLoading, setIsLoading] = useState(true);
+  const { currentApi, currentChainId, isApiReady } = useLuno();
 
-  useEffect(() => {
-    if (currentApi && isApiReady) {
-      currentApi.chainSpec.genesisHash()
-        .then((hash: HexString) => {
-          setData(hash);
-        })
-        .catch((e: Error) => {
-          console.error("[useGenesisHash] Error fetching genesisHash:", e);
-          setData(undefined);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    }
-  }, [currentApi, isApiReady]);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['/genesis-hash', currentChainId],
+    queryFn: async () => {
+      return await currentApi!.rpc.chain_getBlockHash(0);
+    },
+    enabled: !!currentApi && isApiReady && !!currentChainId,
+    staleTime: Infinity,
+    gcTime: Infinity,
+    retry: false,
+  });
 
-  return { data, isLoading };
+  return { data, isLoading, error }
 };

@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode, useMemo, useCallback, useEffect } from 'react';
 import type { LunokitTheme, LunokitThemeOverrides, PartialLunokitTheme, ThemeMode } from './types';
-import { useCSSVariableInjection } from '../hooks/cssVariableInject';
+import { useCSSVariableInjection } from '../hooks/useCSSVariableInjection';
 
 // Theme preference storage
 interface ThemePreference {
@@ -27,11 +27,11 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 interface ThemeProviderProps {
   children: ReactNode;
-  theme?: LunokitTheme | LunokitThemeOverrides;
+  theme?: PartialLunokitTheme | LunokitThemeOverrides;
 }
 
 // Helper function to check if theme is complete or partial
-const isCompleteTheme = (theme: LunokitTheme | LunokitThemeOverrides): theme is LunokitTheme => {
+const isCompleteTheme = (theme: PartialLunokitTheme | LunokitThemeOverrides): theme is LunokitTheme => {
   return 'colors' in theme && 'fonts' in theme && 'radii' in theme && 'shadows' in theme && 'blurs' in theme;
 };
 
@@ -46,26 +46,26 @@ const useSystemTheme = () => {
     if (typeof window === 'undefined') return;
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
+
     const updateTheme = (e: MediaQueryListEvent | MediaQueryList) => {
       setSystemTheme(e.matches ? 'dark' : 'light');
     };
 
     updateTheme(mediaQuery);
     mediaQuery.addEventListener('change', updateTheme);
-    
+
     return () => mediaQuery.removeEventListener('change', updateTheme);
   }, []);
 
   return systemTheme;
 };
 
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ 
-  children, 
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({
+  children,
   theme: themeOverrides,
 }) => {
   const systemTheme = useSystemTheme();
-  
+
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
     if (typeof window !== 'undefined') {
       try {
@@ -82,11 +82,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
         // Ignore parsing errors
       }
     }
-    
+
     if (!themeOverrides || isCompleteTheme(themeOverrides)) {
       return 'light';
     }
-    
+
     const overrides = themeOverrides as LunokitThemeOverrides;
     return overrides.defaultMode || 'light';
   });
@@ -103,21 +103,14 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
         // Ignore parsing errors
       }
     }
-    
+
     if (!themeOverrides || isCompleteTheme(themeOverrides)) {
       return false;
     }
-    
+
     const overrides = themeOverrides as LunokitThemeOverrides;
     return overrides.autoMode ?? false;
   });
-
-  // Only listen to system theme changes for auto mode
-  useEffect(() => {
-    if (isAutoMode) {
-      setThemeMode(systemTheme || 'light');
-    }
-  }, [systemTheme, isAutoMode]);
 
   // Determine theme type and get relevant data
   const themeInfo = useMemo(() => {
@@ -132,7 +125,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
     // Handle theme overrides format
     const overrides = themeOverrides as LunokitThemeOverrides;
-    
+
     // Apply complete theme override (highest priority)
     if (overrides.theme) {
       return { type: 'complete' as const, completeTheme: overrides.theme, partialOverrides: null };
@@ -144,6 +137,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       partialOverrides = overrides.light;
     } else if (themeMode === 'dark' && overrides.dark) {
       partialOverrides = overrides.dark;
+    } else {
+      partialOverrides = { ...overrides as PartialLunokitTheme }
     }
 
     return { type: 'partial' as const, completeTheme: null, partialOverrides };
@@ -161,20 +156,27 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   const setThemeChoice = useCallback((choice: 'light' | 'dark' | 'auto') => {
     const isAuto = choice === 'auto';
     setIsAutoMode(isAuto);
-    
+
     if (isAuto) {
       setThemeMode(systemTheme || 'light');
     } else {
       setThemeMode(choice);
     }
-    
+
     const preference: ThemePreference = {
       isAuto,
       ...(isAuto ? {} : { preferredTheme: choice })
     };
-    
+
     saveThemePreference(preference);
   }, [systemTheme]);
+
+  // Only listen to system theme changes for auto mode
+  useEffect(() => {
+    if (isAutoMode) {
+      setThemeMode(systemTheme || 'light');
+    }
+  }, [systemTheme, isAutoMode]);
 
   const contextValue = useMemo(() => ({
     themeMode,
