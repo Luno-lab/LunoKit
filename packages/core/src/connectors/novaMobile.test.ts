@@ -8,9 +8,10 @@ describe(
   createConnectorTestSuite({
     getConnector: () => novaMobileConnector(),
     expected: {
-      id: 'polkadot-js',
+      id: 'nova-mobile',
       name: 'Nova Wallet (Mobile)',
       icon: novaSVG,
+      injectorId: 'polkadot-js',
     },
     extraWindowProps: {
       walletExtension: {
