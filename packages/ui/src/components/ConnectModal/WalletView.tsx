@@ -1,6 +1,6 @@
 import React from 'react'
 import { DialogClose } from '../Dialog'
-import { Close, Loading } from '../../assets/icons'
+import { Close } from '../../assets/icons'
 import { QRCode } from '../QRCode'
 import { cs } from '../../utils'
 import { transitionClassName } from '../ConnectButton'
@@ -81,7 +81,7 @@ export const WalletView = React.memo(({ selectedConnector, onConnect, qrCode, is
                 Confirm connection in the extension
               </p>
               {connectState.isConnecting && (
-                <Loading className={'w-[24px] h-[24px] text-secondaryFont animate-[spin_3s_linear_infinite]'}/>
+                <div className="loading text-modalText"></div>
               )}
               {!selectedConnector.isInstalled() && selectedConnector.links.browserExtension && (
                 <p

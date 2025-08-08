@@ -3,7 +3,6 @@ import { cs } from '../../utils'
 import { useApi, useChain, useChains, useSwitchChain } from '@luno-kit/react'
 import type { Chain } from '@luno-kit/react'
 import { ChainIcon } from '../ChainIcon'
-import { Loading } from '../../assets/icons'
 
 enum ChainFilter {
   all = 'All',
@@ -147,11 +146,7 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
             ? (
               <>
                 <span className="text-accentColor text-xs leading-xs mr-1.5">Switching</span>
-                <Loading
-                  className="text-accentColor animate-[spin_2s_linear_infinite]"
-                  width="15px"
-                  height="15px"
-                />
+                <div className="loading text-accentColor w-[15px] h-[15px]"></div>
               </>
             )
             : (
