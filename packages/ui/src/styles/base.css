@@ -47,8 +47,6 @@
   --color-info: var(--color-info);
   --color-infoForeground: var(--color-infoForeground);
 
-  --color-cutLine: var(--color-cutLine);
-
   /* Radius utilities */
   --radius-walletSelectItem: var(--radius-walletSelectItem);
   --radius-connectButton: var(--radius-connectButton);
@@ -158,7 +156,7 @@
   --color-separatorLine: rgba(0, 0, 0, 0.035);
   --color-modalBackground: #ffffff;
   --color-modalBackdrop: rgba(0, 0, 0, 0.3);
-  --color-modalBorder: transparent;
+  --color-modalBorder: rgba(0, 0, 0, 0.035);;
   --color-modalText: #25292E;
   --color-modalTextSecondary: rgba(60, 66, 66, 0.5);
   --color-modalControlButtonBackgroundHover: rgba(0,0,0,0.08);
@@ -172,7 +170,6 @@
   --color-info: #3b82f6;
   --color-infoForeground: #ffffff;
   --color-skeleton: rgba(0,0,0,0.08);
-  --color-cutLine: #0000000d;
 }
 
 /* Dark Theme Variables */
@@ -201,7 +198,7 @@
   --color-separatorLine: rgba(74,75,88,0.75);
   --color-modalBackground: #3A3B43;
   --color-modalBackdrop: rgba(0, 0, 0, 0.5);
-  --color-modalBorder: #374151;
+  --color-modalBorder: rgba(74,75,88,0.75);
   --color-modalText: #FFFFFF;
   --color-modalTextSecondary: rgba(255,255,255,0.5);
   --color-modalControlButtonBackgroundHover: rgba(255,255,255,0.09);
@@ -215,7 +212,6 @@
   --color-info: #3b82f6;
   --color-infoForeground: #ffffff;
   --color-skeleton: rgba(255,255,255,0.09);
-  --color-cutLine: #4a4b58bf;
 
 
   /* Radii */

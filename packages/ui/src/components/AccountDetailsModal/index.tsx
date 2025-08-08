@@ -77,7 +77,7 @@ export const AccountDetailsModal: React.FC = () => {
                   <img src={activeConnector.icon} alt="" />
                 </div>
               )}
-              <div className="flex flex-col items-start gap-2 w-full">
+              <div className="flex flex-col items-start gap-1 w-full">
                 <DialogTitle className={'sr-only'}>Account Details</DialogTitle>
                 <div className="flex items-center gap-1.5 w-full">
                 <span className="text-base text-modalText font-semibold">
