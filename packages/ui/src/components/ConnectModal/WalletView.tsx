@@ -14,11 +14,14 @@ interface Props {
   onConnect: (connector: Connector) => Promise<void>
   qrCode?: string
   isWide: boolean
+  connectState: {
+    isConnecting: boolean
+    isError: boolean
+  }
 }
 
-export const WalletView = React.memo(({ selectedConnector, onConnect, qrCode, isWide }: Props) => {
+export const WalletView = React.memo(({ selectedConnector, onConnect, qrCode, isWide, connectState }: Props) => {
   const showQRCode = selectedConnector?.hasConnectionUri();
-  const { isError: connectError, isPending: isConnecting } = useConnect()
 
   return (
     <div className={cs(
@@ -38,7 +41,11 @@ export const WalletView = React.memo(({ selectedConnector, onConnect, qrCode, is
       )}
 
 
-      <div className={'flex items-center gap-3 flex-col max-w-[300px] grow justify-center'}>
+
+      <div className={cs(
+        'flex items-center py-12 flex-col grow justify-start',
+        selectedConnector && showQRCode ? 'max-w-[220px]' : 'max-w-[360px]'
+      )}>
         {selectedConnector ?
           showQRCode ? (
             <div className={'flex flex-col items-center gap-4'}>
@@ -72,11 +79,11 @@ export const WalletView = React.memo(({ selectedConnector, onConnect, qrCode, is
               <p className={'text-lg leading-lg text-modalFont font-bold'}>
                 Opening {selectedConnector.name}...
               </p>
-              <p className={'text-base text-modalTextSecondary font-medium leading-base'}>
+              <p className={'pb-[10px] text-secondaryFont text-secondary leading-secondary font-[500] text-center'}>
                 Confirm connection in the extension
               </p>
-              {isConnecting && (
-                <Loading className={'w-[24px] h-[24px] text-base animate-[spin_3s_linear_infinite]'}/>
+              {connectState.isConnecting && (
+                <Loading className={'w-[24px] h-[24px] text-secondaryFont animate-[spin_3s_linear_infinite]'}/>
               )}
               {!selectedConnector.isInstalled() && selectedConnector.links.browserExtension && (
                 <p
@@ -85,7 +92,7 @@ export const WalletView = React.memo(({ selectedConnector, onConnect, qrCode, is
                   Don‘t have {selectedConnector.name}?
                 </p>
               )}
-              {!isConnecting && connectError && selectedConnector.isInstalled() && (
+              {!connectState.isConnecting && connectState.isError && selectedConnector.isInstalled() && (
                 <button
                   className={cs(
                     'rounded-connectButton focus:outline-none py-[4px] px-[12px] cursor-pointer font-[600] text-primaryFont bg-connectButtonBackground shadow-connectButton active:scale-[0.95]',

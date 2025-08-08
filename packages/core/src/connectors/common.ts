@@ -10,6 +10,7 @@ export interface CommonConnectorOptions {
   name: string;
   icon: string;
   links: ConnectorLinks;
+  injectorId?: string;
 }
 
 export class CommonConnector extends BaseConnector {
@@ -17,6 +18,7 @@ export class CommonConnector extends BaseConnector {
   readonly name: string;
   readonly icon: string;
   readonly links: ConnectorLinks;
+  protected readonly injectorId: string;
 
   private unsubscribe: (() => void) | null = null;
 
@@ -28,12 +30,13 @@ export class CommonConnector extends BaseConnector {
     this.name = options.name;
     this.icon = options.icon;
     this.links = options.links;
+    this.injectorId = options.injectorId || options.id;
   }
 
   public isInstalled(): boolean {
     if (typeof window === 'undefined') return false;
     const injectedWeb3 = window.injectedWeb3;
-    return typeof injectedWeb3 === 'object' && typeof injectedWeb3[this.id] !== 'undefined';
+    return typeof injectedWeb3 === 'object' && typeof injectedWeb3[this.injectorId] !== 'undefined';
   }
 
   public async isAvailable(): Promise<boolean> {
@@ -51,7 +54,7 @@ export class CommonConnector extends BaseConnector {
     }
 
     try {
-      this.specificInjector = await window.injectedWeb3![this.id]!.enable(appName);
+      this.specificInjector = await window.injectedWeb3![this.injectorId]!.enable(appName);
 
       if (!this.specificInjector) {
         throw new Error(`Failed to enable the '${this.id}' extension.`);

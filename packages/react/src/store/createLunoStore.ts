@@ -142,6 +142,11 @@ export const useLunoStore = create<LunoState>((set, get) => ({
     try {
       const handleAccountsChanged = async (newAccounts: Account[]) => {
         console.log(`[LunoStore] accountsChanged event from ${connector.name}:`, newAccounts);
+        if (newAccounts.length === 0) {
+          await get().disconnect()
+          return
+        }
+
         newAccounts.forEach(acc => {
           if (!acc.publicKey) {
             console.warn(`[LunoStore] Account ${acc.address} (from ${connector.name}) is missing publicKey.`);
