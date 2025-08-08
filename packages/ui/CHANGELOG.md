@@ -1,5 +1,13 @@
 # @luno-kit/ui
 
+## 0.0.2
+
+### Patch Changes
+
+- d7417de: update repository
+- Updated dependencies [d7417de]
+  - @luno-kit/react@0.0.2
+
 ## 0.0.1
 
 ### Patch Changes
