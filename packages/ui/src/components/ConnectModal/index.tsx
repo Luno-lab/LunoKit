@@ -23,7 +23,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
   size = 'wide',
 }) => {
   const { isOpen, close } = useConnectModal();
-  const { connectAsync, reset: resetConnect } = useConnect()
+  const { connectAsync, reset: resetConnect, isPending: isConnecting, isError: connectError } = useConnect()
   const [selectedConnector, setSelectedConnector] = useState<Connector | null>(null)
   const [qrCode, setQrCode] = useState<string | undefined>()
 
@@ -79,9 +79,22 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
   const viewComponents = useMemo(() => {
     return {
       [ConnectModalView.connectOptions]: <ConnectOptions onConnect={handleConnect} />,
-      [ConnectModalView.walletView]: <WalletView isWide={isWide} selectedConnector={selectedConnector} qrCode={qrCode} onConnect={handleConnect} />,
+      [ConnectModalView.walletView]: (
+        <WalletView
+          connectState={{ isConnecting, isError: connectError }}
+          isWide={isWide}
+          selectedConnector={selectedConnector}
+          qrCode={qrCode}
+          onConnect={handleConnect} />
+      ),
     }
-  }, [isWide, selectedConnector, qrCode, handleConnect])
+  }, [isWide, selectedConnector, qrCode, handleConnect, isConnecting, connectError])
+
+  useEffect(() => {
+    if (isWide && currentView === ConnectModalView.walletView) {
+      handleViewChange(ConnectModalView.connectOptions);
+    }
+  }, [isWide, currentView]);
 
   useEffect(() => {
     if (isWide && currentView === ConnectModalView.walletView) {
@@ -137,7 +150,15 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
         </div>
 
-        {isWide && <WalletView isWide={isWide} selectedConnector={selectedConnector} qrCode={qrCode} onConnect={handleConnect} />}
+        {isWide && (
+          <WalletView
+            connectState={{ isConnecting, isError: connectError }}
+            isWide={isWide}
+            selectedConnector={selectedConnector}
+            qrCode={qrCode}
+            onConnect={handleConnect}
+          />
+        )}
       </div>
     </Dialog>
   );
