@@ -40,7 +40,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: pnpm publish
+          publish: pnpm run publish
           commit: 'chore(release): version packages'
           title: 'chore: version packages'
           createGithubReleases: true
