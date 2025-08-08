@@ -10,7 +10,7 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "changeset": "changeset",
-    "publish-packages": "pnpm build && changeset publish"
+    "publish": "pnpm clean && pnpm build && changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.2",

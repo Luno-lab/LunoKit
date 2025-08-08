@@ -3,9 +3,18 @@
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "fixed": [],
-  "linked": [],
+  "linked": [
+    [
+      "@luno-kit/core",
+      "@luno-kit/react",
+      "@luno-kit/ui"
+    ]
+  ],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": []
-} 
+  "ignore": ["with-cra", "with-nextjs-app", "with-nextjs-pages", "with-vite"],
+  "___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": {
+    "updateInternalDependencies": "patch"
+  }
+}
