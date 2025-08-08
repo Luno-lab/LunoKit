@@ -75,7 +75,9 @@
     "typescript": "^5.3.3",
     "vitest": "^3.2.4"
   },
-  "publishConfig": {
-    "access": "public"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luno-lab/LunoKit.git",
+    "directory": "packages/ui"
   }
 }
