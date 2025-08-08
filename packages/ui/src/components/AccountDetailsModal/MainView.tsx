@@ -79,7 +79,7 @@ export const MainView: React.FC<MainViewProps> = ({
       </div>
       <div className={'w-full mx-[-100px] h-[1px] bg-cutLine'}/>
 
-      <div className={'w-full px-4 pb-3'}>
+      <div className={'w-full px-3 pb-3'}>
         <SelectItem onClick={handleDisconnect}>
           <Disconnect  />
           <span className="font-medium text-base text-accountActionItemText">Disconnect</span>

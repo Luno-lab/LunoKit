@@ -38,13 +38,13 @@ export const WalletView = React.memo(({ selectedConnector, onConnect, qrCode, is
       )}
 
 
-      <div className={'flex items-center gap-3 flex-col max-w-[280px] grow justify-center'}>
+      <div className={'flex items-center gap-3 flex-col max-w-[300px] grow justify-center'}>
         {selectedConnector ?
           showQRCode ? (
             <div className={'flex flex-col items-center gap-4'}>
-              <QRCode size={280} logoBackground={selectedConnector.icon} uri={qrCode}/>
-              <div className={'text-base leading-base font-medium text-center'}>
-                Scan the QR code with {selectedConnector.id === 'nova' ? 'the Nova app' : 'your phone'}
+              <QRCode size={300} logoBackground={selectedConnector.icon} uri={qrCode}/>
+              <div className={'text-base leading-base font-medium text-center text-modalTextSecondary'}>
+                Scan the QR code with {selectedConnector.id === 'nova' ? 'the Nova' : 'your phone'}
               </div>
 
                  <div className="min-h-[32px] flex items-center justify-center ">
@@ -66,13 +66,13 @@ export const WalletView = React.memo(({ selectedConnector, onConnect, qrCode, is
             </div>
           ) : (
             <>
-              <div className={'w-[102px] h-[102px]'}>
+              <div className={'w-[80px] h-[80px]'}>
                 <img src={selectedConnector.icon} className={'w-full h-full'} alt=""/>
               </div>
               <p className={'text-lg leading-lg text-modalFont font-bold'}>
                 Opening {selectedConnector.name}...
               </p>
-              <p className={'text-base text-modalTextSecondary leading-base'}>
+              <p className={'text-base text-modalTextSecondary font-medium leading-base'}>
                 Confirm connection in the extension
               </p>
               {isConnecting && (
@@ -101,12 +101,14 @@ export const WalletView = React.memo(({ selectedConnector, onConnect, qrCode, is
               <div className={'w-[160px] h-[160px] mb-4'}>
                 <SpiralAnimation/>
               </div>
-
-              <p className={'cursor-pointer  text-base leading-base text-accentColor font-bold text-center'}>
-                New to wallets?
+              <p className={'text-modalTextSecondary text-base leading-base font-medium text-center'}>
+                Your gateway to the Web3 world - connect a wallet to get started
               </p>
-              <p className={'text-modalTextSecondary text-sm leading-sm font-medium text-center'}>
-                Your gateway to the decentralized world Connect a wallet to get started
+             
+              <p 
+                className={'cursor-pointer  text-sm leading-sm text-accentColor font-medium text-center'}
+                onClick={() => window.open('https://polkadot.com/get-started/wallets/')}>
+                New to wallets?
               </p>
             </>
           )}

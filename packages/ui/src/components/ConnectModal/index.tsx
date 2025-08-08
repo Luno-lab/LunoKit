@@ -113,9 +113,8 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
                 <DialogTitle
                   className={cs(
                     'text-lg leading-lg text-modalText font-semibold transition-opacity duration-300',
-                    !selectedConnector?.hasConnectionUri() && 'sr-only',
                   )}>
-                  {selectedConnector?.hasConnectionUri() && 'Scan by your phone'}
+                  {selectedConnector?.name}
                 </DialogTitle>
               </>
             )}
@@ -134,6 +133,16 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
               {viewComponents[currentView]}
             </div>
           </div>
+
+          {!isWide && currentView === ConnectModalView.connectOptions && (
+            <div className={'pt-4 flex justify-center w-full'}>
+              <p 
+                className={'cursor-pointer text-sm leading-sm text-accentColor font-medium text-center'}
+                onClick={() => window.open('https://polkadot.com/get-started/wallets/')}>
+                New to wallets?
+              </p>
+            </div>
+          )}
 
         </div>
 

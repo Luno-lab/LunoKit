@@ -7,12 +7,12 @@ import { LunoKitProvider } from '@luno-kit/ui'
 import '@luno-kit/ui/styles.css'
 
 const connectors = [
+  novaConnector({ projectId: 'e5f0efe345290300d7320b5fa67bb6a4' }),
   polkadotjsConnector(),
   subwalletConnector(),
   talismanConnector(),
   polkagateConnector(),
   walletConnectConnector({ projectId: 'e5f0efe345290300d7320b5fa67bb6a4' }),
-  novaConnector({ projectId: 'e5f0efe345290300d7320b5fa67bb6a4' }),
 ]
 
 const lunoConfig = createConfig({
@@ -26,8 +26,11 @@ const lunoConfig = createConfig({
 
 createRoot(document.getElementById('root')!).render(
     <LunoKitProvider 
-     config={lunoConfig}
-     
+     config={{
+       ...lunoConfig,
+     //  modalSize: 'compact'
+     }}
+
      // ============ THEME USAGE EXAMPLES ============
      
      // 1. No theme prop - uses built-in light/dark themes

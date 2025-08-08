@@ -160,7 +160,7 @@
   --color-modalBackdrop: rgba(0, 0, 0, 0.3);
   --color-modalBorder: transparent;
   --color-modalText: #25292E;
-  --color-modalTextSecondary: rgba(60, 66, 66, 0.6);
+  --color-modalTextSecondary: rgba(60, 66, 66, 0.5);
   --color-modalControlButtonBackgroundHover: rgba(0,0,0,0.08);
   --color-modalControlButtonText: #6B7280;
   --color-success: #10b981;

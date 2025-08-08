@@ -34,7 +34,7 @@ export class WalletConnectConnector extends BaseConnector {
   }
 
   public isInstalled(): boolean {
-    return true;
+    return false;
   }
 
   public async isAvailable(): Promise<boolean> {
