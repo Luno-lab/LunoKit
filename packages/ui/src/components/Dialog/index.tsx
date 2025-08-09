@@ -44,7 +44,7 @@ const DialogRoot: React.FC<DialogProps> = ({
         <DialogPrimitive.Content
           className={cs(
             'luno-kit font-body fixed z-[200] text-modalText text-base leading-base',
-            'bg-modalBackground shadow-primary focus:outline-none overflow-hidden border border-modalBorder',
+            'bg-modalBackground shadow-modal focus:outline-none overflow-hidden border border-modalBorder',
             'transition-all duration-200',
 
             'rounded-t-modalMobile bottom-0 left-0 w-full',

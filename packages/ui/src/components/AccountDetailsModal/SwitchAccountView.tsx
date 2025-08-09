@@ -68,7 +68,7 @@ const AccountItem: React.FC<AccountItemProps> = React.memo(({
       disabled={isSelected}
     >
       <div className="flex items-center gap-2">
-        <div className="shrink-0 w-[24px] h-[24px] bg-pink-500 rounded-full flex items-center justify-center">
+        <div className="shrink-0 w-[24px] h-[24px] rounded-full flex items-center justify-center">
           {connector?.icon && <img src={connector?.icon} alt="luno account"/>}
         </div>
         <div className="flex flex-col items-start">

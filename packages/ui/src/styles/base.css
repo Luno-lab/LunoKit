@@ -125,8 +125,8 @@
   --radius-modalMobile: 24px;
 
   /* Shadows */
-  --shadow-button: 0px 10px 20px 0px rgba(0,0,0,0.1);
-  --shadow-modal: 0px 20px 25px -5px rgba(0,0,0,0.1);
+  --shadow-button: 0px 2px 6px rgba(0,0,0,0.1);
+  --shadow-modal: 0px 4px 16px rgba(0,0,0,0.3);
 
   /* Blurs */
   --blur-modalOverlay: blur(8px);
@@ -197,8 +197,8 @@
   --color-navigationButtonBackground: rgba(255,255,255,0.15);
   --color-separatorLine: rgba(74,75,88,0.75);
   --color-modalBackground: #3A3B43;
-  --color-modalBackdrop: rgba(0, 0, 0, 0.5);
-  --color-modalBorder: rgba(74,75,88,0.75);
+  --color-modalBackdrop: rgba(0, 0, 0, 0.6);
+  --color-modalBorder:rgba(74,75,88,0.75);
   --color-modalText: #FFFFFF;
   --color-modalTextSecondary: rgba(255,255,255,0.5);
   --color-modalControlButtonBackgroundHover: rgba(255,255,255,0.09);
@@ -227,8 +227,8 @@
   --radius-modalMobile: 24px;
 
   /* Shadows */
-  --shadow-button: 0px 4px 12px rgba(0, 0, 0, 0.3);
-  --shadow-modal: 0px 20px 25px -5px rgba(0, 0, 0, 0.4);
+  --shadow-button: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  --shadow-modal: 0px 4px 16px rgba(0, 0, 0, 0.3);
 
   /* Blurs */
   --blur-modalOverlay: blur(8px);
