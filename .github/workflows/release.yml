@@ -26,7 +26,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: 'https://registry.npmjs.org'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -40,7 +39,11 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
+<<<<<<< HEAD
           publish: pnpm publish
+=======
+          publish: pnpm run publish
+>>>>>>> dd31ad8b257333a2ddc58e1ba0823127e5fc4ff1
           commit: 'chore(release): version packages'
           title: 'chore: version packages'
           createGithubReleases: true

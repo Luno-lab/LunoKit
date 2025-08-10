@@ -1,7 +1,7 @@
 {
   "name": "@luno-kit/react",
   "description": "React Hooks and Provider for Luno, enabling easy Polkadot wallet interactions in React applications.",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -57,5 +57,10 @@
     "dedot": "^0.13.2",
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luno-lab/LunoKit.git",
+    "directory": "packages/react"
   }
 }

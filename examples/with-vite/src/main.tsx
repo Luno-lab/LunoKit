@@ -11,8 +11,8 @@ const connectors = [
   subwalletConnector(),
   talismanConnector(),
   polkagateConnector(),
-  walletConnectConnector({ projectId: 'e5f0efe345290300d7320b5fa67bb6a4' }),
-  novaConnector({ projectId: 'e5f0efe345290300d7320b5fa67bb6a4' }),
+  walletConnectConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID }),
+  novaConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID }),
 ]
 
 const lunoConfig = createConfig({
@@ -25,23 +25,23 @@ const lunoConfig = createConfig({
 
 
 createRoot(document.getElementById('root')!).render(
-    <LunoKitProvider 
+    <LunoKitProvider
      config={lunoConfig}
-     
+
      // ============ THEME USAGE EXAMPLES ============
-     
+
      // 1. No theme prop - uses built-in light/dark themes
      // (Uncomment this by removing all theme props below)
-     
+
      // 2. Only defaultMode - sets initial theme, allows user switching
      // theme={{ defaultMode: 'dark' }}
-     
+
      // 3. Auto mode enabled - follows system preference
      // theme={{ autoMode: true }}
-     
+
      // 4. Auto mode with defaultMode fallback
      // theme={{ autoMode: true, defaultMode: 'dark' }}
-     
+
      // 5. Partial theme overrides for dark mode only
     //  theme={{
     //    defaultMode: 'dark',
@@ -55,7 +55,7 @@ createRoot(document.getElementById('root')!).render(
     //      }
     //    }
     //  }}
-     
+
      // 6. Partial theme overrides for light mode only
     //  theme={{
     //    defaultMode: 'light',
@@ -69,7 +69,7 @@ createRoot(document.getElementById('root')!).render(
     //      }
     //    }
     //  }}
-     
+
      // 7. Partial overrides for both modes
     //  theme={{
     //    defaultMode: 'dark',
@@ -90,7 +90,7 @@ createRoot(document.getElementById('root')!).render(
     //      }
     //    }
     //  }}
-     
+
      // 8. Complete custom theme object
     //  theme={{
     //    colors: {
@@ -154,7 +154,7 @@ createRoot(document.getElementById('root')!).render(
     //      modalOverlay: '8px',
     //    }
     //  }}
-     
+
      // 9. Complete theme via theme property in overrides
     //  theme={{
     //    light: {
