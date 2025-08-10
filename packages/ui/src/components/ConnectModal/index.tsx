@@ -96,24 +96,6 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
     }
   }, [isWide, currentView]);
 
-  useEffect(() => {
-    if (isWide && currentView === ConnectModalView.walletView) {
-      handleViewChange(ConnectModalView.connectOptions);
-    }
-  }, [isWide, currentView]);
-
-  useEffect(() => {
-    if (isWide && currentView === ConnectModalView.walletView) {
-      handleViewChange(ConnectModalView.connectOptions);
-    }
-  }, [isWide, currentView]);
-
-  useEffect(() => {
-    if (isWide && currentView === ConnectModalView.walletView) {
-      handleViewChange(ConnectModalView.connectOptions);
-    }
-  }, [isWide, currentView]);
-
   return (
     <Dialog open={isOpen} onOpenChange={_onOpenChange}>
       <div className={cs('flex items-stretch justify-between w-full md:max-h-[504px] md:max-w-[724px]')}>
