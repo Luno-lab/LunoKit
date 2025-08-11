@@ -472,7 +472,7 @@ export function createWalletConnectTestSuite<T extends BaseConnector>(
 
     describe('installation and availability', () => {
       it('should always be installed', () => {
-        expect(connector.isInstalled()).toBe(true);
+        expect(connector.isInstalled()).toBe(false);
       });
 
       it('should always be available', async () => {

@@ -25,17 +25,19 @@ export const MainView: React.FC<MainViewProps> = ({
         content: (
           <div className={'flex items-stretch w-full justify-between'}>
             <div className={'flex items-center gap-2'}>
-              <ChainIcon
-                className="w-[20px] h-[20px]"
-                chainIconUrl={chain?.chainIconUrl}
-                chainName={chain?.name}
-              />
+              <div className="relative">
+                <ChainIcon
+                  className="w-[20px] h-[20px]"
+                  chainIconUrl={chain?.chainIconUrl}
+                  chainName={chain?.name}
+                />
+              </div>
               <span className="text-base text-modalText">{chain?.name || 'Polkadot'}</span>
             </div>
-            <div
+            {/* <div
               className={'flex items-center justify-center'}>
-              <Arrow className={'w-[16px] h-[16px] '} />
-            </div>
+              <Arrow className={'w-[16px] h-[16px] text-modalTextSecondary'} />
+            </div> */}
           </div>
         ),
         onClick: () => onViewChange(AccountModalView.switchChain)
@@ -77,7 +79,7 @@ export const MainView: React.FC<MainViewProps> = ({
           </SelectItem>
         ))}
       </div>
-      <div className={'w-full mx-[-100px] h-[1px] bg-cutLine'}/>
+      <div className={'w-full mx-[-100px] h-[1px] bg-separatorLine'}/>
 
       <div className={'w-full px-4 pb-4'}>
         <SelectItem onClick={handleDisconnect}>
@@ -95,7 +97,7 @@ const SelectItem = ({ children, onClick }: { children: React.ReactNode; onClick?
       type="button"
       onClick={() => onClick?.()}
       className={cs(
-        'w-full p-3.5 rounded-accountActionItem border-none text-left flex items-center gap-2 font-medium',
+        'w-full p-2.5 rounded-accountActionItem border-none text-left flex items-center gap-2 font-medium',
         'bg-accountActionItemBackground hover:bg-accountActionItemBackgroundHover',
         'transition-colors duration-200',
         onClick ? 'cursor-pointer' : 'cursor-auto'

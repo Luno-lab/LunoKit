@@ -47,8 +47,6 @@
   --color-info: var(--color-info);
   --color-infoForeground: var(--color-infoForeground);
 
-  --color-cutLine: var(--color-cutLine);
-
   /* Radius utilities */
   --radius-walletSelectItem: var(--radius-walletSelectItem);
   --radius-connectButton: var(--radius-connectButton);
@@ -127,8 +125,8 @@
   --radius-modalMobile: 24px;
 
   /* Shadows */
-  --shadow-button: 0px 10px 20px 0px rgba(0,0,0,0.1);
-  --shadow-modal: 0px 20px 25px -5px rgba(0,0,0,0.1);
+  --shadow-button: 0px 2px 6px rgba(0,0,0,0.1);
+  --shadow-modal: 0px 4px 16px rgba(0,0,0,0.3);
 
   /* Blurs */
   --blur-modalOverlay: blur(8px);
@@ -158,9 +156,9 @@
   --color-separatorLine: rgba(0, 0, 0, 0.035);
   --color-modalBackground: #ffffff;
   --color-modalBackdrop: rgba(0, 0, 0, 0.3);
-  --color-modalBorder: transparent;
+  --color-modalBorder: rgba(0, 0, 0, 0.035);
   --color-modalText: #25292E;
-  --color-modalTextSecondary: rgba(60, 66, 66, 0.6);
+  --color-modalTextSecondary: rgba(60, 66, 66, 0.5);
   --color-modalControlButtonBackgroundHover: rgba(0,0,0,0.08);
   --color-modalControlButtonText: #6B7280;
   --color-success: #10b981;
@@ -172,7 +170,6 @@
   --color-info: #3b82f6;
   --color-infoForeground: #ffffff;
   --color-skeleton: rgba(0,0,0,0.08);
-  --color-cutLine: #0000000d;
 }
 
 /* Dark Theme Variables */
@@ -200,8 +197,8 @@
   --color-navigationButtonBackground: rgba(255,255,255,0.15);
   --color-separatorLine: rgba(74,75,88,0.75);
   --color-modalBackground: #3A3B43;
-  --color-modalBackdrop: rgba(0, 0, 0, 0.5);
-  --color-modalBorder: #374151;
+  --color-modalBackdrop: rgba(0, 0, 0, 0.6);
+  --color-modalBorder:rgba(74,75,88,0.75);
   --color-modalText: #FFFFFF;
   --color-modalTextSecondary: rgba(255,255,255,0.5);
   --color-modalControlButtonBackgroundHover: rgba(255,255,255,0.09);
@@ -215,7 +212,7 @@
   --color-info: #3b82f6;
   --color-infoForeground: #ffffff;
   --color-skeleton: rgba(255,255,255,0.09);
-  --color-cutLine: #4a4b58bf;
+
 
 
   /* Radii */
@@ -230,13 +227,26 @@
   --radius-modalMobile: 24px;
 
   /* Shadows */
-  --shadow-button: 0px 4px 12px rgba(0, 0, 0, 0.3);
-  --shadow-modal: 0px 20px 25px -5px rgba(0, 0, 0, 0.4);
+  --shadow-button: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  --shadow-modal: 0px 4px 16px rgba(0, 0, 0, 0.3);
 
   /* Blurs */
   --blur-modalOverlay: blur(8px);
 }
 
+/* Loading Animation */
+.loading {
+  @apply pointer-events-none inline-block aspect-square bg-current align-middle;
+  width: 1.5rem;
+  mask-size: 100%;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' stroke='black' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg transform-origin='center'%3E%3Ccircle cx='12' cy='12' r='9.5' fill='none' stroke-width='3' stroke-linecap='round'%3E%3CanimateTransform attributeName='transform' type='rotate' from='0 12 12' to='360 12 12' dur='2s' repeatCount='indefinite'/%3E%3Canimate attributeName='stroke-dasharray' values='0,150;42,150;42,150' keyTimes='0;0.475;1' dur='1.5s' repeatCount='indefinite'/%3E%3Canimate attributeName='stroke-dashoffset' values='0;-16;-59' keyTimes='0;0.475;1' dur='1.5s' repeatCount='indefinite'/%3E%3C/circle%3E%3C/g%3E%3C/svg%3E");
+}
+
+.loading-spinner {
+  mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' stroke='black' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg transform-origin='center'%3E%3Ccircle cx='12' cy='12' r='9.5' fill='none' stroke-width='3' stroke-linecap='round'%3E%3CanimateTransform attributeName='transform' type='rotate' from='0 12 12' to='360 12 12' dur='2s' repeatCount='indefinite'/%3E%3Canimate attributeName='stroke-dasharray' values='0,150;42,150;42,150' keyTimes='0;0.475;1' dur='1.5s' repeatCount='indefinite'/%3E%3Canimate attributeName='stroke-dashoffset' values='0;-16;-59' keyTimes='0;0.475;1' dur='1.5s' repeatCount='indefinite'/%3E%3C/circle%3E%3C/g%3E%3C/svg%3E");
+}
 
 .luno-kit * {
   scrollbar-width: none; /* Firefox */
