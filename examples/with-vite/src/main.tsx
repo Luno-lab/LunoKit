@@ -28,7 +28,7 @@ createRoot(document.getElementById('root')!).render(
     <LunoKitProvider 
      config={{
        ...lunoConfig,
-       modalSize: 'compact'
+      // modalSize: 'compact'
      }}
 
      // ============ THEME USAGE EXAMPLES ============
@@ -191,3 +191,4 @@ createRoot(document.getElementById('root')!).render(
     </StrictMode>
   </LunoKitProvider>
 )
+

@@ -113,7 +113,7 @@ export const WalletView = React.memo(({ selectedConnector, onConnect, qrCode, is
               </p>
              
               <p className={'text-modalTextSecondary w-[250px] text-sm leading-sm font-medium text-center'}>
-              Connect your wallet to sign in and start using your assets.
+                Connect your wallet to start exploring and interacting with DApps.
                </p>
              
               
