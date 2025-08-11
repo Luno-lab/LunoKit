@@ -25,8 +25,7 @@ const lunoConfig = createConfig({
 
 
 createRoot(document.getElementById('root')!).render(
-    <LunoKitProvider
-     config={lunoConfig}
+    <LunoKitProvider config={lunoConfig}
 
      // ============ THEME USAGE EXAMPLES ============
 

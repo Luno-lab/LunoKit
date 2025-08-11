@@ -100,14 +100,17 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
     <Dialog open={isOpen} onOpenChange={_onOpenChange}>
       <div className={cs('flex items-stretch justify-between w-full md:max-h-[504px] md:max-w-[724px]')}>
         <div className={cs(
-          'flex flex-col items-start py-4 px-5 md:min-w-[360px] w-full md:w-auto',
-          isWide && 'border-r-[1px] border-r-solid border-r-separatorLine'
+          'flex flex-col items-start py-4 px-5 w-full md:w-auto',
+          isWide ? 'md:min-w-[300px] border-r-[1px] border-r-solid border-r-separatorLine' : 'md:min-w-[360px]'
         )}>
           <div className={cs('flex items-center justify-between w-full', !isWide && 'pb-4')}>
             {currentView === ConnectModalView.connectOptions ? (
-              <DialogTitle className={cs('text-lg leading-lg text-modalText font-bold', isWide && 'pb-6')}>
-                Connect Wallet
-              </DialogTitle>
+              <>
+                {!isWide && <div className="w-[30px] h-[30px]" aria-hidden />}
+                <DialogTitle className={cs('text-lg leading-lg text-modalText font-bold', isWide ? 'pb-6' : 'flex-1 text-center')}>
+                  Connect Wallet
+                </DialogTitle>
+              </>
             ) : (
               <>
                 <button
@@ -120,9 +123,8 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
                 <DialogTitle
                   className={cs(
                     'text-lg leading-lg text-modalText font-semibold transition-opacity duration-300',
-                    !selectedConnector?.hasConnectionUri() && 'sr-only',
                   )}>
-                  {selectedConnector?.hasConnectionUri() && 'Scan by your phone'}
+                  {selectedConnector?.name}
                 </DialogTitle>
               </>
             )}
@@ -141,6 +143,16 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
               {viewComponents[currentView]}
             </div>
           </div>
+
+          {!isWide && currentView === ConnectModalView.connectOptions && (
+            <>
+               <p 
+                className={'cursor-pointer w-full pt-4 text-sm leading-sm text-accentColor font-medium text-center hover:text-modalText'}
+                onClick={() => window.open('https://polkadot.com/get-started/wallets/')}>
+                New to wallets?
+              </p>
+            </>
+          )}
 
         </div>
 

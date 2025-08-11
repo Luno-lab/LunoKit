@@ -3,7 +3,6 @@ import { cs } from '../../utils'
 import { useApi, useChain, useChains, useSwitchChain } from '@luno-kit/react'
 import type { Chain } from '@luno-kit/react'
 import { ChainIcon } from '../ChainIcon'
-import { Loading } from '../../assets/icons'
 
 enum ChainFilter {
   all = 'All',
@@ -117,7 +116,7 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
       onClick={() => onSelect(chain)}
       disabled={isSelected || isLoading}
       className={cs(
-  'flex items-center justify-between p-2 rounded-sm',
+  'flex items-center justify-between p-2.5 rounded-networkSelectItem',
   'bg-networkSelectItemBackground',
   'transition-colors duration-200',
   (isSelected || isLoading)
@@ -129,7 +128,7 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
     >
       <div className="flex items-center gap-2">
         <ChainIcon
-          className={'w-[24px] bg-modal-bg h-[24px] flex items-center justify-center'}
+          className={'w-[20px] bg-modal-bg h-[20px] flex items-center justify-center'}
           chainIconUrl={chain?.chainIconUrl}
           chainName={chain?.name}
         />
@@ -147,11 +146,7 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
             ? (
               <>
                 <span className="text-accentColor text-xs leading-xs mr-1.5">Switching</span>
-                <Loading
-                  className="text-accentColor animate-[spin_2s_linear_infinite]"
-                  width="15px"
-                  height="15px"
-                />
+                <div className="loading text-accentColor w-[15px] h-[15px]"></div>
               </>
             )
             : (

@@ -23,14 +23,14 @@ export const QRCode = ({
     
     const cellSize = size / QR_GRID_SIZE;
     const arenaSize = ARENA_GRID_SIZE * cellSize;
-    const arenaStart = Math.floor(QR_GRID_SIZE / 2 - ARENA_GRID_SIZE / 2);
+    const arenaStart = Math.ceil(QR_GRID_SIZE / 2 - ARENA_GRID_SIZE / 2);
     const arenaEnd = arenaStart + ARENA_GRID_SIZE;
     
     const generateSkeletonDots = () => {
       const dots = [];
       for (let i = 0; i < QR_GRID_SIZE; i++) {
         for (let j = 0; j < QR_GRID_SIZE; j++) {
-          if (i >= arenaStart && i <= arenaEnd && j >= arenaStart && j <= arenaEnd) continue;
+          if (i >= arenaStart && i < arenaEnd && j >= arenaStart && j < arenaEnd) continue;
 
           const isInFinder = 
             (i < FINDER_SIZE_WITH_MARGIN && j < FINDER_SIZE_WITH_MARGIN) ||
@@ -95,7 +95,7 @@ export const QRCode = ({
     };
 
     const renderArenaLogo = () => {
-      const logoStart = Math.ceil(QR_GRID_SIZE / 2 - ARENA_GRID_SIZE / 2) * cellSize;
+      const logoStart = arenaStart * cellSize;
       
       return (
         <div 
