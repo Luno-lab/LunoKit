@@ -7,7 +7,6 @@ import { LunoKitProvider } from '@luno-kit/ui'
 import '@luno-kit/ui/styles.css'
 
 const connectors = [
-  novaConnector({ projectId: 'e5f0efe345290300d7320b5fa67bb6a4' }),
   polkadotjsConnector(),
   subwalletConnector(),
   talismanConnector(),
