@@ -176,10 +176,14 @@ export class WalletConnectConnector extends BaseConnector {
       throw new Error("Provider not initialized or not connected");
     }
 
+    const targetChainId = chainId
+      ? `polkadot:${chainId.replace('0x', '').slice(0, 32)}`
+      : this.convertChainIdToCaipId(this.connectedChains!)[0]
+
     try {
       const result = await this.provider.client.request({
         topic: this.session.topic,
-        chainId: this.convertChainIdToCaipId(this.connectedChains!)[0],
+        chainId: targetChainId,
         request: {
           method: 'polkadot_signMessage',
           params: {
