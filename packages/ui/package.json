@@ -8,7 +8,8 @@
     "react",
     "ui",
     "components",
-    "luno"
+    "luno-lab",
+    "luno-kit"
   ],
   "type": "module",
   "homepage": "https://github.com/Luno-lab/LunoKit",
