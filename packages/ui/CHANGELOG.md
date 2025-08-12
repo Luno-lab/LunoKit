@@ -1,5 +1,13 @@
 # @luno-kit/ui
 
+## 0.0.4
+
+### Patch Changes
+
+- 8a4d2b9: Fix the dependencies error and optimizing the UI
+- Updated dependencies [8a4d2b9]
+  - @luno-kit/react@0.0.4
+
 ## 0.0.3
 
 ### Patch Changes
