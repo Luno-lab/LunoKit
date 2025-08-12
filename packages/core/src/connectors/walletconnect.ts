@@ -1,10 +1,10 @@
 import { BaseConnector } from './base';
 import type { IUniversalProvider, Metadata } from '@walletconnect/universal-provider';
-import { SessionTypes } from '@walletconnect/types'
+import { SessionTypes, SignClientTypes } from '@walletconnect/types'
 import type { Account, Chain, Signer, WalletConnectConnectorOptions } from '../types';
 import { walletconnectSVG } from '../config/logos/generated';
 import { SignerResult, SignerPayloadJSON } from 'dedot/types'
-import {ConnectorLinks} from '../types'
+import { ConnectorLinks } from '../types'
 
 export class WalletConnectConnector extends BaseConnector {
   readonly id: string;
@@ -19,6 +19,8 @@ export class WalletConnectConnector extends BaseConnector {
 
   private session?: SessionTypes.Struct;
   private connectedChains?: Chain[];
+
+  private unsubscribe: (() => void) | null = null;
 
   constructor(options: WalletConnectConnectorOptions) {
     super();
@@ -76,6 +78,9 @@ export class WalletConnectConnector extends BaseConnector {
         this.session = this.provider.session;
         const accounts = this.getAccountsFromSession(chains, chainIdToUse);
         this.accounts = accounts;
+
+        await this.startSubscription();
+
         this.emit('connect', [...this.accounts]);
         return [...this.accounts];
       }
@@ -111,6 +116,10 @@ export class WalletConnectConnector extends BaseConnector {
 
       const accounts = this.getAccountsFromSession(chains, chainIdToUse);
       this.accounts = accounts;
+
+      // 启动订阅
+      await this.startSubscription();
+
       this.emit('connect', [...this.accounts]);
       return [...this.accounts];
 
@@ -157,18 +166,17 @@ export class WalletConnectConnector extends BaseConnector {
 
   public async disconnect(): Promise<void> {
     if (this.provider) {
-      await Promise.race([
-        await this.provider.disconnect(),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Disconnect timeout')), 5000)
-        )
-      ]);
-      this.provider = undefined;
-      this.connectionUri = undefined;
-      this.accounts = [];
-      this.signer = undefined;
-      this.emit('disconnect');
+      console.log('this.provider', this.provider)
+      console.log('this.sessionsession', this.session)
+      // await Promise.race([
+        await this.provider.disconnect()
+        // new Promise((_, reject) =>
+        //   setTimeout(() => reject(new Error('Disconnect timeout')), 5000)
+        // )
+      // ]);
     }
+    await this.cleanup()
+    this.emit('disconnect');
   }
 
   public async signMessage(message: string, address: string, chainId?: string): Promise<string | undefined> {
@@ -176,10 +184,14 @@ export class WalletConnectConnector extends BaseConnector {
       throw new Error("Provider not initialized or not connected");
     }
 
+    const targetChainId = chainId
+      ? `polkadot:${chainId.replace('0x', '').slice(0, 32)}`
+      : this.convertChainIdToCaipId(this.connectedChains!)[0]
+
     try {
       const result = await this.provider.client.request({
         topic: this.session.topic,
-        chainId: this.convertChainIdToCaipId(this.connectedChains!)[0],
+        chainId: targetChainId,
         request: {
           method: 'polkadot_signMessage',
           params: {
@@ -249,6 +261,46 @@ export class WalletConnectConnector extends BaseConnector {
         }
       }
     };
+  }
+
+  private async startSubscription(): Promise<void> {
+    await this.cleanupSubscription();
+
+    if (!this.provider?.client || !this.session) {
+      throw new Error(`Connector ${this.id}: Cannot subscribe, provider or session not available.`);
+    }
+
+    try {
+      const sessionDeleteHandler = async () => {
+        console.log(`Connector ${this.id}: Session deleted, disconnecting...`);
+        await this.cleanup()
+        this.emit('disconnect');
+      }
+      this.provider.client.on('session_delete', sessionDeleteHandler);
+
+      this.unsubscribe = () => {
+        this.provider?.client?.off('session_delete', sessionDeleteHandler)
+      }
+
+    } catch (error) {
+      this.unsubscribe = null;
+    }
+  }
+
+  private async cleanupSubscription(): Promise<void> {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+      this.unsubscribe = null;
+      console.log(`Connector ${this.id}: Unsubscribed from events.`);
+    }
+  }
+
+  private async cleanup(): Promise<void> {
+    await this.cleanupSubscription();
+    this.accounts = [];
+    this.signer = undefined;
+    this.provider = undefined;
+    this.session = undefined;
   }
 }
 

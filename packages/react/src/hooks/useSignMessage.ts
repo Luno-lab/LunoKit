@@ -41,7 +41,7 @@ export interface UseSignMessageResult {
 export function useSignMessage(
   hookLevelConfig?: UseSignMessageOptions
 ): UseSignMessageResult {
-  const { activeConnector, account, accounts } = useLuno();
+  const { activeConnector, account, accounts, currentChainId } = useLuno();
 
   const mutationFn = async (
     variables: SignMessageVariables
@@ -63,7 +63,8 @@ export function useSignMessage(
 
     const signatureString = await activeConnector.signMessage(
       variables.message,
-      account.address
+      account.address,
+      currentChainId,
     );
 
     if (!signatureString) {

@@ -1,14 +1,16 @@
 {
   "name": "@luno-kit/core",
   "description": "Core module for Luno, providing foundational utilities, types, configuration, and connectors for Polkadot wallet interactions.",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "type": "module",
   "keywords": [
     "polkadot",
     "wallet",
     "web3",
     "blockchain",
-    "connector"
+    "connector",
+    "luno-lab",
+    "luno-kit"
   ],
   "homepage": "https://github.com/Luno-lab/LunoKit#readme",
   "main": "dist/index.js",
@@ -73,5 +75,10 @@
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=10.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luno-lab/LunoKit.git",
+    "directory": "packages/core"
   }
 }

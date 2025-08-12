@@ -65,7 +65,7 @@ const DialogRoot: React.FC<DialogProps> = ({
 };
 
 const DialogTitleWrapper: React.FC<DialogTitleProps> = ({ children, className }) =>
-  React.createElement(DialogPrimitive.Title as any, { className: cs('font-heading', className) }, children);
+  React.createElement(DialogPrimitive.Title as any, { className }, children);
 
 const DialogCloseWrapper: React.FC<DialogCloseProps> = ({ children, className, onClick }) =>
   React.createElement(DialogPrimitive.Close as any, { className, onClick }, children);
