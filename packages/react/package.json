@@ -7,6 +7,14 @@
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
+  "keywords": [
+    "polkadot",
+    "substrate",
+    "react",
+    "hooks",
+    "luno-lab",
+    "luno-kit"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -30,7 +38,8 @@
   "dependencies": {
     "@dedot/chaintypes": "catalog:",
     "@luno-kit/core": "workspace:*",
-    "dedot": "catalog:"
+    "dedot": "catalog:",
+    "zustand": "5.0.4"
   },
   "devDependencies": {
     "@tanstack/react-query": "catalog:",
@@ -48,8 +57,7 @@
     "react-dom": "catalog:",
     "tsup": "catalog:",
     "typescript": "^5.3.3",
-    "vitest": "^3.2.4",
-    "zustand": "5.0.4"
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "@dedot/chaintypes": "^0.123.0",

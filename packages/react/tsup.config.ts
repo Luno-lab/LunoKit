@@ -23,9 +23,6 @@ export default defineConfig((options) => ({
     'react',
     'react-dom',
     '@tanstack/react-query',
-    'zustand',
-    'dedot',
-    '@dedot/chaintypes',
   ],
   tsconfig: './tsconfig.json',
   esbuildOptions() {

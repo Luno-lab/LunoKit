@@ -5,7 +5,7 @@ export class NovaMobileConnector extends CommonConnector {
   constructor() {
     super({
       id: 'nova-mobile',
-      name: 'Nova Wallet (Mobile)',
+      name: 'Nova Wallet',
       icon: novaSVG,
       injectorId: 'polkadot-js',
       links: {
