@@ -1,5 +1,11 @@
 # @luno-kit/core
 
+## 0.0.5
+
+### Patch Changes
+
+- 05ee287: Fix the UI issues
+
 ## 0.0.4
 
 ### Patch Changes
