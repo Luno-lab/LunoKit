@@ -1,19 +1,12 @@
-- # LunoKit ( In Development )
-> ⚠️ **Early Development**
+# LunoKit
 
 <div align="center">
 
-[![npm version](https://img.shields.io/npm/v/@luno-kit/ui.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@luno-kit/ui)
-[![npm downloads](https://img.shields.io/npm/dm/@luno-kit/ui.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@luno-kit/ui)
+[![npm version](https://img.shields.io/npm/v/@luno-kit/ui.svg)](https://www.npmjs.com/package/@luno-kit/ui)
+[![npm downloads](https://img.shields.io/npm/dm/@luno-kit/ui.svg)](https://www.npmjs.com/package/@luno-kit/ui)
+[![CI](https://github.com/Luno-lab/LunoKit/actions/workflows/pr-check.yml/badge.svg)](https://github.com/Luno-lab/LunoKit/actions/workflows/pr-check.yml)
 [![codecov](https://codecov.io/gh/Luno-lab/LunoKit/branch/main/graph/badge.svg)](https://codecov.io/gh/Luno-lab/LunoKit)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Luno-lab/LunoKit)
-[![license](https://img.shields.io/badge/license-MIT-black?style=flat&colorA=000000&colorB=000000)](https://github.com/Luno-lab/LunoKit/blob/main/LICENSE)
-
-[![typescript](https://img.shields.io/badge/TypeScript-Ready-black?style=flat&colorA=000000&colorB=000000&logo=typescript)](https://www.typescriptlang.org/)
-[![react](https://img.shields.io/badge/React-18+-black?style=flat&colorA=000000&colorB=000000&logo=react)](https://reactjs.org/)
-[![polkadot](https://img.shields.io/badge/Polkadot-Ready-black?style=flat&colorA=000000&colorB=000000&logo=polkadot)](https://polkadot.network/)
-
-**The best way to connect Polkadot wallets 🚀**
 
 </div>
 
