@@ -128,7 +128,7 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
     >
       <div className="flex items-center gap-2">
         <ChainIcon
-          className={'w-[20px] bg-modal-bg h-[20px] flex items-center justify-center'}
+          className={'w-[20px] h-[20px] flex items-center justify-center leading-[20px]'}
           chainIconUrl={chain?.chainIconUrl}
           chainName={chain?.name}
         />
@@ -158,7 +158,7 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
           : null
         }
       </div>
-{/* 
+{/*
       {isSelected
         ? isLoading
           ? <Loading className={'text-secondaryFont animate-[spin_2s_linear_infinite]'}/>

@@ -56,8 +56,6 @@ export interface LunokitTheme {
   };
   fonts: {
     body: string;
-    heading: string;
-    mono: string;
   };
   radii: {
     walletSelectItem: string;
