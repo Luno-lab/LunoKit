@@ -14,7 +14,7 @@ const ALL_THEME_VARS = [
   '--color-modalControlButtonBackgroundHover', '--color-modalControlButtonText',
   '--color-success', '--color-successForeground', '--color-warning', '--color-warningForeground',
   '--color-error', '--color-errorForeground', '--color-info', '--color-infoForeground', '--color-skeleton',
-  '--font-body', '--font-heading', '--font-mono',
+  '--font-body',
   '--radius-walletSelectItem', '--radius-connectButton', '--radius-modalControlButton', '--radius-accountActionItem',
   '--radius-accountSelectItem', '--radius-currentNetworkButton', '--radius-networkSelectItem', '--radius-modal', '--radius-modalMobile',
   '--shadow-button', '--shadow-modal',

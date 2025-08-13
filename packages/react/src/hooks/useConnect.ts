@@ -2,6 +2,7 @@ import { useLuno } from './useLuno';
 import type { Connector } from '@luno-kit/core';
 import { ConnectionStatus } from '../types'
 import { useLunoMutation, type LunoMutationOptions } from './useLunoMutation';
+import { sleep } from '../utils'
 
 export interface ConnectVariables {
   connectorId: string;
@@ -42,6 +43,7 @@ export const useConnect = (hookLevelConfig?: UseConnectOptions): UseConnectResul
 
   const connectFn = async (variables: ConnectVariables): Promise<void> => {
     await connect(variables.connectorId, variables.targetChainId);
+    await sleep()
   };
 
   const mutationResult = useLunoMutation<

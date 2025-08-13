@@ -20,7 +20,7 @@ export interface Connector extends EventEmitter {
   disconnect(): Promise<void>;
   getAccounts(): Promise<Array<Account>>;
   getSigner(): Promise<Signer | undefined>;
-  signMessage(message: string, address: string): Promise<string | undefined>;
+  signMessage(message: string, address: string, chainId?: string): Promise<string | undefined>;
   hasConnectionUri(): boolean;
   getConnectionUri(): Promise<string | undefined>;
   updateAccountsForChain(chainId: string): Promise<Account[]>;

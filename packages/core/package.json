@@ -8,7 +8,9 @@
     "wallet",
     "web3",
     "blockchain",
-    "connector"
+    "connector",
+    "luno-lab",
+    "luno-kit"
   ],
   "homepage": "https://github.com/Luno-lab/LunoKit#readme",
   "main": "dist/index.js",

@@ -74,7 +74,8 @@ export const AccountDetailsModal: React.FC = () => {
             <div className={'flex items-center gap-3'}>
               {activeConnector?.icon && (
                 <div className={'flex items-center justify-center w-[55px] h-[55px]'}>
-                  <img src={activeConnector.icon} alt="" />
+                  <img src={activeConnector.icon} alt="" className="w-full h-full 
+  object-contain"/>
                 </div>
               )}
               <div className="flex flex-col items-start gap-1 w-full">

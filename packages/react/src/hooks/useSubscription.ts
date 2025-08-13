@@ -48,7 +48,7 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
     transform = defaultTransform as (data: TData) => TTransformed,
     defaultValue,
   } = options;
-  const isSubscribed = useRef(false)
+  const unsubscribeRef = useRef<(() => Promise<void>) | null>(null);
 
   const resolvedParams = useMemo(() => {
     if (!params || !currentApi || !isApiReady) return undefined;
@@ -62,12 +62,14 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
   ], [userQueryKey, resolvedParams, currentApi?.genesisHash]);
 
   useEffect(() => {
-    if (!enabled || !factory || !currentApi || !resolvedParams || !isApiReady || isSubscribed.current) {
+    if (unsubscribeRef.current) {
+      unsubscribeRef.current();
+      unsubscribeRef.current = null;
+    }
+
+    if (!enabled || !factory || !currentApi || !resolvedParams || !isApiReady) {
       return;
     }
-    let unsubscribe: (() => Promise<void>) | null = null;
-
-    isSubscribed.current = true
 
     try {
       const factoryFn = factory(currentApi);
@@ -86,7 +88,7 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
 
       boundFn(...resolvedParams, callback)
         .then((unsub: Unsub) => {
-          unsubscribe = unsub;
+          unsubscribeRef.current = unsub;
         })
         .catch((err: Error) => {
           setError(new Error(`[useSubscription]: ${err}`));
@@ -96,9 +98,9 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
     }
 
     return () => {
-      if (unsubscribe) {
-        unsubscribe();
-        isSubscribed.current = false
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
         setError(undefined);
       }
     };
