@@ -1,5 +1,13 @@
 # @luno-kit/ui
 
+## 0.0.5
+
+### Patch Changes
+
+- 05ee287: Fix the UI issues
+- Updated dependencies [05ee287]
+  - @luno-kit/react@0.0.5
+
 ## 0.0.4
 
 ### Patch Changes
