@@ -26,7 +26,6 @@ const lunoConfig = createConfig({
 
 createRoot(document.getElementById('root')!).render(
     <LunoKitProvider config={lunoConfig}
-
      // ============ THEME USAGE EXAMPLES ============
 
      // 1. No theme prop - uses built-in light/dark themes
