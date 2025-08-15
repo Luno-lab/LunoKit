@@ -1,6 +1,6 @@
 {
   "name": "@luno-kit/ui",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "UI components for Luno, a Polkadot frontend toolkit.",
   "keywords": [
     "polkadot",

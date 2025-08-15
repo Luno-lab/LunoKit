@@ -6,7 +6,7 @@ import type { HexString } from 'dedot/utils'
 
 export interface UseAccountsResult {
   accounts: Account[];
-  selectAccount: (accountOrAddress?: Account | HexString) => void;
+  selectAccount: (accountOrPublicKey?: Account | HexString) => void;
 }
 
 export const useAccounts = (): UseAccountsResult => {

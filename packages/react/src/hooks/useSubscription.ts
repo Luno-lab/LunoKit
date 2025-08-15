@@ -4,6 +4,7 @@ import type { Callback } from 'dedot/types'
 import type { LegacyClient } from 'dedot';
 import type { Unsub } from 'dedot/types';
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { GenericStorageQuery } from 'dedot/types'
 
 type SubscriptionFn<TArgs extends any[], TData> =
   (...params: [...TArgs, Callback<TData>]) => Promise<() => Promise<void>>;
@@ -18,7 +19,7 @@ type ApiBoundSubscriptionFactory<TArgs extends any[], TData> =
   (api: LegacyClient) => SubscriptionFn<TArgs, TData>;
 
 export interface QueryMultiItem {
-  fn: any;
+  fn: GenericStorageQuery;
   args: any[];
 }
 

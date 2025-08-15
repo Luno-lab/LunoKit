@@ -25,7 +25,7 @@ describe('useSigner', () => {
       config: mockConfig
     });
 
-    expect(result.current.useSigner.signer).toBeUndefined();
+    expect(result.current.useSigner.data).toBeUndefined();
     expect(result.current.useSigner.isLoading).toBe(false);
 
     await act(async () => {
@@ -36,7 +36,7 @@ describe('useSigner', () => {
 
     await waitFor(() => {
       expect(result.current.useConnect.status).toBe(ConnectionStatus.Connected);
-      expect(result.current.useSigner.signer).toBeDefined();
+      expect(result.current.useSigner.data).toBeDefined();
       expect(result.current.useSigner.isLoading).toBe(false);
     });
 
@@ -44,7 +44,7 @@ describe('useSigner', () => {
       await result.current.useDisconnect.disconnectAsync();
     });
 
-    expect(result.current.useSigner.signer).toBeUndefined();
+    expect(result.current.useSigner.data).toBeUndefined();
     expect(result.current.useSigner.isLoading).toBe(false);
   });
 
@@ -66,7 +66,7 @@ describe('useSigner', () => {
     });
 
     await waitFor(() => {
-      expect(result.current.useSigner.signer).toBeUndefined();
+      expect(result.current.useSigner.data).toBeUndefined();
       expect(result.current.useSigner.isLoading).toBe(false);
     });
 
