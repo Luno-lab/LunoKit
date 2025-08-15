@@ -8,5 +8,6 @@ export const kusama: Chain = {
   rpcUrls: { webSocket: ['wss://kusama-rpc.polkadot.io', 'wss://kusama.api.onfinality.io/public-ws'] },
   ss58Format: 2,
   blockExplorers: { default: { name: 'Subscan', url: 'https://kusama.subscan.io' } },
-  chainIconUrl: kusamaSVG
+  chainIconUrl: kusamaSVG,
+  testnet: false,
 };

@@ -10,7 +10,7 @@ export interface Chain {
   };
 
   rpcUrls: {
-    webSocket?: readonly string[];
+    webSocket: readonly string[];
     http?: readonly string[];
   };
 
@@ -22,9 +22,7 @@ export interface Chain {
   };
 
 
-  testnet?: boolean;
-
-  meta?: Record<string, any>;
+  testnet: boolean;
 
   chainIconUrl: string
 }

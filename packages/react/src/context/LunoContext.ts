@@ -10,7 +10,7 @@ export interface LunoContextState {
   activeConnector?: Connector;
   accounts: Account[];
   account?: Account;
-  setAccount: (accountOrAddress?: Account | HexString) => void;
+  setAccount: (accountOrPublicKey?: Account | HexString) => void;
   currentChainId?: string;
   currentChain?: Chain;
   currentApi?: LegacyClient;

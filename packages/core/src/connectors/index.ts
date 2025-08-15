@@ -1,5 +1,6 @@
 export { BaseConnector } from './base';
 
+export { CommonConnector } from './common'
 export { polkadotjsConnector } from './polkadot-js';
 export { polkagateConnector } from './polkagate';
 export { subwalletConnector } from './subwallet';

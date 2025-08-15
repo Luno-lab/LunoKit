@@ -11,5 +11,6 @@ export const polkadot: Chain = {
   },
   ss58Format: 0,
   blockExplorers: { default: { name: 'Subscan', url: 'https://polkadot.subscan.io' } },
-  chainIconUrl: polkadotSVG
+  chainIconUrl: polkadotSVG,
+  testnet: false,
 };
