@@ -1,5 +1,13 @@
 # @luno-kit/react
 
+## 0.0.6
+
+### Patch Changes
+
+- f2aef3f: Fix types & add README
+- Updated dependencies [f2aef3f]
+  - @luno-kit/core@0.0.6
+
 ## 0.0.5
 
 ### Patch Changes

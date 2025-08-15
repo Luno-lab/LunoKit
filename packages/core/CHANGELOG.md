@@ -1,5 +1,11 @@
 # @luno-kit/core
 
+## 0.0.6
+
+### Patch Changes
+
+- f2aef3f: Fix types & add README
+
 ## 0.0.5
 
 ### Patch Changes
