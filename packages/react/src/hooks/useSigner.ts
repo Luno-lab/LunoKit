@@ -4,7 +4,7 @@ import { useAccount } from './useAccount';
 import { Signer } from '@luno-kit/core'
 
 export interface UseSignerResult {
-  signer?: Signer;
+  data?: Signer;
   isLoading: boolean;
 }
 
@@ -31,5 +31,5 @@ export const useSigner = (): UseSignerResult => {
 
   }, [activeConnector, account?.address]);
 
-  return { signer, isLoading };
+  return { data: signer, isLoading };
 };

@@ -100,4 +100,4 @@ export interface LunokitThemeOverrides {
   dark?: PartialLunokitTheme;
 }
 
-export type ThemeMode = 'light' | 'dark' | 'auto';
+export type ThemeMode = 'light' | 'dark';
