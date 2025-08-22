@@ -15,7 +15,7 @@ export const paseo: Chain = {
 export const paseoAssetHub: Chain = {
   genesisHash: '0xd6eec26135305a8ad257a20d003357284c8aa03d0bdb2b357ab0a22371e11ef2',
   name: 'AssetHub Paseo',
-  nativeCurrency: { name: 'Paseo Asset Hub', symbol: 'PAS', decimals: 10 },
+  nativeCurrency: { name: 'AssetHub Paseo', symbol: 'PAS', decimals: 10 },
   rpcUrls: { webSocket: ['wss://pas-rpc.stakeworld.io/assethub', 'wss://asset-hub-paseo-rpc.n.dwellir.com'] },
   ss58Format: 0,
   blockExplorers: { default: { name: 'Subscan', url: 'https://assethub-paseo.subscan.io' } },
@@ -26,7 +26,7 @@ export const paseoAssetHub: Chain = {
 export const paseoPassetHub: Chain = {
   genesisHash: '0xfd974cf9eaf028f5e44b9fdd1949ab039c6cf9cc54449b0b60d71b042e79aeb6',
   name: 'PAassetHub',
-  nativeCurrency: { name: 'Paseo PassetHub', symbol: 'PAS', decimals: 10 },
+  nativeCurrency: { name: 'PassetHub', symbol: 'PAS', decimals: 10 },
   rpcUrls: { webSocket: ['wss://testnet-passet-hub.polkadot.io', 'wss://passet-hub-paseo.ibp.network'] },
   ss58Format: 42,
   chainIconUrl: assethubPaseoChain,

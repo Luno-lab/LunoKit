@@ -18,7 +18,7 @@ export const polkadot: Chain = {
 export const polkadotAssetHub: Chain = {
   genesisHash: '0x68d56f15f85d3136970ec16946040bc1752654e906147f7e43e9d539d7c3de2f',
   name: 'AssetHub',
-  nativeCurrency: { name: 'Polkadot Asset Hub', symbol: 'DOT', decimals: 10 },
+  nativeCurrency: { name: 'AssetHub Polkadot', symbol: 'DOT', decimals: 10 },
   rpcUrls: {
     webSocket: ['wss://polkadot-asset-hub-rpc.polkadot.io', 'wss://asset-hub-polkadot-rpc.n.dwellir.com'],
     http: ['https://polkadot-asset-hub-rpc.polkadot.io'],
@@ -32,7 +32,7 @@ export const polkadotAssetHub: Chain = {
 export const polkadotPeople: Chain = {
   genesisHash: '0x67fa177a097bfa18f77ea95ab56e9bcdfeb0e5b8a40e46298bb93e16b6fc5008',
   name: 'People',
-  nativeCurrency: { name: 'Polkadot People', symbol: 'DOT', decimals: 10 },
+  nativeCurrency: { name: 'People Polkadot', symbol: 'DOT', decimals: 10 },
   rpcUrls: {
     webSocket: ['wss://polkadot-people-rpc.polkadot.io', 'wss://people-polkadot-rpc.n.dwellir.com'],
     http: ['https://polkadot-people-rpc.polkadot.io'],
@@ -46,7 +46,7 @@ export const polkadotPeople: Chain = {
 export const polkadotCoretime: Chain = {
   genesisHash: '0xefb56e30d9b4a24099f88820987d0f45fb645992416535d87650d98e00f46fc4',
   name: 'Coretime',
-  nativeCurrency: { name: 'Polkadot Coretime', symbol: 'DOT', decimals: 10 },
+  nativeCurrency: { name: 'Coretime Polkadot', symbol: 'DOT', decimals: 10 },
   rpcUrls: {
     webSocket: ['wss://polkadot-coretime-rpc.polkadot.io', 'wss://coretime-polkadot-rpc.n.dwellir.com'],
     http: ['https://polkadot-coretime-rpc.polkadot.io'],
@@ -60,7 +60,7 @@ export const polkadotCoretime: Chain = {
 export const polkadotCollectives: Chain = {
   genesisHash: '0x46ee89aa2eedd13e988962630ec9fb7565964cf5023bb351f2b6b25c1b68b0b2',
   name: 'Collectives',
-  nativeCurrency: { name: 'Polkadot Collectives', symbol: 'DOT', decimals: 10 },
+  nativeCurrency: { name: 'Collectives Polkadot', symbol: 'DOT', decimals: 10 },
   rpcUrls: {
     webSocket: ['wss://collectives-polkadot-rpc.n.dwellir.com', 'wss://polkadot-collectives-rpc.polkadot.io'],
     http: ['https://collectives-polkadot-rpc.n.dwellir.com'],
