@@ -1,5 +1,5 @@
 import React, { ReactNode, useCallback, useEffect, useMemo } from 'react';
-import type { Chain, Config, Transport } from '@luno-kit/core';
+import type { Chain, Config, Transport } from '../types';
 import { useLunoStore } from '../store'
 import { PERSIST_KEY } from '../constants'
 import { LunoContext, LunoContextState } from './LunoContext'

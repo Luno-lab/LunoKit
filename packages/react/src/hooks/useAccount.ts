@@ -1,6 +1,6 @@
-import type { Account } from '@luno-kit/core';
+import type { Account } from '../types';
 import { useLuno } from './useLuno';
-import { convertAddress } from '@luno-kit/core'
+import { convertAddress } from '@luno-kit/core/utils'
 import { useMemo } from 'react'
 
 export interface UseAccountResult {

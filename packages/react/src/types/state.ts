@@ -1,4 +1,4 @@
-import type { Config, Connector, Account, Chain } from '@luno-kit/core';
+import type { Config, Connector, Account, Chain } from '.';
 import type { LegacyClient } from 'dedot';
 import type { HexString } from 'dedot/utils'
 

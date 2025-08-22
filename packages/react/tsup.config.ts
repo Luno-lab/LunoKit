@@ -2,7 +2,11 @@ import { defineConfig } from 'tsup';
 
 export default defineConfig((options) => ({
   entry: [
-    'src/index.ts'
+    'src/index.ts',
+    'src/chains/index.ts',
+    'src/connectors/index.ts',
+    'src/utils/index.ts',
+    'src/types/index.ts',
   ],
   banner: {
     js: "'use client'",

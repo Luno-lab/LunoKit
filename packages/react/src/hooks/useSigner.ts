@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLuno } from './useLuno';
 import { useAccount } from './useAccount';
-import { Signer } from '@luno-kit/core'
+import { Signer } from '../types'
 
 export interface UseSignerResult {
   data?: Signer;
@@ -25,7 +25,7 @@ export const useSigner = (): UseSignerResult => {
     setIsLoading(true);
 
     activeConnector.getSigner()
-      .then(signer => setSigner(signer as Signer))
+      .then((signer: Signer) => setSigner(signer))
       .catch(() => setSigner(undefined))
       .finally(() => setIsLoading(false));
 

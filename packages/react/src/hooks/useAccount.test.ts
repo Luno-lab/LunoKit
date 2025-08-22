@@ -5,7 +5,6 @@ import { act, waitFor } from '@testing-library/react';
 import { useConnect } from './useConnect';
 import { useAccount } from './useAccount';
 import { ConnectionStatus } from '../types';
-import { useChain } from './useChain'
 
 const connector = mockConfig.connectors[0] as MockConnector;
 
