@@ -28,18 +28,27 @@ export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched }: ChainLi
 
   const [activeFilter, setActiveFilter] = useState<ChainFilter>(ChainFilter.all);
   const [switchingChain, setSwitchingChain] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const filteredChains = useMemo(() => {
-    switch (activeFilter) {
-      case ChainFilter.mainnets:
-        return chains.filter(chain => !chain.testnet);
-      case ChainFilter.testnets:
-        return chains.filter(chain => chain.testnet);
-      case ChainFilter.all:
-      default:
-        return chains;
-    }
-  }, [chains, activeFilter]);
+    return chains
+      .filter(chain =>
+        searchQuery.trim()
+          ? chain.name.toLowerCase().includes(searchQuery.toLowerCase())
+          : true
+      )
+      .filter(chain => {
+        switch (activeFilter) {
+          case ChainFilter.mainnets:
+            return !chain.testnet;
+          case ChainFilter.testnets:
+            return chain.testnet;
+          case ChainFilter.all:
+          default:
+            return true;
+        }
+      });
+  }, [chains, activeFilter, searchQuery]);
 
   const handleChainSelect = async (chain: Chain) => {
     if (chain.genesisHash === currentChain?.genesisHash) return;
@@ -75,17 +84,29 @@ export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched }: ChainLi
         ))}
       </div>
 
-      <div className="flex flex-col gap-1.5 overflow-y-auto custom-scrollbar max-h-[450px]">
-        {filteredChains.map(chain => (
-          <ChainItem
-            key={chain.genesisHash}
-            chain={chain}
-            isSelected={chain.genesisHash === currentChain?.genesisHash}
-            onSelect={handleChainSelect}
-            isLoading={(switchingChain === chain.genesisHash || !isApiReady) && !apiError}
-          />
-        ))}
+      <div className="relative">
+        <input
+          type="text"
+          placeholder="Search chains..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-[rgb(51,133,255)] focus:outline-none focus:border-transparent"
+        />
       </div>
+
+      {filteredChains.length > 0 && (
+        <div className="flex flex-col gap-1.5 overflow-y-auto custom-scrollbar max-h-[450px]">
+          {filteredChains.map(chain => (
+            <ChainItem
+              key={chain.genesisHash}
+              chain={chain}
+              isSelected={chain.genesisHash === currentChain?.genesisHash}
+              onSelect={handleChainSelect}
+              isLoading={(switchingChain === chain.genesisHash || !isApiReady) && !apiError}
+            />
+          ))}
+        </div>
+      )}
 
       {filteredChains.length === 0 && (
         <div className="flex items-center justify-center py-12">
@@ -106,26 +127,24 @@ interface ChainItemProps {
 }
 
 const ChainItem: React.FC<ChainItemProps> = React.memo(({
-  chain,
-  isSelected,
-  isLoading,
-  onSelect
-}) => {
+                                                          chain,
+                                                          isSelected,
+                                                          isLoading,
+                                                          onSelect
+                                                        }) => {
   return (
     <button
       onClick={() => onSelect(chain)}
       disabled={isSelected || isLoading}
       className={cs(
-  'flex items-center justify-between p-2.5 rounded-networkSelectItem',
-  'bg-networkSelectItemBackground',
-  'transition-colors duration-200',
-  (isSelected || isLoading)
-    ? 'cursor-default'
-    : 'cursor-pointer hover:bg-networkSelectItemBackgroundHover',
-  isLoading && 'opacity-80'
-)}
-
-    >
+        'flex items-center justify-between p-2.5 rounded-networkSelectItem',
+        'bg-networkSelectItemBackground',
+        'transition-colors duration-200',
+        (isSelected || isLoading)
+          ? 'cursor-default'
+          : 'cursor-pointer hover:bg-networkSelectItemBackgroundHover',
+        isLoading && 'opacity-80'
+      )}>
       <div className="flex items-center gap-2">
         <ChainIcon
           className={'w-[20px] h-[20px] flex items-center justify-center leading-[20px]'}
@@ -158,19 +177,6 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
           : null
         }
       </div>
-{/*
-      {isSelected
-        ? isLoading
-          ? <Loading className={'text-secondaryFont animate-[spin_2s_linear_infinite]'}/>
-          : (
-            <span className="status-dot-container">
-              <span className="ping-animation"></span>
-              <span className="status-dot"></span>
-            </span>
-          )
-        : null
-      } */}
-
     </button>
   );
 });
