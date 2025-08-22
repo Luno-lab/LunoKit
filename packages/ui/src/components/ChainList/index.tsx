@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { cs } from '../../utils'
 import { useApi, useChain, useChains, useSwitchChain } from '@luno-kit/react'
-import type { Chain } from '@luno-kit/react'
+import type { Chain } from '@luno-kit/react/types'
 import { ChainIcon } from '../ChainIcon'
 
 enum ChainFilter {

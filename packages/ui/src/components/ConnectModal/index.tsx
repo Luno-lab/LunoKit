@@ -1,9 +1,10 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import { useConnect, isMobileDevice } from '@luno-kit/react';
+import { useConnect } from '@luno-kit/react';
 import { Dialog, DialogClose, DialogTitle, ModalSize } from '../Dialog';
 import { cs } from '../../utils';
-import { useConnectModal } from '../../providers/ModalContext'
-import type { Connector } from '@luno-kit/react'
+import { useConnectModal } from '../../providers'
+import type { Connector } from '@luno-kit/react/types'
+import { isMobileDevice } from '@luno-kit/react/utils'
 import { Back, Close } from '../../assets/icons'
 import { useWindowSize } from '../../hooks'
 import { WalletView } from './WalletView'
@@ -146,7 +147,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
           {!isWide && currentView === ConnectModalView.connectOptions && (
             <>
-               <p 
+               <p
                 className={'cursor-pointer w-full pt-4 text-sm leading-sm text-accentColor font-medium text-center hover:text-modalText'}
                 onClick={() => window.open('https://polkadot.com/get-started/wallets/')}>
                 New to wallets?

@@ -1,14 +1,14 @@
-import React, { useCallback, useMemo, useState, useRef } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useAccount, useActiveConnector, useBalance, useChain } from '@luno-kit/react';
 import { Dialog, DialogClose, DialogTitle } from '../Dialog';
 import { cs } from '../../utils';
-import { useAccountModal } from '../../providers/ModalContext';
+import { useAccountModal } from '../../providers';
 import { Close, Back } from '../../assets/icons';
 import { MainView } from './MainView';
 import { SwitchAccountView } from './SwitchAccountView';
 import { SwitchChainView } from './SwitchChainView';
 import { Copy } from '../Copy'
-import { formatAddress } from '@luno-kit/react'
+import { formatAddress } from '@luno-kit/react/utils'
 import { useAnimatedViews } from '../../hooks/useAnimatedViews'
 
 export enum AccountModalView {
@@ -74,7 +74,7 @@ export const AccountDetailsModal: React.FC = () => {
             <div className={'flex items-center gap-3'}>
               {activeConnector?.icon && (
                 <div className={'flex items-center justify-center w-[55px] h-[55px]'}>
-                  <img src={activeConnector.icon} alt="" className="w-full h-full 
+                  <img src={activeConnector.icon} alt="" className="w-full h-full
   object-contain"/>
                 </div>
               )}
