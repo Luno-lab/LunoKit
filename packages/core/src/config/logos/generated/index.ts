@@ -3,13 +3,23 @@
 
 // Do not edit. Auto-generated via node scripts/convertLogos.mjs
 
-export { kusamaSVG } from './kusamaSVG.js';
-export { novaSVG } from './novaSVG.js';
-export { paseoSVG } from './paseoSVG.js';
-export { polkadotSVG } from './polkadotSVG.js';
-export { polkadotjsSVG } from './polkadotjsSVG.js';
-export { polkagateSVG } from './polkagateSVG.js';
-export { subwalletSVG } from './subwalletSVG.js';
-export { talismanSVG } from './talismanSVG.js';
-export { walletconnectSVG } from './walletconnectSVG.js';
-export { westendSVG } from './westendSVG.js';
+export { assethubChain } from './assethubChain.js';
+export { assethubKusamaChain } from './assethubKusamaChain.js';
+export { assethubPaseoChain } from './assethubPaseoChain.js';
+export { assethubWestendChain } from './assethubWestendChain.js';
+export { bridgehubChain } from './bridgehubChain.js';
+export { collectivesChain } from './collectivesChain.js';
+export { coretimeChain } from './coretimeChain.js';
+export { coretimeKusamaChain } from './coretimeKusamaChain.js';
+export { kusamaChain } from './kusamaChain.js';
+export { novaWallet } from './novaWallet.js';
+export { paseoChain } from './paseoChain.js';
+export { peopleChain } from './peopleChain.js';
+export { peopleKusamaChain } from './peopleKusamaChain.js';
+export { polkadotChain } from './polkadotChain.js';
+export { polkadotjsWallet } from './polkadotjsWallet.js';
+export { polkagateWallet } from './polkagateWallet.js';
+export { subwalletWallet } from './subwalletWallet.js';
+export { talismanWallet } from './talismanWallet.js';
+export { walletconnectWallet } from './walletconnectWallet.js';
+export { westendChain } from './westendChain.js';

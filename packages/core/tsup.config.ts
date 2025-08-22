@@ -5,7 +5,8 @@ export default defineConfig(options => ({
     'src/index.ts',
     'src/chains/index.ts',
     'src/connectors/index.ts',
-    'src/utils/index.ts'
+    'src/utils/index.ts',
+    'src/types/index.ts'
   ],
   format: ['esm', 'cjs'],
   splitting: true,
