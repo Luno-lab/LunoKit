@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { novaMobileConnector } from './novaMobile';
 import { createConnectorTestSuite } from './test-helper'
-import { novaSVG } from '../config/logos/generated'
+import { novaWallet } from '../config/logos/generated'
 
 describe(
   'novaMobileConnector',
@@ -10,7 +10,7 @@ describe(
     expected: {
       id: 'nova-mobile',
       name: 'Nova Wallet',
-      icon: novaSVG,
+      icon: novaWallet,
       injectorId: 'polkadot-js',
     },
     extraWindowProps: {
