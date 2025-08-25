@@ -25,7 +25,7 @@ export const useSigner = (): UseSignerResult => {
     setIsLoading(true);
 
     activeConnector.getSigner()
-      .then((signer: Signer) => setSigner(signer))
+      .then(signer => setSigner(signer))
       .catch(() => setSigner(undefined))
       .finally(() => setIsLoading(false));
 
