@@ -1,6 +1,6 @@
 import React from 'react';
 import type { LegacyClient } from 'dedot';
-import type { Chain, Config, Connector, Account } from '@luno-kit/core';
+import type { Chain, Config, Connector, Account } from '@luno-kit/core/types';
 import type { ConnectionStatus } from '../types';
 import type { HexString } from 'dedot/utils'
 

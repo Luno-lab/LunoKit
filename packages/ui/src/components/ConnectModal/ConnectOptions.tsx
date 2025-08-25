@@ -1,6 +1,7 @@
 import React from 'react'
-import { useConnectors, isMobileDevice } from '@luno-kit/react'
-import type { Connector } from '@luno-kit/react'
+import { useConnectors } from '@luno-kit/react'
+import { isMobileDevice } from '@luno-kit/react/utils'
+import type { Connector } from '@luno-kit/react/types'
 import { cs } from '../../utils'
 
 interface Props {

@@ -2,8 +2,9 @@ import { render, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import React from 'react';
 import { LunoProvider } from './LunoProvider';
-import type { Chain, Config } from '@luno-kit/core';
-import { BaseConnector, createConfig } from '@luno-kit/core';
+import type { Chain, Config } from '@luno-kit/core/types';
+import { BaseConnector } from '@luno-kit/core/connectors';
+import { createConfig } from '@luno-kit/core';
 import type { LunoState } from '../types';
 import { ConnectionStatus } from '../types'
 import { createApi } from '../utils';

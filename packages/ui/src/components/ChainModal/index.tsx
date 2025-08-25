@@ -2,7 +2,7 @@ import React from 'react';
 import { Dialog, DialogTitle, DialogClose } from '../Dialog';
 import { ChainList } from '../ChainList';
 import { Close } from '../../assets/icons';
-import { useChainModal } from '../../providers/ModalContext';
+import { useChainModal } from '../../providers';
 
 export interface ChainModalProps {}
 

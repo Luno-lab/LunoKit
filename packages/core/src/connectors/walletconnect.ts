@@ -2,7 +2,7 @@ import { BaseConnector } from './base';
 import type { IUniversalProvider, Metadata } from '@walletconnect/universal-provider';
 import { SessionTypes, SignClientTypes } from '@walletconnect/types'
 import type { Account, Chain, Signer, WalletConnectConnectorOptions } from '../types';
-import { walletconnectSVG } from '../config/logos/generated';
+import { walletconnectWallet } from '../config/logos/generated';
 import { SignerResult, SignerPayloadJSON } from 'dedot/types'
 import { ConnectorLinks } from '../types'
 
@@ -28,7 +28,7 @@ export class WalletConnectConnector extends BaseConnector {
     this.name = options.name || 'WalletConnect';
     this.links = options.links || {};
 
-    this.icon = options.icon || walletconnectSVG;
+    this.icon = options.icon || walletconnectWallet;
 
     this.projectId = options.projectId;
     this.relayUrl = options.relayUrl || 'wss://relay.walletconnect.com';
@@ -166,8 +166,6 @@ export class WalletConnectConnector extends BaseConnector {
 
   public async disconnect(): Promise<void> {
     if (this.provider) {
-      console.log('this.provider', this.provider)
-      console.log('this.sessionsession', this.session)
       // await Promise.race([
         await this.provider.disconnect()
         // new Promise((_, reject) =>

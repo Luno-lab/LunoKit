@@ -1,5 +1,5 @@
 import { useLuno } from './useLuno';
-import type { Chain } from '@luno-kit/core';
+import type { Chain } from '../types';
 import { useLunoMutation, type LunoMutationOptions } from './useLunoMutation';
 
 export interface SwitchChainVariables {

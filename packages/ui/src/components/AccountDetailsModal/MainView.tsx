@@ -3,7 +3,8 @@ import { cs } from '../../utils';
 import { Arrow, Disconnect, List, Switch } from '../../assets/icons';
 import { ChainIcon } from '../ChainIcon';
 import { AccountModalView } from './index'
-import { useAccount, useChain, useDisconnect, getExplorerUrl } from '@luno-kit/react'
+import { useAccount, useChain, useDisconnect } from '@luno-kit/react'
+import { getExplorerUrl } from '@luno-kit/react/utils'
 
 interface MainViewProps {
   onViewChange: (view: AccountModalView) => void;

@@ -1,4 +1,4 @@
-import { novaSVG } from '../config/logos/generated'
+import { novaWallet } from '../config/logos/generated'
 import { WalletConnectConnector } from './walletconnect'
 import type { Metadata } from '@walletconnect/universal-provider'
 import { novaMobileConnector } from './novaMobile'
@@ -32,7 +32,7 @@ export const novaConnector = (config: NovaConnectorConfig) => {
   return new WalletConnectConnector({
     id: 'nova',
     name: 'Nova Wallet',
-    icon: novaSVG,
+    icon: novaWallet,
     links: {
       browserExtension: 'https://novawallet.io',
     },

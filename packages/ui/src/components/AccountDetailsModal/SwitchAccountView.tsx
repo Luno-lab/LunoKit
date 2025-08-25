@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { useAccount, useAccounts, useActiveConnector, useBalance, useChain } from '@luno-kit/react';
 import { cs } from '../../utils';
-import { formatAddress } from '@luno-kit/react';
-import type { Account } from '@luno-kit/react';
+import { formatAddress } from '@luno-kit/react/utils';
+import type { Account } from '@luno-kit/react/types';
 
 interface ViewComponent extends React.FC<SwitchAccountViewProps> {
   title?: string;

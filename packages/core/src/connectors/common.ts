@@ -1,6 +1,6 @@
 import { BaseConnector } from './base';
 import type { Account, Signer } from '../types';
-import { mapInjectedAccounts } from '../utils'
+import { mapInjectedAccounts } from '../utils/address'
 import { Injected, InjectedAccount } from 'dedot/types'
 import { stringToHex } from 'dedot/utils'
 import { ConnectorLinks } from '../types'

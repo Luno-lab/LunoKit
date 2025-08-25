@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { createConfig, kusama, polkadot, westend, paseo, polkagateConnector, subwalletConnector, talismanConnector, polkadotjsConnector, walletConnectConnector, novaConnector } from '@luno-kit/react'
+import { createConfig } from '@luno-kit/react'
+import { polkagateConnector, polkadotjsConnector, subwalletConnector, talismanConnector, novaConnector, walletConnectConnector } from '@luno-kit/react/connectors'
+import { polkadot, kusama, westend } from '@luno-kit/react/chains'
 import { LunoKitProvider } from '@luno-kit/ui'
 import '@luno-kit/ui/styles.css'
 
