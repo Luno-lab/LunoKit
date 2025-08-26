@@ -108,6 +108,7 @@ export class CommonConnector extends BaseConnector {
       const result = await signer.signRaw({ address, data: dataHex, type: 'bytes' });
       return result.signature;
     } catch (error: any) {
+      console.log('error', error)
       throw new Error(`Connector ${this.id}: Failed to sign message: ${error.message}`);
     }
   }
