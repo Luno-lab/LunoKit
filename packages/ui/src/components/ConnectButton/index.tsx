@@ -108,7 +108,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
           showBalance && isLargeWindow ? 'bg-connectButtonInnerBackground py-1.5 px-2' : 'bg-connectButtonBackground py-2 px-2.5'
         )}>
           {accountStatus === 'full' && (
-            <span className="w-[24px] h-[24px]">
+            <span className="w-[24px] h-[24px] flex items-center justify-center">
               <img src={activeConnector.icon} alt="luno" />
             </span>
           )}
