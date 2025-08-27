@@ -43,7 +43,7 @@ export class CommonConnector extends BaseConnector {
     return this.isInstalled();
   }
 
-  public async connect(appName: string): Promise<Array<Account>> {
+  public async connect(appName: string): Promise<Account[] | undefined> {
     console.log(`Connector ${this.id}: Attempting to connect...`);
     if (this.signer) {
       console.log(`Connector ${this.id}: Already connected.`);

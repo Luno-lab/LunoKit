@@ -13,6 +13,7 @@ export { coretimeChain } from './coretimeChain.js';
 export { coretimeKusamaChain } from './coretimeKusamaChain.js';
 export { fearlessWallet } from './fearlessWallet.js';
 export { kusamaChain } from './kusamaChain.js';
+export { mimirWallet } from './mimirWallet.js';
 export { novaWallet } from './novaWallet.js';
 export { paseoChain } from './paseoChain.js';
 export { peopleChain } from './peopleChain.js';

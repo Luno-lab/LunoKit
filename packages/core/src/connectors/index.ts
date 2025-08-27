@@ -7,5 +7,6 @@ export { polkagateConnector } from './polkagate';
 export { subwalletConnector } from './subwallet';
 export { talismanConnector } from './talisman';
 export { walletConnectConnector } from './walletconnect';
+export { mimirConnector } from './mimir';
 export { novaConnector } from './nova';
 export { novaMobileConnector } from './novaMobile'
