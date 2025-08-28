@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLunoWallet, useWindowSize } from '../../hooks';
+import { useConnectButton, useWindowSize } from '../../hooks';
 import { cs } from '../../utils';
 import { ChainIcon } from '../ChainIcon'
 
@@ -12,6 +12,7 @@ export interface ConnectButtonProps {
   accountStatus?: 'full' | 'address';
   chainStatus?: 'full' | 'icon' | 'name' | 'none';
   showBalance?: boolean;
+  displayPreference?: 'address' | 'name'
 }
 
 export const ConnectButton: React.FC<ConnectButtonProps> = ({
@@ -20,11 +21,12 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
   accountStatus = 'full',
   chainStatus = 'full',
   showBalance = true,
+  displayPreference = 'address',
 }) => {
   const {
     isConnected,
     isDisconnected,
-    displayAddress,
+    displayAccount,
     balance,
     openConnectModal,
     openAccountModal,
@@ -33,7 +35,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
     chainName,
     currentChain,
     activeConnector,
-  } = useLunoWallet();
+  } = useConnectButton({ displayPreference });
   const { width: windowWidth } = useWindowSize()
 
   const isLargeWindow = windowWidth && windowWidth > 768
@@ -114,7 +116,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
           )}
           <span
             aria-label="Wallet icon placeholder"
-            className={''}>{displayAddress}</span>
+            className={''}>{displayAccount}</span>
         </div>
       </button>
     </div>
