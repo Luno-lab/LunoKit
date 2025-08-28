@@ -11,6 +11,7 @@ export { bridgehubChain } from './bridgehubChain.js';
 export { collectivesChain } from './collectivesChain.js';
 export { coretimeChain } from './coretimeChain.js';
 export { coretimeKusamaChain } from './coretimeKusamaChain.js';
+export { enkryptWallet } from './enkryptWallet.js';
 export { fearlessWallet } from './fearlessWallet.js';
 export { kusamaChain } from './kusamaChain.js';
 export { mimirWallet } from './mimirWallet.js';
