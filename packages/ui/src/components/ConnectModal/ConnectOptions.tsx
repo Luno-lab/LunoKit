@@ -27,7 +27,7 @@ export const ConnectOptions = React.memo(({ onConnect }: Props) => {
   const moreConnectors = connectors.filter(c => !c.isInstalled())
 
   return (
-    <div className={'flex flex-col items-start gap-4 w-full'}>
+    <div className={'flex flex-col items-start gap-4 w-full overflow-y-auto custom-scrollbar max-h-[400px]'}>
       <div className={'flex flex-col items-start gap-2 w-full'}>
         <div className={'text-sm text-accentColor font-semibold leading-base'}>Installed</div>
         <div className={'flex flex-col items-start gap-1.5 w-full'}>
