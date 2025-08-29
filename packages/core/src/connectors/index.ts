@@ -1,6 +1,6 @@
 export { BaseConnector } from './base';
 
-export { CommonConnector } from './common';
+export { InjectConnector } from './inject';
 export { enkryptConnector } from './enkrypt';
 export { fearlessConnector } from './fearless'
 export { polkadotjsConnector } from './polkadot-js';

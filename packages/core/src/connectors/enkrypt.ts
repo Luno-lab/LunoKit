@@ -1,8 +1,8 @@
-import { CommonConnector } from './common'
+import { InjectConnector } from './inject'
 import { enkryptWallet } from '../config/logos/generated'
 
 export const enkryptConnector = () => {
-  return new CommonConnector({
+  return new InjectConnector({
     id: 'enkrypt',
     name: 'Enkrypt Wallet',
     icon: enkryptWallet,

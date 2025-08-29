@@ -1,8 +1,8 @@
 import { polkagateWallet } from '../config/logos/generated'
-import { CommonConnector } from './common'
+import { InjectConnector } from './inject'
 
 export const polkagateConnector = () => {
-  return new CommonConnector({
+  return new InjectConnector({
     id: 'polkagate',
     name: 'Polkagate',
     icon: polkagateWallet,

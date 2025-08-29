@@ -68,7 +68,7 @@ describe('MimirConnector', () => {
   });
 
   describe('inherited functionality', () => {
-    it('should inherit isAvailable method from CommonConnector', async () => {
+    it('should inherit isAvailable method from InjectConnector', async () => {
       vi.spyOn(connector, 'isInstalled').mockReturnValue(true);
 
       expect(await connector.isAvailable()).toBe(true);

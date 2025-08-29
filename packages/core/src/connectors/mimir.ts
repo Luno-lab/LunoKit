@@ -1,10 +1,10 @@
-import { CommonConnector, CommonConnectorOptions } from './common';
+import { InjectConnector, InjectConnectorOptions } from './inject';
 import { mimirWallet } from '../config/logos/generated'
 
-export class MimirConnector extends CommonConnector {
+export class MimirConnector extends InjectConnector {
   private mimirReady: boolean = false;
 
-  constructor(options: CommonConnectorOptions) {
+  constructor(options: InjectConnectorOptions) {
     super({ ...options });
 
     this.mimirInject()
