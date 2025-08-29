@@ -5,7 +5,7 @@ export class NovaMobileConnector extends InjectConnector {
   constructor() {
     super({
       id: 'nova-mobile',
-      name: 'Nova Wallet',
+      name: 'Nova',
       icon: novaWallet,
       injectorId: 'polkadot-js',
       links: {
