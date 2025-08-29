@@ -19,7 +19,7 @@ export enum AccountModalView {
 
 export const AccountDetailsModal: React.FC = () => {
   const { isOpen, close } = useAccountModal();
-  const { address } = useAccount();
+  const { address, account } = useAccount();
   const activeConnector = useActiveConnector()
 
   const {
@@ -84,7 +84,7 @@ export const AccountDetailsModal: React.FC = () => {
                   <Copy copyText={address}/>
                 </div>
                 <div className="text-xs leading-xs text-modalTextSecondary font-medium">
-                  {activeConnector?.name}
+                  {account?.name || activeConnector?.name}
                 </div>
               </div>
             </div>
