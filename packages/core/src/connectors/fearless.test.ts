@@ -9,7 +9,7 @@ describe(
     getConnector: () => fearlessConnector(),
     expected: {
       id: 'fearless-wallet',
-      name: 'Fearless Wallet',
+      name: 'Fearless',
       icon: fearlessWallet,
     },
   })

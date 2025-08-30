@@ -8,7 +8,7 @@ describe('NovaConnector',
     getConnector: novaConnector,
     expected: {
       id: 'nova',
-      name: 'Nova Wallet',
+      name: 'Nova',
       icon: novaWallet,
     },
   })

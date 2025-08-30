@@ -9,7 +9,7 @@ describe(
     getConnector: () => enkryptConnector(),
     expected: {
       id: 'enkrypt',
-      name: 'Enkrypt Wallet',
+      name: 'Enkrypt',
       icon: enkryptWallet,
     },
   })

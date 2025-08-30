@@ -9,7 +9,7 @@ describe(
     getConnector: () => novaMobileConnector(),
     expected: {
       id: 'nova-mobile',
-      name: 'Nova Wallet',
+      name: 'Nova',
       icon: novaWallet,
       injectorId: 'polkadot-js',
     },
