@@ -7,7 +7,7 @@ import { BaseConnector } from '@luno-kit/core/connectors';
 import { createConfig } from '@luno-kit/core';
 import type { LunoState } from '../types';
 import { ConnectionStatus } from '../types'
-import { createApi } from '../utils';
+import { createApi, sleep } from '../utils';
 import { useIsInitialized } from '../hooks/useIsInitialized'
 import { useLunoStore } from '../store'
 
@@ -15,9 +15,15 @@ vi.mock('../utils/createApi');
 vi.mock('../hooks/useIsInitialized');
 vi.mock('../store');
 
+vi.mock('../utils', () => ({
+  createApi: vi.fn(),
+  sleep: vi.fn().mockResolvedValue(undefined)
+}));
+
 const mockCreateApi = vi.mocked(createApi);
 const mockUseIsInitialized = vi.mocked(useIsInitialized);
 const mockUseLunoStore = vi.mocked(useLunoStore);
+const mockSleep = vi.mocked(sleep);
 
 const mockStorage = {
   getItem: vi.fn().mockResolvedValue(null),
@@ -69,6 +75,7 @@ const mockChain: Chain = {
     webSocket: ['ws://test.com'],
   },
   chainIconUrl: 'test-icon.svg',
+  testnet: false,
 };
 
 const mockStore: LunoState = {
@@ -114,6 +121,7 @@ describe('LunoProvider', () => {
     mockUseLunoStore.mockReturnValue(mockStore);
 
     mockConfig = createConfig({
+      appName: 'Test App',
       chains: [mockChain],
       connectors: [mockConnector],
       transports: {
@@ -259,11 +267,13 @@ describe('LunoProvider', () => {
         </LunoProvider>
       );
 
+      expect(mockSleep).toHaveBeenCalledWith(500);
+
       await waitFor(() => {
         expect(mockStorage.getItem).toHaveBeenCalledWith('lastConnectorId');
         expect(mockStorage.getItem).toHaveBeenCalledWith('lastChainId');
         expect(mockStore.connect).toHaveBeenCalledWith('test-connector', '0x123');
-      });
+      }, { timeout: 3000 });
     });
 
     it('should not attempt auto-connect when disabled', async () => {
@@ -291,6 +301,7 @@ describe('LunoProvider', () => {
 
     it('should warn when storage is not available', async () => {
       const configWithoutStorage = {
+        appName: 'Test App',
         chains: [mockChain],
         connectors: [mockConnector],
         transports: { '0x123': 'ws://test.com' },
@@ -306,9 +317,11 @@ describe('LunoProvider', () => {
         </LunoProvider>
       );
 
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        '[LunoProvider]: AutoConnect Storage not available, cannot auto-connect.'
-      );
+      await waitFor(() => {
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          '[LunoProvider]: AutoConnect Storage not available, cannot auto-connect.'
+        );
+      });
     });
 
     it('should handle auto-connect errors gracefully', async () => {

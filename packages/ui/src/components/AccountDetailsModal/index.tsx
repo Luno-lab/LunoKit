@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { useAccount, useActiveConnector, useBalance, useChain } from '@luno-kit/react';
+import { useAccount, useActiveConnector } from '@luno-kit/react';
 import { Dialog, DialogClose, DialogTitle } from '../Dialog';
 import { cs } from '../../utils';
 import { useAccountModal } from '../../providers';
@@ -19,9 +19,7 @@ export enum AccountModalView {
 
 export const AccountDetailsModal: React.FC = () => {
   const { isOpen, close } = useAccountModal();
-  const { address } = useAccount();
-  const { chain } = useChain();
-  const { data: balance } = useBalance({ address });
+  const { address, account } = useAccount();
   const activeConnector = useActiveConnector()
 
   const {
@@ -74,8 +72,7 @@ export const AccountDetailsModal: React.FC = () => {
             <div className={'flex items-center gap-3'}>
               {activeConnector?.icon && (
                 <div className={'flex items-center justify-center w-[55px] h-[55px]'}>
-                  <img src={activeConnector.icon} alt="" className="w-full h-full
-  object-contain"/>
+                  <img src={activeConnector.icon} alt="" className="w-full h-full object-contain"/>
                 </div>
               )}
               <div className="flex flex-col items-start gap-1 w-full">
@@ -86,14 +83,8 @@ export const AccountDetailsModal: React.FC = () => {
                 </span>
                   <Copy copyText={address}/>
                 </div>
-                <div className="text-sm text-modalTextSecondary font-medium min-h-[20px]">
-                  {balance === undefined ? (
-                    <div className="animate-pulse rounded w-[80px] h-[20px] bg-skeleton" />
-                  ) : (
-                    <>
-                      {balance?.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
-                    </>
-                  )}
+                <div className="text-xs leading-xs text-modalTextSecondary font-medium">
+                  {account?.name || activeConnector?.name}
                 </div>
               </div>
             </div>

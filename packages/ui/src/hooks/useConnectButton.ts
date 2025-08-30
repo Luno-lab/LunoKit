@@ -15,6 +15,10 @@ import {
 } from '../providers';
 import { formatAddress } from '@luno-kit/react/utils'
 
+export interface UseConnectButtonProps {
+  displayPreference: 'address' | 'name'
+}
+
 export interface UseConnectButtonReturn {
   connectionStatus: ConnectionStatus;
   isConnected: boolean;
@@ -23,7 +27,7 @@ export interface UseConnectButtonReturn {
 
   account?: Account;
   address?: string;
-  displayAddress: string;
+  displayAccount: string;
 
   currentChain?: Chain;
   configuredChains: Chain[];
@@ -44,7 +48,7 @@ export interface UseConnectButtonReturn {
   isChainModalOpen: boolean;
 }
 
-export function useLunoWallet(): UseConnectButtonReturn {
+export function useConnectButton({ displayPreference }: UseConnectButtonProps): UseConnectButtonReturn {
   const connectionStatus = useStatus();
   const { account, address } = useAccount();
   const { chain: currentChain } = useChain();
@@ -72,7 +76,7 @@ export function useLunoWallet(): UseConnectButtonReturn {
 
     account,
     address,
-    displayAddress: formatAddress(address),
+    displayAccount: displayPreference === 'name' && account?.name ? account?.name : formatAddress(address),
 
     currentChain,
     configuredChains,

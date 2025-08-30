@@ -1,11 +1,11 @@
 import { novaWallet } from '../config/logos/generated'
-import { CommonConnector } from './common'
+import { InjectConnector } from './inject'
 
-export class NovaMobileConnector extends CommonConnector {
+export class NovaMobileConnector extends InjectConnector {
   constructor() {
     super({
       id: 'nova-mobile',
-      name: 'Nova Wallet',
+      name: 'Nova',
       icon: novaWallet,
       injectorId: 'polkadot-js',
       links: {

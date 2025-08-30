@@ -1,8 +1,8 @@
 import { subwalletWallet } from '../config/logos/generated'
-import { CommonConnector } from './common'
+import { InjectConnector } from './inject'
 
 export const subwalletConnector = () => {
-  return new CommonConnector({
+  return new InjectConnector({
     id: 'subwallet-js',
     name: 'SubWallet',
     icon: subwalletWallet,

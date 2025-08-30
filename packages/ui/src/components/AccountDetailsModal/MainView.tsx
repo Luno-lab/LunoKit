@@ -3,7 +3,7 @@ import { cs } from '../../utils';
 import { Arrow, Disconnect, List, Switch } from '../../assets/icons';
 import { ChainIcon } from '../ChainIcon';
 import { AccountModalView } from './index'
-import { useAccount, useChain, useDisconnect } from '@luno-kit/react'
+import {useAccount, useBalance, useChain, useDisconnect} from '@luno-kit/react'
 import { getExplorerUrl } from '@luno-kit/react/utils'
 
 interface MainViewProps {
@@ -18,6 +18,7 @@ export const MainView: React.FC<MainViewProps> = ({
   const { address } = useAccount();
   const { chain } = useChain();
   const { disconnectAsync } = useDisconnect();
+  const { data: balance } = useBalance({ address });
 
   const items = useMemo(() => {
     return [
@@ -28,17 +29,27 @@ export const MainView: React.FC<MainViewProps> = ({
             <div className={'flex items-center gap-2'}>
               <div className="relative">
                 <ChainIcon
-                  className="w-[20px] h-[20px]"
+                  className="w-[24px] h-[24px]"
                   chainIconUrl={chain?.chainIconUrl}
                   chainName={chain?.name}
                 />
+                <div className={'dot w-[8px] h-[8px] bg-accentColor absolute bottom-0 right-0 rounded-full'}/>
               </div>
-              <span className="text-base text-modalText">{chain?.name || 'Polkadot'}</span>
+              <div className={'flex flex-col items-start'}>
+                <span className="text-base leading-base text-modalText">{chain?.name || 'Polkadot'}</span>
+                {balance ? (
+                  <span className={'text-modalTextSecondary text-xs leading-xs'}>
+                   {balance.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
+                  </span>
+                ) : (
+                  <span className="animate-pulse rounded w-[80px] h-[16px] bg-skeleton"/>
+                )}
+              </div>
             </div>
-            {/* <div
+            <div
               className={'flex items-center justify-center'}>
               <Arrow className={'w-[16px] h-[16px] text-modalTextSecondary'} />
-            </div> */}
+            </div>
           </div>
         ),
         onClick: () => onViewChange(AccountModalView.switchChain)
@@ -47,7 +58,7 @@ export const MainView: React.FC<MainViewProps> = ({
         key: 'View on Explorer',
         content: (
           <>
-            <List />
+            <List className={'w-[24px] h-[24px]'} />
             <span className="text-base text-accountActionItemText">View on Explorer</span>
           </>
         ),
@@ -57,14 +68,14 @@ export const MainView: React.FC<MainViewProps> = ({
         key: 'Switch Account',
         content: (
           <>
-            <Switch />
+            <Switch className={'w-[24px] h-[24px]'} />
             <span className="text-base text-accountActionItemText">Switch Account</span>
           </>
         ),
         onClick: () => onViewChange(AccountModalView.switchAccount)
       }
     ];
-  }, [onViewChange, chain, address])
+  }, [onViewChange, chain, address, balance])
 
   const handleDisconnect = async () => {
     await disconnectAsync();
