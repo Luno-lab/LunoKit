@@ -94,19 +94,18 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
 
         {showBalance && isLargeWindow && (
           <div className="p-2 pl-3">
-            {balance === undefined ? (
-              <div className="animate-pulse rounded w-[80px] h-[20px] bg-accountActionItemBackgroundHover" />
-            ) : (
-              <span className="">
-                {balance?.formattedTransferable || balance?.formattedTotal || 0}
-                {'  '}{currentChain?.nativeCurrency?.symbol || ''}
+            {balance ? (
+              <span>
+                {balance?.formattedTransferable || balance?.formattedTotal || 0} {currentChain?.nativeCurrency?.symbol || ''}
               </span>
+            ) : (
+              <span className="block animate-pulse rounded w-[80px] h-[20px] bg-accountActionItemBackgroundHover" />
             )}
           </div>
         )}
 
         <div className={cs(
-          "flex items-center bg-connectButtonInnerBackground border-2 border-connectButtonBackground rounded-connectButton gap-1.5 max-h-[40px]",
+          "flex items-center overflow-hidden bg-connectButtonInnerBackground border-2 border-connectButtonBackground rounded-connectButton gap-1.5 max-h-[40px]",
           showBalance && isLargeWindow ? 'bg-connectButtonInnerBackground py-1.5 px-2' : 'bg-connectButtonBackground py-2 px-2.5'
         )}>
           {accountStatus === 'full' && (
@@ -116,7 +115,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
           )}
           <span
             aria-label="Wallet icon placeholder"
-            className={''}>{displayAccount}</span>
+            className={'text-ellipsis overflow-hidden max-w-[100px]'}>{displayAccount}</span>
         </div>
       </button>
     </div>

@@ -69,13 +69,13 @@ export const AccountDetailsModal: React.FC = () => {
       )}>
         <div className="flex items-stretch justify-between w-full px-4 pt-4">
           {currentView === AccountModalView.main ? (
-            <div className={'flex items-center gap-3'}>
+            <div className={'flex items-center gap-3 max-w-[80%]'}>
               {activeConnector?.icon && (
-                <div className={'flex items-center justify-center w-[55px] h-[55px]'}>
+                <div className={'flex items-center justify-center w-[55px] h-[55px] shrink-0'}>
                   <img src={activeConnector.icon} alt="" className="w-full h-full object-contain"/>
                 </div>
               )}
-              <div className="flex flex-col items-start gap-1 w-full">
+              <div className="flex flex-col items-start gap-1 max-w-full">
                 <DialogTitle className={'sr-only'}>Account Details</DialogTitle>
                 <div className="flex items-center gap-1.5 w-full">
                 <span className="text-base text-modalText font-semibold">
@@ -83,7 +83,7 @@ export const AccountDetailsModal: React.FC = () => {
                 </span>
                   <Copy copyText={address}/>
                 </div>
-                <div className="text-xs leading-xs text-modalTextSecondary font-medium">
+                <div className="text-xs leading-xs text-modalTextSecondary font-medium max-w-[80%] text-ellipsis overflow-hidden">
                   {account?.name || activeConnector?.name}
                 </div>
               </div>
@@ -104,7 +104,7 @@ export const AccountDetailsModal: React.FC = () => {
             </>
           )}
 
-          <DialogClose className="z-10 flex items-center justify-center h-[30px] w-[30px] rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover  transition-colors duration-200 cursor-pointer">
+          <DialogClose className="shrink-0 z-10 flex items-center justify-center h-[30px] w-[30px] rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover  transition-colors duration-200 cursor-pointer">
             <Close />
           </DialogClose>
         </div>
