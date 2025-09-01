@@ -14,6 +14,7 @@ export { coretimeKusamaChain } from './coretimeKusamaChain.js';
 export { enkryptWallet } from './enkryptWallet.js';
 export { fearlessWallet } from './fearlessWallet.js';
 export { kusamaChain } from './kusamaChain.js';
+export { ledgerWallet } from './ledgerWallet.js';
 export { mimirWallet } from './mimirWallet.js';
 export { novaWallet } from './novaWallet.js';
 export { paseoChain } from './paseoChain.js';
