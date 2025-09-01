@@ -66,7 +66,7 @@ const ConnectorItem: React.FC<ConnectorItemProps> = React.memo(({connector, onCo
         'text-left'
       )}
     >
-      <div className={'w-[28px] h-[28px]'}>
+      <div className={'w-[28px] h-[28px] rounded-[6px] overflow-hidden'}>
         <img
           src={connector.icon}
           alt={connector.name}
