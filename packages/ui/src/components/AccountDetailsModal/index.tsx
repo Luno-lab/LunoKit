@@ -56,7 +56,6 @@ export const AccountDetailsModal: React.FC = () => {
     )
   }), [handleViewChange, handleModalClose]);
 
-
   return (
     <Dialog
       open={isOpen}
@@ -83,7 +82,10 @@ export const AccountDetailsModal: React.FC = () => {
                 </span>
                   <Copy copyText={address}/>
                 </div>
-                <div className="text-xs leading-xs text-modalTextSecondary font-medium w-[90%] text-ellipsis overflow-hidden whitespace-nowrap">
+                <div className={cs(
+                  "text-xs leading-xs text-modalTextSecondary font-medium text-ellipsis overflow-hidden whitespace-nowrap",
+                  account?.name && account?.name.length > 30 ? 'w-[90%]' : ''
+                )}>
                   {account?.name || activeConnector?.name}
                 </div>
               </div>
