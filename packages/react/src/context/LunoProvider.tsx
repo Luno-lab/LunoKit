@@ -105,9 +105,9 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
         const lastConnectorId = await configFromProps.storage.getItem(PERSIST_KEY.LAST_CONNECTOR_ID);
         const lastChainId = await configFromProps.storage.getItem(PERSIST_KEY.LAST_CHAIN_ID);
 
-        if (lastConnectorId && lastChainId) {
+        if (lastConnectorId) {
           console.log(`[LunoProvider]: AutoConnect Found persisted session: Connector ID "${lastConnectorId}", Chain ID "${lastChainId}"`);
-          await connect(lastConnectorId, lastChainId);
+          await connect(lastConnectorId, lastChainId || undefined);
         } else {
           console.log('[LunoProvider]: AutoConnect No persisted session found or missing data.');
         }

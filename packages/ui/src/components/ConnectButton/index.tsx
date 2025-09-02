@@ -34,6 +34,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
     chainIconUrl,
     chainName,
     currentChain,
+    configuredChains,
     activeConnector,
   } = useConnectButton();
   const { width: windowWidth } = useWindowSize()
@@ -61,7 +62,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
 
   return (
     <div className={cs('text-modalText flex items-stretch bg-transparent font-semibold text-base leading-base gap-3', className)}>
-      {chainStatus !== 'none' && (
+      {chainStatus !== 'none' && configuredChains.length > 0 && (
         <button
           type="button"
           onClick={() => openChainModal?.()}
@@ -92,7 +93,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
         aria-label="Open account modal"
       >
 
-        {showBalance && isLargeWindow && (
+        {configuredChains.length > 0 && showBalance && isLargeWindow && (
           <div className="p-2 pl-3">
             {balance ? (
               <span>
@@ -106,7 +107,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
 
         <div className={cs(
           "flex items-center overflow-hidden bg-connectButtonInnerBackground border-2 border-connectButtonBackground rounded-connectButton gap-1.5 max-h-[40px]",
-          showBalance && isLargeWindow ? 'bg-connectButtonInnerBackground py-1.5 px-2' : 'bg-connectButtonBackground py-2 px-2.5'
+          configuredChains.length > 0 && showBalance && isLargeWindow ? 'bg-connectButtonInnerBackground py-1.5 px-2' : 'bg-connectButtonBackground py-2 px-2.5'
         )}>
           {accountStatus === 'full' && (
             <span className="w-[24px] h-[24px] flex items-center justify-center">

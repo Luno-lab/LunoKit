@@ -22,7 +22,6 @@ export interface UseConnectButtonReturn {
 
   account?: Account;
   address?: string;
-  displayAccount: string;
 
   currentChain?: Chain;
   configuredChains: Chain[];
@@ -48,7 +47,7 @@ export function useConnectButton(): UseConnectButtonReturn {
   const { account, address } = useAccount();
   const { chain: currentChain } = useChain();
   const configuredChains = useChains();
-  const { data: balance } = useBalance({ address });
+  const { data: balance } = useBalance({ address: configuredChains.length > 0 ? address : undefined });
   const activeConnector = useActiveConnector()
 
   const { open: openConnectModal, isOpen: isConnectModalOpen } = useConnectModal();

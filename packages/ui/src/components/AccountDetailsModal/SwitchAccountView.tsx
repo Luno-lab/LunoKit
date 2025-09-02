@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useAccount, useAccounts, useActiveConnector, useBalance, useChain } from '@luno-kit/react';
+import { useAccount, useAccounts, useActiveConnector, useBalance, useChain, useChains } from '@luno-kit/react';
 import { cs } from '../../utils';
 import { formatAddress } from '@luno-kit/react/utils';
 import type { Account } from '@luno-kit/react/types';
@@ -49,8 +49,9 @@ const AccountItem: React.FC<AccountItemProps> = React.memo(({
   selectAccount
 }) => {
   const { chain } = useChain();
+  const chains = useChains()
   const address = account.address;
-  const { data: balance } = useBalance({ address });
+  const { data: balance } = useBalance({ address: chains.length > 0 ? address : undefined });
   const connector = useActiveConnector()
 
   return (
@@ -75,12 +76,14 @@ const AccountItem: React.FC<AccountItemProps> = React.memo(({
           <span className="whitespace-nowrap max-w-full text-ellipsis overflow-hidden font-medium text-sm leading-sm text-accountSelectItemText">
             {account.name || formatAddress(address)}
           </span>
-          {balance ? (
-            <span className="text-xs text-modalTextSecondary font-medium">
+          {chains.length > 0 && (
+            balance ? (
+              <span className="text-xs text-modalTextSecondary font-medium">
               {balance?.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
             </span>
-          ) : (
-            <span className="animate-pulse rounded w-[60px] h-[16px] bg-skeleton"/>
+            ) : (
+              <span className="animate-pulse rounded w-[60px] h-[16px] bg-skeleton"/>
+            )
           )}
         </div>
       </div>
