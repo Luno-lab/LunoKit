@@ -152,17 +152,6 @@ describe('createConfig', () => {
   })
 
   describe('parameter validation', () => {
-    it('should throw error when chains array is empty', () => {
-      const params: CreateConfigParameters = {
-        chains: [],
-        connectors: [polkadotjsConnector()]
-      }
-
-      expect(() => createConfig(params)).toThrow(
-        'At least one chain must be provided in the `chains` array.'
-      )
-    })
-
     it('should throw error when connectors array is empty', () => {
       const params: CreateConfigParameters = {
         chains: [polkadot],
@@ -171,45 +160,6 @@ describe('createConfig', () => {
 
       expect(() => createConfig(params)).toThrow(
         'No connectors provided. Wallet connection features will be unavailable.'
-      )
-    })
-
-    it('should throw error when no transports available', () => {
-      const params: CreateConfigParameters = {
-        chains: [mockChainWithoutWs],
-        connectors: [polkadotjsConnector()],
-        transports: {}
-      }
-
-      expect(() => createConfig(params)).toThrow(
-        'Transports must be provided for chains.'
-      )
-    })
-
-    it('should throw error when chain has no corresponding transport', () => {
-      const chainWithoutTransport: Chain = {
-        genesisHash: '0x456789abcdef',
-        name: 'Chain Without Transport',
-        nativeCurrency: {
-          name: 'No Transport Token',
-          symbol: 'NTT',
-          decimals: 12
-        },
-        rpcUrls: {},
-        ss58Format: 1,
-        chainIconUrl: 'data:image/svg+xml;base64,PHN2Zz48L3N2Zz4='
-      }
-
-      const params: CreateConfigParameters = {
-        chains: [chainWithoutTransport],
-        connectors: [polkadotjsConnector()],
-        transports: {
-          'custom-hash': 'wss://custom.endpoint.com'
-        }
-      }
-
-      expect(() => createConfig(params)).toThrow(
-        'Missing transport for chain "Chain Without Transport" (genesisHash: 0x456789abcdef). Please provide a valid WebSocket URL in the chain configuration or explicit transport.'
       )
     })
   })
@@ -262,6 +212,48 @@ describe('createConfig', () => {
         [chainWithWs.genesisHash]: polkadot.rpcUrls.webSocket![0],
         [chainWithoutWs.genesisHash]: 'wss://fallback.endpoint.com'
       })
+    })
+  })
+
+  describe('empty chains handling', () => {
+    it('should create config with empty chains array', () => {
+      const params: CreateConfigParameters = {
+        chains: [],
+        connectors: [polkadotjsConnector()]
+      }
+
+      const config = createConfig(params)
+
+      expect(config.chains).toEqual([])
+      expect(config.transports).toEqual({})
+    })
+
+    it('should create config with undefined chains', () => {
+      const params: CreateConfigParameters = {
+        connectors: [polkadotjsConnector()]
+      } as CreateConfigParameters
+
+      const config = createConfig(params)
+
+      expect(config.chains).toEqual([])
+      expect(config.transports).toEqual({})
+    })
+
+    it('should handle custom transports without chains', () => {
+      const customTransports = {
+        'custom-hash': 'wss://custom.endpoint.com'
+      }
+
+      const params: CreateConfigParameters = {
+        chains: [],
+        connectors: [polkadotjsConnector()],
+        transports: customTransports
+      }
+
+      const config = createConfig(params)
+
+      expect(config.chains).toEqual([])
+      expect(config.transports).toEqual(customTransports)
     })
   })
 
