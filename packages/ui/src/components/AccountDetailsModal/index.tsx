@@ -83,7 +83,7 @@ export const AccountDetailsModal: React.FC = () => {
                 </span>
                   <Copy copyText={address}/>
                 </div>
-                <div className="text-xs leading-xs text-modalTextSecondary font-medium max-w-[80%] text-ellipsis overflow-hidden whitespace-nowrap">
+                <div className="text-xs leading-xs text-modalTextSecondary font-medium w-[90%] text-ellipsis overflow-hidden whitespace-nowrap">
                   {account?.name || activeConnector?.name}
                 </div>
               </div>
