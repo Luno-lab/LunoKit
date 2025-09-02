@@ -28,7 +28,7 @@ type LunoApiOptions = Partial<Omit<ApiOptions,
 
 export interface CreateConfigParameters extends LunoApiOptions {
   appName?: string;
-  chains: readonly Chain[];
+  chains?: readonly Chain[];
   connectors: Connector[];
   transports?: Record<string, Transport>;
 

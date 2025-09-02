@@ -39,9 +39,9 @@ function generateTransportsFromChains(chains: readonly Chain[]): Record<string, 
 export function createConfig(parameters: CreateConfigParameters): Config {
   const {
     appName = 'My Luno App',
-    chains,
+    chains = [],
     connectors,
-    transports,
+    transports = {},
     storage = defaultLunoStorage,
     autoConnect = true,
     cacheMetadata,
@@ -51,26 +51,21 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     customRpc,
   } = parameters;
 
-  if (!chains || chains.length === 0) {
-    throw new Error('At least one chain must be provided in the `chains` array.');
-  }
   if (!connectors || connectors.length === 0) {
     throw new Error('No connectors provided. Wallet connection features will be unavailable.');
   }
 
-  const transportsFromChains = generateTransportsFromChains(chains);
+  const transportsFromChains = chains.length > 0 ? generateTransportsFromChains(chains) : {};
 
   const finalTransports = transports
     ? { ...transportsFromChains, ...transports }
     : transportsFromChains;
 
-  if (!finalTransports || Object.keys(finalTransports).length === 0) {
-    throw new Error('Transports must be provided for chains.');
-  }
-
-  for (const chain of chains) {
-    if (!finalTransports[chain.genesisHash]) {
-      throw new Error(`Missing transport for chain "${chain.name}" (genesisHash: ${chain.genesisHash}). Please provide a valid WebSocket URL in the chain configuration or explicit transport.`);
+  if (chains.length > 0) {
+    for (const chain of chains) {
+      if (!finalTransports[chain.genesisHash]) {
+        console.warn(`Missing transport for chain "${chain.name}" (genesisHash: ${chain.genesisHash}). Chain functionality may be limited.`);
+      }
     }
   }
 
