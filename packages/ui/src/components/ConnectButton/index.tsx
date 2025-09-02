@@ -2,7 +2,7 @@ import React from 'react';
 import { useConnectButton, useWindowSize } from '../../hooks';
 import { cs } from '../../utils';
 import { ChainIcon } from '../ChainIcon'
-
+import { formatAddress } from '@luno-kit/react/utils'
 
 export const transitionClassName = 'transition-transform transition-[125] hover:scale-[1.03] transition-ease'
 
@@ -26,7 +26,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
   const {
     isConnected,
     isDisconnected,
-    displayAccount,
+    account,
     balance,
     openConnectModal,
     openAccountModal,
@@ -35,7 +35,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
     chainName,
     currentChain,
     activeConnector,
-  } = useConnectButton({ displayPreference });
+  } = useConnectButton();
   const { width: windowWidth } = useWindowSize()
 
   const isLargeWindow = windowWidth && windowWidth > 768
@@ -115,7 +115,9 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
           )}
           <span
             aria-label="Wallet icon placeholder"
-            className={'text-ellipsis overflow-hidden max-w-[90px]'}>{displayAccount}</span>
+            className={cs((displayPreference === 'name' && account?.name) ? 'text-ellipsis overflow-hidden max-w-[100px] whitespace-nowrap' : '')}>
+            {displayPreference === 'name' && account?.name ? account?.name : formatAddress(account?.address)}
+          </span>
         </div>
       </button>
     </div>

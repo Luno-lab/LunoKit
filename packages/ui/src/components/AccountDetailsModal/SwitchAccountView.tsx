@@ -72,7 +72,7 @@ const AccountItem: React.FC<AccountItemProps> = React.memo(({
           {connector?.icon && <img src={connector?.icon} alt="luno account"/>}
         </div>
         <div className="flex flex-col items-start overflow-hidden">
-          <span className="max-w-full text-ellipsis overflow-hidden font-medium text-sm leading-sm text-accountSelectItemText">
+          <span className="whitespace-nowrap max-w-full text-ellipsis overflow-hidden font-medium text-sm leading-sm text-accountSelectItemText">
             {account.name || formatAddress(address)}
           </span>
           {balance ? (
