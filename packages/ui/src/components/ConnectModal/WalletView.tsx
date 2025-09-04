@@ -61,7 +61,7 @@ export const WalletView = React.memo(({ selectedConnector, onConnect, qrCode, is
                   </p>
                 )
                 : qrCode
-                  ? <Copy className={'text-sm leading-sm font-medium text-accentColor hover:text-modalText'} copyText={qrCode} label={'Copy Link'} />
+                  ? <Copy className={'text-sm leading-sm font-medium text-accentColor'} copyText={qrCode} label={'Copy Link'} />
                   : null}
 
               </div>

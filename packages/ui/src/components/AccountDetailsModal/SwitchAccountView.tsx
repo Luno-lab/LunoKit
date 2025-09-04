@@ -86,8 +86,8 @@ const AccountItem: React.FC<AccountItemProps> = React.memo(({
       </div>
 
       {isSelected && (
-        <div className="shrink-0 border-[1px] border-solid border-accentColor rounded-full overflow-hidden flex items-center justify-center w-[18px] h-[18px]">
-          <div className="rounded-full bg-accentColor w-[10px] h-[10px]" />
+        <div className="shrink-0 border-[1px] border-solid border-accentColor rounded-full overflow-hidden flex items-center justify-center w-[16px] h-[16px]">
+          <div className="rounded-full bg-accentColor w-[8px] h-[8px]" />
         </div>
       )}
     </button>
