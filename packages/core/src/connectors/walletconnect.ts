@@ -165,14 +165,18 @@ export class WalletConnectConnector extends BaseConnector {
   }
 
   public async disconnect(): Promise<void> {
-    if (this.provider) {
-      // await Promise.race([
-        await this.provider.disconnect()
-        // new Promise((_, reject) =>
-        //   setTimeout(() => reject(new Error('Disconnect timeout')), 5000)
-        // )
-      // ]);
+    try {
+      if (this.provider) {
+        await Promise.race([
+          await this.provider.disconnect(),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Disconnect timeout')), 5000)
+          )
+        ]);
+      }
+    } catch (e) {
     }
+
     await this.cleanup()
     this.emit('disconnect');
   }

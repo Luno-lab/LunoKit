@@ -13,11 +13,6 @@ import {
   useAccountModal,
   useChainModal,
 } from '../providers';
-import { formatAddress } from '@luno-kit/react/utils'
-
-export interface UseConnectButtonProps {
-  displayPreference: 'address' | 'name'
-}
 
 export interface UseConnectButtonReturn {
   connectionStatus: ConnectionStatus;
@@ -48,7 +43,7 @@ export interface UseConnectButtonReturn {
   isChainModalOpen: boolean;
 }
 
-export function useConnectButton({ displayPreference }: UseConnectButtonProps): UseConnectButtonReturn {
+export function useConnectButton(): UseConnectButtonReturn {
   const connectionStatus = useStatus();
   const { account, address } = useAccount();
   const { chain: currentChain } = useChain();
@@ -76,7 +71,6 @@ export function useConnectButton({ displayPreference }: UseConnectButtonProps): 
 
     account,
     address,
-    displayAccount: displayPreference === 'name' && account?.name ? account?.name : formatAddress(address),
 
     currentChain,
     configuredChains,
