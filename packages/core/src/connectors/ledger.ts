@@ -1,12 +1,8 @@
 import { WalletConnectConnector } from './walletconnect'
-import type { Metadata } from '@walletconnect/universal-provider'
 import { ledgerWallet } from '../config/logos/generated'
+import { WalletConnectConnectorOptions } from '../types'
 
-type WalletConnectConfig = {
-  projectId: string;
-  relayUrl?: string;
-  metadata?: Metadata;
-}
+type WalletConnectConfig = Pick<WalletConnectConnectorOptions, 'projectId' | 'relayUrl' | 'metadata'>
 
 export const ledgerConnector = (config: WalletConnectConfig) => {
   return new WalletConnectConnector({
