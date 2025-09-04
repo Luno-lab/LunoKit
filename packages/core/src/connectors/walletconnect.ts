@@ -16,9 +16,10 @@ export class WalletConnectConnector extends BaseConnector {
   private projectId: string;
   private relayUrl: string;
   private metadata?: Metadata;
+  private supportedChains: string[] = [];
 
   private session?: SessionTypes.Struct;
-  private connectedChains?: Chain[];
+  private connectedChains?: Chain[] | string[];
 
   private unsubscribe: (() => void) | null = null;
 
@@ -33,6 +34,7 @@ export class WalletConnectConnector extends BaseConnector {
     this.projectId = options.projectId;
     this.relayUrl = options.relayUrl || 'wss://relay.walletconnect.com';
     this.metadata = options.metadata;
+    this.supportedChains = options.supportedChains || [];
   }
 
   public isInstalled(): boolean {
@@ -43,8 +45,12 @@ export class WalletConnectConnector extends BaseConnector {
     return true;
   }
 
-  private convertChainIdToCaipId(chains: Chain[]): string[] {
-    return chains.map(chain => `polkadot:${chain.genesisHash.replace('0x', '').slice(0, 32)}`);
+  private convertChainIdToCaipId(chains: Chain[] | string[]): string[] {
+    try {
+      return (chains as Chain[]).map(chain => `polkadot:${chain.genesisHash.replace('0x', '').slice(0, 32)}`);
+    } catch (e) {
+      return chains as string[];
+    }
   }
 
   public async connect(appName: string, chains?: Chain[], targetChainId?: string): Promise<Array<Account>> {
@@ -52,11 +58,13 @@ export class WalletConnectConnector extends BaseConnector {
       throw new Error(`${this.name} requires a projectId. Please visit https://cloud.walletconnect.com to get one.`);
     }
 
-    if (!chains || chains.length === 0) {
+    const effectiveChains = chains?.length ? chains : this.supportedChains.length ? this.supportedChains : undefined;
+
+    if (!effectiveChains || effectiveChains.length === 0) {
       throw new Error(`${this.name} requires chains configuration.`);
     }
 
-    this.connectedChains = chains;
+    this.connectedChains = effectiveChains;
 
     const { UniversalProvider } = await import("@walletconnect/universal-provider");
 
@@ -72,11 +80,11 @@ export class WalletConnectConnector extends BaseConnector {
         },
       });
 
-      const chainIdToUse = targetChainId || chains[0].genesisHash;
+      const chainIdToUse = targetChainId || (effectiveChains[0] as Chain).genesisHash || effectiveChains[0] as string;
 
       if (this.provider.session) {
         this.session = this.provider.session;
-        const accounts = this.getAccountsFromSession(chains, chainIdToUse);
+        const accounts = this.getAccountsFromSession(effectiveChains, chainIdToUse);
         this.accounts = accounts;
 
         await this.startSubscription();
@@ -93,14 +101,14 @@ export class WalletConnectConnector extends BaseConnector {
         requiredNamespaces: {
           polkadot: {
             methods: ['polkadot_signMessage', 'polkadot_sendTransaction', 'polkadot_signTransaction', 'polkadot_requestAccounts'],
-            chains: this.convertChainIdToCaipId(chains),
+            chains: this.convertChainIdToCaipId(effectiveChains),
             events: ['accountsChanged', 'chainChanged', 'connect'],
           },
         },
         optionalNamespaces: {
           polkadot: {
             methods: ['polkadot_signMessage', 'polkadot_sendTransaction', 'polkadot_signTransaction', 'polkadot_requestAccounts'],
-            chains: this.convertChainIdToCaipId(chains),
+            chains: this.convertChainIdToCaipId(effectiveChains),
             events: ['accountsChanged', 'chainChanged', 'connect'],
           },
         },
@@ -114,7 +122,7 @@ export class WalletConnectConnector extends BaseConnector {
 
       this.connectionUri = undefined;
 
-      const accounts = this.getAccountsFromSession(chains, chainIdToUse);
+      const accounts = this.getAccountsFromSession(effectiveChains, chainIdToUse);
       this.accounts = accounts;
 
       // 启动订阅
@@ -129,8 +137,10 @@ export class WalletConnectConnector extends BaseConnector {
     }
   }
 
-  private getAccountsFromSession(chains: Chain[], chainId: string): Account[] {
-    const targetChain = chains.filter(chain => chain.genesisHash.toLowerCase() === chainId.toLowerCase())
+  private getAccountsFromSession(chains: Chain[] | string[], chainId: string): Account[] {
+    const targetChain = (chains[0] as Chain).genesisHash
+      ? (chains as Chain[]).filter(chain => chain.genesisHash.toLowerCase() === chainId.toLowerCase())
+      : (chains as string[]).filter(chain => chain.toLowerCase() === chainId.toLowerCase())
     const caipId = this.convertChainIdToCaipId(targetChain)[0];
 
     let rawAccounts = this.session?.namespaces.polkadot.accounts
@@ -181,6 +191,7 @@ export class WalletConnectConnector extends BaseConnector {
     if (!this.provider?.client || !this.session?.topic) {
       throw new Error("Provider not initialized or not connected");
     }
+    console.log('chainId', chainId)
 
     const targetChainId = chainId
       ? `polkadot:${chainId.replace('0x', '').slice(0, 32)}`
@@ -242,6 +253,7 @@ export class WalletConnectConnector extends BaseConnector {
     return {
       signPayload: async (payload: SignerPayloadJSON): Promise<SignerResult> => {
         try {
+          console.log('payload', payload)
           const result = await this.provider?.client?.request<{ signature: string }>({
             topic: this.session!.topic,
             chainId: `polkadot:${payload.genesisHash.replace('0x', '').slice(0, 32)}`,

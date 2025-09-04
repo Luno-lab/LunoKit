@@ -42,4 +42,5 @@ export interface WalletConnectConnectorOptions {
   relayUrl?: string;
   metadata?: Metadata;
   links?: ConnectorLinks;
+  supportedChains?: string[]; //'polkadot:${genesisHash}'
 }
