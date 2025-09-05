@@ -6,9 +6,10 @@ import { ChainIcon } from '../ChainIcon'
 
 interface ChainListProps {
   onChainSwitched?: (chain: Chain) => void;
+  className?: string
 }
 
-export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched }: ChainListProps) => {
+export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched, className = '' }: ChainListProps) => {
   const { chain: currentChain } = useChain();
   const chains = useChains();
   const { switchChainAsync } = useSwitchChain();
@@ -42,7 +43,7 @@ export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched }: ChainLi
   };
 
   return (
-    <>
+    <div className={cs('flex flex-col gap-3.5', className)}>
       <div className="relative pt-1">
         <input
           type="text"
@@ -54,7 +55,7 @@ export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched }: ChainLi
       </div>
 
       {filteredChains.length > 0 && (
-        <div className="flex flex-col gap-1.5 overflow-y-auto custom-scrollbar max-h-[450px]">
+        <div className="flex flex-col gap-1.5 overflow-y-auto max-h-[380px]">
           {filteredChains.map(chain => (
             <ChainItem
               key={chain.genesisHash}
@@ -74,7 +75,7 @@ export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched }: ChainLi
           </span>
         </div>
       )}
-    </>
+    </div>
   )
 }
 

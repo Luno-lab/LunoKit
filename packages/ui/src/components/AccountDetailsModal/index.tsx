@@ -62,7 +62,7 @@ export const AccountDetailsModal: React.FC = () => {
       onOpenChange={handleModalClose}
     >
       <div className={cs(
-        'flex flex-col w-full md:w-[360px] max-h-[500px] text-modalText',
+        'flex flex-col w-full md:w-[360px] max-h-[512px] text-modalText',
         'bg-modalBackground shadow-modal',
         currentView === AccountModalView.main ? 'gap-5' : 'gap-3.5'
       )}>
@@ -113,7 +113,7 @@ export const AccountDetailsModal: React.FC = () => {
 
         <div
           ref={containerRef}
-          className="relative overflow-hidden"
+          className="relative"
         >
           <div ref={currentViewRef}>
             {viewComponents[currentView]}
