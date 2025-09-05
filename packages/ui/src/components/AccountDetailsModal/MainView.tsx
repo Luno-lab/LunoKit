@@ -33,7 +33,7 @@ export const MainView: React.FC<MainViewProps> = ({
                   chainIconUrl={chain?.chainIconUrl}
                   chainName={chain?.name}
                 />
-                <div className={'dot w-[8px] h-[8px] bg-accentColor absolute bottom-0 right-0 rounded-full'}/>
+                {/* <div className={'dot w-[8px] h-[8px] bg-accentColor absolute bottom-0 right-0 rounded-full'}/> */}
               </div>
               <div className={'flex flex-col items-start'}>
                 <span className="text-base leading-base text-modalText">{chain?.name || 'Polkadot'}</span>
