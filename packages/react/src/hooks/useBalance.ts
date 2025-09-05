@@ -1,8 +1,8 @@
 import { QueryMultiItem, useSubscription, UseSubscriptionResult } from './useSubscription';
-import type { AccountBalance } from '@luno-kit/core';
+import type { AccountBalance } from '../types';
 import type { LegacyClient } from 'dedot';
 import { useLuno } from './useLuno'
-import { formatBalance } from '@luno-kit/core'
+import { formatBalance } from '@luno-kit/core/utils'
 
 interface AccountData {
   data: {

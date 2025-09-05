@@ -10,11 +10,7 @@ interface SwitchChainViewProps {
 }
 
 export const SwitchChainView: ViewComponent = ({ onBack }) => {
-  return (
-    <div className={'flex flex-col gap-3.5 p-4 pt-0'}>
-      <ChainList />
-    </div>
-  )
+  return <ChainList className={'p-4 pt-0'} />
 }
 
 SwitchChainView.title = 'Select Networks';

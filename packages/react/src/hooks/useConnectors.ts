@@ -1,4 +1,4 @@
-import type { Connector } from '@luno-kit/core';
+import type { Connector } from '../types';
 import { useLuno } from './useLuno';
 
 export const useConnectors = (): Connector[] => {

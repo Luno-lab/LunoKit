@@ -20,10 +20,11 @@ const HEADER = '// Copyright 2025 Luno contributors\n// SPDX-License-Identifier:
  */
 function stringCamelCase(str) {
   return str
-    .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
-      return index === 0 ? word.toLowerCase() : word.toUpperCase();
+    .split(/[-\s]+/)
+    .map((word, index) => {
+      return index === 0 ? word.toLowerCase() : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     })
-    .replace(/\s+/g, '');
+    .join('');
 }
 
 /**
@@ -52,37 +53,58 @@ const allLogos = {};
 /** @type {Record<string, number>} */
 const oversized = {};
 
+const LOGO_TYPES = ['chains', 'wallets'];
+
 // Process SVG files
-fs.readdirSync(logosDir)
-  .filter(file => file.endsWith('.svg') && !file.startsWith('.'))
-  .forEach((file) => {
-    const fullPath = path.join(logosDir, file);
-    const fileName = path.basename(file, '.svg');
+LOGO_TYPES.forEach(type => {
+  const typeDir = path.join(logosDir, type);
+  fs.readdirSync(typeDir)
+    .filter(file => (file.endsWith('.svg') || file.endsWith('.webp')) && !file.startsWith('.'))
+    .forEach((file) => {
+      const fullPath = path.join(typeDir, file);
+      const fileName = path.basename(file, path.extname(file)); // 获取不带扩展名的文件名
+      const fileExt = path.extname(file).toLowerCase();
 
-    // Read SVG file
-    const buffer = fs.readFileSync(fullPath);
-    const base64Data = `data:image/svg+xml;base64,${buffer.toString('base64')}`;
+      const suffix = type.slice(0, -1);
+      const resultSuffix = suffix.charAt(0).toUpperCase() + suffix.slice(1);
 
-    // Generate export name: polkadotSVG, kusamaSVG
-    const exportName = `${stringCamelCase(fileName)}SVG`;
-    const outputFileName = `${fileName}SVG`;
+      const exportName = `${stringCamelCase(fileName)}${resultSuffix}`;
+      const outputFileName = `${stringCamelCase(fileName)}${resultSuffix}`;
 
-    // Write individual TypeScript file
-    const outputPath = path.join(generatedDir, `${outputFileName}.ts`);
-    fs.writeFileSync(outputPath, makeContents(exportName, base64Data));
+      if (fileExt === '.svg') {
+        const buffer = fs.readFileSync(fullPath);
+        const base64Data = `data:image/svg+xml;base64,${buffer.toString('base64')}`;
 
-    result[exportName] = outputFileName;
-    allLogos[exportName] = base64Data;
+        const outputPath = path.join(generatedDir, `${outputFileName}.ts`);
+        fs.writeFileSync(outputPath, makeContents(exportName, base64Data));
 
-    // Check file size
-    if (buffer.length > MAX_SIZE) {
-      oversized[exportName] = buffer.length;
-    }
+        result[exportName] = outputFileName;
+        allLogos[exportName] = base64Data;
 
-    console.log(`✅ Generated: ${exportName} (${Math.round(buffer.length / 1024)}KB)`);
-  });
+        if (buffer.length > MAX_SIZE) {
+          oversized[exportName] = buffer.length;
+        }
 
-// Generate index.ts
+        console.log(`✅ Generated: ${exportName} (${Math.round(buffer.length / 1024)}KB)`);
+      } else if (fileExt === '.webp') {
+        const buffer = fs.readFileSync(fullPath);
+        const base64Data = `data:image/webp;base64,${buffer.toString('base64')}`;
+
+        const outputPath = path.join(generatedDir, `${outputFileName}.ts`);
+        fs.writeFileSync(outputPath, makeContents(exportName, base64Data));
+
+        result[exportName] = outputFileName;
+        allLogos[exportName] = base64Data;
+
+        if (buffer.length > MAX_SIZE) {
+          oversized[exportName] = buffer.length;
+        }
+
+        console.log(`✅ Generated: ${exportName} (${Math.round(buffer.length / 1024)}KB)`);
+      }
+    });
+});
+
 if (Object.keys(result).length > 0) {
   const indexContent = `${HEADER}${
     Object.keys(result)
@@ -95,7 +117,6 @@ if (Object.keys(result).length > 0) {
   console.log(`✅ Generated index.ts with ${Object.keys(result).length} exports`);
 }
 
-// Check for duplicates
 const allKeys = Object.keys(allLogos);
 const dupes = {};
 

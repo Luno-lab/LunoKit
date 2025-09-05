@@ -1,4 +1,5 @@
-import { Config, wsProvider } from '@luno-kit/core'
+import { wsProvider } from '@luno-kit/core'
+import type { Config } from '../types'
 import { ApiOptions, LegacyClient } from 'dedot'
 
 interface CreateApiOptions {
@@ -47,7 +48,7 @@ export const createApi = async ({
     }
 
     return newApi;
-  } catch (error: Error) {
+  } catch (error: any) {
     throw new Error(`Failed to connect to ${chainConfig.name}: ${error?.message || error}`);
   }
 };

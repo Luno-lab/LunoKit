@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from 'react';
 import { LunoProvider } from '@luno-kit/react';
-import type { Config as LunoCoreConfig } from '@luno-kit/react'
+import type { Config as LunoCoreConfig } from '@luno-kit/react/types'
 // @ts-ignore - @tanstack/react-query v5 API changes
 import { QueryClient, QueryClientProvider, QueryClientConfig } from '@tanstack/react-query';
 import { ModalProvider} from './ModalContext';

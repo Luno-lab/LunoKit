@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { polkadotjsConnector } from './polkadot-js';
 import { createConnectorTestSuite } from './test-helper'
-import { polkadotjsSVG } from '../config/logos/generated'
+import { polkadotjsWallet } from '../config/logos/generated'
 
 describe(
   'polkadotjsConnector',
@@ -10,7 +10,7 @@ describe(
     expected: {
       id: 'polkadot-js',
       name: 'Polkadot{.js}',
-      icon: polkadotjsSVG,
+      icon: polkadotjsWallet,
     },
   })
 )

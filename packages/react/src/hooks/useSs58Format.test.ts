@@ -2,7 +2,7 @@ import { expect, describe, it, vi } from 'vitest';
 import { mockConfig, mockClient } from '../test-utils';
 import { renderHook } from '../test-utils';
 import { useSs58Format } from './useSs58Format';
-import { polkadot } from '@luno-kit/core';
+import { polkadot } from '@luno-kit/core/chains';
 import { waitFor } from '@testing-library/react';
 import { useLuno } from './useLuno'
 

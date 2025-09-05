@@ -1,14 +1,10 @@
-import { novaSVG } from '../config/logos/generated'
+import { novaWallet } from '../config/logos/generated'
 import { WalletConnectConnector } from './walletconnect'
-import type { Metadata } from '@walletconnect/universal-provider'
 import { novaMobileConnector } from './novaMobile'
 import { isMobileDevice } from '../utils'
+import { WalletConnectConnectorOptions } from '../types'
 
-type WalletConnectConfig = {
-  projectId: string;
-  relayUrl?: string;
-  metadata?: Metadata;
-}
+type WalletConnectConfig = Pick<WalletConnectConnectorOptions, 'projectId' | 'relayUrl' | 'metadata'>
 
 type MobileOnlyConfig = {
   mobileOnly: true;
@@ -17,22 +13,19 @@ type MobileOnlyConfig = {
 type NovaConnectorConfig = WalletConnectConfig | MobileOnlyConfig;
 
 export const novaConnector = (config: NovaConnectorConfig) => {
-  if ((config as MobileOnlyConfig).mobileOnly && !isMobileDevice()) {
-    throw new Error('Nova Wallet mobile connector cannot be used on desktop devices');
-  }
-
-  if ((config as MobileOnlyConfig).mobileOnly) {
-    throw new Error('Nova Wallet is not installed. Please install Nova Wallet to continue.');
-  }
-
   if (isMobileDevice()) {
+    return novaMobileConnector();
+  }
+
+  if (!isMobileDevice() && 'mobileOnly' in config && config.mobileOnly) {
+    console.error('Nova Wallet mobile connector is being used on a desktop device. This may not work as expected.');
     return novaMobileConnector();
   }
 
   return new WalletConnectConnector({
     id: 'nova',
-    name: 'Nova Wallet',
-    icon: novaSVG,
+    name: 'Nova',
+    icon: novaWallet,
     links: {
       browserExtension: 'https://novawallet.io',
     },

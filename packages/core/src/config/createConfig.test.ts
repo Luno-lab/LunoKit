@@ -12,14 +12,12 @@ vi.mock('./createStorage', () => ({
   }))
 }))
 
-vi.mock('../config/logos/generated', () => ({
-  polkadotjsSVG: 'mocked-polkadotjs-logo',
-  subwalletSVG: 'mocked-subwallet-logo',
-  polkadotSVG: 'mocked-polkadot-logo',
-  kusamaSVG: 'mocked-kusama-logo',
-  paseoSVG: 'mocked-paseo-logo',
-  westendSVG: 'mocked-westend-logo',
-}))
+vi.mock('../config/logos/generated', async importOriginal => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+  }
+});
 
 describe('createConfig', () => {
   const mockConnectors = [polkadotjsConnector(), subwalletConnector()]

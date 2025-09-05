@@ -4,7 +4,7 @@ import { renderHook } from '../test-utils';
 import { waitFor } from '@testing-library/react';
 import { useGenesisHash } from './useGenesisHash';
 import { useLuno } from './useLuno';
-import { polkadot } from '@luno-kit/core';
+import { polkadot } from '@luno-kit/core/chains';
 
 vi.mock('../utils/createApi', () => ({
   createApi: () => Promise.resolve(mockClient.polkadot)

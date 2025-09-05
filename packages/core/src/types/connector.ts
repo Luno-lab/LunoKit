@@ -16,7 +16,7 @@ export interface Connector extends EventEmitter {
   readonly links: ConnectorLinks;
   isAvailable(): Promise<boolean>;
   isInstalled: () => boolean;
-  connect(appName: string, chains?: Chain[], targetChainId?: string): Promise<Array<Account>>;
+  connect(appName: string, chains?: Chain[], targetChainId?: string): Promise<Account[] | undefined>;
   disconnect(): Promise<void>;
   getAccounts(): Promise<Array<Account>>;
   getSigner(): Promise<Signer | undefined>;

@@ -1,5 +1,5 @@
 import { useLuno } from './useLuno';
-import type { Connector } from '@luno-kit/core';
+import type { Connector } from '../types';
 import { ConnectionStatus } from '../types'
 import { useLunoMutation, type LunoMutationOptions } from './useLunoMutation';
 import { sleep } from '../utils'

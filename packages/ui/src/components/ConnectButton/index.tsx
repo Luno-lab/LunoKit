@@ -1,8 +1,8 @@
 import React from 'react';
-import { useLunoWallet, useWindowSize } from '../../hooks';
+import { useConnectButton, useWindowSize } from '../../hooks';
 import { cs } from '../../utils';
 import { ChainIcon } from '../ChainIcon'
-
+import { formatAddress } from '@luno-kit/react/utils'
 
 export const transitionClassName = 'transition-transform transition-[125] hover:scale-[1.03] transition-ease'
 
@@ -12,6 +12,7 @@ export interface ConnectButtonProps {
   accountStatus?: 'full' | 'address';
   chainStatus?: 'full' | 'icon' | 'name' | 'none';
   showBalance?: boolean;
+  displayPreference?: 'address' | 'name'
 }
 
 export const ConnectButton: React.FC<ConnectButtonProps> = ({
@@ -20,11 +21,12 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
   accountStatus = 'full',
   chainStatus = 'full',
   showBalance = true,
+  displayPreference = 'address',
 }) => {
   const {
     isConnected,
     isDisconnected,
-    displayAddress,
+    account,
     balance,
     openConnectModal,
     openAccountModal,
@@ -33,7 +35,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
     chainName,
     currentChain,
     activeConnector,
-  } = useLunoWallet();
+  } = useConnectButton();
   const { width: windowWidth } = useWindowSize()
 
   const isLargeWindow = windowWidth && windowWidth > 768
@@ -92,29 +94,30 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
 
         {showBalance && isLargeWindow && (
           <div className="p-2 pl-3">
-            {balance === undefined ? (
-              <div className="animate-pulse rounded w-[80px] h-[20px] bg-accountActionItemBackgroundHover" />
-            ) : (
-              <span className="">
-                {balance?.formattedTransferable || balance?.formattedTotal || 0}
-                {'  '}{currentChain?.nativeCurrency?.symbol || ''}
+            {balance ? (
+              <span>
+                {balance?.formattedTransferable || balance?.formattedTotal || 0} {currentChain?.nativeCurrency?.symbol || ''}
               </span>
+            ) : (
+              <span className="block animate-pulse rounded w-[80px] h-[20px] bg-accountActionItemBackgroundHover" />
             )}
           </div>
         )}
 
         <div className={cs(
-          "flex items-center bg-connectButtonInnerBackground border-2 border-connectButtonBackground rounded-connectButton gap-1.5 max-h-[40px]",
+          "flex items-center overflow-hidden bg-connectButtonInnerBackground border-2 border-connectButtonBackground rounded-connectButton gap-1.5 max-h-[40px]",
           showBalance && isLargeWindow ? 'bg-connectButtonInnerBackground py-1.5 px-2' : 'bg-connectButtonBackground py-2 px-2.5'
         )}>
           {accountStatus === 'full' && (
-            <span className="w-[24px] h-[24px]">
+            <span className="w-[24px] h-[24px] flex items-center justify-center">
               <img src={activeConnector.icon} alt="luno" />
             </span>
           )}
           <span
             aria-label="Wallet icon placeholder"
-            className={''}>{displayAddress}</span>
+            className={cs((displayPreference === 'name' && account?.name) ? 'text-ellipsis overflow-hidden max-w-[100px] whitespace-nowrap' : '')}>
+            {displayPreference === 'name' && account?.name ? account?.name : formatAddress(account?.address)}
+          </span>
         </div>
       </button>
     </div>

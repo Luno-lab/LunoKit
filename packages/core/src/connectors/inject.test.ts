@@ -1,5 +1,5 @@
 import { describe } from 'vitest'
-import { CommonConnector } from './common'
+import { InjectConnector } from './inject'
 import { createConnectorTestSuite } from './test-helper'
 
 const options = {
@@ -11,9 +11,9 @@ const options = {
 };
 
 describe(
-  'CommonConnector',
+  'InjectConnector',
   createConnectorTestSuite({
-    getConnector: () => new CommonConnector(options),
+    getConnector: () => new InjectConnector(options),
     expected: options,
   })
 );

@@ -5,7 +5,7 @@ import { Injected, InjectedAccount } from 'dedot/types'
 import { stringToHex } from 'dedot/utils'
 import { ConnectorLinks } from '../types'
 
-export interface CommonConnectorOptions {
+export interface InjectConnectorOptions {
   id: string;
   name: string;
   icon: string;
@@ -13,7 +13,7 @@ export interface CommonConnectorOptions {
   injectorId?: string;
 }
 
-export class CommonConnector extends BaseConnector {
+export class InjectConnector extends BaseConnector {
   readonly id: string;
   readonly name: string;
   readonly icon: string;
@@ -24,7 +24,7 @@ export class CommonConnector extends BaseConnector {
 
   private specificInjector?: Injected = undefined
 
-  constructor(options: CommonConnectorOptions) {
+  constructor(options: InjectConnectorOptions) {
     super();
     this.id = options.id;
     this.name = options.name;
@@ -43,7 +43,7 @@ export class CommonConnector extends BaseConnector {
     return this.isInstalled();
   }
 
-  public async connect(appName: string): Promise<Array<Account>> {
+  public async connect(appName: string): Promise<Account[] | undefined> {
     console.log(`Connector ${this.id}: Attempting to connect...`);
     if (this.signer) {
       console.log(`Connector ${this.id}: Already connected.`);
@@ -108,6 +108,7 @@ export class CommonConnector extends BaseConnector {
       const result = await signer.signRaw({ address, data: dataHex, type: 'bytes' });
       return result.signature;
     } catch (error: any) {
+      console.log('error', error)
       throw new Error(`Connector ${this.id}: Failed to sign message: ${error.message}`);
     }
   }

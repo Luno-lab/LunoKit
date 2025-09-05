@@ -1,4 +1,4 @@
-import type { Config } from '@luno-kit/core';
+import type { Config } from '@luno-kit/core/types';
 import { renderHook as baseRenderHook, RenderHookOptions } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query'

@@ -2,7 +2,9 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { createConfig, kusama, polkadot, westend, paseo, polkagateConnector, subwalletConnector, talismanConnector, polkadotjsConnector, walletConnectConnector, novaConnector } from '@luno-kit/react'
+import { createConfig } from '@luno-kit/react'
+import { kusama, polkadot, westend, paseo, polkadotAssetHub, polkadotCoretime, polkadotCollectives, polkadotPeople, kusamaAssetHub, kusamaCoretime, kusamaPeople, paseoAssetHub, paseoPassetHub, westendAssetHub } from '@luno-kit/react/chains'
+import { polkagateConnector, subwalletConnector, talismanConnector, polkadotjsConnector, walletConnectConnector, novaConnector, fearlessConnector, mimirConnector, enkryptConnector } from '@luno-kit/react/connectors'
 import { LunoKitProvider } from '@luno-kit/ui'
 import '@luno-kit/ui/styles.css'
 
@@ -11,13 +13,16 @@ const connectors = [
   subwalletConnector(),
   talismanConnector(),
   polkagateConnector(),
+  fearlessConnector(),
+  mimirConnector(),
+  enkryptConnector(),
   walletConnectConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID }),
   novaConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID }),
 ]
 
 const lunoConfig = createConfig({
   appName: 'luno with-vite example',
-  chains: [polkadot, kusama, westend, paseo],
+  chains: [polkadot, kusama, westend, paseo, polkadotAssetHub, polkadotCoretime, polkadotCollectives, polkadotPeople, kusamaAssetHub, kusamaCoretime, kusamaPeople, paseoAssetHub, paseoPassetHub, westendAssetHub],
   connectors: connectors,
   autoConnect: true,
 });

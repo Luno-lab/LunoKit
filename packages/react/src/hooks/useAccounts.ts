@@ -1,7 +1,7 @@
-import type { Account } from '@luno-kit/core';
+import type { Account } from '../types';
 import { useLuno } from './useLuno';
 import { useMemo } from 'react'
-import { convertAddress } from '@luno-kit/core'
+import { convertAddress } from '@luno-kit/core/utils'
 import type { HexString } from 'dedot/utils'
 
 export interface UseAccountsResult {

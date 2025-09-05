@@ -52,7 +52,7 @@ export interface LunokitTheme {
     infoForeground: string;
 
     // Skeleton screen
-      skeleton: string;
+    skeleton: string;
   };
   fonts: {
     body: string;

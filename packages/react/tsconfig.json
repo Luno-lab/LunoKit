@@ -10,7 +10,10 @@
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "composite": true
+    "composite": true,
+    "paths": {
+      "@luno-kit/core/*": ["../core/src/*"]
+    }
   },
   "include": ["src/**/*"],
   "references": [

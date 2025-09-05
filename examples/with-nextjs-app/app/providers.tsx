@@ -1,7 +1,9 @@
 "use client";
 
 import { LunoKitProvider } from '@luno-kit/ui'
-import { createConfig, kusama, polkadot, westend, polkagateConnector, subwalletConnector, talismanConnector, polkadotjsConnector, walletConnectConnector, novaConnector } from '@luno-kit/react'
+import { createConfig } from '@luno-kit/react'
+import { polkagateConnector, polkadotjsConnector, subwalletConnector, talismanConnector, novaConnector, walletConnectConnector } from '@luno-kit/react/connectors'
+import { polkadot, kusama, westend } from '@luno-kit/react/chains'
 
 const connectors = [
   polkadotjsConnector(),

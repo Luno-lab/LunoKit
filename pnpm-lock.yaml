@@ -251,6 +251,9 @@ importers:
       '@dedot/chaintypes':
         specifier: 'catalog:'
         version: 0.123.0(dedot@0.14.1)
+      '@mimirdev/apps-inject':
+        specifier: 3.2.0
+        version: 3.2.0
       '@walletconnect/universal-provider':
         specifier: 2.21.4
         version: 2.21.4(typescript@5.8.3)
@@ -1904,6 +1907,12 @@ packages:
   '@manypkg/get-packages@1.1.3':
     resolution: {integrity: sha512-fo+QhuU3qE/2TQMQmbVMqaQ6EWbMhi4ABWP+O4AM1NqPBuy0OrApV5LO6BrrgnhtAHS2NH6RrVk9OL181tTi8A==}
 
+  '@mimirdev/apps-inject@3.2.0':
+    resolution: {integrity: sha512-yKWFaZsUgxaPIU/xM8OFvWRsNld6x8iCeqbQbt/LyUsikLGlkrHOZl29MwMfSQiYAWrYNqwhFpCU07sS2DTOLQ==}
+
+  '@mimirdev/apps-sdk@3.1.0':
+    resolution: {integrity: sha512-EevWZhaaP9gKcIJeEbokAugx5X0sd8jRae1CX1Uzg5KsVxODjeLLaAE1D90Lj6//JE1NPaEq3QKi9PliSMLVNg==}
+
   '@msgpack/msgpack@3.1.2':
     resolution: {integrity: sha512-JEW4DEtBzfe8HvUYecLU9e6+XJnKDlUAIve8FvPzF3Kzs6Xo/KuZkZJsDH0wJXl/qEZbeeE7edxDNY3kMs39hQ==}
     engines: {node: '>= 18'}
@@ -2469,11 +2478,13 @@ packages:
 
   '@stagewise-plugins/react@0.5.1':
     resolution: {integrity: sha512-8OeM/nF8qyn8zBQxTtupG49sXBm9sCxugTl6KTkjgQacg7mP7zN/F5iHKFHwE4HnyZMoC0UjWt/HeRyxnQsYiQ==}
+    deprecated: 'This package is deprecated and has been replaced by the stagewise CLI. Get started with the CLI here: https://stagewise.io/docs'
     peerDependencies:
       '@stagewise/toolbar': 0.5.1
 
   '@stagewise/toolbar-react@0.5.1':
     resolution: {integrity: sha512-R25kkgU22ueO+jcb5Uc47NrxQVnKxmoepJzjs2bROUiVeU5wIb1MNiioKzN5IA2TucY75Sq8Q7TjHGYyHuFOpQ==}
+    deprecated: 'This package is deprecated and has been replaced by the stagewise CLI. Get started with the CLI here: https://stagewise.io/docs'
     peerDependencies:
       '@types/react': '>=18.0.0'
       react: '>=18.0.0'
@@ -7513,6 +7524,7 @@ packages:
   source-map@0.8.0-beta.0:
     resolution: {integrity: sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==}
     engines: {node: '>= 8'}
+    deprecated: The work that was done in this beta branch won't be included in future versions
 
   sourcemap-codec@1.4.8:
     resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
@@ -10463,6 +10475,14 @@ snapshots:
       fs-extra: 8.1.0
       globby: 11.1.0
       read-yaml-file: 1.1.0
+
+  '@mimirdev/apps-inject@3.2.0':
+    dependencies:
+      '@mimirdev/apps-sdk': 3.1.0
+
+  '@mimirdev/apps-sdk@3.1.0':
+    dependencies:
+      eventemitter3: 5.0.1
 
   '@msgpack/msgpack@3.1.2': {}
 

@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { subwalletConnector } from './subwallet';
 import { createConnectorTestSuite } from './test-helper'
-import { subwalletSVG } from '../config/logos/generated'
+import { subwalletWallet } from '../config/logos/generated'
 
 describe(
   'subwalletConnector',
@@ -10,7 +10,7 @@ describe(
     expected: {
       id: 'subwallet-js',
       name: 'SubWallet',
-      icon: subwalletSVG,
+      icon: subwalletWallet,
     },
   })
 )
