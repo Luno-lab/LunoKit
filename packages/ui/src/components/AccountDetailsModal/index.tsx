@@ -64,19 +64,19 @@ export const AccountDetailsModal: React.FC = () => {
       <div className={cs(
         'flex flex-col w-full md:w-[360px] max-h-[500px] text-modalText',
         'bg-modalBackground shadow-modal',
-        currentView === AccountModalView.main ? 'gap-6' : 'gap-3.5'
+        currentView === AccountModalView.main ? 'gap-5' : 'gap-3.5'
       )}>
         <div className="flex items-stretch justify-between w-full px-4 pt-4">
           {currentView === AccountModalView.main ? (
             <div className={'flex items-center gap-3 max-w-[80%]'}>
               {activeConnector?.icon && (
-                <div className={'flex items-center justify-center w-[48px] h-[48px] shrink-0'}>
+                <div className={'flex items-center justify-center w-[40px] h-[40px] shrink-0'}>
                   <img src={activeConnector.icon} alt="" className="w-full h-full object-contain"/>
                 </div>
               )}
-              <div className="flex flex-col items-start gap-1 max-w-full">
+              <div className="flex flex-col items-start gap-1.5 max-w-full">
                 <DialogTitle className={'sr-only'}>Account Details</DialogTitle>
-                <div className="flex items-center gap-1.5 w-full">
+                <div className="flex items-center gap-0.5 w-full ">
                 <span className="text-base text-modalText font-semibold">
                   {formatAddress(address)}
                 </span>
