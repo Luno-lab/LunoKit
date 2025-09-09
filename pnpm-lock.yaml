@@ -270,6 +270,9 @@ importers:
         specifier: 5.0.1
         version: 5.0.1
     devDependencies:
+      '@dedot/types':
+        specifier: 0.16.0
+        version: 0.16.0
       '@types/node':
         specifier: 'catalog:'
         version: 20.19.0
@@ -2522,6 +2525,7 @@ packages:
 
   '@stagewise/toolbar@0.5.1':
     resolution: {integrity: sha512-4B7g5fuFAs30Di0J9Lb1rt7uSWx/WcnXB+WGlyB7VbVhBEqkpnKPlytDl+yQIgnrHobcfwr0BTmzmmAXb/kc8A==}
+    deprecated: 'This package is deprecated and has been replaced by the stagewise CLI. Get started with the CLI here: https://stagewise.io/docs'
 
   '@storybook/core@8.6.14':
     resolution: {integrity: sha512-1P/w4FSNRqP8j3JQBOi3yGt8PVOgSRbP66Ok520T78eJBeqx9ukCfl912PQZ7SPbW3TIunBwLXMZOjZwBB/JmA==}

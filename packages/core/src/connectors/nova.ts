@@ -4,7 +4,7 @@ import { novaMobileConnector } from './novaMobile'
 import { isMobileDevice } from '../utils'
 import { WalletConnectConnectorOptions } from '../types'
 
-type WalletConnectConfig = Pick<WalletConnectConnectorOptions, 'projectId' | 'relayUrl' | 'metadata'>
+type WalletConnectConfig = Pick<WalletConnectConnectorOptions, 'projectId' | 'relayUrl' | 'metadata' | 'supportedChains'>
 
 type MobileOnlyConfig = {
   mobileOnly: true;
