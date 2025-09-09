@@ -80,9 +80,9 @@
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "@dedot/chaintypes": "^0.123.0",
+    "@dedot/chaintypes": "^0.152.0",
     "@tanstack/react-query": ">=5.0.0",
-    "dedot": "^0.13.2",
+    "dedot": "^0.16.0",
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"
   },

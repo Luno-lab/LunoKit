@@ -76,8 +76,8 @@
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "@dedot/chaintypes": "^0.123.0",
-    "dedot": "^0.13.2"
+    "@dedot/chaintypes": "^0.152.0",
+    "dedot": "^0.16.0"
   },
   "engines": {
     "node": ">=20.0.0",
