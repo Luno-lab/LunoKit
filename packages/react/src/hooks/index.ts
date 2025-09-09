@@ -20,3 +20,4 @@ export * from './useStatus';
 export * from './useSubscription';
 export * from './useSwitchChain';
 export * from './useSigner';
+export * from './usePapiSigner';

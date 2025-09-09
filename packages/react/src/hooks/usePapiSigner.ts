@@ -1,35 +1,34 @@
-import { useState, useEffect } from 'react';
-import { useLuno } from './useLuno';
+import { useEffect, useState}  from 'react';
+import { useSigner } from './useSigner';
 import { useAccount } from './useAccount';
-import { Signer } from '../types'
+import { createPapiSigner } from '@luno-kit/core/utils';
+import type { PapiSigner } from '@luno-kit/core/types';
 
-export interface UseSignerResult {
-  data?: Signer;
+export interface UsePapiSignerResult {
+  data?: PapiSigner;
   isLoading: boolean;
 }
 
-export const useSigner = (): UseSignerResult => {
-  const { activeConnector } = useLuno();
-  const { account } = useAccount();
-
-  const [signer, setSigner] = useState<Signer | undefined>(undefined);
+export function usePapiSigner(): UsePapiSignerResult {
+  const { data: signer } = useSigner();
+  const { address } = useAccount();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [papiSigner, setPapiSigner] = useState<PapiSigner | undefined>(undefined);
 
   useEffect(() => {
-    if (!activeConnector || !account?.address) {
-      setSigner(undefined);
+    if (!signer || !address) {
+      setPapiSigner(undefined);
       setIsLoading(false);
       return;
     }
 
     setIsLoading(true);
 
-    activeConnector.getSigner()
-      .then(signer => setSigner(signer))
-      .catch(() => setSigner(undefined))
+    createPapiSigner(address, signer)
+      .then((papiSigner: PapiSigner | undefined) => setPapiSigner(papiSigner))
+      .catch(() => setPapiSigner(undefined))
       .finally(() => setIsLoading(false));
+  }, [signer, address]);
 
-  }, [activeConnector, account?.address]);
-
-  return { data: signer, isLoading };
-};
+  return { data: papiSigner, isLoading };
+}

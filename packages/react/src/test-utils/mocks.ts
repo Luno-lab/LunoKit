@@ -67,6 +67,10 @@ export class MockConnector extends BaseConnector {
         signature: `0x-mock-sig-for-${address}-${data}`,
         id: 1,
       }),
+      signPayload: async (payload: any) => ({
+        signature: `0x-mock-sig-for-payload-${payload.address}`,
+        id: 1,
+      }),
     };
   }
 
