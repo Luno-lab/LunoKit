@@ -3,6 +3,7 @@ packages:
   - 'examples/*'
 
 catalog:
+  "@types/node": "20.19.0"
   "@types/react": "18.2.55"
   "@types/react-dom": "18.2.19"
   "react": "18.2.0"
