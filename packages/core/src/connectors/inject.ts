@@ -54,7 +54,7 @@ export class InjectConnector extends BaseConnector {
     }
 
     try {
-      this.specificInjector = await window.injectedWeb3![this.injectorId]!.enable(appName);
+      this.specificInjector = await window.injectedWeb3![this.injectorId]!.enable(appName) as Injected;
 
       if (!this.specificInjector) {
         throw new Error(`Failed to enable the '${this.id}' extension.`);

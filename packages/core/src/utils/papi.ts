@@ -1,11 +1,17 @@
-import type { Signer } from '../types';
+import type { Signer, PapiSigner } from '../types';
 
-export async function createPapiSigner(address: string, signer: Signer) {
+async function createPapiSigner(address: string, signer: Signer): Promise<PapiSigner | undefined> {
+  if (!address || !signer) return undefined;
+
+  if (!signer.signRaw || !signer.signPayload) return undefined;
+
   const { getPolkadotSignerFromPjs } = await import('@polkadot-api/pjs-signer');
 
   return getPolkadotSignerFromPjs(
     address,
-    signer?.signPayload,
-    signer?.signRaw
+    signer.signPayload as any,
+    signer.signRaw
   );
 }
+
+export { createPapiSigner, type PapiSigner };
