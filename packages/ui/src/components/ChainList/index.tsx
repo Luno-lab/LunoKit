@@ -3,6 +3,7 @@ import { cs } from '../../utils'
 import { useApi, useChain, useChains, useSwitchChain } from '@luno-kit/react'
 import type { Chain } from '@luno-kit/react/types'
 import { ChainIcon } from '../ChainIcon'
+import Search from '../../assets/icons/Search'
 
 interface ChainListProps {
   onChainSwitched?: (chain: Chain) => void;
@@ -44,13 +45,16 @@ export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched }: ChainLi
   return (
     <>
       <div className="relative pt-1">
-        <input
-          type="text"
-          placeholder="Search by name"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-accentColor focus:outline-none focus:border-transparent"
-        />
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-modalTextSecondary" />
+          <input
+            type="text"
+            placeholder="Search by name"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-3 py-2 text-sm border border-networkSelectItemBackgroundHover rounded-md focus:ring-2 focus:ring-accentColor focus:outline-none focus:border-transparent"
+          />
+        </div>
       </div>
 
       {filteredChains.length > 0 && (
@@ -62,6 +66,7 @@ export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched }: ChainLi
               isSelected={chain.genesisHash === currentChain?.genesisHash}
               onSelect={handleChainSelect}
               isLoading={(switchingChain === chain.genesisHash || !isApiReady) && !apiError}
+              isSwitching={switchingChain === chain.genesisHash}
             />
           ))}
         </div>
@@ -83,13 +88,15 @@ interface ChainItemProps {
   isSelected: boolean;
   isLoading: boolean;
   onSelect: (chain: Chain) => void;
+  isSwitching: boolean;
 }
 
 const ChainItem: React.FC<ChainItemProps> = React.memo(({
   chain,
   isSelected,
   isLoading,
-  onSelect
+  onSelect,
+  isSwitching
 }) => {
   return (
     <button
@@ -123,7 +130,9 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(({
           ? isLoading
             ? (
               <>
-                <span className="text-accentColor text-xs leading-xs mr-1.5">Switching</span>
+                <span className="text-accentColor text-xs leading-xs mr-1.5">
+                  {isSwitching ? 'Switching' : 'Connecting'}
+                </span>
                 <div className="loading text-accentColor w-[15px] h-[15px]"></div>
               </>
             )

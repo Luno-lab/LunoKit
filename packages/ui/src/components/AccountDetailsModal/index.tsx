@@ -74,7 +74,7 @@ export const AccountDetailsModal: React.FC = () => {
                   <img src={activeConnector.icon} alt="" className="w-full h-full object-contain"/>
                 </div>
               )}
-              <div className="flex flex-col items-start gap-1.5 max-w-full">
+              <div className="flex flex-col items-start gap-1 max-w-full">
                 <DialogTitle className={'sr-only'}>Account Details</DialogTitle>
                 <div className="flex items-center gap-0.5 w-full ">
                 <span className="text-base text-modalText font-semibold">
@@ -83,7 +83,7 @@ export const AccountDetailsModal: React.FC = () => {
                   <Copy copyText={address}/>
                 </div>
                 <div className={cs(
-                  "text-xs leading-xs text-modalTextSecondary font-medium text-ellipsis overflow-hidden whitespace-nowrap",
+                  "text-sm leading-sm text-modalTextSecondary font-medium text-ellipsis overflow-hidden whitespace-nowrap",
                   account?.name && account?.name.length > 30 ? 'w-[90%]' : ''
                 )}>
                   {account?.name || activeConnector?.name}
