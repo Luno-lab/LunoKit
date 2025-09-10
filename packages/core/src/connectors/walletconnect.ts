@@ -3,7 +3,7 @@ import type { IUniversalProvider, Metadata } from '@walletconnect/universal-prov
 import { SessionTypes, SignClientTypes } from '@walletconnect/types'
 import type { Account, Chain, Signer, WalletConnectConnectorOptions } from '../types';
 import { walletconnectWallet } from '../config/logos/generated';
-import { SignerResult, SignerPayloadJSON } from 'dedot/types'
+import { SignerResult, SignerPayloadJSON, SignerPayloadRaw } from 'dedot/types'
 import { ConnectorLinks } from '../types'
 
 export class WalletConnectConnector extends BaseConnector {
@@ -138,9 +138,9 @@ export class WalletConnectConnector extends BaseConnector {
   }
 
   private getAccountsFromSession(chains: Chain[] | string[], chainId: string): Account[] {
-    const targetChain = (chains[0] as Chain).genesisHash
-      ? (chains as Chain[]).filter(chain => chain.genesisHash.toLowerCase() === chainId.toLowerCase())
-      : (chains as string[]).filter(chain => chain.toLowerCase() === chainId.toLowerCase())
+    const targetChain = [(chains[0] as Chain).genesisHash || chains[0]] as string[] | Chain[]
+      // ? (chains as Chain[]).filter(chain => chain.genesisHash.toLowerCase() === chainId.toLowerCase())
+      // : (chains as string[]).filter(chain => chain.toLowerCase() === chainId.toLowerCase())
     const caipId = this.convertChainIdToCaipId(targetChain)[0];
 
     let rawAccounts = this.session?.namespaces.polkadot.accounts
@@ -187,31 +187,19 @@ export class WalletConnectConnector extends BaseConnector {
     this.emit('disconnect');
   }
 
-  public async signMessage(message: string, address: string, chainId?: string): Promise<string | undefined> {
+  public async signMessage(message: string, address: string): Promise<string | undefined> {
     if (!this.provider?.client || !this.session?.topic) {
       throw new Error("Provider not initialized or not connected");
     }
-    console.log('chainId', chainId)
-
-    const targetChainId = chainId
-      ? `polkadot:${chainId.replace('0x', '').slice(0, 32)}`
-      : this.convertChainIdToCaipId(this.connectedChains!)[0]
 
     try {
-      const result = await this.provider.client.request({
-        topic: this.session.topic,
-        chainId: targetChainId,
-        request: {
-          method: 'polkadot_signMessage',
-          params: {
-            address,
-            message,
-            type: 'bytes'
-          },
-        },
-      });
+      const signer = await this.getSigner();
+      if (!signer) {
+        throw new Error("No signer provided");
+      }
 
-      return (result as any)?.signature;
+      const { signature } = await signer.signRaw!({ address, data: message, type: 'bytes'})
+      return signature;
     } catch (error) {
       console.error('Sign message error:', error);
       throw error;
@@ -235,17 +223,6 @@ export class WalletConnectConnector extends BaseConnector {
     });
   }
 
-  public async updateAccountsForChain(chainId: string) {
-    if (!this.connectedChains) {
-      throw new Error('WalletConnect not connected');
-    }
-
-    const newAccounts = this.getAccountsFromSession(this.connectedChains, chainId);
-    this.accounts = newAccounts;
-
-    return newAccounts;
-  }
-
 
   public async getSigner(): Promise<Signer | undefined> {
     if (!this.provider?.client || !this.session) return undefined;
@@ -253,7 +230,6 @@ export class WalletConnectConnector extends BaseConnector {
     return {
       signPayload: async (payload: SignerPayloadJSON): Promise<SignerResult> => {
         try {
-          console.log('payload', payload)
           const result = await this.provider?.client?.request<{ signature: string }>({
             topic: this.session!.topic,
             chainId: `polkadot:${payload.genesisHash.replace('0x', '').slice(0, 32)}`,
@@ -269,6 +245,24 @@ export class WalletConnectConnector extends BaseConnector {
         } catch (error) {
           throw new Error(`Transaction signing failed: ${JSON.stringify(error)}`);
         }
+      },
+      signRaw: async(payload: SignerPayloadRaw): Promise<SignerResult> => {
+        const targetChainId = this.convertChainIdToCaipId(this.connectedChains!)[0]
+
+        const result: SignerResult = await this.provider!.client!.request({
+          topic: this.session!.topic,
+          chainId: targetChainId,
+          request: {
+            method: 'polkadot_signMessage',
+            params: {
+              address: payload.address,
+              message: payload.data,
+              type: payload.type
+            },
+          },
+        });
+
+        return result
       }
     };
   }

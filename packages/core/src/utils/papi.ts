@@ -10,7 +10,7 @@ async function createPapiSigner(address: string, signer: Signer): Promise<PapiSi
   return getPolkadotSignerFromPjs(
     address,
     signer.signPayload as any,
-    signer.signRaw
+    signer.signRaw as any
   );
 }
 

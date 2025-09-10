@@ -88,7 +88,7 @@ export abstract class BaseConnector extends EventEmitter {
   /**
    * sign a message with the specified account.
    */
-  abstract signMessage(message: string, address: string, chainId?: string): Promise<string | undefined>;
+  abstract signMessage(message: string, address: string): Promise<string | undefined>;
 
   public hasConnectionUri(): boolean {
     return false
