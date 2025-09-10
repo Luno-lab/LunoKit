@@ -207,12 +207,6 @@ export const useLunoStore = create<LunoState>((set, get) => ({
 
       const accountsFromWallet = await connector.connect(config.appName, config.chains, chainIdToUse);
 
-      accountsFromWallet.forEach(acc => {
-        if (!acc.publicKey) {
-          console.error(`[LunoStore] CRITICAL WARNING: Account ${acc.address} from connector ${connector.name} was returned without a publicKey! SS58 address formatting will fail.`);
-        }
-      });
-
       let selectedAccount = accountsFromWallet[0];
 
       try {
@@ -339,11 +333,6 @@ export const useLunoStore = create<LunoState>((set, get) => ({
     if (!newChain) {
       throw new Error(`[LunoStore] Chain with ID "${newChainId}" not found in LunoConfig.`);
     }
-
-    const prevAccountIndex = accounts.findIndex(acc => acc.address === account.address)
-
-    const newAccounts = await activeConnector.updateAccountsForChain(newChainId);
-    set({ accounts: newAccounts, account: newAccounts[prevAccountIndex] });
 
     try {
       try {

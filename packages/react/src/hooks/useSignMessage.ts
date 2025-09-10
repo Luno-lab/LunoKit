@@ -1,5 +1,6 @@
 import { useLuno } from './useLuno';
 import { useLunoMutation, type LunoMutationOptions } from './useLunoMutation';
+import { isSameAddress } from '@luno-kit/core/utils'
 
 export interface SignMessageVariables {
   message: string;
@@ -41,7 +42,7 @@ export interface UseSignMessageResult {
 export function useSignMessage(
   hookLevelConfig?: UseSignMessageOptions
 ): UseSignMessageResult {
-  const { activeConnector, account, accounts, currentChainId } = useLuno();
+  const { activeConnector, account, accounts } = useLuno();
 
   const mutationFn = async (
     variables: SignMessageVariables
@@ -61,11 +62,13 @@ export function useSignMessage(
       throw new Error('[useSignMessage]: No message provided for signing.');
     }
 
-    const signatureString = await activeConnector.signMessage(
-      variables.message,
-      account.address,
-      currentChainId,
-    );
+    const validAccount = accounts.find(acc => isSameAddress(acc.address, account.address))
+
+    if (!validAccount) {
+      throw new Error('[useSignMessage]: Invalid account address.');
+    }
+
+    const signatureString = await activeConnector.signMessage(variables.message, validAccount.address);
 
     if (!signatureString) {
       throw new Error(

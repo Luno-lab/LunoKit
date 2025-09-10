@@ -51,7 +51,6 @@ describe('createLunoStore', () => {
       disconnect: vi.fn(),
       on: vi.fn(),
       off: vi.fn(),
-      updateAccountsForChain: vi.fn(),
     };
 
     mockApi = {
@@ -456,10 +455,6 @@ describe('createLunoStore', () => {
           '0x456': { webSocket: ['wss://new.com'] },
         },
       };
-
-      mockConnector.updateAccountsForChain = vi.fn().mockResolvedValue([
-        { publicKey: '0xabc', address: 'addr1', name: 'Account 1', meta: { source: 'test' } }
-      ]);
 
       useLunoStore.setState({
         config: configWithNewChain,
