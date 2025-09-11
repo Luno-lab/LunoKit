@@ -62,7 +62,7 @@ export const AccountDetailsModal: React.FC = () => {
       onOpenChange={handleModalClose}
     >
       <div className={cs(
-        'flex flex-col w-full md:w-[360px] max-h-[500px] text-modalText',
+        'flex flex-col w-full md:w-[360px] max-h-[512px] text-modalText',
         'bg-modalBackground shadow-modal',
         currentView === AccountModalView.main ? 'gap-5' : 'gap-3.5'
       )}>
@@ -74,7 +74,7 @@ export const AccountDetailsModal: React.FC = () => {
                   <img src={activeConnector.icon} alt="" className="w-full h-full object-contain"/>
                 </div>
               )}
-              <div className="flex flex-col items-start gap-1 max-w-full">
+              <div className="flex flex-col items-start gap-1.5 max-w-full">
                 <DialogTitle className={'sr-only'}>Account Details</DialogTitle>
                 <div className="flex items-center gap-0.5 w-full ">
                 <span className="text-base text-modalText font-semibold">
@@ -113,7 +113,7 @@ export const AccountDetailsModal: React.FC = () => {
 
         <div
           ref={containerRef}
-          className="relative overflow-hidden"
+          className="relative"
         >
           <div ref={currentViewRef}>
             {viewComponents[currentView]}
