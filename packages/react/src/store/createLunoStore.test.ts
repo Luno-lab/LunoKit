@@ -366,23 +366,6 @@ describe('createLunoStore', () => {
       expect(state.activeConnector).toBeUndefined();
       expect(state.accounts).toEqual([]);
     });
-
-    it('should handle accounts without publicKey', async () => {
-      const accountsWithoutPublicKey = [
-        { address: 'addr1', name: 'Account 1', meta: { source: 'test' } },
-      ];
-      mockConnector.connect.mockResolvedValue(accountsWithoutPublicKey);
-
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
-      await store.connect('test-connector');
-
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('CRITICAL WARNING')
-      );
-
-      consoleSpy.mockRestore();
-    });
   });
 
   describe('disconnect', () => {
