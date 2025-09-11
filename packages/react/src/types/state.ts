@@ -1,6 +1,6 @@
 import type { Config, Connector, Account, Chain } from '.';
 import type { LegacyClient } from 'dedot';
-import type { HexString } from 'dedot/utils'
+import type { HexString } from '@luno-kit/core/types'
 
 export enum ConnectionStatus {
   Disconnected = 'disconnected',

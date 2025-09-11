@@ -1,7 +1,7 @@
 import type { ISubmittableExtrinsic } from 'dedot/types';
 import { useLuno } from './useLuno';
 import { type LunoMutationOptions, useLunoMutation} from './useLunoMutation';
-import type { HexString } from 'dedot/utils';
+import type { HexString } from '@luno-kit/core/types';
 import { useCallback, useState } from 'react';
 
 export interface SendTransactionHashVariables {

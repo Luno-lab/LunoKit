@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useLuno } from './useLuno';
-import { HexString } from 'dedot/utils';
+import type { HexString } from '@luno-kit/core/types';
 
 export interface UseGenesisHashResult {
   data?: HexString;

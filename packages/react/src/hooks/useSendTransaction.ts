@@ -4,9 +4,10 @@ import { useLuno } from './useLuno';
 import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
 import { DispatchError, DispatchInfo } from 'dedot/codecs';
 import { getReadableDispatchError } from '../utils';
-import type { HexString } from 'dedot/utils';
+import type { HexString } from '@luno-kit/core/types';
 import { useCallback, useState } from 'react';
 import { TxStatus } from '../types';
+import { useAccount } from './useAccount'
 
 export type DetailedTxStatus = 'idle' | 'broadcasting' | 'inBlock' | 'finalized' | 'invalid' | 'dropped';
 
@@ -57,7 +58,8 @@ export interface UseSendTransactionResult {
 export function useSendTransaction (
   hookLevelConfig?: UseSendTransactionOptions,
 ): UseSendTransactionResult {
-  const { account, activeConnector, currentApi, isApiReady } = useLuno();
+  const { activeConnector, currentApi, isApiReady } = useLuno();
+  const { account } = useAccount()
 
   const [txStatus, setTxStatus] = useState<TxStatus>('idle');
   const [detailedTxStatus, setDetailedTxStatus] = useState<DetailedTxStatus>('idle');
