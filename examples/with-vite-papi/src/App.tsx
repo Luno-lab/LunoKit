@@ -148,10 +148,10 @@ const App: React.FC = () => {
                     <span className="label">Current Theme:</span>
                     <span className="value">{themeMode.charAt(0).toUpperCase() + themeMode.slice(1)}</span>
                   </div>
-                  <div className="button-group">
-                    <button className="theme-btn" onClick={() => setThemeChoice('light')}>Light Theme</button>
-                    <button className="theme-btn" onClick={() => setThemeChoice('dark')}>Dark Theme</button>
-                    <button className="theme-btn" onClick={() => setThemeChoice('auto')}>Auto Mode</button>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    <button className="chain-switch-btn" onClick={() => setThemeChoice('light')}>Light Theme</button>
+                    <button className="chain-switch-btn" onClick={() => setThemeChoice('dark')}>Dark Theme</button>
+                    <button className="chain-switch-btn" onClick={() => setThemeChoice('auto')}>Auto Mode</button>
                   </div>
                 </div>
               </div>
