@@ -1,5 +1,7 @@
+import { HexString } from './account'
+
 export interface Chain {
-  genesisHash: string;
+  genesisHash: HexString;
 
   name: string;
 

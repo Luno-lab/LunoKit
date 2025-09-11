@@ -1,8 +1,7 @@
 import { decodeAddress, encodeAddress } from 'dedot/utils';
-import type { Account } from '../types';
+import type { Account, HexString } from '../types';
 import { u8aEq, u8aToHex } from 'dedot/utils'
 import type { InjectedAccount } from 'dedot/types'
-import type { HexString } from 'dedot/utils'
 
 /**
  * check if address is valid

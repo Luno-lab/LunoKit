@@ -1,10 +1,11 @@
 import { BaseConnector } from './base';
 import type { IUniversalProvider, Metadata } from '@walletconnect/universal-provider';
 import { SessionTypes, SignClientTypes } from '@walletconnect/types'
-import type { Account, Chain, Signer, WalletConnectConnectorOptions } from '../types';
+import type { Account, Chain, HexString, Signer, WalletConnectConnectorOptions } from '../types';
 import { walletconnectWallet } from '../config/logos/generated';
 import { SignerResult, SignerPayloadJSON, SignerPayloadRaw } from 'dedot/types'
 import { ConnectorLinks } from '../types'
+import {isSameAddress} from '../utils'
 
 export class WalletConnectConnector extends BaseConnector {
   readonly id: string;
@@ -16,10 +17,10 @@ export class WalletConnectConnector extends BaseConnector {
   private projectId: string;
   private relayUrl: string;
   private metadata?: Metadata;
-  private supportedChains: string[] = [];
+  private supportedChains: HexString[] = [];
 
   private session?: SessionTypes.Struct;
-  private connectedChains?: Chain[] | string[];
+  private connectedChains?: Chain[] | HexString[];
 
   private unsubscribe: (() => void) | null = null;
 
@@ -45,15 +46,14 @@ export class WalletConnectConnector extends BaseConnector {
     return true;
   }
 
-  private convertChainIdToCaipId(chains: Chain[] | string[]): string[] {
-    try {
-      return (chains as Chain[]).map(chain => `polkadot:${chain.genesisHash.replace('0x', '').slice(0, 32)}`);
-    } catch (e) {
-      return chains as string[];
-    }
+  private convertChainIdToCaipId(chains: Chain[] | HexString[]): `polkadot:${string}`[] {
+    return chains.map(chain => {
+      const capid: HexString = (chain as Chain).genesisHash || chain
+      return `polkadot:${capid.replace('0x', '').slice(0, 32)}` as `polkadot:${string}`
+    });
   }
 
-  public async connect(appName: string, chains?: Chain[], targetChainId?: string): Promise<Array<Account>> {
+  public async connect(appName: string, chains?: Chain[]): Promise<Array<Account>> {
     if (!this.projectId) {
       throw new Error(`${this.name} requires a projectId. Please visit https://cloud.walletconnect.com to get one.`);
     }
@@ -80,11 +80,9 @@ export class WalletConnectConnector extends BaseConnector {
         },
       });
 
-      const chainIdToUse = targetChainId || (effectiveChains[0] as Chain).genesisHash || effectiveChains[0] as string;
-
       if (this.provider.session) {
         this.session = this.provider.session;
-        const accounts = this.getAccountsFromSession(effectiveChains, chainIdToUse);
+        const accounts = this.getAccountsFromSession(effectiveChains);
         this.accounts = accounts;
 
         await this.startSubscription();
@@ -122,7 +120,7 @@ export class WalletConnectConnector extends BaseConnector {
 
       this.connectionUri = undefined;
 
-      const accounts = this.getAccountsFromSession(effectiveChains, chainIdToUse);
+      const accounts = this.getAccountsFromSession(effectiveChains);
       this.accounts = accounts;
 
       // 启动订阅
@@ -137,8 +135,8 @@ export class WalletConnectConnector extends BaseConnector {
     }
   }
 
-  private getAccountsFromSession(chains: Chain[] | string[], chainId: string): Account[] {
-    const targetChain = [(chains[0] as Chain).genesisHash || chains[0]] as string[] | Chain[]
+  private getAccountsFromSession(chains: Chain[] | HexString[]): Account[] {
+    const targetChain = [(chains[0] as Chain).genesisHash || chains[0]] as HexString[] | Chain[]
       // ? (chains as Chain[]).filter(chain => chain.genesisHash.toLowerCase() === chainId.toLowerCase())
       // : (chains as string[]).filter(chain => chain.toLowerCase() === chainId.toLowerCase())
     const caipId = this.convertChainIdToCaipId(targetChain)[0];
@@ -229,35 +227,63 @@ export class WalletConnectConnector extends BaseConnector {
 
     return {
       signPayload: async (payload: SignerPayloadJSON): Promise<SignerResult> => {
-        try {
-          const result = await this.provider?.client?.request<{ signature: string }>({
-            topic: this.session!.topic,
-            chainId: `polkadot:${payload.genesisHash.replace('0x', '').slice(0, 32)}`,
-            request: {
-              method: 'polkadot_signTransaction',
-              params: {
-                address: payload.address,
-                transactionPayload: payload,
-              },
-            },
-          });
-          return result as SignerResult;
-        } catch (error) {
-          throw new Error(`Transaction signing failed: ${JSON.stringify(error)}`);
+        const chainCaipId = `polkadot:${payload.genesisHash.replace('0x', '').slice(0, 32)}`;
+        const sessionAccounts = this.session!.namespaces.polkadot.accounts;
+
+        const chainAccount = sessionAccounts.find(acc => {
+          const address = acc.replace(`${chainCaipId}:`, "")
+
+          return acc.includes(chainCaipId) && isSameAddress(payload.address, address)
+        });
+
+        if (!chainAccount) {
+          throw new Error(`Chain ${payload.genesisHash} is not supported by the wallet.}`);
         }
+
+        const chainAddress = chainAccount.replace(`${chainCaipId}:`, "")
+
+        const updatedPayload = { ...payload, address: chainAddress }
+
+        const result = await this.provider?.client?.request<{ signature: string }>({
+          topic: this.session!.topic,
+          chainId: `polkadot:${updatedPayload.genesisHash.replace('0x', '').slice(0, 32)}`,
+          request: {
+            method: 'polkadot_signTransaction',
+            params: {
+              address: chainAddress,
+              transactionPayload: updatedPayload,
+            },
+          },
+        });
+        return result as SignerResult;
       },
       signRaw: async(payload: SignerPayloadRaw): Promise<SignerResult> => {
-        const targetChainId = this.convertChainIdToCaipId(this.connectedChains!)[0]
+        const chainCaipId = this.convertChainIdToCaipId(this.connectedChains!)[0]
+
+        const sessionAccounts = this.session!.namespaces.polkadot.accounts;
+
+        const chainAccount = sessionAccounts.find(acc => {
+          const address = acc.replace(`${chainCaipId}:`, "")
+
+          return acc.includes(chainCaipId) && isSameAddress(payload.address, address)
+        });
+
+        if (!chainAccount) {
+          throw new Error(`No accounts available for chain ${chainCaipId}`);
+        }
+        const chainAddress = chainAccount.replace(`${chainCaipId}:`, "");
+
+        const updatedPayload = { ...payload, address: chainAddress };
 
         const result: SignerResult = await this.provider!.client!.request({
           topic: this.session!.topic,
-          chainId: targetChainId,
+          chainId: chainCaipId,
           request: {
             method: 'polkadot_signMessage',
             params: {
-              address: payload.address,
-              message: payload.data,
-              type: payload.type
+              address: chainAddress,
+              message: updatedPayload.data,
+              type: updatedPayload.type
             },
           },
         });

@@ -1,5 +1,6 @@
-import type { HexString } from 'dedot/utils'
 import type { KeypairType } from 'dedot/types'
+
+export type HexString = `0x${string}`
 
 /**
  * Polkadot account interface

@@ -1,5 +1,5 @@
 import type { EventEmitter } from 'eventemitter3';
-import type { Account } from './account';
+import { Account, HexString } from './account';
 import type { Signer } from './signer';
 import type { Chain } from './chain'
 import type { Metadata } from '@walletconnect/universal-provider'
@@ -23,7 +23,6 @@ export interface Connector extends EventEmitter {
   signMessage(message: string, address: string): Promise<string | undefined>;
   hasConnectionUri(): boolean;
   getConnectionUri(): Promise<string | undefined>;
-  updateAccountsForChain(chainId: string): Promise<Account[]>;
   on(event: 'connect', listener: (accounts: Account[]) => void): this;
   on(event: 'disconnect', listener: () => void): this;
   on(event: 'accountsChanged', listener: (accounts: Account[]) => void): this;
@@ -42,5 +41,5 @@ export interface WalletConnectConnectorOptions {
   relayUrl?: string;
   metadata?: Metadata;
   links?: ConnectorLinks;
-  supportedChains?: string[]; //'polkadot:${genesisHash}'
+  supportedChains?: HexString[];
 }

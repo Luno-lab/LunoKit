@@ -97,8 +97,4 @@ export abstract class BaseConnector extends EventEmitter {
   public async getConnectionUri(): Promise<string | undefined >{
     return this.connectionUri;
   }
-
-  public async updateAccountsForChain(chainId: string): Promise<Account[]> {
-    return [...this.accounts];
-  }
 }

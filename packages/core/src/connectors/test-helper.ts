@@ -574,25 +574,6 @@ export function createWalletConnectTestSuite<T extends BaseConnector>(
         expect(accounts).toHaveLength(1);
         expect(accounts[0].address).toBe(TEST_ADDRESS);
       });
-
-      it('should update accounts for specific chain', async () => {
-        const updatedAccounts = await connector.updateAccountsForChain?.(
-          '0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e'
-        );
-
-        expect(updatedAccounts).toHaveLength(1);
-        expect(updatedAccounts![0].address).toBe(TEST_ADDRESS);
-      });
-
-      it('should throw error when updating accounts without connection', async () => {
-        const unconnectedConnector = config.getConnector({
-          projectId: TEST_PROJECT_ID
-        });
-
-        await expect(
-          unconnectedConnector.updateAccountsForChain?.('test-chain-id')
-        ).rejects.toThrow('WalletConnect not connected');
-      });
     });
 
     describe('signing', () => {
