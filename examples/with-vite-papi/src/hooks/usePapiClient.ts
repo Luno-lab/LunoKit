@@ -104,7 +104,7 @@ export function usePapiClient() {
     }
   };
 
-  const sendTransaction = async (to: string, amount: string) => {
+  const sendTransaction = async (to: string, amount: string): Promise<{ transactionHash: string; status: string; errorMessage: string | null}> => {
     const { currentChain, client, isReady } = state
 
     if (!isReady || !currentChain) {
@@ -121,7 +121,7 @@ export function usePapiClient() {
 
     return new Promise((resolve, reject) => {
       const subscription = tx.signSubmitAndWatch(papiSigner).subscribe({
-        next: (event) => {
+        next: (event: any) => {
           console.log("Tx event: ", event.type);
           if (event.type === "txBestBlocksState") {
             subscription.unsubscribe();
@@ -132,7 +132,7 @@ export function usePapiClient() {
             });
           }
         },
-        error: (error) => {
+        error: (error: any) => {
           subscription.unsubscribe();
           reject(error);
         }

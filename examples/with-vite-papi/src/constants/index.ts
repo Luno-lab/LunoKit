@@ -1,9 +1,10 @@
+import type { HexString } from '@luno-kit/react/types';
 import { dot, ksm, paseo, wnd } from "@polkadot-api/descriptors"
 
 export interface Chain {
   name: string;
   id: string;
-  genesisHash: string;
+  genesisHash: HexString;
   endpoint: string;
   nativeCurrency: {
     name: string;

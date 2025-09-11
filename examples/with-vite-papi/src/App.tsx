@@ -97,7 +97,7 @@ const App: React.FC = () => {
         showNotification('Transfer successful', `TxHash: ${result.transactionHash.slice(0, 10)}...`);
         setTransferForm({ to: '', amount: '' });
       } else {
-        showNotification('Transfer failed', result.errorMessage);
+        showNotification('Transfer failed', result.errorMessage!);
       }
     } catch (error) {
       setDetailedStatus(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
