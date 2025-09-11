@@ -19,7 +19,6 @@ const App: React.FC = () => {
   const { disconnect } = useDisconnect();
   const { themeMode, setThemeChoice } = useLunoTheme();
   const { data: papiSigner } = usePapiSigner();
-  console.log('papiSigner', papiSigner)
 
   const {
     isReady,
@@ -62,7 +61,6 @@ const App: React.FC = () => {
       const signature = await papiSigner.signBytes(messageBytes);
 
       setSignMessageData({ signature: toHex(signature) });
-      console.log('toHex(signature)', toHex(signature))
       showNotification('Signature successful', toHex(signature));
     } catch (error) {
       showNotification('Signature failed', error instanceof Error ? error.message : 'Unknown error');
