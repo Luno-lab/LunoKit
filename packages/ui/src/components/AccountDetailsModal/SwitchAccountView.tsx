@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { useAccount, useAccounts, useActiveConnector, useBalance, useChain } from '@luno-kit/react';
 import { cs } from '../../utils';
-import { formatAddress } from '@luno-kit/react';
-import type { Account } from '@luno-kit/react';
+import { formatAddress } from '@luno-kit/react/utils';
+import type { Account } from '@luno-kit/react/types';
 
 interface ViewComponent extends React.FC<SwitchAccountViewProps> {
   title?: string;
@@ -67,29 +67,27 @@ const AccountItem: React.FC<AccountItemProps> = React.memo(({
       aria-label={account.name || address}
       disabled={isSelected}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 grow overflow-hidden">
         <div className="shrink-0 w-[24px] h-[24px] rounded-full flex items-center justify-center">
           {connector?.icon && <img src={connector?.icon} alt="luno account"/>}
         </div>
-        <div className="flex flex-col items-start">
-          <span className="font-medium text-sm leading-sm text-accountSelectItemText">
+        <div className="flex flex-col items-start overflow-hidden">
+          <span className="whitespace-nowrap max-w-full text-ellipsis overflow-hidden font-medium text-sm leading-sm text-accountSelectItemText">
             {account.name || formatAddress(address)}
           </span>
-          <span className="text-xs text-modalTextSecondary font-medium">
-            {balance === undefined ? (
-              <div className="animate-pulse rounded w-[60px] h-[18px] bg-skeleton" />
-            ) : (
-              <>
-                {balance?.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
-              </>
-            )}
-          </span>
+          {balance ? (
+            <span className="text-xs text-modalTextSecondary font-medium">
+              {balance?.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
+            </span>
+          ) : (
+            <span className="animate-pulse rounded w-[60px] h-[16px] bg-skeleton"/>
+          )}
         </div>
       </div>
 
       {isSelected && (
-        <div className="border-[1px] border-solid border-accentColor rounded-full overflow-hidden flex items-center justify-center w-[18px] h-[18px]">
-          <div className="rounded-full bg-accentColor w-[10px] h-[10px]" />
+        <div className="shrink-0 border-[1px] border-solid border-accentColor rounded-full overflow-hidden flex items-center justify-center w-[16px] h-[16px]">
+          <div className="rounded-full bg-accentColor w-[8px] h-[8px]" />
         </div>
       )}
     </button>

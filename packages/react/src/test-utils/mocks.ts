@@ -1,6 +1,7 @@
-import { Chain, createConfig, kusama, polkadot } from '@luno-kit/core'
+import { createConfig } from '@luno-kit/core'
+import { kusama, polkadot } from '@luno-kit/core/chains'
 import { BaseConnector } from '@luno-kit/core/connectors';
-import type { Account, Signer } from '@luno-kit/core';
+import type { Account, Signer, Chain } from '@luno-kit/core/types';
 import { vi } from 'vitest';
 
 const DEFAULT_MOCK_ACCOUNTS: Account[] = [

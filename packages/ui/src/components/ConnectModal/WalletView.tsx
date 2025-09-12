@@ -5,9 +5,8 @@ import { QRCode } from '../QRCode'
 import { cs } from '../../utils'
 import { transitionClassName } from '../ConnectButton'
 import { SpiralAnimation } from '../SpiralAnimation'
-import type { Connector } from '@luno-kit/react'
-import { useConnect } from '@luno-kit/react'
-import {Copy} from '../Copy'
+import type { Connector } from '@luno-kit/react/types'
+import { Copy } from '../Copy'
 
 interface Props {
   selectedConnector: Connector | null
@@ -62,12 +61,12 @@ export const WalletView = React.memo(({ selectedConnector, onConnect, qrCode, is
                   </p>
                 )
                 : qrCode
-                  ? <Copy className={'text-sm leading-sm font-medium text-accentColor hover:text-modalText'} copyText={qrCode} label={'Copy Link'} />
+                  ? <Copy className={'text-sm leading-sm font-medium text-accentColor'} copyText={qrCode} label={'Copy Link'} />
                   : null}
-          
+
               </div>
-              
-             
+
+
             </div>
           ) : (
             <>
@@ -106,12 +105,12 @@ export const WalletView = React.memo(({ selectedConnector, onConnect, qrCode, is
               <div className={'w-[160px] h-[160px] mb-4'}>
                 <SpiralAnimation/>
               </div>
-              <p 
+              <p
                 className={'cursor-pointer  text-base leading-base text-accentColor font-semibold text-center'}
                 onClick={() => window.open('https://polkadot.com/get-started/wallets/')}>
                 New to wallets?
               </p>
-             
+
               <p className={'text-modalTextSecondary w-[250px] text-sm leading-sm font-medium text-center'}>
                 Connect your wallet to start exploring and interacting with DApps.
                </p>

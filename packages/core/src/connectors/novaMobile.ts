@@ -1,12 +1,12 @@
-import { novaSVG } from '../config/logos/generated'
-import { CommonConnector } from './common'
+import { novaWallet } from '../config/logos/generated'
+import { InjectConnector } from './inject'
 
-export class NovaMobileConnector extends CommonConnector {
+export class NovaMobileConnector extends InjectConnector {
   constructor() {
     super({
       id: 'nova-mobile',
-      name: 'Nova Wallet',
-      icon: novaSVG,
+      name: 'Nova',
+      icon: novaWallet,
       injectorId: 'polkadot-js',
       links: {
         deepLink: 'https://app.novawallet.io/open/dapp'

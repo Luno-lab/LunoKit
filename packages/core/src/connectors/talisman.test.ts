@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { talismanConnector } from './talisman';
 import { createConnectorTestSuite } from './test-helper'
-import { talismanSVG } from '../config/logos/generated'
+import { talismanWallet } from '../config/logos/generated'
 
 describe(
   'subwalletConnector',
@@ -10,7 +10,7 @@ describe(
     expected: {
       id: 'talisman',
       name: 'Talisman',
-      icon: talismanSVG,
+      icon: talismanWallet,
     },
   })
 )

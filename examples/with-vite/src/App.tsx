@@ -113,8 +113,11 @@ const App: React.FC = () => {
             <p className="hero-subtitle">
               The modern Polkadot wallet connection library for React applications
             </p>
+            <div className="hero-connect" style={{ marginBottom: '20px'}}>
+              <ConnectButton/>
+            </div>
             <div className="hero-connect">
-              <ConnectButton />
+              <ConnectButton displayPreference={'name'}/>
             </div>
           </div>
         </section>

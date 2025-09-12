@@ -1,11 +1,11 @@
-import { CommonConnector } from './common'
-import { polkadotjsSVG } from '../config/logos/generated'
+import { InjectConnector } from './inject'
+import { polkadotjsWallet } from '../config/logos/generated'
 
 export const polkadotjsConnector = () => {
-  return new CommonConnector({
+  return new InjectConnector({
     id: 'polkadot-js',
     name: 'Polkadot{.js}',
-    icon: polkadotjsSVG,
+    icon: polkadotjsWallet,
     links: {
       browserExtension: 'https://polkadot.js.org/extension'
     }

@@ -5,7 +5,7 @@ import { act, waitFor } from '@testing-library/react';
 import { useConnect } from './useConnect';
 import { useSwitchChain } from './useSwitchChain';
 import { useChain } from './useChain';
-import { polkadot, kusama } from '@luno-kit/core';
+import { polkadot, kusama } from '@luno-kit/core/chains';
 import {ConnectionStatus} from '../types'
 
 const connector = mockConfig.connectors[0] as MockConnector;

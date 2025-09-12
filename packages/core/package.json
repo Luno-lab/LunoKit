@@ -37,6 +37,11 @@
       "types": "./dist/utils/index.d.ts",
       "import": "./dist/utils/index.js",
       "require": "./dist/utils/index.cjs"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js",
+      "require": "./dist/types/index.cjs"
     }
   },
   "files": [
@@ -55,6 +60,7 @@
   },
   "dependencies": {
     "@dedot/chaintypes": "catalog:",
+    "@mimirdev/apps-inject": "3.2.0",
     "@walletconnect/universal-provider": "2.21.4",
     "dedot": "catalog:",
     "eventemitter3": "5.0.1"

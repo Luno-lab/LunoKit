@@ -1,10 +1,10 @@
 import React, { ReactNode, useCallback, useEffect, useMemo } from 'react';
-import type { Chain, Config, Transport } from '@luno-kit/core';
+import type { Chain, Config, Transport } from '../types';
 import { useLunoStore } from '../store'
 import { PERSIST_KEY } from '../constants'
 import { LunoContext, LunoContextState } from './LunoContext'
 import { useIsInitialized } from '../hooks/useIsInitialized'
-import { createApi } from '../utils'
+import { createApi, sleep } from '../utils'
 
 interface LunoProviderProps {
   config: Config;
@@ -90,7 +90,7 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({ config: configFromPr
 
   useEffect(() => {
     const performAutoConnect = async () => {
-
+      await sleep(500)
       if (!configFromProps.autoConnect) {
         console.log('[LunoProvider]: AutoConnect disabled or config not set.');
         return;

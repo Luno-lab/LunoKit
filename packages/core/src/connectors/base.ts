@@ -57,7 +57,7 @@ export abstract class BaseConnector extends EventEmitter {
    * 5. (optional) trigger the 'connect' event.
    * @returns the initial available accounts list
    */
-  abstract connect(appName: string, chains?: Chain[], targetChainId?: string): Promise<Array<Account>>;
+  abstract connect(appName: string, chains?: Chain[], targetChainId?: string): Promise<Account[] | undefined>;
   /**
    * disconnect from the wallet.
    * subclasses must implement this method to perform specific cleanup logic

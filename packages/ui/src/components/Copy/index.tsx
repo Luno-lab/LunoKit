@@ -29,7 +29,11 @@ export const Copy: React.FC<CopyProps> = ({ copyText, label, className = '' }) =
   return (
     <button
       type="button"
-      className={cs('cursor-pointer bg-transparent border-none p-0 m-0 inline-flex items-center justify-center gap-1', className)}
+      className={cs(
+        'cursor-pointer bg-transparent border-none p-1 m-0 inline-flex items-center justify-center gap-1',
+        'rounded-modalControlButton hover:bg-modalControlButtonBackgroundHover transition-colors duration-200',
+        className
+      )}
       onClick={() => !isCopied && copyText && copyToClipboard(copyText)}
       aria-label="Copy address to clipboard"
       disabled={isCopied}
