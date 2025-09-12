@@ -1,5 +1,19 @@
 # @luno-kit/ui
 
+## 0.0.7
+
+### Patch Changes
+
+- c8b36b7: Modify the user interface, fix the bugs, and add the available chains config.
+
+  - fix bug of auto connect
+  - update ui
+  - add moe available chains
+  - modify the export method of the package
+
+- Updated dependencies [c8b36b7]
+  - @luno-kit/react@0.0.7
+
 ## 0.0.6
 
 ### Patch Changes
