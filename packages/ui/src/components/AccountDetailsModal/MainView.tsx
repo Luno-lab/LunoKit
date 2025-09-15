@@ -22,40 +22,7 @@ export const MainView: React.FC<MainViewProps> = ({
   const { data: balance } = useBalance({ address: chains.length > 0 ? address : undefined });
 
   const items = useMemo(() => {
-    const chainSelectOption =  {
-      key: 'Chain Name',
-      content: (
-        <div className={'flex items-stretch w-full justify-between'}>
-          <div className={'flex items-center gap-2'}>
-            <div className="relative">
-              <ChainIcon
-                className="w-[24px] h-[24px]"
-                chainIconUrl={chain?.chainIconUrl}
-                chainName={chain?.name}
-              />
-              <div className={'dot w-[8px] h-[8px] bg-accentColor absolute bottom-0 right-0 rounded-full'}/>
-            </div>
-            <div className={'flex flex-col items-start'}>
-              <span className="text-base leading-base text-modalText">{chain?.name || 'Polkadot'}</span>
-              {balance ? (
-                <span className={'text-modalTextSecondary text-xs leading-xs'}>
-                 {balance.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
-                </span>
-              ) : (
-                <span className="animate-pulse rounded w-[80px] h-[16px] bg-skeleton"/>
-              )}
-            </div>
-          </div>
-          <div
-            className={'flex items-center justify-center'}>
-            <Arrow className={'w-[16px] h-[16px] text-modalTextSecondary'} />
-          </div>
-        </div>
-      ),
-      onClick: () => onViewChange(AccountModalView.switchChain)
-    }
-
-    const normalOptions = [
+    const chainSelectOptions = [
       {
         key: 'View on Explorer',
         content: (
@@ -66,6 +33,41 @@ export const MainView: React.FC<MainViewProps> = ({
         ),
         onClick: () => window.open(getExplorerUrl(chain?.blockExplorers?.default?.url!, address, 'address'))
       },
+      {
+        key: 'Chain Name',
+        content: (
+          <div className={'flex items-stretch w-full justify-between'}>
+            <div className={'flex items-center gap-2'}>
+              <div className="relative">
+                <ChainIcon
+                  className="w-[24px] h-[24px]"
+                  chainIconUrl={chain?.chainIconUrl}
+                  chainName={chain?.name}
+                />
+                <div className={'dot w-[8px] h-[8px] bg-accentColor absolute bottom-0 right-0 rounded-full'}/>
+              </div>
+              <div className={'flex flex-col items-start'}>
+                <span className="text-base leading-base text-modalText">{chain?.name || 'Polkadot'}</span>
+                {balance ? (
+                  <span className={'text-modalTextSecondary text-xs leading-xs'}>
+                 {balance.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
+                </span>
+                ) : (
+                  <span className="animate-pulse rounded w-[80px] h-[16px] bg-skeleton"/>
+                )}
+              </div>
+            </div>
+            <div
+              className={'flex items-center justify-center'}>
+              <Arrow className={'w-[16px] h-[16px] text-modalTextSecondary'} />
+            </div>
+          </div>
+        ),
+        onClick: () => onViewChange(AccountModalView.switchChain)
+      }
+    ]
+
+    const normalOptions = [
       {
         key: 'Switch Account',
         content: (
@@ -78,7 +80,7 @@ export const MainView: React.FC<MainViewProps> = ({
       }
     ]
 
-    return chains.length > 0 ? [chainSelectOption, ...normalOptions] : [...normalOptions]
+    return chains.length > 0 ? [...chainSelectOptions, ...normalOptions] : [...normalOptions]
   }, [onViewChange, chain, address, balance, chains])
 
   const handleDisconnect = async () => {
