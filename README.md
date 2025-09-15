@@ -29,14 +29,15 @@ pnpm add @luno-kit/ui @luno-kit/react @tanstack/react-query
 ```
 
 ```tsx
-import { LunoKitProvider, ConnectButton } from '@luno-kit/ui'
-import { createConfig, polkadot, polkadotjs, subwallet } from '@luno-kit/react'
+import { createConfig } from '@luno-kit/react'
+import { kusama, polkadot } from '@luno-kit/react/chains'
+import { polkadotjsConnector, subwalletConnector } from '@luno-kit/react/connectors'
 import '@luno-kit/ui/styles.css'
 
 const config = createConfig({
   appName: 'My Luno App',
-  chains: [polkadot],
-  connectors: [polkadotjs(), subwallet()],
+  chains: [polkadot, kusama],
+  connectors: [polkadotjsConnector(), subwalletConnector()],
 })
 
 function App() {
