@@ -1,6 +1,6 @@
+import type { HexString } from '@luno-kit/core/types';
 import { useQuery } from '@tanstack/react-query';
 import { useLuno } from './useLuno';
-import type { HexString } from '@luno-kit/core/types';
 
 export interface UseGenesisHashResult {
   data?: HexString;
@@ -22,5 +22,5 @@ export const useGenesisHash = (): UseGenesisHashResult => {
     retry: false,
   });
 
-  return { data, isLoading, error }
+  return { data, isLoading, error };
 };

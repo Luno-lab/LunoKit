@@ -23,15 +23,11 @@ export default defineConfig((options) => ({
   sourcemap: true,
   clean: true,
   treeshake: true,
-  external: [
-    'react',
-    'react-dom',
-    '@tanstack/react-query',
-  ],
+  external: ['react', 'react-dom', '@tanstack/react-query'],
   tsconfig: './tsconfig.json',
   esbuildOptions() {
     if (!options.watch) {
-      options.drop = ['console', 'debugger']
+      options.drop = ['console', 'debugger'];
     }
-  }
+  },
 }));

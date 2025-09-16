@@ -1,5 +1,11 @@
-import type { Chain } from '../types'
-import { polkadotChain, assethubChain, peopleChain, coretimeChain, collectivesChain } from '../config/logos/generated'
+import {
+  assethubChain,
+  collectivesChain,
+  coretimeChain,
+  peopleChain,
+  polkadotChain,
+} from '../config/logos/generated';
+import type { Chain } from '../types';
 
 export const polkadot: Chain = {
   genesisHash: '0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3',
@@ -20,14 +26,17 @@ export const polkadotAssetHub: Chain = {
   name: 'AssetHub',
   nativeCurrency: { name: 'AssetHub Polkadot', symbol: 'DOT', decimals: 10 },
   rpcUrls: {
-    webSocket: ['wss://polkadot-asset-hub-rpc.polkadot.io', 'wss://asset-hub-polkadot-rpc.n.dwellir.com'],
+    webSocket: [
+      'wss://polkadot-asset-hub-rpc.polkadot.io',
+      'wss://asset-hub-polkadot-rpc.n.dwellir.com',
+    ],
     http: ['https://polkadot-asset-hub-rpc.polkadot.io'],
   },
   ss58Format: 0,
   blockExplorers: { default: { name: 'Subscan', url: 'https://assethub-polkadot.subscan.io' } },
   chainIconUrl: assethubChain,
   testnet: false,
-}
+};
 
 export const polkadotPeople: Chain = {
   genesisHash: '0x67fa177a097bfa18f77ea95ab56e9bcdfeb0e5b8a40e46298bb93e16b6fc5008',
@@ -41,32 +50,38 @@ export const polkadotPeople: Chain = {
   blockExplorers: { default: { name: 'Subscan', url: 'https://people-polkadot.subscan.io' } },
   chainIconUrl: peopleChain,
   testnet: false,
-}
+};
 
 export const polkadotCoretime: Chain = {
   genesisHash: '0xefb56e30d9b4a24099f88820987d0f45fb645992416535d87650d98e00f46fc4',
   name: 'Coretime',
   nativeCurrency: { name: 'Coretime Polkadot', symbol: 'DOT', decimals: 10 },
   rpcUrls: {
-    webSocket: ['wss://polkadot-coretime-rpc.polkadot.io', 'wss://coretime-polkadot-rpc.n.dwellir.com'],
+    webSocket: [
+      'wss://polkadot-coretime-rpc.polkadot.io',
+      'wss://coretime-polkadot-rpc.n.dwellir.com',
+    ],
     http: ['https://polkadot-coretime-rpc.polkadot.io'],
   },
   ss58Format: 0,
   blockExplorers: { default: { name: 'Subscan', url: 'https://coretime-polkadot.subscan.io' } },
   chainIconUrl: coretimeChain,
   testnet: false,
-}
+};
 
 export const polkadotCollectives: Chain = {
   genesisHash: '0x46ee89aa2eedd13e988962630ec9fb7565964cf5023bb351f2b6b25c1b68b0b2',
   name: 'Collectives',
   nativeCurrency: { name: 'Collectives Polkadot', symbol: 'DOT', decimals: 10 },
   rpcUrls: {
-    webSocket: ['wss://collectives-polkadot-rpc.n.dwellir.com', 'wss://polkadot-collectives-rpc.polkadot.io'],
+    webSocket: [
+      'wss://collectives-polkadot-rpc.n.dwellir.com',
+      'wss://polkadot-collectives-rpc.polkadot.io',
+    ],
     http: ['https://collectives-polkadot-rpc.n.dwellir.com'],
   },
   ss58Format: 0,
   blockExplorers: { default: { name: 'Subscan', url: 'https://collectives-polkadot.subscan.io' } },
   chainIconUrl: collectivesChain,
   testnet: false,
-}
+};

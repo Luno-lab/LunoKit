@@ -1,10 +1,10 @@
-import React from 'react';
-import { Dialog, DialogTitle, DialogClose } from '../Dialog';
-import { ChainList } from '../ChainList';
+import type React from 'react';
 import { Close } from '../../assets/icons';
 import { useChainModal } from '../../providers';
+import { ChainList } from '../ChainList';
+import { Dialog, DialogClose, DialogTitle } from '../Dialog';
 
-export interface ChainModalProps {}
+export type ChainModalProps = {};
 
 export const ChainModal: React.FC<ChainModalProps> = () => {
   const { isOpen, close } = useChainModal();

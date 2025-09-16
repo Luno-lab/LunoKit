@@ -1,7 +1,5 @@
+export * from '@luno-kit/core';
 export { LunoProvider } from './context';
 
-export { ConnectionStatus } from './types'
-
 export * from './hooks';
-
-export * from '@luno-kit/core'
+export { ConnectionStatus } from './types';

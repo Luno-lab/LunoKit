@@ -1,12 +1,11 @@
-import { expect, afterEach, describe, it, vi } from 'vitest';
-import { mockConfig, MockConnector, mockClient } from '../test-utils';
-import { renderHook } from '../test-utils';
 import { waitFor } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { type MockConnector, mockClient, mockConfig, renderHook } from '../test-utils';
 import { useBlockNumber } from './useBlockNumber';
 import { useLuno } from './useLuno';
 
 vi.mock('../utils/createApi', () => ({
-  createApi: () => Promise.resolve(mockClient.polkadot)
+  createApi: () => Promise.resolve(mockClient.polkadot),
 }));
 
 const connector = mockConfig.connectors[0] as MockConnector;
@@ -19,16 +18,18 @@ describe('useBlockNumber', () => {
   });
 
   it('should handle block number subscription when connected', async () => {
-    const { result } = renderHook(() => ({
-      useLuno: useLuno(),
-      useBlockNumber: useBlockNumber()
-    }), {
-      config: mockConfig
-    });
+    const { result } = renderHook(
+      () => ({
+        useLuno: useLuno(),
+        useBlockNumber: useBlockNumber(),
+      }),
+      {
+        config: mockConfig,
+      }
+    );
 
     expect(result.current.useBlockNumber.data).toBeUndefined();
     expect(result.current.useBlockNumber.isLoading).toBe(false);
-
 
     await waitFor(() => {
       expect(result.current.useLuno.currentApi).toBeDefined();
@@ -49,11 +50,9 @@ describe('useBlockNumber', () => {
   });
 
   it('should be disabled when API is not ready', () => {
-    const { result } = renderHook(() =>
-        useBlockNumber(), {
-        config: mockConfig
-      }
-    );
+    const { result } = renderHook(() => useBlockNumber(), {
+      config: mockConfig,
+    });
 
     expect(result.current.data).toBeUndefined();
     expect(result.current.isLoading).toBe(false);

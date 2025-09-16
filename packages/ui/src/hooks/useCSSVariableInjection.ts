@@ -3,21 +3,54 @@ import type { LunokitTheme, PartialLunokitTheme, ThemeMode } from '../theme/type
 
 // All theme variable names for cleanup
 const ALL_THEME_VARS = [
-  '--color-accentColor', '--color-walletSelectItemBackground', '--color-walletSelectItemBackgroundHover', '--color-walletSelectItemText',
-  '--color-connectButtonBackground', '--color-connectButtonInnerBackground', '--color-connectButtonText',
-  '--color-accountActionItemBackground', '--color-accountActionItemBackgroundHover', '--color-accountActionItemText',
-  '--color-accountSelectItemBackground', '--color-accountSelectItemBackgroundHover', '--color-accountSelectItemText',
-  '--color-currentNetworkButtonBackground', '--color-currentNetworkButtonText',
-  '--color-networkSelectItemBackground', '--color-networkSelectItemBackgroundHover', '--color-networkSelectItemText',
-  '--color-navigationButtonBackground', '--color-separatorLine',
-  '--color-modalBackground', '--color-modalBackdrop', '--color-modalBorder', '--color-modalText', '--color-modalTextSecondary',
-  '--color-modalControlButtonBackgroundHover', '--color-modalControlButtonText',
-  '--color-success', '--color-successForeground', '--color-warning', '--color-warningForeground',
-  '--color-error', '--color-errorForeground', '--color-info', '--color-infoForeground', '--color-skeleton',
+  '--color-accentColor',
+  '--color-walletSelectItemBackground',
+  '--color-walletSelectItemBackgroundHover',
+  '--color-walletSelectItemText',
+  '--color-connectButtonBackground',
+  '--color-connectButtonInnerBackground',
+  '--color-connectButtonText',
+  '--color-accountActionItemBackground',
+  '--color-accountActionItemBackgroundHover',
+  '--color-accountActionItemText',
+  '--color-accountSelectItemBackground',
+  '--color-accountSelectItemBackgroundHover',
+  '--color-accountSelectItemText',
+  '--color-currentNetworkButtonBackground',
+  '--color-currentNetworkButtonText',
+  '--color-networkSelectItemBackground',
+  '--color-networkSelectItemBackgroundHover',
+  '--color-networkSelectItemText',
+  '--color-navigationButtonBackground',
+  '--color-separatorLine',
+  '--color-modalBackground',
+  '--color-modalBackdrop',
+  '--color-modalBorder',
+  '--color-modalText',
+  '--color-modalTextSecondary',
+  '--color-modalControlButtonBackgroundHover',
+  '--color-modalControlButtonText',
+  '--color-success',
+  '--color-successForeground',
+  '--color-warning',
+  '--color-warningForeground',
+  '--color-error',
+  '--color-errorForeground',
+  '--color-info',
+  '--color-infoForeground',
+  '--color-skeleton',
   '--font-body',
-  '--radius-walletSelectItem', '--radius-connectButton', '--radius-modalControlButton', '--radius-accountActionItem',
-  '--radius-accountSelectItem', '--radius-currentNetworkButton', '--radius-networkSelectItem', '--radius-modal', '--radius-modalMobile',
-  '--shadow-button', '--shadow-modal',
+  '--radius-walletSelectItem',
+  '--radius-connectButton',
+  '--radius-modalControlButton',
+  '--radius-accountActionItem',
+  '--radius-accountSelectItem',
+  '--radius-currentNetworkButton',
+  '--radius-networkSelectItem',
+  '--radius-modal',
+  '--radius-modalMobile',
+  '--shadow-button',
+  '--shadow-modal',
   '--blur-modalOverlay',
 ];
 
@@ -67,7 +100,6 @@ export const useCSSVariableInjection = (themeInfo: ThemeInfo, themeMode: ThemeMo
 
       // Remove data-theme attribute for complete custom themes
       root.removeAttribute('data-theme');
-
     } else if (themeInfo.type === 'partial' && themeInfo.partialOverrides) {
       // Partial override: KEEP data-theme and inject only overridden variables
       root.setAttribute('data-theme', themeMode);
@@ -76,7 +108,7 @@ export const useCSSVariableInjection = (themeInfo: ThemeInfo, themeMode: ThemeMo
       const hasOverrides = Object.keys(themeInfo.partialOverrides).length > 0;
       if (hasOverrides) {
         // Clear all custom variables first
-        ALL_THEME_VARS.forEach(varName => {
+        ALL_THEME_VARS.forEach((varName) => {
           root.style.removeProperty(varName);
         });
 
@@ -121,13 +153,12 @@ export const useCSSVariableInjection = (themeInfo: ThemeInfo, themeMode: ThemeMo
           });
         }
       }
-
     } else {
       // Default theme: just set data-theme and clear custom variables
       root.setAttribute('data-theme', themeMode);
 
       // Clear any previously injected custom variables
-      ALL_THEME_VARS.forEach(varName => {
+      ALL_THEME_VARS.forEach((varName) => {
         root.style.removeProperty(varName);
       });
     }

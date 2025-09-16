@@ -1,11 +1,11 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { MimirConnector, mimirConnector } from './mimir';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mimirWallet } from '../config/logos/generated';
+import { MimirConnector, mimirConnector } from './mimir';
 
 vi.mock('@mimirdev/apps-inject', () => ({
   isMimirReady: vi.fn(),
   inject: vi.fn(),
-  MIMIR_REGEXP: /^https:\/\/(app|dev)\.mimir\.global$/
+  MIMIR_REGEXP: /^https:\/\/(app|dev)\.mimir\.global$/,
 }));
 
 describe('MimirConnector', () => {
@@ -22,7 +22,7 @@ describe('MimirConnector', () => {
     Object.defineProperty(globalThis, 'window', {
       value: originalWindow,
       writable: true,
-      configurable: true
+      configurable: true,
     });
     vi.restoreAllMocks();
   });
@@ -39,10 +39,10 @@ describe('MimirConnector', () => {
     it('should return false when not in iframe', () => {
       Object.defineProperty(globalThis, 'window', {
         value: {
-          parent: window
+          parent: window,
         },
         writable: true,
-        configurable: true
+        configurable: true,
       });
 
       expect(connector.isInstalled()).toBe(false);
@@ -52,10 +52,10 @@ describe('MimirConnector', () => {
       Object.defineProperty(globalThis, 'window', {
         value: {
           parent: {},
-          injectedWeb3: { mimir: {} }
+          injectedWeb3: { mimir: {} },
         },
         writable: true,
-        configurable: true
+        configurable: true,
       });
 
       const { isMimirReady } = await import('@mimirdev/apps-inject');
@@ -85,10 +85,10 @@ describe('MimirConnector', () => {
         value: {
           parent: {},
           origin: 'https://example.com',
-          open: vi.fn()
+          open: vi.fn(),
         },
         writable: true,
-        configurable: true
+        configurable: true,
       });
 
       (connector as any).mimirReady = false;
@@ -114,13 +114,13 @@ describe('MimirConnector', () => {
             mimir: {
               enable: vi.fn().mockResolvedValue({
                 accounts: { get: vi.fn().mockResolvedValue([]), subscribe: vi.fn() },
-                signer: {}
-              })
-            }
-          }
+                signer: {},
+              }),
+            },
+          },
         },
         writable: true,
-        configurable: true
+        configurable: true,
       });
 
       (connector as any).mimirReady = true;
@@ -140,10 +140,10 @@ describe('MimirConnector', () => {
         value: {
           parent: {},
           origin: 'https://not-mimir.example.com',
-          open: vi.fn()
+          open: vi.fn(),
         },
         writable: true,
-        configurable: true
+        configurable: true,
       });
 
       (connector as any).mimirReady = false;

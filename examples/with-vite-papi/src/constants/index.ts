@@ -1,5 +1,5 @@
 import type { HexString } from '@luno-kit/react/types';
-import { dot, ksm, paseo, wnd } from "@polkadot-api/descriptors"
+import { dot, ksm, paseo, wnd } from '@polkadot-api/descriptors';
 
 export interface Chain {
   name: string;
@@ -23,7 +23,7 @@ export const CHAINS: Record<string, Chain> = {
     nativeCurrency: {
       name: 'DOT',
       symbol: 'DOT',
-      decimals: 10
+      decimals: 10,
     },
     descriptors: dot,
   },
@@ -35,9 +35,9 @@ export const CHAINS: Record<string, Chain> = {
     nativeCurrency: {
       name: 'KSM',
       symbol: 'KSM',
-      decimals: 12
+      decimals: 12,
     },
-    descriptors: ksm
+    descriptors: ksm,
   },
   paseo: {
     name: 'Paseo',

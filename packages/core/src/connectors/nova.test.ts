@@ -1,9 +1,10 @@
 import { describe } from 'vitest';
+import { novaWallet } from '../config/logos/generated';
 import { novaConnector } from './nova';
 import { createWalletConnectTestSuite } from './test-helper';
-import { novaWallet } from '../config/logos/generated';
 
-describe('NovaConnector',
+describe(
+  'NovaConnector',
   createWalletConnectTestSuite({
     getConnector: novaConnector,
     expected: {

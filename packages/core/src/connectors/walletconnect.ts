@@ -1,11 +1,17 @@
-import { BaseConnector } from './base';
+import { type SessionTypes, SignClientTypes } from '@walletconnect/types';
 import type { IUniversalProvider, Metadata } from '@walletconnect/universal-provider';
-import { SessionTypes, SignClientTypes } from '@walletconnect/types'
-import type { Account, Chain, HexString, Signer, WalletConnectConnectorOptions } from '../types';
+import type { SignerPayloadJSON, SignerPayloadRaw, SignerResult } from 'dedot/types';
 import { walletconnectWallet } from '../config/logos/generated';
-import { SignerResult, SignerPayloadJSON, SignerPayloadRaw } from 'dedot/types'
-import { ConnectorLinks } from '../types'
-import {isSameAddress} from '../utils'
+import type {
+  Account,
+  Chain,
+  ConnectorLinks,
+  HexString,
+  Signer,
+  WalletConnectConnectorOptions,
+} from '../types';
+import { isSameAddress } from '../utils';
+import { BaseConnector } from './base';
 
 export class WalletConnectConnector extends BaseConnector {
   readonly id: string;
@@ -47,18 +53,24 @@ export class WalletConnectConnector extends BaseConnector {
   }
 
   private convertChainIdToCaipId(chains: Chain[] | HexString[]): `polkadot:${string}`[] {
-    return chains.map(chain => {
-      const capid: HexString = (chain as Chain).genesisHash || chain
-      return `polkadot:${capid.replace('0x', '').slice(0, 32)}` as `polkadot:${string}`
+    return chains.map((chain) => {
+      const capid: HexString = (chain as Chain).genesisHash || chain;
+      return `polkadot:${capid.replace('0x', '').slice(0, 32)}` as `polkadot:${string}`;
     });
   }
 
   public async connect(appName: string, chains?: Chain[]): Promise<Array<Account>> {
     if (!this.projectId) {
-      throw new Error(`${this.name} requires a projectId. Please visit https://cloud.walletconnect.com to get one.`);
+      throw new Error(
+        `${this.name} requires a projectId. Please visit https://cloud.walletconnect.com to get one.`
+      );
     }
 
-    const effectiveChains = chains?.length ? chains : this.supportedChains.length ? this.supportedChains : undefined;
+    const effectiveChains = chains?.length
+      ? chains
+      : this.supportedChains.length
+        ? this.supportedChains
+        : undefined;
 
     if (!effectiveChains || effectiveChains.length === 0) {
       throw new Error(`${this.name} requires chains configuration.`);
@@ -66,7 +78,7 @@ export class WalletConnectConnector extends BaseConnector {
 
     this.connectedChains = effectiveChains;
 
-    const { UniversalProvider } = await import("@walletconnect/universal-provider");
+    const { UniversalProvider } = await import('@walletconnect/universal-provider');
 
     try {
       this.provider = await UniversalProvider.init({
@@ -92,20 +104,30 @@ export class WalletConnectConnector extends BaseConnector {
       }
 
       if (!this.provider?.client) {
-        throw new Error("Provider not initialized or not connected");
+        throw new Error('Provider not initialized or not connected');
       }
 
       const { uri, approval } = await this.provider.client.connect({
         requiredNamespaces: {
           polkadot: {
-            methods: ['polkadot_signMessage', 'polkadot_sendTransaction', 'polkadot_signTransaction', 'polkadot_requestAccounts'],
+            methods: [
+              'polkadot_signMessage',
+              'polkadot_sendTransaction',
+              'polkadot_signTransaction',
+              'polkadot_requestAccounts',
+            ],
             chains: this.convertChainIdToCaipId(effectiveChains),
             events: ['accountsChanged', 'chainChanged', 'connect'],
           },
         },
         optionalNamespaces: {
           polkadot: {
-            methods: ['polkadot_signMessage', 'polkadot_sendTransaction', 'polkadot_signTransaction', 'polkadot_requestAccounts'],
+            methods: [
+              'polkadot_signMessage',
+              'polkadot_sendTransaction',
+              'polkadot_signTransaction',
+              'polkadot_requestAccounts',
+            ],
             chains: this.convertChainIdToCaipId(effectiveChains),
             events: ['accountsChanged', 'chainChanged', 'connect'],
           },
@@ -128,7 +150,6 @@ export class WalletConnectConnector extends BaseConnector {
 
       this.emit('connect', [...this.accounts]);
       return [...this.accounts];
-
     } catch (error) {
       this.connectionUri = undefined;
       throw error;
@@ -136,67 +157,68 @@ export class WalletConnectConnector extends BaseConnector {
   }
 
   private getAccountsFromSession(chains: Chain[] | HexString[]): Account[] {
-    const targetChain = [(chains[0] as Chain).genesisHash || chains[0]] as HexString[] | Chain[]
-      // ? (chains as Chain[]).filter(chain => chain.genesisHash.toLowerCase() === chainId.toLowerCase())
-      // : (chains as string[]).filter(chain => chain.toLowerCase() === chainId.toLowerCase())
+    const targetChain = [(chains[0] as Chain).genesisHash || chains[0]] as HexString[] | Chain[];
+    // ? (chains as Chain[]).filter(chain => chain.genesisHash.toLowerCase() === chainId.toLowerCase())
+    // : (chains as string[]).filter(chain => chain.toLowerCase() === chainId.toLowerCase())
     const caipId = this.convertChainIdToCaipId(targetChain)[0];
 
     let rawAccounts = this.session?.namespaces.polkadot.accounts
       .flat()
       .filter((address: string) => address.includes(caipId))
-      .map((address: string) => address.replace(`${caipId}:`, ""))
+      .map((address: string) => address.replace(`${caipId}:`, ''));
 
     if (rawAccounts && rawAccounts.length === 0) {
-      console.error(`No accounts found for the specified chain, please connect to the correct chain`);
+      console.error(
+        `No accounts found for the specified chain, please connect to the correct chain`
+      );
 
       const caipId = this.convertChainIdToCaipId(chains)[0];
 
       rawAccounts = this.session?.namespaces.polkadot.accounts
         .flat()
         .filter((address: string) => address.includes(caipId))
-        .map((address: string) => address.replace(`${caipId}:`, ""))
+        .map((address: string) => address.replace(`${caipId}:`, ''));
     }
 
-    const result = rawAccounts!
-      .map((address: string) => ({
-        address,
-        name: `${this.name} Account`,
-        meta: {
-          source: this.id,
-        },
-        publicKey: undefined,
-      }));
+    const result = rawAccounts!.map((address: string) => ({
+      address,
+      name: `${this.name} Account`,
+      meta: {
+        source: this.id,
+      },
+      publicKey: undefined,
+    }));
 
     this.emit('accountsChanged', [...result]);
 
-    return result!
+    return result!;
   }
 
   public async disconnect(): Promise<void> {
     if (this.provider) {
       // await Promise.race([
-        await this.provider.disconnect()
-        // new Promise((_, reject) =>
-        //   setTimeout(() => reject(new Error('Disconnect timeout')), 5000)
-        // )
+      await this.provider.disconnect();
+      // new Promise((_, reject) =>
+      //   setTimeout(() => reject(new Error('Disconnect timeout')), 5000)
+      // )
       // ]);
     }
-    await this.cleanup()
+    await this.cleanup();
     this.emit('disconnect');
   }
 
   public async signMessage(message: string, address: string): Promise<string | undefined> {
     if (!this.provider?.client || !this.session?.topic) {
-      throw new Error("Provider not initialized or not connected");
+      throw new Error('Provider not initialized or not connected');
     }
 
     try {
       const signer = await this.getSigner();
       if (!signer) {
-        throw new Error("No signer provided");
+        throw new Error('No signer provided');
       }
 
-      const { signature } = await signer.signRaw!({ address, data: message, type: 'bytes'})
+      const { signature } = await signer.signRaw!({ address, data: message, type: 'bytes' });
       return signature;
     } catch (error) {
       console.error('Sign message error:', error);
@@ -205,7 +227,7 @@ export class WalletConnectConnector extends BaseConnector {
   }
 
   public hasConnectionUri(): boolean {
-    return true
+    return true;
   }
 
   public async getConnectionUri(): Promise<string> {
@@ -221,7 +243,6 @@ export class WalletConnectConnector extends BaseConnector {
     });
   }
 
-
   public async getSigner(): Promise<Signer | undefined> {
     if (!this.provider?.client || !this.session) return undefined;
 
@@ -230,19 +251,19 @@ export class WalletConnectConnector extends BaseConnector {
         const chainCaipId = `polkadot:${payload.genesisHash.replace('0x', '').slice(0, 32)}`;
         const sessionAccounts = this.session!.namespaces.polkadot.accounts;
 
-        const chainAccount = sessionAccounts.find(acc => {
-          const address = acc.replace(`${chainCaipId}:`, "")
+        const chainAccount = sessionAccounts.find((acc) => {
+          const address = acc.replace(`${chainCaipId}:`, '');
 
-          return acc.includes(chainCaipId) && isSameAddress(payload.address, address)
+          return acc.includes(chainCaipId) && isSameAddress(payload.address, address);
         });
 
         if (!chainAccount) {
           throw new Error(`Chain ${payload.genesisHash} is not supported by the wallet.}`);
         }
 
-        const chainAddress = chainAccount.replace(`${chainCaipId}:`, "")
+        const chainAddress = chainAccount.replace(`${chainCaipId}:`, '');
 
-        const updatedPayload = { ...payload, address: chainAddress }
+        const updatedPayload = { ...payload, address: chainAddress };
 
         const result = await this.provider?.client?.request<{ signature: string }>({
           topic: this.session!.topic,
@@ -257,21 +278,21 @@ export class WalletConnectConnector extends BaseConnector {
         });
         return result as SignerResult;
       },
-      signRaw: async(payload: SignerPayloadRaw): Promise<SignerResult> => {
-        const chainCaipId = this.convertChainIdToCaipId(this.connectedChains!)[0]
+      signRaw: async (payload: SignerPayloadRaw): Promise<SignerResult> => {
+        const chainCaipId = this.convertChainIdToCaipId(this.connectedChains!)[0];
 
         const sessionAccounts = this.session!.namespaces.polkadot.accounts;
 
-        const chainAccount = sessionAccounts.find(acc => {
-          const address = acc.replace(`${chainCaipId}:`, "")
+        const chainAccount = sessionAccounts.find((acc) => {
+          const address = acc.replace(`${chainCaipId}:`, '');
 
-          return acc.includes(chainCaipId) && isSameAddress(payload.address, address)
+          return acc.includes(chainCaipId) && isSameAddress(payload.address, address);
         });
 
         if (!chainAccount) {
           throw new Error(`No accounts available for chain ${chainCaipId}`);
         }
-        const chainAddress = chainAccount.replace(`${chainCaipId}:`, "");
+        const chainAddress = chainAccount.replace(`${chainCaipId}:`, '');
 
         const updatedPayload = { ...payload, address: chainAddress };
 
@@ -283,13 +304,13 @@ export class WalletConnectConnector extends BaseConnector {
             params: {
               address: chainAddress,
               message: updatedPayload.data,
-              type: updatedPayload.type
+              type: updatedPayload.type,
             },
           },
         });
 
-        return result
-      }
+        return result;
+      },
     };
   }
 
@@ -303,15 +324,14 @@ export class WalletConnectConnector extends BaseConnector {
     try {
       const sessionDeleteHandler = async () => {
         console.log(`Connector ${this.id}: Session deleted, disconnecting...`);
-        await this.cleanup()
+        await this.cleanup();
         this.emit('disconnect');
-      }
+      };
       this.provider.client.on('session_delete', sessionDeleteHandler);
 
       this.unsubscribe = () => {
-        this.provider?.client?.off('session_delete', sessionDeleteHandler)
-      }
-
+        this.provider?.client?.off('session_delete', sessionDeleteHandler);
+      };
     } catch (error) {
       this.unsubscribe = null;
     }

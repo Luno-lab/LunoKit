@@ -1,21 +1,23 @@
-import { expect, describe, it, vi } from 'vitest';
-import { mockConfig, mockClient } from '../test-utils';
-import { renderHook } from '../test-utils';
-import { useSs58Format } from './useSs58Format';
 import { polkadot } from '@luno-kit/core/chains';
 import { waitFor } from '@testing-library/react';
-import { useLuno } from './useLuno'
+import { describe, expect, it, vi } from 'vitest';
+import { mockClient, mockConfig, renderHook } from '../test-utils';
+import { useLuno } from './useLuno';
+import { useSs58Format } from './useSs58Format';
 
 vi.mock('../utils/createApi', () => ({
-  createApi: () => Promise.resolve(mockClient.polkadot)
+  createApi: () => Promise.resolve(mockClient.polkadot),
 }));
 
 describe('useSs58Format', () => {
   it('should return chain ss58 format when connected', async () => {
-    const { result } = renderHook(() => ({
-      useSs58Format: useSs58Format(),
-      useLuno: useLuno(),
-    }), { config: mockConfig });
+    const { result } = renderHook(
+      () => ({
+        useSs58Format: useSs58Format(),
+        useLuno: useLuno(),
+      }),
+      { config: mockConfig }
+    );
 
     await waitFor(() => {
       expect(result.current.useLuno.currentApi).toBeDefined();
@@ -24,7 +26,7 @@ describe('useSs58Format', () => {
 
     expect(result.current.useSs58Format).toEqual({
       data: polkadot.ss58Format,
-      isLoading: false
+      isLoading: false,
     });
   });
 
@@ -33,7 +35,7 @@ describe('useSs58Format', () => {
 
     expect(result.current).toEqual({
       data: undefined,
-      isLoading: true
+      isLoading: true,
     });
   });
 });

@@ -1,6 +1,6 @@
-import type { Config, Connector, Account, Chain } from '.';
+import type { HexString } from '@luno-kit/core/types';
 import type { LegacyClient } from 'dedot';
-import type { HexString } from '@luno-kit/core/types'
+import type { Account, Chain, Config, Connector } from '.';
 
 export enum ConnectionStatus {
   Disconnected = 'disconnected',
@@ -11,7 +11,6 @@ export enum ConnectionStatus {
 
 export interface LunoState {
   config?: Config;
-
 
   status: ConnectionStatus;
 
@@ -25,7 +24,7 @@ export interface LunoState {
   currentChain?: Chain;
   currentApi?: LegacyClient;
   isApiReady: boolean;
-  apiError: Error | null
+  apiError: Error | null;
 
   _setConfig: (config: Config) => Promise<void>;
 
@@ -37,6 +36,5 @@ export interface LunoState {
   _setApi: (api?: LegacyClient) => void;
 
   _setIsApiReady: (isApiReady: boolean) => void;
-  _setApiError: (error: Error | null) => void
-
+  _setApiError: (error: Error | null) => void;
 }

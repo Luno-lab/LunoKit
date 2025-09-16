@@ -1,8 +1,8 @@
+import type { Metadata } from '@walletconnect/universal-provider';
 import type { EventEmitter } from 'eventemitter3';
-import { Account, HexString } from './account';
+import type { Account, HexString } from './account';
+import type { Chain } from './chain';
 import type { Signer } from './signer';
-import type { Chain } from './chain'
-import type { Metadata } from '@walletconnect/universal-provider'
 
 export interface ConnectorLinks {
   browserExtension?: string;
@@ -16,7 +16,11 @@ export interface Connector extends EventEmitter {
   readonly links: ConnectorLinks;
   isAvailable(): Promise<boolean>;
   isInstalled: () => boolean;
-  connect(appName: string, chains?: Chain[], targetChainId?: string): Promise<Account[] | undefined>;
+  connect(
+    appName: string,
+    chains?: Chain[],
+    targetChainId?: string
+  ): Promise<Account[] | undefined>;
   disconnect(): Promise<void>;
   getAccounts(): Promise<Array<Account>>;
   getSigner(): Promise<Signer | undefined>;

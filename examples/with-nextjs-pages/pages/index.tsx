@@ -1,4 +1,4 @@
-import { ConnectButton } from '@luno-kit/ui'
+import { ConnectButton } from '@luno-kit/ui';
 
 export default function Home() {
   return (

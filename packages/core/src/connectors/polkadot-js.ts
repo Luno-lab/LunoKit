@@ -1,5 +1,5 @@
-import { InjectConnector } from './inject'
-import { polkadotjsWallet } from '../config/logos/generated'
+import { polkadotjsWallet } from '../config/logos/generated';
+import { InjectConnector } from './inject';
 
 export const polkadotjsConnector = () => {
   return new InjectConnector({
@@ -7,7 +7,7 @@ export const polkadotjsConnector = () => {
     name: 'Polkadot{.js}',
     icon: polkadotjsWallet,
     links: {
-      browserExtension: 'https://polkadot.js.org/extension'
-    }
+      browserExtension: 'https://polkadot.js.org/extension',
+    },
   });
-}
+};

@@ -1,6 +1,6 @@
-import React from 'react';
+import type { Account, Chain, Config, Connector, HexString } from '@luno-kit/core/types';
 import type { LegacyClient } from 'dedot';
-import type { Chain, Config, Connector, Account, HexString } from '@luno-kit/core/types';
+import React from 'react';
 import type { ConnectionStatus } from '../types';
 
 export interface LunoContextState {
@@ -21,4 +21,6 @@ export interface LunoContextState {
   switchChain: (newChainId: string) => Promise<void>;
 }
 
-export const LunoContext = React.createContext<LunoContextState | undefined>({} as LunoContextState);
+export const LunoContext = React.createContext<LunoContextState | undefined>(
+  {} as LunoContextState
+);

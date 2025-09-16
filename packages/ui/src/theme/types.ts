@@ -89,8 +89,8 @@ export type PartialLunokitTheme = {
 // Simplified theme configuration supporting partial overrides
 export interface LunokitThemeOverrides {
   // Theme behavior control
-  autoMode?: boolean;           // Whether to auto-follow system theme (default: false)
-  defaultMode?: ThemeMode;      // Default theme mode when not auto (default: 'light')
+  autoMode?: boolean; // Whether to auto-follow system theme (default: false)
+  defaultMode?: ThemeMode; // Default theme mode when not auto (default: 'light')
 
   // Complete custom theme (overrides both light and dark)
   theme?: LunokitTheme;

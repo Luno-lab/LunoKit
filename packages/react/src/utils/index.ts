@@ -1,16 +1,16 @@
 export {
+  convertAddress,
+  defineChain,
   formatAddress,
+  formatBalance,
+  formatBalanceWithUnit,
+  getChainToken,
   getExplorerUrl,
   getPublicKey,
   isMobileDevice,
   isSameAddress,
   isValidAddress,
-  formatBalance,
-  getChainToken,
-  defineChain,
-  convertAddress,
-  formatBalanceWithUnit
-} from '@luno-kit/core/utils'
+} from '@luno-kit/core/utils';
 
 export * from './createApi';
 export * from './dispatchError';

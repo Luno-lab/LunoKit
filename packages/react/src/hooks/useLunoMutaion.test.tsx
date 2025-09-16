@@ -1,14 +1,12 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
-import { renderHook } from '@testing-library/react';
-import { useLunoMutation } from './useLunoMutation';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { renderHook } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { useLunoMutation } from './useLunoMutation';
 
 describe('useLunoMutation', () => {
   const queryClient = new QueryClient();
   const wrapper = ({ children }) => (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 
   beforeEach(() => {
@@ -18,10 +16,7 @@ describe('useLunoMutation', () => {
   it('should return correct mutation interface', () => {
     const mockMutationFn = vi.fn();
 
-    const { result } = renderHook(
-      () => useLunoMutation(mockMutationFn),
-      { wrapper }
-    );
+    const { result } = renderHook(() => useLunoMutation(mockMutationFn), { wrapper });
 
     expect(result.current).toEqual(
       expect.objectContaining({
@@ -35,7 +30,7 @@ describe('useLunoMutation', () => {
         isSuccess: expect.any(Boolean),
         status: expect.any(String),
         reset: expect.any(Function),
-        variables: undefined
+        variables: undefined,
       })
     );
   });
@@ -45,13 +40,10 @@ describe('useLunoMutation', () => {
     const mockOptions = {
       onSuccess: vi.fn(),
       onError: vi.fn(),
-      onSettled: vi.fn()
+      onSettled: vi.fn(),
     };
 
-    const { result } = renderHook(
-      () => useLunoMutation(mockMutationFn, mockOptions),
-      { wrapper }
-    );
+    const { result } = renderHook(() => useLunoMutation(mockMutationFn, mockOptions), { wrapper });
 
     expect(result.current.mutate).toBeDefined();
     expect(result.current.mutateAsync).toBeDefined();

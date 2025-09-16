@@ -1,13 +1,23 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import { createConfig } from '@luno-kit/react'
-import { polkagateConnector, subwalletConnector, talismanConnector, polkadotjsConnector, walletConnectConnector, novaConnector, fearlessConnector, mimirConnector, enkryptConnector } from '@luno-kit/react/connectors'
-import { LunoKitProvider } from '@luno-kit/ui'
-import '@luno-kit/ui/styles.css'
-import { CHAINS } from './constants'
+import { createConfig } from '@luno-kit/react';
+import {
+  enkryptConnector,
+  fearlessConnector,
+  mimirConnector,
+  novaConnector,
+  polkadotjsConnector,
+  polkagateConnector,
+  subwalletConnector,
+  talismanConnector,
+  walletConnectConnector,
+} from '@luno-kit/react/connectors';
+import { LunoKitProvider } from '@luno-kit/ui';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App.tsx';
+import '@luno-kit/ui/styles.css';
+import { CHAINS } from './constants';
 
-const supportedChains = Object.values(CHAINS).map(c => c.genesisHash)
+const supportedChains = Object.values(CHAINS).map((c) => c.genesisHash);
 
 const connectors = [
   polkadotjsConnector(),
@@ -23,9 +33,9 @@ const connectors = [
   }),
   novaConnector({
     projectId: import.meta.env.VITE_WALLET_CONNECT_ID,
-    supportedChains
+    supportedChains,
   }),
-]
+];
 
 const lunoConfig = createConfig({
   appName: 'luno with-vite example',
@@ -33,11 +43,10 @@ const lunoConfig = createConfig({
   autoConnect: true,
 });
 
-
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <LunoKitProvider config={lunoConfig}>
       <App />
     </LunoKitProvider>
-  </StrictMode>,
-)
+  </StrictMode>
+);

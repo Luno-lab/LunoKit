@@ -50,7 +50,6 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "lint": "eslint src",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "clean": "rm -rf dist"
@@ -71,7 +70,6 @@
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitest/coverage-v8": "^3.2.4",
-    "eslint": "^8.56.0",
     "jsdom": "^26.1.0",
     "react": "catalog:",
     "react-dom": "catalog:",

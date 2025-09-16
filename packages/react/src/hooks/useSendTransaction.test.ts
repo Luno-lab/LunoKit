@@ -1,27 +1,26 @@
-import { expect, afterEach, test, vi } from 'vitest';
-import { mockConfig, MockConnector } from '../test-utils';
-import { renderHook } from '../test-utils';
 import { act, waitFor } from '@testing-library/react';
+import { afterEach, expect, test, vi } from 'vitest';
+import { type MockConnector, mockConfig, renderHook } from '../test-utils';
+import { useApi } from './useApi';
 import { useConnect } from './useConnect';
 import { useSendTransaction } from './useSendTransaction';
-import { useApi } from './useApi';
 
 const connector = mockConfig.connectors[0] as MockConnector;
 
 const mockExtrinsic = {
-  signAndSend: vi.fn()
+  signAndSend: vi.fn(),
 };
 
 const mockApi = {
   tx: {
     balances: {
-      transferKeepAlive: vi.fn().mockReturnValue(mockExtrinsic)
-    }
-  }
+      transferKeepAlive: vi.fn().mockReturnValue(mockExtrinsic),
+    },
+  },
 };
 
 vi.mock('../utils/createApi', () => ({
-  createApi: () => Promise.resolve(mockApi)
+  createApi: () => Promise.resolve(mockApi),
 }));
 
 afterEach(async () => {
@@ -42,17 +41,20 @@ test('useSendTransaction', async () => {
     });
   });
 
-  const { result } = renderHook(() => ({
-    useConnect: useConnect(),
-    useApi: useApi(),
-    useSendTransaction: useSendTransaction(),
-  }), {
-    config: mockConfig
-  });
+  const { result } = renderHook(
+    () => ({
+      useConnect: useConnect(),
+      useApi: useApi(),
+      useSendTransaction: useSendTransaction(),
+    }),
+    {
+      config: mockConfig,
+    }
+  );
 
   await act(async () => {
     await result.current.useConnect.connectAsync({
-      connectorId: connector.id
+      connectorId: connector.id,
     });
   });
 
@@ -61,7 +63,7 @@ test('useSendTransaction', async () => {
   });
 
   const sendPromise = result.current.useSendTransaction.sendTransactionAsync({
-    extrinsic: mockExtrinsic
+    extrinsic: mockExtrinsic,
   });
 
   await waitFor(() => {
@@ -72,7 +74,7 @@ test('useSendTransaction', async () => {
     statusCallback({
       status: { type: 'Finalized', value: { blockHash: '0xabc', blockNumber: 123 } },
       events: [],
-      txHash: '0x123'
+      txHash: '0x123',
     });
     resolveSignAndSend(() => {});
   });
@@ -85,7 +87,6 @@ test('useSendTransaction', async () => {
   expect(result.current.useSendTransaction.detailedStatus).toBe('finalized');
 });
 
-
 test('should handle transaction error states', async () => {
   let resolveSignAndSend: (value: any) => void;
   let statusCallback: Function;
@@ -97,17 +98,20 @@ test('should handle transaction error states', async () => {
     });
   });
 
-  const { result } = renderHook(() => ({
-    useConnect: useConnect(),
-    useApi: useApi(),
-    useSendTransaction: useSendTransaction(),
-  }), {
-    config: mockConfig
-  });
+  const { result } = renderHook(
+    () => ({
+      useConnect: useConnect(),
+      useApi: useApi(),
+      useSendTransaction: useSendTransaction(),
+    }),
+    {
+      config: mockConfig,
+    }
+  );
 
   await act(async () => {
     await result.current.useConnect.connectAsync({
-      connectorId: connector.id
+      connectorId: connector.id,
     });
   });
 
@@ -115,9 +119,11 @@ test('should handle transaction error states', async () => {
     expect(result.current.useApi.isApiReady).toBeTruthy();
   });
 
-  result.current.useSendTransaction.sendTransactionAsync({
-    extrinsic: mockExtrinsic
-  }).catch(e => {})
+  result.current.useSendTransaction
+    .sendTransactionAsync({
+      extrinsic: mockExtrinsic,
+    })
+    .catch((e) => {});
 
   await waitFor(() => {
     expect(mockExtrinsic.signAndSend).toHaveBeenCalled();
@@ -126,7 +132,7 @@ test('should handle transaction error states', async () => {
   await act(async () => {
     statusCallback({
       status: { type: 'Invalid' },
-      txHash: '0x123'
+      txHash: '0x123',
     });
     resolveSignAndSend(() => {});
   });

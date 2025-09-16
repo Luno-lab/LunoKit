@@ -16,8 +16,6 @@
     }
   },
   "include": ["src/**/*"],
-  "references": [
-    { "path": "../core" }
-  ],
+  "references": [{ "path": "../core" }],
   "types": ["vitest/globals", "@testing-library/jest-dom"]
 }

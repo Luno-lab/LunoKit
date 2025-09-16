@@ -1,38 +1,42 @@
-import React from 'react'
-import { useConnectors } from '@luno-kit/react'
-import { isMobileDevice } from '@luno-kit/react/utils'
-import type { Connector } from '@luno-kit/react/types'
-import { cs } from '../../utils'
+import { useConnectors } from '@luno-kit/react';
+import type { Connector } from '@luno-kit/react/types';
+import { isMobileDevice } from '@luno-kit/react/utils';
+import React from 'react';
+import { cs } from '../../utils';
 
 interface Props {
-  onConnect: (connector: Connector) => Promise<void>
+  onConnect: (connector: Connector) => Promise<void>;
 }
 
 export const ConnectOptions = React.memo(({ onConnect }: Props) => {
   const connectors = useConnectors();
 
   if (isMobileDevice()) {
-    const filteredConnectors = connectors.filter(i => i.links.deepLink)
+    const filteredConnectors = connectors.filter((i) => i.links.deepLink);
 
     return (
       <div className={'flex flex-col items-start gap-1 w-full'}>
-        {filteredConnectors.map(i => (
-          <ConnectorItem key={`${i.id}-${i.name}`} connector={i} onConnect={() => onConnect(i)}/>
+        {filteredConnectors.map((i) => (
+          <ConnectorItem key={`${i.id}-${i.name}`} connector={i} onConnect={() => onConnect(i)} />
         ))}
       </div>
-    )
+    );
   }
 
-  const installedConnectors = connectors.filter(c => c.isInstalled())
-  const moreConnectors = connectors.filter(c => !c.isInstalled())
+  const installedConnectors = connectors.filter((c) => c.isInstalled());
+  const moreConnectors = connectors.filter((c) => !c.isInstalled());
 
   return (
-    <div className={'flex flex-col items-start gap-4 w-full overflow-y-auto custom-scrollbar max-h-[400px]'}>
+    <div
+      className={
+        'flex flex-col items-start gap-4 w-full overflow-y-auto custom-scrollbar max-h-[400px]'
+      }
+    >
       <div className={'flex flex-col items-start gap-2 w-full'}>
         <div className={'text-sm text-accentColor font-semibold leading-base'}>Installed</div>
         <div className={'flex flex-col items-start gap-1.5 w-full'}>
-          {installedConnectors.map(i => (
-            <ConnectorItem key={i.id} connector={i} onConnect={() => onConnect(i)}/>
+          {installedConnectors.map((i) => (
+            <ConnectorItem key={i.id} connector={i} onConnect={() => onConnect(i)} />
           ))}
         </div>
       </div>
@@ -41,22 +45,22 @@ export const ConnectOptions = React.memo(({ onConnect }: Props) => {
         <div className={'flex flex-col items-start gap-2 w-full'}>
           <div className={'text-sm text-modalTextSecondary font-semibold leading-base'}>More</div>
           <div className={'flex flex-col items-start gap-1 w-full'}>
-            {moreConnectors.map(i => (
-              <ConnectorItem key={i.id} connector={i} onConnect={() => onConnect(i)}/>
+            {moreConnectors.map((i) => (
+              <ConnectorItem key={i.id} connector={i} onConnect={() => onConnect(i)} />
             ))}
           </div>
         </div>
       )}
     </div>
-  )
-})
+  );
+});
 
 interface ConnectorItemProps {
   connector: Connector;
   onConnect: () => void;
 }
 
-const ConnectorItem: React.FC<ConnectorItemProps> = React.memo(({connector, onConnect}) => {
+const ConnectorItem: React.FC<ConnectorItemProps> = React.memo(({ connector, onConnect }) => {
   return (
     <button
       onClick={onConnect}
@@ -67,11 +71,7 @@ const ConnectorItem: React.FC<ConnectorItemProps> = React.memo(({connector, onCo
       )}
     >
       <div className={'w-[28px] h-[28px] rounded-[6px] overflow-hidden'}>
-        <img
-          src={connector.icon}
-          alt={connector.name}
-          className="w-full h-full"
-        />
+        <img src={connector.icon} alt={connector.name} className="w-full h-full" />
       </div>
 
       <span className="font-semibold leading-base text-base text-modalText">{connector.name}</span>

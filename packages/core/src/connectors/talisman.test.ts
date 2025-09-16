@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
+import { talismanWallet } from '../config/logos/generated';
 import { talismanConnector } from './talisman';
-import { createConnectorTestSuite } from './test-helper'
-import { talismanWallet } from '../config/logos/generated'
+import { createConnectorTestSuite } from './test-helper';
 
 describe(
   'subwalletConnector',
@@ -13,4 +13,4 @@ describe(
       icon: talismanWallet,
     },
   })
-)
+);

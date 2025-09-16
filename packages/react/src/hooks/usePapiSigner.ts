@@ -1,8 +1,8 @@
-import { useEffect, useState}  from 'react';
-import { useSigner } from './useSigner';
-import { useAccount } from './useAccount';
-import { createPapiSigner } from '@luno-kit/core/utils';
 import type { PapiSigner } from '@luno-kit/core/types';
+import { createPapiSigner } from '@luno-kit/core/utils';
+import { useEffect, useState } from 'react';
+import { useAccount } from './useAccount';
+import { useSigner } from './useSigner';
 
 export interface UsePapiSignerResult {
   data?: PapiSigner;

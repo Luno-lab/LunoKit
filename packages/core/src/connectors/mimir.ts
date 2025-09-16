@@ -1,5 +1,5 @@
-import { InjectConnector, InjectConnectorOptions } from './inject';
-import { mimirWallet } from '../config/logos/generated'
+import { mimirWallet } from '../config/logos/generated';
+import { InjectConnector, type InjectConnectorOptions } from './inject';
 
 export class MimirConnector extends InjectConnector {
   private mimirReady: boolean = false;
@@ -7,17 +7,17 @@ export class MimirConnector extends InjectConnector {
   constructor(options: InjectConnectorOptions) {
     super({ ...options });
 
-    this.mimirInject()
+    this.mimirInject();
   }
 
   public isInstalled(): boolean {
-    return this.mimirReady
+    return this.mimirReady;
   }
 
   private async mimirInject() {
     try {
       const inIframe = typeof window !== 'undefined' && window !== window.parent;
-      if (!inIframe) return
+      if (!inIframe) return;
 
       const { isMimirReady, MIMIR_REGEXP, inject } = await import('@mimirdev/apps-inject');
 
@@ -25,7 +25,7 @@ export class MimirConnector extends InjectConnector {
 
       if (origin && MIMIR_REGEXP.test(origin)) {
         inject();
-        this.mimirReady = true
+        this.mimirReady = true;
       }
     } catch (e: any) {
       console.error('Failed to inject Mimir:', e);
@@ -37,8 +37,8 @@ export class MimirConnector extends InjectConnector {
       const { MIMIR_REGEXP } = await import('@mimirdev/apps-inject');
 
       if (!window.origin || !MIMIR_REGEXP.test(window.origin)) {
-        window.open(`https://app.mimir.global/explorer/${encodeURIComponent(window.origin)}`)
-        return
+        window.open(`https://app.mimir.global/explorer/${encodeURIComponent(window.origin)}`);
+        return;
       }
     }
 

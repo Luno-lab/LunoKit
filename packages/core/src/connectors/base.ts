@@ -1,6 +1,5 @@
-import type {Account, Chain, Signer} from '../types';
 import { EventEmitter } from 'eventemitter3';
-import { ConnectorLinks } from '../types'
+import type { Account, Chain, ConnectorLinks, Signer } from '../types';
 
 /**
  * base connector abstract class
@@ -57,7 +56,11 @@ export abstract class BaseConnector extends EventEmitter {
    * 5. (optional) trigger the 'connect' event.
    * @returns the initial available accounts list
    */
-  abstract connect(appName: string, chains?: Chain[], targetChainId?: string): Promise<Account[] | undefined>;
+  abstract connect(
+    appName: string,
+    chains?: Chain[],
+    targetChainId?: string
+  ): Promise<Account[] | undefined>;
   /**
    * disconnect from the wallet.
    * subclasses must implement this method to perform specific cleanup logic
@@ -80,7 +83,9 @@ export abstract class BaseConnector extends EventEmitter {
    */
   public async getSigner(): Promise<Signer | undefined> {
     if (!this.signer) {
-      console.warn(`Connector ${this.id}: Signer not available. Connection might be incomplete or failed.`);
+      console.warn(
+        `Connector ${this.id}: Signer not available. Connection might be incomplete or failed.`
+      );
     }
     return this.signer;
   }
@@ -91,10 +96,10 @@ export abstract class BaseConnector extends EventEmitter {
   abstract signMessage(message: string, address: string): Promise<string | undefined>;
 
   public hasConnectionUri(): boolean {
-    return false
+    return false;
   }
 
-  public async getConnectionUri(): Promise<string | undefined >{
+  public async getConnectionUri(): Promise<string | undefined> {
     return this.connectionUri;
   }
 }

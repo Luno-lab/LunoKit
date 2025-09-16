@@ -1,9 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { useLunoStore } from './createLunoStore';
-import { ConnectionStatus } from '../types';
-import { PERSIST_KEY } from '../constants';
-import { createApi } from '../utils';
 import { isSameAddress } from '@luno-kit/core/utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { PERSIST_KEY } from '../constants';
+import { ConnectionStatus } from '../types';
+import { createApi } from '../utils';
+import { useLunoStore } from './createLunoStore';
 
 vi.mock('../utils', () => ({
   createApi: vi.fn(),
@@ -176,8 +176,9 @@ describe('createLunoStore', () => {
       const initialState = useLunoStore.getState();
       expect(initialState.account).toBe(initialAccount);
 
-      await expect(store.setAccount('0xnotfound'))
-        .rejects.toThrow('[LunoStore] setAccount: The provided account or address is not in the current accounts list');
+      await expect(store.setAccount('0xnotfound')).rejects.toThrow(
+        '[LunoStore] setAccount: The provided account or address is not in the current accounts list'
+      );
 
       const finalState = useLunoStore.getState();
       expect(finalState.account).toBe(initialAccount);
@@ -226,7 +227,7 @@ describe('createLunoStore', () => {
 
       await store.setAccount('0xabc');
 
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise((resolve) => setTimeout(resolve, 0));
 
       const state = useLunoStore.getState();
       expect(state.account?.publicKey).toBe('0xabc');
@@ -288,19 +289,24 @@ describe('createLunoStore', () => {
 
       expect(mockConnector.on).toHaveBeenCalledWith('accountsChanged', expect.any(Function));
       expect(mockConnector.on).toHaveBeenCalledWith('disconnect', expect.any(Function));
-      expect(mockStorage.setItem).toHaveBeenCalledWith(PERSIST_KEY.LAST_CONNECTOR_ID, 'test-connector');
+      expect(mockStorage.setItem).toHaveBeenCalledWith(
+        PERSIST_KEY.LAST_CONNECTOR_ID,
+        'test-connector'
+      );
     });
 
     it('should restore previously selected account', async () => {
       mockConnector.connect.mockResolvedValue(mockAccounts);
       mockStorage.getItem.mockImplementation((key) => {
         if (key === PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO) {
-          return Promise.resolve(JSON.stringify({
-            publicKey: '0xdef',
-            address: 'addr2',
-            name: 'Account 2',
-            source: 'test',
-          }));
+          return Promise.resolve(
+            JSON.stringify({
+              publicKey: '0xdef',
+              address: 'addr2',
+              name: 'Account 2',
+              source: 'test',
+            })
+          );
         }
         return Promise.resolve(null);
       });
@@ -315,11 +321,13 @@ describe('createLunoStore', () => {
       mockConnector.connect.mockResolvedValue(mockAccounts);
       mockStorage.getItem.mockImplementation((key) => {
         if (key === PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO) {
-          return Promise.resolve(JSON.stringify({
-            address: 'addr2',
-            name: 'Account 2',
-            source: 'test',
-          }));
+          return Promise.resolve(
+            JSON.stringify({
+              address: 'addr2',
+              name: 'Account 2',
+              source: 'test',
+            })
+          );
         }
         return Promise.resolve(null);
       });
@@ -374,8 +382,15 @@ describe('createLunoStore', () => {
         config: mockConfig,
         status: ConnectionStatus.Connected,
         activeConnector: mockConnector,
-        accounts: [{ publicKey: '0xabc', address: 'addr1', name: 'Account 1', meta: { source: 'test' } }],
-        account: { publicKey: '0xabc', address: 'addr1', name: 'Account 1', meta: { source: 'test' } },
+        accounts: [
+          { publicKey: '0xabc', address: 'addr1', name: 'Account 1', meta: { source: 'test' } },
+        ],
+        account: {
+          publicKey: '0xabc',
+          address: 'addr1',
+          name: 'Account 1',
+          meta: { source: 'test' },
+        },
       });
     });
 
@@ -447,9 +462,14 @@ describe('createLunoStore', () => {
         isApiReady: true,
         activeConnector: mockConnector,
         accounts: [
-          { publicKey: '0xabc', address: 'addr1', name: 'Account 1', meta: { source: 'test' } }
+          { publicKey: '0xabc', address: 'addr1', name: 'Account 1', meta: { source: 'test' } },
         ],
-        account: { publicKey: '0xabc', address: 'addr1', name: 'Account 1', meta: { source: 'test' } }
+        account: {
+          publicKey: '0xabc',
+          address: 'addr1',
+          name: 'Account 1',
+          meta: { source: 'test' },
+        },
       });
     });
 
@@ -469,9 +489,7 @@ describe('createLunoStore', () => {
 
       await store.switchChain('0x123');
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Already on chain 0x123')
-      );
+      expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Already on chain 0x123'));
       consoleSpy.mockRestore();
     });
 
@@ -510,7 +528,7 @@ describe('createLunoStore', () => {
     it('should handle API disconnect failure during chain switch', async () => {
       const mockApi = {
         status: 'connected',
-        disconnect: vi.fn().mockRejectedValue(new Error('Disconnect failed'))
+        disconnect: vi.fn().mockRejectedValue(new Error('Disconnect failed')),
       };
       useLunoStore.setState({ currentApi: mockApi });
 

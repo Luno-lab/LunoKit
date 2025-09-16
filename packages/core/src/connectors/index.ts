@@ -1,13 +1,12 @@
 export { BaseConnector } from './base';
-
-export { InjectConnector } from './inject';
 export { enkryptConnector } from './enkrypt';
-export { fearlessConnector } from './fearless'
+export { fearlessConnector } from './fearless';
+export { InjectConnector } from './inject';
+export { mimirConnector } from './mimir';
+export { novaConnector } from './nova';
+export { novaMobileConnector } from './novaMobile';
 export { polkadotjsConnector } from './polkadot-js';
 export { polkagateConnector } from './polkagate';
 export { subwalletConnector } from './subwallet';
 export { talismanConnector } from './talisman';
 export { walletConnectConnector } from './walletconnect';
-export { mimirConnector } from './mimir';
-export { novaConnector } from './nova';
-export { novaMobileConnector } from './novaMobile'

@@ -1,13 +1,12 @@
-import { expect, afterEach, describe, it, vi } from 'vitest';
-import { mockConfig, MockConnector } from '../test-utils';
-import { renderHook } from '../test-utils';
 import { act, waitFor } from '@testing-library/react';
-import { useConnect } from './useConnect';
-import { useSigner } from './useSigner';
-import { usePapiSigner } from './usePapiSigner';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { type MockConnector, mockConfig, renderHook } from '../test-utils';
 import { ConnectionStatus } from '../types';
+import { useAccount } from './useAccount';
+import { useConnect } from './useConnect';
 import { useDisconnect } from './useDisconnect';
-import { useAccount } from './useAccount'
+import { usePapiSigner } from './usePapiSigner';
+import { useSigner } from './useSigner';
 
 const connector = mockConfig.connectors[0] as MockConnector;
 
@@ -20,15 +19,18 @@ describe('usePapiSigner', () => {
   });
 
   it('should handle normal connection flow', async () => {
-    const { result } = renderHook(() => ({
-      useDisconnect: useDisconnect(),
-      useConnect: useConnect(),
-      useAccount: useAccount(),
-      useSigner: useSigner(),
-      usePapiSigner: usePapiSigner(),
-    }), {
-      config: mockConfig
-    });
+    const { result } = renderHook(
+      () => ({
+        useDisconnect: useDisconnect(),
+        useConnect: useConnect(),
+        useAccount: useAccount(),
+        useSigner: useSigner(),
+        usePapiSigner: usePapiSigner(),
+      }),
+      {
+        config: mockConfig,
+      }
+    );
 
     expect(result.current.useSigner.data).toBeUndefined();
     expect(result.current.useAccount.address).toBeUndefined();
@@ -36,7 +38,7 @@ describe('usePapiSigner', () => {
 
     await act(async () => {
       await result.current.useConnect.connectAsync({
-        connectorId: connector.id
+        connectorId: connector.id,
       });
     });
 
@@ -58,14 +60,17 @@ describe('usePapiSigner', () => {
   });
 
   it('should handle createPapiSigner failure', async () => {
-    const { result } = renderHook(() => ({
-      useConnect: useConnect(),
-      useSigner: useSigner(),
-      useAccount: useAccount(),
-      usePapiSigner: usePapiSigner(),
-    }), {
-      config: mockConfig
-    });
+    const { result } = renderHook(
+      () => ({
+        useConnect: useConnect(),
+        useSigner: useSigner(),
+        useAccount: useAccount(),
+        usePapiSigner: usePapiSigner(),
+      }),
+      {
+        config: mockConfig,
+      }
+    );
 
     const coreUtils = await import('@luno-kit/core/utils');
 
@@ -74,7 +79,7 @@ describe('usePapiSigner', () => {
 
     await act(async () => {
       await result.current.useConnect.connectAsync({
-        connectorId: connector.id
+        connectorId: connector.id,
       });
     });
 

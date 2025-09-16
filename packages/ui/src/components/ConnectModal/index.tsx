@@ -1,15 +1,16 @@
-import React, {useEffect, useMemo, useState} from 'react';
 import { useConnect } from '@luno-kit/react';
-import { Dialog, DialogClose, DialogTitle, ModalSize } from '../Dialog';
+import type { Connector } from '@luno-kit/react/types';
+import { isMobileDevice } from '@luno-kit/react/utils';
+import type React from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { Back, Close } from '../../assets/icons';
+import { useWindowSize } from '../../hooks';
+import { useAnimatedViews } from '../../hooks/useAnimatedViews';
+import { useConnectModal } from '../../providers';
 import { cs } from '../../utils';
-import { useConnectModal } from '../../providers'
-import type { Connector } from '@luno-kit/react/types'
-import { isMobileDevice } from '@luno-kit/react/utils'
-import { Back, Close } from '../../assets/icons'
-import { useWindowSize } from '../../hooks'
-import { WalletView } from './WalletView'
-import { useAnimatedViews } from '../../hooks/useAnimatedViews'
-import { ConnectOptions } from './ConnectOptions'
+import { Dialog, DialogClose, DialogTitle, type ModalSize } from '../Dialog';
+import { ConnectOptions } from './ConnectOptions';
+import { WalletView } from './WalletView';
 
 export enum ConnectModalView {
   connectOptions = 'Connect Wallet',
@@ -20,32 +21,30 @@ export interface ConnectModalProps {
   size?: ModalSize;
 }
 
-export const ConnectModal: React.FC<ConnectModalProps> = ({
-  size = 'wide',
-}) => {
+export const ConnectModal: React.FC<ConnectModalProps> = ({ size = 'wide' }) => {
   const { isOpen, close } = useConnectModal();
-  const { connectAsync, reset: resetConnect, isPending: isConnecting, isError: connectError } = useConnect()
-  const [selectedConnector, setSelectedConnector] = useState<Connector | null>(null)
-  const [qrCode, setQrCode] = useState<string | undefined>()
+  const {
+    connectAsync,
+    reset: resetConnect,
+    isPending: isConnecting,
+    isError: connectError,
+  } = useConnect();
+  const [selectedConnector, setSelectedConnector] = useState<Connector | null>(null);
+  const [qrCode, setQrCode] = useState<string | undefined>();
 
-  const { width: windowWidth } = useWindowSize()
+  const { width: windowWidth } = useWindowSize();
 
   const isLargeWindow = windowWidth && windowWidth > 768;
   const isWide = !!(size === 'wide' && isLargeWindow);
 
-  const {
-    containerRef,
-    currentViewRef,
-    resetView,
-    handleViewChange,
-    currentView,
-  } = useAnimatedViews({ initialView: ConnectModalView.connectOptions })
+  const { containerRef, currentViewRef, resetView, handleViewChange, currentView } =
+    useAnimatedViews({ initialView: ConnectModalView.connectOptions });
 
   const onQrCode = async (connector: Connector) => {
-    const uri = await connector.getConnectionUri()
+    const uri = await connector.getConnectionUri();
 
-    setQrCode(uri)
-  }
+    setQrCode(uri);
+  };
 
   const handleConnect = async (connector: Connector) => {
     if (isMobileDevice() && connector.links.deepLink) {
@@ -59,23 +58,23 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
       }
     }
 
-    !isWide && handleViewChange(ConnectModalView.walletView)
-    setSelectedConnector(connector)
-    setQrCode(undefined)
+    !isWide && handleViewChange(ConnectModalView.walletView);
+    setSelectedConnector(connector);
+    setQrCode(undefined);
     if (connector.hasConnectionUri()) {
-      onQrCode(connector)
+      onQrCode(connector);
     }
-    await connectAsync({ connectorId: connector.id })
-    _onOpenChange(false)
-  }
+    await connectAsync({ connectorId: connector.id });
+    _onOpenChange(false);
+  };
 
   const _onOpenChange = (open: boolean) => {
-    !open && close()
-    resetConnect()
-    resetView()
-    setSelectedConnector(null)
-    setQrCode(undefined)
-  }
+    !open && close();
+    resetConnect();
+    resetView();
+    setSelectedConnector(null);
+    setQrCode(undefined);
+  };
 
   const viewComponents = useMemo(() => {
     return {
@@ -86,10 +85,11 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
           isWide={isWide}
           selectedConnector={selectedConnector}
           qrCode={qrCode}
-          onConnect={handleConnect} />
+          onConnect={handleConnect}
+        />
       ),
-    }
-  }, [isWide, selectedConnector, qrCode, handleConnect, isConnecting, connectError])
+    };
+  }, [isWide, selectedConnector, qrCode, handleConnect, isConnecting, connectError]);
 
   useEffect(() => {
     if (isWide && currentView === ConnectModalView.walletView) {
@@ -99,16 +99,29 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={_onOpenChange}>
-      <div className={cs('flex items-stretch justify-between w-full md:max-h-[504px] md:max-w-[724px]')}>
-        <div className={cs(
-          'flex flex-col items-start py-4 px-5 w-full md:w-auto',
-          isWide ? 'md:min-w-[300px] border-r-[1px] border-r-solid border-r-separatorLine' : 'md:min-w-[360px]'
-        )}>
+      <div
+        className={cs(
+          'flex items-stretch justify-between w-full md:max-h-[504px] md:max-w-[724px]'
+        )}
+      >
+        <div
+          className={cs(
+            'flex flex-col items-start py-4 px-5 w-full md:w-auto',
+            isWide
+              ? 'md:min-w-[300px] border-r-[1px] border-r-solid border-r-separatorLine'
+              : 'md:min-w-[360px]'
+          )}
+        >
           <div className={cs('flex items-center justify-between w-full', !isWide && 'pb-4')}>
             {currentView === ConnectModalView.connectOptions ? (
               <>
                 {!isWide && <div className="w-[30px] h-[30px]" aria-hidden />}
-                <DialogTitle className={cs('text-lg leading-lg text-modalText font-bold', isWide ? 'pb-6' : 'flex-1 text-center')}>
+                <DialogTitle
+                  className={cs(
+                    'text-lg leading-lg text-modalText font-bold',
+                    isWide ? 'pb-6' : 'flex-1 text-center'
+                  )}
+                >
                   Connect Wallet
                 </DialogTitle>
               </>
@@ -119,12 +132,13 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
                   onClick={() => handleViewChange(ConnectModalView.connectOptions)}
                   aria-label="Back"
                 >
-                  <Back  />
+                  <Back />
                 </button>
                 <DialogTitle
                   className={cs(
-                    'text-lg leading-lg text-modalText font-semibold transition-opacity duration-300',
-                  )}>
+                    'text-lg leading-lg text-modalText font-semibold transition-opacity duration-300'
+                  )}
+                >
                   {selectedConnector?.name}
                 </DialogTitle>
               </>
@@ -132,29 +146,30 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
             {!isWide && (
               <DialogClose
-                className={'z-10 w-[30px] h-[30px] flex items-center justify-center cursor-pointer rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover  transition-colors duration-200'}>
-                <Close/>
+                className={
+                  'z-10 w-[30px] h-[30px] flex items-center justify-center cursor-pointer rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover  transition-colors duration-200'
+                }
+              >
+                <Close />
               </DialogClose>
             )}
           </div>
-          <div
-            ref={containerRef}
-            className="relative overflow-hidden w-full">
-            <div ref={currentViewRef}>
-              {viewComponents[currentView]}
-            </div>
+          <div ref={containerRef} className="relative overflow-hidden w-full">
+            <div ref={currentViewRef}>{viewComponents[currentView]}</div>
           </div>
 
           {!isWide && currentView === ConnectModalView.connectOptions && (
             <>
-               <p
-                className={'cursor-pointer w-full pt-4 text-sm leading-sm text-accentColor font-medium text-center hover:text-modalText'}
-                onClick={() => window.open('https://polkadot.com/get-started/wallets/')}>
+              <p
+                className={
+                  'cursor-pointer w-full pt-4 text-sm leading-sm text-accentColor font-medium text-center hover:text-modalText'
+                }
+                onClick={() => window.open('https://polkadot.com/get-started/wallets/')}
+              >
                 New to wallets?
               </p>
             </>
           )}
-
         </div>
 
         {isWide && (

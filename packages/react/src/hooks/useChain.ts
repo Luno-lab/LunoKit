@@ -1,5 +1,5 @@
 import type { Chain } from '../types';
-import {useLuno} from './useLuno'
+import { useLuno } from './useLuno';
 
 export interface UseChainResult {
   chain?: Chain;

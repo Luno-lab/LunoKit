@@ -1,12 +1,12 @@
 import type {
-  CreateConfigParameters,
-  Config,
   Chain,
+  Config,
   Connector,
-  Transport,
+  CreateConfigParameters,
   RawStorage,
+  Transport,
 } from '../types';
-import { createStorage } from './createStorage'
+import { createStorage } from './createStorage';
 
 const noopStorage: RawStorage = {
   getItem: async (_key: string) => null,
@@ -15,9 +15,7 @@ const noopStorage: RawStorage = {
 };
 
 const defaultLunoStorage = createStorage({
-  storage: typeof window !== 'undefined' && window.localStorage
-    ? window.localStorage
-    : noopStorage,
+  storage: typeof window !== 'undefined' && window.localStorage ? window.localStorage : noopStorage,
   keyPrefix: 'luno.',
 });
 
@@ -29,7 +27,9 @@ function generateTransportsFromChains(chains: readonly Chain[]): Record<string, 
     if (wsUrl) {
       transports[chain.genesisHash] = wsUrl;
     } else {
-      console.warn(`No WebSocket URL found for chain "${chain.name}" (${chain.genesisHash}). Skipping transport generation.`);
+      console.warn(
+        `No WebSocket URL found for chain "${chain.name}" (${chain.genesisHash}). Skipping transport generation.`
+      );
     }
   }
 
@@ -64,7 +64,9 @@ export function createConfig(parameters: CreateConfigParameters): Config {
   if (chains.length > 0) {
     for (const chain of chains) {
       if (!finalTransports[chain.genesisHash]) {
-        console.warn(`Missing transport for chain "${chain.name}" (genesisHash: ${chain.genesisHash}). Chain functionality may be limited.`);
+        console.warn(
+          `Missing transport for chain "${chain.name}" (genesisHash: ${chain.genesisHash}). Chain functionality may be limited.`
+        );
       }
     }
   }

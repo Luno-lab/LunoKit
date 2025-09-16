@@ -1,6 +1,6 @@
+import { isSameAddress } from '@luno-kit/core/utils';
 import { useLuno } from './useLuno';
-import { useLunoMutation, type LunoMutationOptions } from './useLunoMutation';
-import { isSameAddress } from '@luno-kit/core/utils'
+import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
 
 export interface SignMessageVariables {
   message: string;
@@ -20,10 +20,7 @@ export type UseSignMessageOptions = LunoMutationOptions<
 >;
 
 export interface UseSignMessageResult {
-  signMessage: (
-    variables: SignMessageVariables,
-    options?: UseSignMessageOptions
-  ) => void;
+  signMessage: (variables: SignMessageVariables, options?: UseSignMessageOptions) => void;
   signMessageAsync: (
     variables: SignMessageVariables,
     options?: UseSignMessageOptions
@@ -39,14 +36,10 @@ export interface UseSignMessageResult {
   variables: SignMessageVariables | undefined;
 }
 
-export function useSignMessage(
-  hookLevelConfig?: UseSignMessageOptions
-): UseSignMessageResult {
+export function useSignMessage(hookLevelConfig?: UseSignMessageOptions): UseSignMessageResult {
   const { activeConnector, account, accounts } = useLuno();
 
-  const mutationFn = async (
-    variables: SignMessageVariables
-  ): Promise<SignMessageData> => {
+  const mutationFn = async (variables: SignMessageVariables): Promise<SignMessageData> => {
     if (!activeConnector) {
       throw new Error('[useSignMessage]: No active connector found to sign the message.');
     }
@@ -54,21 +47,26 @@ export function useSignMessage(
       throw new Error('[useSignMessage]: No address provided for signing.');
     }
 
-    if (!accounts.some(acc => acc.address === account.address)) {
-      throw new Error(`[useSignMessage]: Address ${account.address} is not managed by ${activeConnector.id}.`);
+    if (!accounts.some((acc) => acc.address === account.address)) {
+      throw new Error(
+        `[useSignMessage]: Address ${account.address} is not managed by ${activeConnector.id}.`
+      );
     }
 
     if (!variables.message) {
       throw new Error('[useSignMessage]: No message provided for signing.');
     }
 
-    const validAccount = accounts.find(acc => isSameAddress(acc.address, account.address))
+    const validAccount = accounts.find((acc) => isSameAddress(acc.address, account.address));
 
     if (!validAccount) {
       throw new Error('[useSignMessage]: Invalid account address.');
     }
 
-    const signatureString = await activeConnector.signMessage(variables.message, validAccount.address);
+    const signatureString = await activeConnector.signMessage(
+      variables.message,
+      validAccount.address
+    );
 
     if (!signatureString) {
       throw new Error(
@@ -78,16 +76,14 @@ export function useSignMessage(
     return {
       signature: signatureString,
       rawMessage: variables.message,
-      addressUsed: account.address ,
+      addressUsed: account.address,
     };
   };
 
-  const mutationResult = useLunoMutation<
-    SignMessageData,
-    Error,
-    SignMessageVariables,
-    unknown
-  >(mutationFn, hookLevelConfig);
+  const mutationResult = useLunoMutation<SignMessageData, Error, SignMessageVariables, unknown>(
+    mutationFn,
+    hookLevelConfig
+  );
 
   return {
     signMessage: mutationResult.mutate,

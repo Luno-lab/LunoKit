@@ -1,7 +1,6 @@
-import { decodeAddress, encodeAddress } from 'dedot/utils';
+import type { InjectedAccount } from 'dedot/types';
+import { decodeAddress, encodeAddress, u8aEq, u8aToHex } from 'dedot/utils';
 import type { Account, HexString } from '../types';
-import { u8aEq, u8aToHex } from 'dedot/utils'
-import type { InjectedAccount } from 'dedot/types'
 
 /**
  * check if address is valid
@@ -36,7 +35,7 @@ export function isSameAddress(address1: string, address2: string): boolean {
     const publicKey1 = decodeAddress(address1);
     const publicKey2 = decodeAddress(address2);
 
-    return u8aEq(publicKey1, publicKey2)
+    return u8aEq(publicKey1, publicKey2);
   } catch (error: any) {
     return false;
   }
@@ -61,8 +60,11 @@ export function getPublicKey(address: string): Uint8Array {
  * map injected accounts to internal Account type
  * mainly extract address, name, source, and try to decode public key
  */
-export function mapInjectedAccounts(injectedAccounts: InjectedAccount[], sourceId: string): Account[] {
-  if (!injectedAccounts) return []
+export function mapInjectedAccounts(
+  injectedAccounts: InjectedAccount[],
+  sourceId: string
+): Account[] {
+  if (!injectedAccounts) return [];
 
   try {
     return injectedAccounts.map((acc: InjectedAccount) => {
@@ -82,7 +84,7 @@ export function mapInjectedAccounts(injectedAccounts: InjectedAccount[], sourceI
           source: sourceId,
           genesisHash: acc.genesisHash,
         },
-        type: acc.type
+        type: acc.type,
       };
 
       return mappedAccount;

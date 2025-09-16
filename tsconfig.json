@@ -10,9 +10,7 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
-    "typeRoots": [
-      "./node_modules/@types",
-    ],
+    "typeRoots": ["./node_modules/@types"],
     "verbatimModuleSyntax": false,
     "preserveSymlinks": true
   },

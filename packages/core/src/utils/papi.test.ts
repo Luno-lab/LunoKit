@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createPapiSigner } from './papi';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Signer } from '../types';
+import { createPapiSigner } from './papi';
 
 vi.mock('@polkadot-api/pjs-signer', () => {
   return {
@@ -10,9 +10,9 @@ vi.mock('@polkadot-api/pjs-signer', () => {
         signPayload,
         signRaw,
         publicKey: new Uint8Array([1, 2, 3]),
-        sign: vi.fn().mockResolvedValue(new Uint8Array([4, 5, 6]))
+        sign: vi.fn().mockResolvedValue(new Uint8Array([4, 5, 6])),
       };
-    })
+    }),
   };
 });
 
@@ -23,7 +23,7 @@ describe('createPapiSigner', () => {
   beforeEach(() => {
     mockSigner = {
       signPayload: vi.fn().mockResolvedValue({ signature: '0xsignature' }),
-      signRaw: vi.fn().mockResolvedValue({ signature: '0xrawsignature' })
+      signRaw: vi.fn().mockResolvedValue({ signature: '0xrawsignature' }),
     };
 
     vi.clearAllMocks();

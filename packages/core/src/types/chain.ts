@@ -1,4 +1,4 @@
-import { HexString } from './account'
+import type { HexString } from './account';
 
 export interface Chain {
   genesisHash: HexString;
@@ -23,8 +23,7 @@ export interface Chain {
     [key: string]: { name: string; url: string } | undefined;
   };
 
-
   testnet: boolean;
 
-  chainIconUrl: string
+  chainIconUrl: string;
 }

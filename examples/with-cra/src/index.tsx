@@ -1,13 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import { createConfig } from '@luno-kit/react';
+import { kusama, polkadot, westend } from '@luno-kit/react/chains';
+import {
+  novaConnector,
+  polkadotjsConnector,
+  polkagateConnector,
+  subwalletConnector,
+  talismanConnector,
+  walletConnectConnector,
+} from '@luno-kit/react/connectors';
+import { LunoKitProvider } from '@luno-kit/ui';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { createConfig } from '@luno-kit/react'
-import { polkagateConnector, polkadotjsConnector, subwalletConnector, talismanConnector, novaConnector, walletConnectConnector } from '@luno-kit/react/connectors'
-import { polkadot, kusama, westend } from '@luno-kit/react/chains'
-import { LunoKitProvider } from '@luno-kit/ui'
-import '@luno-kit/ui/styles.css'
+import '@luno-kit/ui/styles.css';
 
 const connectors = [
   polkadotjsConnector(),
@@ -16,7 +23,7 @@ const connectors = [
   polkagateConnector(),
   walletConnectConnector({ projectId: process.env.REACT_APP_WALLET_CONNECT_ID }),
   novaConnector({ projectId: process.env.REACT_APP_WALLET_CONNECT_ID }),
-]
+];
 
 const lunoConfig = createConfig({
   appName: 'luno with-vite example',
@@ -25,9 +32,7 @@ const lunoConfig = createConfig({
   autoConnect: true,
 });
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
     <LunoKitProvider config={lunoConfig}>

@@ -1,6 +1,6 @@
-import type { KeypairType } from 'dedot/types'
+import type { KeypairType } from 'dedot/types';
 
-export type HexString = `0x${string}`
+export type HexString = `0x${string}`;
 
 /**
  * Polkadot account interface
@@ -36,7 +36,7 @@ export interface Account {
     /** other custom metadata */
     [key: string]: any;
   };
-  type?: KeypairType
+  type?: KeypairType;
 }
 
 /**

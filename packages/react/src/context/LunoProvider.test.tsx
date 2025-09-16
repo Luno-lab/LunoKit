@@ -1,15 +1,15 @@
-import { render, waitFor } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import React from 'react';
-import { LunoProvider } from './LunoProvider';
-import type { Chain, Config } from '@luno-kit/core/types';
-import { BaseConnector } from '@luno-kit/core/connectors';
 import { createConfig } from '@luno-kit/core';
+import { BaseConnector } from '@luno-kit/core/connectors';
+import type { Chain, Config } from '@luno-kit/core/types';
+import { render, waitFor } from '@testing-library/react';
+import React from 'react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { useIsInitialized } from '../hooks/useIsInitialized';
+import { useLunoStore } from '../store';
 import type { LunoState } from '../types';
-import { ConnectionStatus } from '../types'
+import { ConnectionStatus } from '../types';
 import { createApi, sleep } from '../utils';
-import { useIsInitialized } from '../hooks/useIsInitialized'
-import { useLunoStore } from '../store'
+import { LunoProvider } from './LunoProvider';
 
 vi.mock('../utils/createApi');
 vi.mock('../hooks/useIsInitialized');
@@ -17,7 +17,7 @@ vi.mock('../store');
 
 vi.mock('../utils', () => ({
   createApi: vi.fn(),
-  sleep: vi.fn().mockResolvedValue(undefined)
+  sleep: vi.fn().mockResolvedValue(undefined),
 }));
 
 const mockCreateApi = vi.mocked(createApi);
@@ -43,7 +43,7 @@ const mockApi = {
     },
   },
   runtimeVersion: {
-    specName: 'Test Chain'
+    specName: 'Test Chain',
   },
 };
 
@@ -52,12 +52,22 @@ class DummyConnector extends BaseConnector {
   name = 'Test Connector';
   icon = 'test-icon.svg';
   isInstalled = () => true;
-  async isAvailable() { return true; }
-  async connect() { return []; }
+  async isAvailable() {
+    return true;
+  }
+  async connect() {
+    return [];
+  }
   async disconnect() {}
-  async getAccounts() { return []; }
-  async getSigner() { return undefined; }
-  async signMessage() { return undefined; }
+  async getAccounts() {
+    return [];
+  }
+  async getSigner() {
+    return undefined;
+  }
+  async signMessage() {
+    return undefined;
+  }
 }
 
 const mockConnector = new DummyConnector();
@@ -109,7 +119,6 @@ describe('LunoProvider', () => {
   let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
-
     mockMarkAsInitialized = vi.fn();
     mockApi.disconnect = vi.fn().mockResolvedValue(undefined);
 
@@ -137,7 +146,6 @@ describe('LunoProvider', () => {
     consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     vi.clearAllMocks();
-
   });
 
   afterEach(() => {
@@ -238,7 +246,6 @@ describe('LunoProvider', () => {
         </LunoProvider>
       );
 
-
       await waitFor(() => {
         console.error('All console.log calls:', consoleLogSpy.mock.calls);
 
@@ -269,11 +276,14 @@ describe('LunoProvider', () => {
 
       expect(mockSleep).toHaveBeenCalledWith(500);
 
-      await waitFor(() => {
-        expect(mockStorage.getItem).toHaveBeenCalledWith('lastConnectorId');
-        expect(mockStorage.getItem).toHaveBeenCalledWith('lastChainId');
-        expect(mockStore.connect).toHaveBeenCalledWith('test-connector', '0x123');
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(mockStorage.getItem).toHaveBeenCalledWith('lastConnectorId');
+          expect(mockStorage.getItem).toHaveBeenCalledWith('lastChainId');
+          expect(mockStore.connect).toHaveBeenCalledWith('test-connector', '0x123');
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should not attempt auto-connect when disabled', async () => {
@@ -356,7 +366,9 @@ describe('LunoProvider', () => {
 
       await waitFor(() => {
         expect(consoleLogSpy).toHaveBeenCalledWith(
-          expect.stringContaining('[LunoProvider]: AutoConnect No persisted session found or missing data.')
+          expect.stringContaining(
+            '[LunoProvider]: AutoConnect No persisted session found or missing data.'
+          )
         );
       });
     });

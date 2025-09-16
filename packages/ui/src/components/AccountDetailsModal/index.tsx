@@ -1,15 +1,16 @@
-import React, { useCallback, useMemo } from 'react';
 import { useAccount, useActiveConnector } from '@luno-kit/react';
-import { Dialog, DialogClose, DialogTitle } from '../Dialog';
-import { cs } from '../../utils';
+import { formatAddress } from '@luno-kit/react/utils';
+import type React from 'react';
+import { useCallback, useMemo } from 'react';
+import { Back, Close } from '../../assets/icons';
+import { useAnimatedViews } from '../../hooks/useAnimatedViews';
 import { useAccountModal } from '../../providers';
-import { Close, Back } from '../../assets/icons';
+import { cs } from '../../utils';
+import { Copy } from '../Copy';
+import { Dialog, DialogClose, DialogTitle } from '../Dialog';
 import { MainView } from './MainView';
 import { SwitchAccountView } from './SwitchAccountView';
 import { SwitchChainView } from './SwitchChainView';
-import { Copy } from '../Copy'
-import { formatAddress } from '@luno-kit/react/utils'
-import { useAnimatedViews } from '../../hooks/useAnimatedViews'
 
 export enum AccountModalView {
   main = 'main',
@@ -20,15 +21,10 @@ export enum AccountModalView {
 export const AccountDetailsModal: React.FC = () => {
   const { isOpen, close } = useAccountModal();
   const { address, account } = useAccount();
-  const activeConnector = useActiveConnector()
+  const activeConnector = useActiveConnector();
 
-  const {
-    currentView,
-    containerRef,
-    currentViewRef,
-    handleViewChange,
-    resetView
-  } = useAnimatedViews({ initialView: AccountModalView.main });
+  const { currentView, containerRef, currentViewRef, handleViewChange, resetView } =
+    useAnimatedViews({ initialView: AccountModalView.main });
 
   const handleModalClose = useCallback(() => {
     close();
@@ -41,51 +37,52 @@ export const AccountDetailsModal: React.FC = () => {
     return null;
   }, [currentView]);
 
-  const viewComponents = useMemo(() => ({
-    [AccountModalView.main]: (
-      <MainView
-        onViewChange={handleViewChange}
-        onModalClose={handleModalClose}
-      />
-    ),
-    [AccountModalView.switchAccount]: (
-      <SwitchAccountView onBack={() => handleViewChange(AccountModalView.main)} />
-    ),
-    [AccountModalView.switchChain]: (
-      <SwitchChainView onBack={() => handleViewChange(AccountModalView.main)} />
-    )
-  }), [handleViewChange, handleModalClose]);
+  const viewComponents = useMemo(
+    () => ({
+      [AccountModalView.main]: (
+        <MainView onViewChange={handleViewChange} onModalClose={handleModalClose} />
+      ),
+      [AccountModalView.switchAccount]: (
+        <SwitchAccountView onBack={() => handleViewChange(AccountModalView.main)} />
+      ),
+      [AccountModalView.switchChain]: (
+        <SwitchChainView onBack={() => handleViewChange(AccountModalView.main)} />
+      ),
+    }),
+    [handleViewChange, handleModalClose]
+  );
 
   return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={handleModalClose}
-    >
-      <div className={cs(
-        'flex flex-col w-full md:w-[360px] max-h-[500px] text-modalText',
-        'bg-modalBackground shadow-modal',
-        currentView === AccountModalView.main ? 'gap-6' : 'gap-3.5'
-      )}>
+    <Dialog open={isOpen} onOpenChange={handleModalClose}>
+      <div
+        className={cs(
+          'flex flex-col w-full md:w-[360px] max-h-[500px] text-modalText',
+          'bg-modalBackground shadow-modal',
+          currentView === AccountModalView.main ? 'gap-6' : 'gap-3.5'
+        )}
+      >
         <div className="flex items-stretch justify-between w-full px-4 pt-4">
           {currentView === AccountModalView.main ? (
             <div className={'flex items-center gap-3 max-w-[80%]'}>
               {activeConnector?.icon && (
                 <div className={'flex items-center justify-center w-[48px] h-[48px] shrink-0'}>
-                  <img src={activeConnector.icon} alt="" className="w-full h-full object-contain"/>
+                  <img src={activeConnector.icon} alt="" className="w-full h-full object-contain" />
                 </div>
               )}
               <div className="flex flex-col items-start gap-1 max-w-full">
                 <DialogTitle className={'sr-only'}>Account Details</DialogTitle>
                 <div className="flex items-center gap-1.5 w-full">
-                <span className="text-base text-modalText font-semibold">
-                  {formatAddress(address)}
-                </span>
-                  <Copy copyText={address}/>
+                  <span className="text-base text-modalText font-semibold">
+                    {formatAddress(address)}
+                  </span>
+                  <Copy copyText={address} />
                 </div>
-                <div className={cs(
-                  "text-xs leading-xs text-modalTextSecondary font-medium text-ellipsis overflow-hidden whitespace-nowrap",
-                  account?.name && account?.name.length > 30 ? 'w-[90%]' : ''
-                )}>
+                <div
+                  className={cs(
+                    'text-xs leading-xs text-modalTextSecondary font-medium text-ellipsis overflow-hidden whitespace-nowrap',
+                    account?.name && account?.name.length > 30 ? 'w-[90%]' : ''
+                  )}
+                >
                   {account?.name || activeConnector?.name}
                 </div>
               </div>
@@ -97,10 +94,9 @@ export const AccountDetailsModal: React.FC = () => {
                 onClick={() => handleViewChange(AccountModalView.main)}
                 aria-label="Back"
               >
-                <Back  />
+                <Back />
               </button>
-              <DialogTitle
-                className="text-lg leading-lg text-modalText font-semibold transition-opacity duration-300">
+              <DialogTitle className="text-lg leading-lg text-modalText font-semibold transition-opacity duration-300">
                 {viewTitle}
               </DialogTitle>
             </>
@@ -111,13 +107,8 @@ export const AccountDetailsModal: React.FC = () => {
           </DialogClose>
         </div>
 
-        <div
-          ref={containerRef}
-          className="relative overflow-hidden"
-        >
-          <div ref={currentViewRef}>
-            {viewComponents[currentView]}
-          </div>
+        <div ref={containerRef} className="relative overflow-hidden">
+          <div ref={currentViewRef}>{viewComponents[currentView]}</div>
         </div>
       </div>
     </Dialog>

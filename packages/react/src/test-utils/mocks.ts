@@ -1,7 +1,7 @@
-import { createConfig } from '@luno-kit/core'
-import { kusama, polkadot } from '@luno-kit/core/chains'
+import { createConfig } from '@luno-kit/core';
+import { kusama, polkadot } from '@luno-kit/core/chains';
 import { BaseConnector } from '@luno-kit/core/connectors';
-import type { Account, Signer, Chain } from '@luno-kit/core/types';
+import type { Account, Chain, Signer } from '@luno-kit/core/types';
 import { vi } from 'vitest';
 
 const DEFAULT_MOCK_ACCOUNTS: Account[] = [
@@ -9,14 +9,14 @@ const DEFAULT_MOCK_ACCOUNTS: Account[] = [
     address: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
     publicKey: '0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d',
     name: 'Alice (Mock)',
-    meta: { source: 'mock-connector' }
+    meta: { source: 'mock-connector' },
   },
   {
     address: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
     publicKey: '0x8eaf04151687736326c9fea17e25fc5287613693c912909cb226aa4794f26a48',
     name: 'Bob (Mock)',
-    meta: { source: 'mock-connector' }
-  }
+    meta: { source: 'mock-connector' },
+  },
 ];
 
 export class MockConnector extends BaseConnector {
@@ -86,9 +86,8 @@ export class MockConnector extends BaseConnector {
 
 export const mockConfig = createConfig({
   chains: [polkadot, kusama],
-  connectors: [new MockConnector()]
+  connectors: [new MockConnector()],
 });
-
 
 export function createMockApi(options: { chain: Chain }) {
   return {
@@ -104,14 +103,18 @@ export function createMockApi(options: { chain: Chain }) {
     query: {
       system: {
         account: vi.fn().mockImplementation((address, callback) => {
-          setTimeout(() => callback({
-            data: {
-              free: '1000000000000',
-              reserved: '0',
-              miscFrozen: '0',
-              feeFrozen: '0',
-            }
-          }), 0);
+          setTimeout(
+            () =>
+              callback({
+                data: {
+                  free: '1000000000000',
+                  reserved: '0',
+                  miscFrozen: '0',
+                  feeFrozen: '0',
+                },
+              }),
+            0
+          );
           return Promise.resolve(() => Promise.resolve());
         }),
         events: vi.fn().mockImplementation((callback) => {
@@ -134,25 +137,29 @@ export function createMockApi(options: { chain: Chain }) {
     consts: {
       system: {
         ss58Prefix: options.chain?.ss58Format ?? 42,
-      }
+      },
     },
     queryMulti: vi.fn().mockImplementation((queries, callback) => {
-      setTimeout(() => callback([
-        {
-          data: {
-            free: '1000000000000',
-            reserved: '0',
-            frozen: '0'
-          }
-        },
-        [
-          {
-            id: 'vesting',
-            amount: '1000000000',
-            reasons: 'misc'
-          }
-        ]
-      ]), 0);
+      setTimeout(
+        () =>
+          callback([
+            {
+              data: {
+                free: '1000000000000',
+                reserved: '0',
+                frozen: '0',
+              },
+            },
+            [
+              {
+                id: 'vesting',
+                amount: '1000000000',
+                reasons: 'misc',
+              },
+            ],
+          ]),
+        0
+      );
       return Promise.resolve(() => Promise.resolve());
     }),
     getRuntimeVersion: vi.fn().mockResolvedValue({

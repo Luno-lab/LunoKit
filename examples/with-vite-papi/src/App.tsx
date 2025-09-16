@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { ConnectButton, useLunoTheme } from '@luno-kit/ui';
 import {
+  ConnectionStatus,
   useAccount,
   useAccounts,
   useDisconnect,
+  usePapiSigner,
   useStatus,
-  ConnectionStatus,
-  usePapiSigner
 } from '@luno-kit/react';
+import { ConnectButton, useLunoTheme } from '@luno-kit/ui';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { usePapiClient } from './hooks/usePapiClient';
 import './App.css';
 import { toHex } from 'polkadot-api/utils';
@@ -37,7 +38,7 @@ const App: React.FC = () => {
   const [detailedStatus, setDetailedStatus] = useState('');
   const [transferForm, setTransferForm] = useState({
     to: '',
-    amount: ''
+    amount: '',
   });
 
   const showNotification = (title: string, message?: string) => {
@@ -63,7 +64,10 @@ const App: React.FC = () => {
       setSignMessageData({ signature: toHex(signature) });
       showNotification('Signature successful', toHex(signature));
     } catch (error) {
-      showNotification('Signature failed', error instanceof Error ? error.message : 'Unknown error');
+      showNotification(
+        'Signature failed',
+        error instanceof Error ? error.message : 'Unknown error'
+      );
     }
   };
 
@@ -94,14 +98,20 @@ const App: React.FC = () => {
       setTransactionData(result);
 
       if (result.status === 'success') {
-        showNotification('Transfer successful', `TxHash: ${result.transactionHash.slice(0, 10)}...`);
+        showNotification(
+          'Transfer successful',
+          `TxHash: ${result.transactionHash.slice(0, 10)}...`
+        );
         setTransferForm({ to: '', amount: '' });
       } else {
         showNotification('Transfer failed', result.errorMessage!);
       }
     } catch (error) {
       setDetailedStatus(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      showNotification('Transfer failed', error instanceof Error ? error.message : 'An error occurred during the transfer process.');
+      showNotification(
+        'Transfer failed',
+        error instanceof Error ? error.message : 'An error occurred during the transfer process.'
+      );
     } finally {
       setIsSendingTransaction(false);
     }
@@ -119,14 +129,14 @@ const App: React.FC = () => {
       <section className="hero">
         <div className="hero-content">
           <div className="hero-icon">
-            <img src="/favicon-96x96.png" alt=""/>
+            <img src="/favicon-96x96.png" alt="" />
           </div>
           <h1>Luno Wallet Kit with PAPI</h1>
           <p className="hero-subtitle">
             Using Polkadot-API (PAPI) with LunoKit for React applications
           </p>
           <div className="hero-connect">
-            <ConnectButton/>
+            <ConnectButton />
           </div>
         </div>
       </section>
@@ -146,12 +156,20 @@ const App: React.FC = () => {
                 <div className="theme-section">
                   <div className="status-item">
                     <span className="label">Current Theme:</span>
-                    <span className="value">{themeMode.charAt(0).toUpperCase() + themeMode.slice(1)}</span>
+                    <span className="value">
+                      {themeMode.charAt(0).toUpperCase() + themeMode.slice(1)}
+                    </span>
                   </div>
                   <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                    <button className="chain-switch-btn" onClick={() => setThemeChoice('light')}>Light Theme</button>
-                    <button className="chain-switch-btn" onClick={() => setThemeChoice('dark')}>Dark Theme</button>
-                    <button className="chain-switch-btn" onClick={() => setThemeChoice('auto')}>Auto Mode</button>
+                    <button className="chain-switch-btn" onClick={() => setThemeChoice('light')}>
+                      Light Theme
+                    </button>
+                    <button className="chain-switch-btn" onClick={() => setThemeChoice('dark')}>
+                      Dark Theme
+                    </button>
+                    <button className="chain-switch-btn" onClick={() => setThemeChoice('auto')}>
+                      Auto Mode
+                    </button>
                   </div>
                 </div>
               </div>
@@ -222,8 +240,8 @@ const App: React.FC = () => {
                     {availableChains && availableChains.length > 1 && (
                       <div className="chain-list">
                         {availableChains
-                          .filter(c => c.id !== currentChain.id)
-                          .map(chain => (
+                          .filter((c) => c.id !== currentChain.id)
+                          .map((chain) => (
                             <button
                               key={chain.id}
                               className="chain-switch-btn"
@@ -251,11 +269,9 @@ const App: React.FC = () => {
                 {address ? (
                   <div className="balance-info">
                     <div className="balance-amount">
-                      {(loadingBalance || !isReady) ? 'loading...' : balance?.formattedTotal}
+                      {loadingBalance || !isReady ? 'loading...' : balance?.formattedTotal}
                     </div>
-                    <div className="balance-symbol">
-                      {currentChain?.nativeCurrency.symbol}
-                    </div>
+                    <div className="balance-symbol">{currentChain?.nativeCurrency.symbol}</div>
                   </div>
                 ) : (
                   <span className="no-data">Connect wallet first</span>
@@ -277,8 +293,8 @@ const App: React.FC = () => {
                     {accounts.length > 1 && (
                       <div className="account-list">
                         {accounts
-                          .filter(acc => acc.publicKey !== account.publicKey)
-                          .map(acc => (
+                          .filter((acc) => acc.publicKey !== account.publicKey)
+                          .map((acc) => (
                             <button
                               key={acc.publicKey as string}
                               className="account-switch-btn"
@@ -305,10 +321,7 @@ const App: React.FC = () => {
               <div className="card-content">
                 {status === ConnectionStatus.Connected ? (
                   <div className="sign-section">
-                    <button
-                      className="sign-btn"
-                      onClick={handleSignMessage}
-                    >
+                    <button className="sign-btn" onClick={handleSignMessage}>
                       Sign Test Message
                     </button>
                     {signMessageData && (
@@ -343,23 +356,34 @@ const App: React.FC = () => {
                           className="form-input"
                           placeholder="..."
                           value={transferForm.to}
-                          onChange={(e) => setTransferForm(prev => ({ ...prev, to: e.target.value }))}
+                          onChange={(e) =>
+                            setTransferForm((prev) => ({ ...prev, to: e.target.value }))
+                          }
                         />
                       </div>
                       <div className="form-group">
-                        <label className="form-label">Amount ({currentChain?.nativeCurrency.symbol}):</label>
+                        <label className="form-label">
+                          Amount ({currentChain?.nativeCurrency.symbol}):
+                        </label>
                         <input
                           type="text"
                           className="form-input"
                           placeholder="1.0"
                           value={transferForm.amount}
-                          onChange={(e) => setTransferForm(prev => ({ ...prev, amount: e.target.value }))}
+                          onChange={(e) =>
+                            setTransferForm((prev) => ({ ...prev, amount: e.target.value }))
+                          }
                         />
                       </div>
                       <button
                         className="transfer-btn"
                         onClick={handleSendTransaction}
-                        disabled={!transferForm.to || !transferForm.amount || !isReady || isSendingTransaction}
+                        disabled={
+                          !transferForm.to ||
+                          !transferForm.amount ||
+                          !isReady ||
+                          isSendingTransaction
+                        }
                       >
                         {isSendingTransaction ? 'Sending...' : 'Send Transaction'}
                       </button>
@@ -372,7 +396,9 @@ const App: React.FC = () => {
                         </div>
                         <div className="result-item">
                           <span className="label">Hash:</span>
-                          <span className="value">{sendTransactionData.transactionHash.slice(0, 20)}...</span>
+                          <span className="value">
+                            {sendTransactionData.transactionHash.slice(0, 20)}...
+                          </span>
                         </div>
                       </div>
                     )}
@@ -393,7 +419,6 @@ const App: React.FC = () => {
           </div>
         </div>
       </section>
-
     </div>
   );
 };
