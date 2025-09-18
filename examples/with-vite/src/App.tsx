@@ -11,6 +11,7 @@ import {
   useSignMessage,
   useStatus,
   useSwitchChain,
+  useEstimatePaymentInfo,
 } from '@luno-kit/react';
 import { ConnectButton, useLunoTheme } from '@luno-kit/ui';
 import type React from 'react';
@@ -36,7 +37,9 @@ const App: React.FC = () => {
     detailedStatus,
   } = useSendTransaction();
   const { api, isApiReady, apiError } = useApi();
+  const { data: paymentInfo, estimate, isLoading: isEstimating } = useEstimatePaymentInfo()
 
+  console.log('paymentInfo', paymentInfo)
   const { themeMode, setThemeChoice } = useLunoTheme();
 
   const [transferForm, setTransferForm] = useState({
@@ -85,6 +88,9 @@ const App: React.FC = () => {
     try {
       const decimals = currentChain.nativeCurrency.decimals || 12;
       const amountInPlanck = BigInt(parseFloat(transferForm.amount) * 10 ** decimals);
+
+      await estimate(api.tx.balances.transferKeepAlive(transferForm.to, amountInPlanck));
+
       const result = await sendTransactionAsync({
         extrinsic: api.tx.balances.transferKeepAlive(transferForm.to, amountInPlanck),
       });
@@ -344,6 +350,9 @@ const App: React.FC = () => {
                             }
                           />
                         </div>
+                        <div className="form-group">
+                          <label className="form-label">Estimate Gas: {paymentInfo?.partialFeeFormatted || 0} {currentChain?.nativeCurrency.symbol}</label>
+                        </div>
                         <button
                           className="transfer-btn"
                           onClick={handleSendTransaction}
@@ -351,7 +360,8 @@ const App: React.FC = () => {
                             !transferForm.to ||
                             !transferForm.amount ||
                             !isApiReady ||
-                            isSendingTransaction
+                            isSendingTransaction ||
+                            isEstimating
                           }
                         >
                           {isSendingTransaction ? 'Sending...' : 'Send Transaction'}
