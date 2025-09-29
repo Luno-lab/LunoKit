@@ -1,6 +1,7 @@
 // packages/ui/src/components/Dialog/index.tsx
-import React, { ReactNode } from 'react';
+
 import * as DialogPrimitive from '@radix-ui/react-dialog';
+import React, { type ReactNode } from 'react';
 import { cs } from '../../utils';
 
 export type ModalSize = 'compact' | 'wide';
@@ -39,7 +40,7 @@ const DialogRoot: React.FC<DialogProps> = ({
             'fixed inset-0 z-[100] bg-modalBackdrop luno-kit',
             'data-[state=open]:[animation:overlay-in_150ms_ease-out]',
             overlayClassName
-          )
+          ),
         })}
         <DialogPrimitive.Content
           className={cs(

@@ -1,18 +1,14 @@
 import {
-  useStatus,
-  useAccount,
-  useChain,
-  useBalance,
   ConnectionStatus,
-  useChains,
+  useAccount,
   useActiveConnector,
+  useBalance,
+  useChain,
+  useChains,
+  useStatus,
 } from '@luno-kit/react';
-import type { Account, Chain, AccountBalance, Connector } from '@luno-kit/react/types'
-import {
-  useConnectModal,
-  useAccountModal,
-  useChainModal,
-} from '../providers';
+import type { Account, AccountBalance, Chain, Connector } from '@luno-kit/react/types';
+import { useAccountModal, useChainModal, useConnectModal } from '../providers';
 
 export interface UseConnectButtonReturn {
   connectionStatus: ConnectionStatus;
@@ -22,7 +18,6 @@ export interface UseConnectButtonReturn {
 
   account?: Account;
   address?: string;
-  displayAccount: string;
 
   currentChain?: Chain;
   configuredChains: Chain[];
@@ -48,8 +43,10 @@ export function useConnectButton(): UseConnectButtonReturn {
   const { account, address } = useAccount();
   const { chain: currentChain } = useChain();
   const configuredChains = useChains();
-  const { data: balance } = useBalance({ address });
-  const activeConnector = useActiveConnector()
+  const { data: balance } = useBalance({
+    address: configuredChains.length > 0 ? address : undefined,
+  });
+  const activeConnector = useActiveConnector();
 
   const { open: openConnectModal, isOpen: isConnectModalOpen } = useConnectModal();
   const { open: openAccountModal, isOpen: isAccountModalOpen } = useAccountModal();
@@ -57,10 +54,15 @@ export function useConnectButton(): UseConnectButtonReturn {
 
   const isConnecting = connectionStatus === ConnectionStatus.Connecting;
   const isConnected = connectionStatus === ConnectionStatus.Connected;
-  const isDisconnected = connectionStatus === ConnectionStatus.Disconnected || connectionStatus === ConnectionStatus.Disconnecting;
+  const isDisconnected =
+    connectionStatus === ConnectionStatus.Disconnected ||
+    connectionStatus === ConnectionStatus.Disconnecting;
 
-  const isChainSupported: boolean = !!currentChain
-    && configuredChains.some(c => c.genesisHash.toLowerCase() === currentChain.genesisHash.toLowerCase());
+  const isChainSupported: boolean =
+    !!currentChain &&
+    configuredChains.some(
+      (c) => c.genesisHash.toLowerCase() === currentChain.genesisHash.toLowerCase()
+    );
 
   return {
     activeConnector,
@@ -76,7 +78,7 @@ export function useConnectButton(): UseConnectButtonReturn {
     configuredChains,
     isChainSupported,
     chainIconUrl: currentChain?.chainIconUrl!,
-    chainName: currentChain?.name ,
+    chainName: currentChain?.name,
 
     balance,
 

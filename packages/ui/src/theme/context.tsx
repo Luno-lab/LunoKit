@@ -1,6 +1,15 @@
-import React, { createContext, useState, useContext, ReactNode, useMemo, useCallback, useEffect } from 'react';
-import type { LunokitTheme, LunokitThemeOverrides, PartialLunokitTheme, ThemeMode } from './types';
+import type React from 'react';
+import {
+  createContext,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useCSSVariableInjection } from '../hooks/useCSSVariableInjection';
+import type { LunokitTheme, LunokitThemeOverrides, PartialLunokitTheme, ThemeMode } from './types';
 
 // Theme preference storage
 interface ThemePreference {
@@ -13,8 +22,7 @@ const THEME_STORAGE_KEY = 'luno.lastThemePreference';
 const saveThemePreference = (preference: ThemePreference) => {
   try {
     localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(preference));
-  } catch (e) {
-  }
+  } catch (e) {}
 };
 
 interface ThemeContextValue {
@@ -31,8 +39,16 @@ interface ThemeProviderProps {
 }
 
 // Helper function to check if theme is complete or partial
-const isCompleteTheme = (theme: PartialLunokitTheme | LunokitThemeOverrides): theme is LunokitTheme => {
-  return 'colors' in theme && 'fonts' in theme && 'radii' in theme && 'shadows' in theme && 'blurs' in theme;
+const isCompleteTheme = (
+  theme: PartialLunokitTheme | LunokitThemeOverrides
+): theme is LunokitTheme => {
+  return (
+    'colors' in theme &&
+    'fonts' in theme &&
+    'radii' in theme &&
+    'shadows' in theme &&
+    'blurs' in theme
+  );
 };
 
 // Hook to detect system theme
@@ -138,7 +154,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     } else if (themeMode === 'dark' && overrides.dark) {
       partialOverrides = overrides.dark;
     } else {
-      partialOverrides = { ...overrides as PartialLunokitTheme }
+      partialOverrides = { ...(overrides as PartialLunokitTheme) };
     }
 
     return { type: 'partial' as const, completeTheme: null, partialOverrides };
@@ -153,23 +169,26 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   useCSSVariableInjection(themeInfo, themeMode);
 
   // User explicit choice handler (saves to storage)
-  const setThemeChoice = useCallback((choice: 'light' | 'dark' | 'auto') => {
-    const isAuto = choice === 'auto';
-    setIsAutoMode(isAuto);
+  const setThemeChoice = useCallback(
+    (choice: 'light' | 'dark' | 'auto') => {
+      const isAuto = choice === 'auto';
+      setIsAutoMode(isAuto);
 
-    if (isAuto) {
-      setThemeMode(systemTheme || 'light');
-    } else {
-      setThemeMode(choice);
-    }
+      if (isAuto) {
+        setThemeMode(systemTheme || 'light');
+      } else {
+        setThemeMode(choice);
+      }
 
-    const preference: ThemePreference = {
-      isAuto,
-      ...(isAuto ? {} : { preferredTheme: choice })
-    };
+      const preference: ThemePreference = {
+        isAuto,
+        ...(isAuto ? {} : { preferredTheme: choice }),
+      };
 
-    saveThemePreference(preference);
-  }, [systemTheme]);
+      saveThemePreference(preference);
+    },
+    [systemTheme]
+  );
 
   // Only listen to system theme changes for auto mode
   useEffect(() => {
@@ -178,11 +197,14 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     }
   }, [systemTheme, isAutoMode]);
 
-  const contextValue = useMemo(() => ({
-    themeMode,
-    setThemeChoice,
-    currentTheme,
-  }), [themeMode, setThemeChoice, currentTheme]);
+  const contextValue = useMemo(
+    () => ({
+      themeMode,
+      setThemeChoice,
+      currentTheme,
+    }),
+    [themeMode, setThemeChoice, currentTheme]
+  );
 
   return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
 };
@@ -190,7 +212,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 export const useLunoTheme = (): ThemeContextValue => {
   const context = useContext(ThemeContext);
   if (!context) {
-    throw new Error('useLunoTheme must be used within a ThemeProvider (which is part of LunoKitProvider)');
+    throw new Error(
+      'useLunoTheme must be used within a ThemeProvider (which is part of LunoKitProvider)'
+    );
   }
   return context;
 };

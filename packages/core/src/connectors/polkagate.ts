@@ -1,5 +1,5 @@
-import { polkagateWallet } from '../config/logos/generated'
-import { InjectConnector } from './inject'
+import { polkagateWallet } from '../config/logos/generated';
+import { InjectConnector } from './inject';
 
 export const polkagateConnector = () => {
   return new InjectConnector({
@@ -7,7 +7,8 @@ export const polkagateConnector = () => {
     name: 'Polkagate',
     icon: polkagateWallet,
     links: {
-      browserExtension: 'https://chromewebstore.google.com/detail/polkagate-the-gateway-to/ginchbkmljhldofnbjabmeophlhdldgp'
-    }
+      browserExtension:
+        'https://chromewebstore.google.com/detail/polkagate-the-gateway-to/ginchbkmljhldofnbjabmeophlhdldgp',
+    },
   });
-}
+};

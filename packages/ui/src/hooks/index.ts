@@ -1,2 +1,2 @@
-export * from './useConnectButton'
-export * from './useWindowSize'
+export * from './useConnectButton';
+export * from './useWindowSize';

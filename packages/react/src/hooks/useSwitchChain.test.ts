@@ -1,12 +1,11 @@
-import { expect, afterEach, test, beforeEach, vi } from 'vitest';
-import { mockConfig, MockConnector } from '../test-utils';
-import { renderHook } from '../test-utils';
+import { kusama, polkadot } from '@luno-kit/core/chains';
 import { act, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { type MockConnector, mockConfig, renderHook } from '../test-utils';
+import { ConnectionStatus } from '../types';
+import { useChain } from './useChain';
 import { useConnect } from './useConnect';
 import { useSwitchChain } from './useSwitchChain';
-import { useChain } from './useChain';
-import { polkadot, kusama } from '@luno-kit/core/chains';
-import {ConnectionStatus} from '../types'
 
 const connector = mockConfig.connectors[0] as MockConnector;
 
@@ -21,25 +20,26 @@ afterEach(async () => {
   }
 });
 
-beforeEach(async () => {
-
-});
+beforeEach(async () => {});
 
 test('useSwitchChain', async () => {
-  const { result } = renderHook(() => ({
-    useChain: useChain(),
-    useSwitchChain: useSwitchChain(),
-    useConnect: useConnect(),
-  }), { config: mockConfig });
+  const { result } = renderHook(
+    () => ({
+      useChain: useChain(),
+      useSwitchChain: useSwitchChain(),
+      useConnect: useConnect(),
+    }),
+    { config: mockConfig }
+  );
 
   await act(async () => {
     await result.current.useConnect.connectAsync({
-      connectorId: connector.id
+      connectorId: connector.id,
     });
   });
 
   await waitFor(() => {
-    expect(result.current.useConnect.status).toBe(ConnectionStatus.Connected)
+    expect(result.current.useConnect.status).toBe(ConnectionStatus.Connected);
   });
 
   expect(result.current.useChain.chain?.name).toBe('Polkadot');
@@ -49,7 +49,7 @@ test('useSwitchChain', async () => {
 
   await act(async () => {
     await result.current.useSwitchChain.switchChainAsync({
-      chainId: kusama.genesisHash
+      chainId: kusama.genesisHash,
     });
   });
 
@@ -63,7 +63,7 @@ test('useSwitchChain', async () => {
 
   await act(async () => {
     await result.current.useSwitchChain.switchChainAsync({
-      chainId: polkadot.genesisHash
+      chainId: polkadot.genesisHash,
     });
   });
 

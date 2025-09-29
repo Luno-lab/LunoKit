@@ -1,11 +1,12 @@
-import React, { useCallback, useState } from 'react'
-import { Copy as CopyIcon, Success } from '../../assets/icons'
-import { cs } from '../../utils'
+import type React from 'react';
+import { useCallback, useState } from 'react';
+import { Copy as CopyIcon, Success } from '../../assets/icons';
+import { cs } from '../../utils';
 
 interface CopyProps {
-  copyText?: string
-  label?: string
-  className?: string
+  copyText?: string;
+  label?: string;
+  className?: string;
 }
 
 export const Copy: React.FC<CopyProps> = ({ copyText, label, className = '' }) => {
@@ -24,7 +25,7 @@ export const Copy: React.FC<CopyProps> = ({ copyText, label, className = '' }) =
       console.error('Copy failed:', err);
       return false;
     }
-  }, [])
+  }, []);
 
   return (
     <button
@@ -38,10 +39,12 @@ export const Copy: React.FC<CopyProps> = ({ copyText, label, className = '' }) =
       aria-label="Copy address to clipboard"
       disabled={isCopied}
     >
-      {isCopied
-        ? <Success className="text-accentColor" width={16} height={16} />
-        : <CopyIcon width={16} height={16} />}
+      {isCopied ? (
+        <Success className="text-accentColor" width={16} height={16} />
+      ) : (
+        <CopyIcon width={16} height={16} />
+      )}
       {label}
     </button>
-  )
-}
+  );
+};

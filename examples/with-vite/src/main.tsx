@@ -1,12 +1,37 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
-import { createConfig } from '@luno-kit/react'
-import { kusama, polkadot, westend, paseo, polkadotAssetHub, polkadotCoretime, polkadotCollectives, polkadotPeople, kusamaAssetHub, kusamaCoretime, kusamaPeople, paseoAssetHub, paseoPassetHub, westendAssetHub } from '@luno-kit/react/chains'
-import { polkagateConnector, subwalletConnector, talismanConnector, polkadotjsConnector, walletConnectConnector, novaConnector, fearlessConnector, mimirConnector, enkryptConnector } from '@luno-kit/react/connectors'
-import { LunoKitProvider } from '@luno-kit/ui'
-import '@luno-kit/ui/styles.css'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './index.css';
+import { createConfig } from '@luno-kit/react';
+import {
+  kusama,
+  kusamaAssetHub,
+  kusamaCoretime,
+  kusamaPeople,
+  paseo,
+  paseoAssetHub,
+  paseoPassetHub,
+  polkadot,
+  polkadotAssetHub,
+  polkadotCollectives,
+  polkadotCoretime,
+  polkadotPeople,
+  westend,
+  westendAssetHub,
+} from '@luno-kit/react/chains';
+import {
+  enkryptConnector,
+  fearlessConnector,
+  mimirConnector,
+  novaConnector,
+  polkadotjsConnector,
+  polkagateConnector,
+  subwalletConnector,
+  talismanConnector,
+  walletConnectConnector,
+} from '@luno-kit/react/connectors';
+import { LunoKitProvider } from '@luno-kit/ui';
+import App from './App.tsx';
+import '@luno-kit/ui/styles.css';
 
 const connectors = [
   polkadotjsConnector(),
@@ -18,34 +43,48 @@ const connectors = [
   enkryptConnector(),
   walletConnectConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID }),
   novaConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID }),
-]
+];
 
 const lunoConfig = createConfig({
   appName: 'luno with-vite example',
-  chains: [polkadot, kusama, westend, paseo, polkadotAssetHub, polkadotCoretime, polkadotCollectives, polkadotPeople, kusamaAssetHub, kusamaCoretime, kusamaPeople, paseoAssetHub, paseoPassetHub, westendAssetHub],
+  chains: [
+    polkadot,
+    kusama,
+    westend,
+    paseo,
+    polkadotAssetHub,
+    polkadotCoretime,
+    polkadotCollectives,
+    polkadotPeople,
+    kusamaAssetHub,
+    kusamaCoretime,
+    kusamaPeople,
+    paseoAssetHub,
+    paseoPassetHub,
+    westendAssetHub,
+  ],
   connectors: connectors,
   autoConnect: true,
 });
 
-
-
 createRoot(document.getElementById('root')!).render(
-    <LunoKitProvider config={lunoConfig}
-     // ============ THEME USAGE EXAMPLES ============
+  <LunoKitProvider
+    config={lunoConfig}
+    // ============ THEME USAGE EXAMPLES ============
 
-     // 1. No theme prop - uses built-in light/dark themes
-     // (Uncomment this by removing all theme props below)
+    // 1. No theme prop - uses built-in light/dark themes
+    // (Uncomment this by removing all theme props below)
 
-     // 2. Only defaultMode - sets initial theme, allows user switching
-     // theme={{ defaultMode: 'dark' }}
+    // 2. Only defaultMode - sets initial theme, allows user switching
+    // theme={{ defaultMode: 'dark' }}
 
-     // 3. Auto mode enabled - follows system preference
-     // theme={{ autoMode: true }}
+    // 3. Auto mode enabled - follows system preference
+    // theme={{ autoMode: true }}
 
-     // 4. Auto mode with defaultMode fallback
-     // theme={{ autoMode: true, defaultMode: 'dark' }}
+    // 4. Auto mode with defaultMode fallback
+    // theme={{ autoMode: true, defaultMode: 'dark' }}
 
-     // 5. Partial theme overrides for dark mode only
+    // 5. Partial theme overrides for dark mode only
     //  theme={{
     //    defaultMode: 'dark',
     //    dark: {
@@ -59,7 +98,7 @@ createRoot(document.getElementById('root')!).render(
     //    }
     //  }}
 
-     // 6. Partial theme overrides for light mode only
+    // 6. Partial theme overrides for light mode only
     //  theme={{
     //    defaultMode: 'light',
     //    light: {
@@ -73,7 +112,7 @@ createRoot(document.getElementById('root')!).render(
     //    }
     //  }}
 
-     // 7. Partial overrides for both modes
+    // 7. Partial overrides for both modes
     //  theme={{
     //    defaultMode: 'dark',
     //    dark: {
@@ -94,7 +133,7 @@ createRoot(document.getElementById('root')!).render(
     //    }
     //  }}
 
-     // 8. Complete custom theme object
+    // 8. Complete custom theme object
     //  theme={{
     //    colors: {
     //      accentColor: '#ff6b35',
@@ -158,7 +197,7 @@ createRoot(document.getElementById('root')!).render(
     //    }
     //  }}
 
-     // 9. Complete theme via theme property in overrides
+    // 9. Complete theme via theme property in overrides
     //  theme={{
     //    light: {
     //      colors: {
@@ -184,10 +223,9 @@ createRoot(document.getElementById('root')!).render(
     //      }
     //    }
     //  }}
-
   >
     <StrictMode>
-      <App/>
+      <App />
     </StrictMode>
   </LunoKitProvider>
-)
+);

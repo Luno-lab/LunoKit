@@ -1,4 +1,5 @@
-import React, { useCallback, useState, useRef } from 'react';
+import type React from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 interface UseAnimatedViewsProps<T> {
   initialView: T;
@@ -18,49 +19,51 @@ interface UseAnimatedViewsReturn<T> {
 export function useAnimatedViews<T>({
   initialView,
   animationDuration = 200,
-  animationEasing = 'ease-out'
+  animationEasing = 'ease-out',
 }: UseAnimatedViewsProps<T>): UseAnimatedViewsReturn<T> {
   const [currentView, setCurrentView] = useState<T>(initialView);
   const [isAnimating, setIsAnimating] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const currentViewRef = useRef<HTMLDivElement>(null);
 
-  const handleViewChange = useCallback((view: T) => {
-    if (view === currentView || isAnimating) return;
+  const handleViewChange = useCallback(
+    (view: T) => {
+      if (view === currentView || isAnimating) return;
 
-    setIsAnimating(true);
+      setIsAnimating(true);
 
-    if (!containerRef.current) {
-      setCurrentView(view);
-      setIsAnimating(false);
-      return;
-    }
-
-    const container = containerRef.current;
-    const currentHeight = container.offsetHeight;
-
-    setCurrentView(view);
-
-    requestAnimationFrame(() => {
-      if (!container || !currentViewRef.current) {
+      if (!containerRef.current) {
+        setCurrentView(view);
         setIsAnimating(false);
         return;
       }
 
-      const newHeight = currentViewRef.current.offsetHeight;
+      const container = containerRef.current;
+      const currentHeight = container.offsetHeight;
 
-      container.animate([
-        { height: currentHeight + 'px' },
-        { height: newHeight + 'px' }
-      ], {
-        duration: animationDuration,
-        easing: animationEasing,
-        fill: 'forwards'
-      }).addEventListener('finish', () => {
-        setIsAnimating(false);
+      setCurrentView(view);
+
+      requestAnimationFrame(() => {
+        if (!container || !currentViewRef.current) {
+          setIsAnimating(false);
+          return;
+        }
+
+        const newHeight = currentViewRef.current.offsetHeight;
+
+        container
+          .animate([{ height: currentHeight + 'px' }, { height: newHeight + 'px' }], {
+            duration: animationDuration,
+            easing: animationEasing,
+            fill: 'forwards',
+          })
+          .addEventListener('finish', () => {
+            setIsAnimating(false);
+          });
       });
-    });
-  }, [currentView, isAnimating, animationDuration, animationEasing]);
+    },
+    [currentView, isAnimating, animationDuration, animationEasing]
+  );
 
   const resetView = useCallback(() => {
     setCurrentView(initialView);
@@ -73,6 +76,6 @@ export function useAnimatedViews<T>({
     containerRef,
     currentViewRef,
     handleViewChange,
-    resetView
+    resetView,
   };
 }

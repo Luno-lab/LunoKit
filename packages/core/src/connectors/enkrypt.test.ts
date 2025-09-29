@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
+import { enkryptWallet } from '../config/logos/generated';
 import { enkryptConnector } from './enkrypt';
-import { createConnectorTestSuite } from './test-helper'
-import { enkryptWallet } from '../config/logos/generated'
+import { createConnectorTestSuite } from './test-helper';
 
 describe(
   'enkryptConnector',
@@ -13,4 +13,4 @@ describe(
       icon: enkryptWallet,
     },
   })
-)
+);

@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
+import { polkadotjsWallet } from '../config/logos/generated';
 import { polkadotjsConnector } from './polkadot-js';
-import { createConnectorTestSuite } from './test-helper'
-import { polkadotjsWallet } from '../config/logos/generated'
+import { createConnectorTestSuite } from './test-helper';
 
 describe(
   'polkadotjsConnector',
@@ -13,4 +13,4 @@ describe(
       icon: polkadotjsWallet,
     },
   })
-)
+);

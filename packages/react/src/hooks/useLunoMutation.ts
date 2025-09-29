@@ -1,7 +1,7 @@
 import {
-  useMutation,
-  type UseMutationOptions,
   type MutateOptions as ReactQueryMutateOptions,
+  type UseMutationOptions,
+  useMutation,
 } from '@tanstack/react-query';
 
 export type LunoMutationOptions<
@@ -9,10 +9,12 @@ export type LunoMutationOptions<
   TError = Error,
   TVariables = void,
   TContext = unknown,
-> = Partial<Pick<
-  ReactQueryMutateOptions<TData, TError, TVariables, TContext>,
-  'onSuccess' | 'onError' | 'onSettled'
->>;
+> = Partial<
+  Pick<
+    ReactQueryMutateOptions<TData, TError, TVariables, TContext>,
+    'onSuccess' | 'onError' | 'onSettled'
+  >
+>;
 
 export interface LunoMutationResult<
   TData = unknown,
@@ -20,12 +22,10 @@ export interface LunoMutationResult<
   TVariables = void,
   TContext = unknown,
 > {
-
   mutate: (
     variables: TVariables,
     options?: LunoMutationOptions<TData, TError, TVariables, TContext>
   ) => void;
-
 
   mutateAsync: (
     variables: TVariables,
@@ -52,7 +52,6 @@ export function useLunoMutation<
   mutationFn: (variables: TVariables) => Promise<TData>,
   hookLevelOptions?: LunoMutationOptions<TData, TError, TVariables, TContext>
 ): LunoMutationResult<TData, TError, TVariables, TContext> {
-
   const tanstackMutationHookOptions: Pick<
     UseMutationOptions<TData, TError, TVariables, TContext>,
     'onSuccess' | 'onError' | 'onSettled'
@@ -80,13 +79,19 @@ export function useLunoMutation<
       variables: TVariables,
       callTimeOptions?: LunoMutationOptions<TData, TError, TVariables, TContext>
     ) => {
-      mutation.mutate(variables, callTimeOptions as ReactQueryMutateOptions<TData, TError, TVariables, TContext>);
+      mutation.mutate(
+        variables,
+        callTimeOptions as ReactQueryMutateOptions<TData, TError, TVariables, TContext>
+      );
     },
     mutateAsync: (
       variables: TVariables,
       callTimeOptions?: LunoMutationOptions<TData, TError, TVariables, TContext>
     ) => {
-      return mutation.mutateAsync(variables, callTimeOptions as ReactQueryMutateOptions<TData, TError, TVariables, TContext>);
+      return mutation.mutateAsync(
+        variables,
+        callTimeOptions as ReactQueryMutateOptions<TData, TError, TVariables, TContext>
+      );
     },
     data: mutation.data,
     error: mutation.error,

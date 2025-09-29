@@ -1,17 +1,14 @@
-import { wsProvider } from '@luno-kit/core'
-import type { Config } from '../types'
-import { ApiOptions, LegacyClient } from 'dedot'
+import { wsProvider } from '@luno-kit/core';
+import { type ApiOptions, LegacyClient } from 'dedot';
+import type { Config } from '../types';
 
 interface CreateApiOptions {
   config: Config;
   chainId: string;
 }
 
-export const createApi = async ({
-  config,
-  chainId,
-}: CreateApiOptions): Promise<LegacyClient> => {
-  const chainConfig = config.chains.find(c => c.genesisHash === chainId);
+export const createApi = async ({ config, chainId }: CreateApiOptions): Promise<LegacyClient> => {
+  const chainConfig = config.chains.find((c) => c.genesisHash === chainId);
   const transportConfig = config.transports[chainId];
 
   if (!chainConfig || !transportConfig) {
@@ -43,7 +40,7 @@ export const createApi = async ({
       await newApi.disconnect();
       throw new Error(
         `Chain genesis hash mismatch. Expected: ${chainId}, Got: ${actualGenesisHash}. ` +
-        'This might indicate connecting to the wrong network or incorrect chain configuration.'
+          'This might indicate connecting to the wrong network or incorrect chain configuration.'
       );
     }
 

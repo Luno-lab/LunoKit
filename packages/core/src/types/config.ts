@@ -1,7 +1,7 @@
-import type { Chain } from './chain';
-import type { Connector } from './connector';
 import type { ApiOptions } from 'dedot';
 import type { AnyShape } from 'dedot/shape';
+import type { Chain } from './chain';
+import type { Connector } from './connector';
 
 export interface RawStorage {
   getItem(key: string): string | null | Promise<string | null>;
@@ -18,17 +18,14 @@ export interface LunoStorage {
 // export type Transport = WsProvider;
 export type Transport = string;
 
-type LunoApiOptions = Partial<Omit<ApiOptions,
-  | 'provider'
-  | 'signer'
->> & {
+type LunoApiOptions = Partial<Omit<ApiOptions, 'provider' | 'signer'>> & {
   customTypes?: Record<string, AnyShape>;
   customRpc?: Record<string, any>;
 };
 
 export interface CreateConfigParameters extends LunoApiOptions {
   appName?: string;
-  chains: readonly Chain[];
+  chains?: readonly Chain[];
   connectors: Connector[];
   transports?: Record<string, Transport>;
 
@@ -44,4 +41,3 @@ export interface Config extends LunoApiOptions {
   readonly storage: LunoStorage;
   readonly autoConnect: boolean;
 }
-

@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
+import { novaWallet } from '../config/logos/generated';
 import { novaMobileConnector } from './novaMobile';
-import { createConnectorTestSuite } from './test-helper'
-import { novaWallet } from '../config/logos/generated'
+import { createConnectorTestSuite } from './test-helper';
 
 describe(
   'novaMobileConnector',
@@ -15,8 +15,8 @@ describe(
     },
     extraWindowProps: {
       walletExtension: {
-        isNovaWallet: true
-      }
-    }
+        isNovaWallet: true,
+      },
+    },
   })
-)
+);

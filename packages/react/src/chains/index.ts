@@ -1,1 +1,1 @@
-export * from '@luno-kit/core/chains'
+export * from '@luno-kit/core/chains';

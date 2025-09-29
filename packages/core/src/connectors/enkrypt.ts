@@ -1,5 +1,5 @@
-import { InjectConnector } from './inject'
-import { enkryptWallet } from '../config/logos/generated'
+import { enkryptWallet } from '../config/logos/generated';
+import { InjectConnector } from './inject';
 
 export const enkryptConnector = () => {
   return new InjectConnector({
@@ -7,7 +7,7 @@ export const enkryptConnector = () => {
     name: 'Enkrypt',
     icon: enkryptWallet,
     links: {
-      browserExtension: 'https://www.enkrypt.com'
-    }
+      browserExtension: 'https://www.enkrypt.com',
+    },
   });
-}
+};

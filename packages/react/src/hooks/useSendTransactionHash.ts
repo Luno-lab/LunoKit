@@ -1,8 +1,8 @@
+import type { HexString } from '@luno-kit/core/types';
 import type { ISubmittableExtrinsic } from 'dedot/types';
-import { useLuno } from './useLuno';
-import { type LunoMutationOptions, useLunoMutation} from './useLunoMutation';
-import type { HexString } from 'dedot/utils';
 import { useCallback, useState } from 'react';
+import { useLuno } from './useLuno';
+import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
 
 export interface SendTransactionHashVariables {
   extrinsic: ISubmittableExtrinsic;
@@ -35,49 +35,53 @@ export interface UseSendTransactionHashResult {
   variables: SendTransactionHashVariables | undefined;
 }
 
-export function useSendTransactionHash (
-  hookLevelConfig?: UseSendTransactionHashOptions,
+export function useSendTransactionHash(
+  hookLevelConfig?: UseSendTransactionHashOptions
 ): UseSendTransactionHashResult {
   const { account, activeConnector, currentApi, isApiReady } = useLuno();
   const [txError, setTxError] = useState<Error | null>(null);
 
-  const sendTransactionFn = useCallback(async (variables: SendTransactionHashVariables): Promise<HexString> => {
-    if (!currentApi || !isApiReady) {
-      throw new Error('[useSendTransactionHash]: Polkadot API is not ready.');
-    }
-    if (!activeConnector) {
-      throw new Error('[useSendTransactionHash]: No active connector found.');
-    }
-    if (!account || !account.address || !account.meta?.source) {
-      throw new Error(
-        '[useSendTransactionHash]: No active account, address, or account metadata (source) found.'
-      );
-    }
-    if (!variables.extrinsic) {
-      throw new Error('[useSendTransactionHash]: No extrinsic provided to send.');
-    }
+  const sendTransactionFn = useCallback(
+    async (variables: SendTransactionHashVariables): Promise<HexString> => {
+      if (!currentApi || !isApiReady) {
+        throw new Error('[useSendTransactionHash]: Polkadot API is not ready.');
+      }
+      if (!activeConnector) {
+        throw new Error('[useSendTransactionHash]: No active connector found.');
+      }
+      if (!account || !account.address || !account.meta?.source) {
+        throw new Error(
+          '[useSendTransactionHash]: No active account, address, or account metadata (source) found.'
+        );
+      }
+      if (!variables.extrinsic) {
+        throw new Error('[useSendTransactionHash]: No extrinsic provided to send.');
+      }
 
-    const signer = await activeConnector.getSigner()
-    if (!signer) {
-      throw new Error('[useSendTransactionHash]: Could not retrieve signer from the injector.');
-    }
+      const signer = await activeConnector.getSigner();
+      if (!signer) {
+        throw new Error('[useSendTransactionHash]: Could not retrieve signer from the injector.');
+      }
 
-    try {
-      const txHash = await variables.extrinsic
-        .signAndSend(account.address, { signer: signer }).catch(e => { throw e });
-      return txHash as HexString
-    } catch (error) {
-      setTxError(error as Error)
-      throw error;
-    }
-  }, [currentApi, isApiReady, activeConnector, account]);
+      try {
+        const txHash = await variables.extrinsic
+          .signAndSend(account.address, { signer: signer })
+          .catch((e) => {
+            throw e;
+          });
+        return txHash as HexString;
+      } catch (error) {
+        setTxError(error as Error);
+        throw error;
+      }
+    },
+    [currentApi, isApiReady, activeConnector, account]
+  );
 
-  const mutationResult = useLunoMutation<
-    HexString,
-    Error,
-    SendTransactionHashVariables,
-    unknown
-  >(sendTransactionFn, hookLevelConfig);
+  const mutationResult = useLunoMutation<HexString, Error, SendTransactionHashVariables, unknown>(
+    sendTransactionFn,
+    hookLevelConfig
+  );
 
   return {
     sendTransaction: mutationResult.mutate,

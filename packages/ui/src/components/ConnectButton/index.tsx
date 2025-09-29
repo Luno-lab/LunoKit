@@ -1,10 +1,11 @@
-import React from 'react';
+import { formatAddress } from '@luno-kit/react/utils';
+import type React from 'react';
 import { useConnectButton, useWindowSize } from '../../hooks';
 import { cs } from '../../utils';
-import { ChainIcon } from '../ChainIcon'
-import { formatAddress } from '@luno-kit/react/utils'
+import { ChainIcon } from '../ChainIcon';
 
-export const transitionClassName = 'transition-transform transition-[125] hover:scale-[1.03] transition-ease'
+export const transitionClassName =
+  'transition-transform transition-[125] hover:scale-[1.03] transition-ease';
 
 export interface ConnectButtonProps {
   className?: string;
@@ -12,7 +13,7 @@ export interface ConnectButtonProps {
   accountStatus?: 'full' | 'address';
   chainStatus?: 'full' | 'icon' | 'name' | 'none';
   showBalance?: boolean;
-  displayPreference?: 'address' | 'name'
+  displayPreference?: 'address' | 'name';
 }
 
 export const ConnectButton: React.FC<ConnectButtonProps> = ({
@@ -34,11 +35,12 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
     chainIconUrl,
     chainName,
     currentChain,
+    configuredChains,
     activeConnector,
   } = useConnectButton();
-  const { width: windowWidth } = useWindowSize()
+  const { width: windowWidth } = useWindowSize();
 
-  const isLargeWindow = windowWidth && windowWidth > 768
+  const isLargeWindow = windowWidth && windowWidth > 768;
 
   if (isDisconnected || !isConnected || !activeConnector) {
     return (
@@ -60,8 +62,13 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
   }
 
   return (
-    <div className={cs('text-modalText flex items-stretch bg-transparent font-semibold text-base leading-base gap-3', className)}>
-      {chainStatus !== 'none' && (
+    <div
+      className={cs(
+        'text-modalText flex items-stretch bg-transparent font-semibold text-base leading-base gap-3',
+        className
+      )}
+    >
+      {chainStatus !== 'none' && configuredChains.length > 0 && (
         <button
           type="button"
           onClick={() => openChainModal?.()}
@@ -69,13 +76,17 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
             'flex items-center rounded-currentNetworkButton cursor-pointer',
             'bg-currentNetworkButtonBackground shadow-button',
             'py-2 px-2.5 gap-1.5',
-            transitionClassName,
+            transitionClassName
           )}
           aria-label="Switch chain"
         >
-          {(chainStatus === 'full' || chainStatus === 'icon')
-            ? <ChainIcon chainIconUrl={chainIconUrl} chainName={chainName} className="w-[24px] h-[24px]"/>
-            : null}
+          {chainStatus === 'full' || chainStatus === 'icon' ? (
+            <ChainIcon
+              chainIconUrl={chainIconUrl}
+              chainName={chainName}
+              className="w-[24px] h-[24px]"
+            />
+          ) : null}
           {(chainStatus === 'full' || chainStatus === 'name') && isLargeWindow && (
             <span>{currentChain?.name || 'Unknown Chain'}</span>
           )}
@@ -87,16 +98,16 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
         onClick={() => openAccountModal?.()}
         className={cs(
           'flex items-center cursor-pointer rounded-connectButton bg-connectButtonBackground shadow-button',
-          transitionClassName,
+          transitionClassName
         )}
         aria-label="Open account modal"
       >
-
-        {showBalance && isLargeWindow && (
+        {configuredChains.length > 0 && showBalance && isLargeWindow && (
           <div className="p-2 pl-3">
             {balance ? (
               <span>
-                {balance?.formattedTransferable || balance?.formattedTotal || 0} {currentChain?.nativeCurrency?.symbol || ''}
+                {balance?.formattedTransferable || balance?.formattedTotal || 0}{' '}
+                {currentChain?.nativeCurrency?.symbol || ''}
               </span>
             ) : (
               <span className="block animate-pulse rounded w-[80px] h-[20px] bg-accountActionItemBackgroundHover" />
@@ -104,10 +115,14 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
           </div>
         )}
 
-        <div className={cs(
-          "flex items-center overflow-hidden bg-connectButtonInnerBackground border-2 border-connectButtonBackground rounded-connectButton gap-1.5 max-h-[40px]",
-          showBalance && isLargeWindow ? 'bg-connectButtonInnerBackground py-1.5 px-2' : 'bg-connectButtonBackground py-2 px-2.5'
-        )}>
+        <div
+          className={cs(
+            'flex items-center overflow-hidden bg-connectButtonInnerBackground border-2 border-connectButtonBackground rounded-connectButton gap-1.5 max-h-[40px]',
+            configuredChains.length > 0 && showBalance && isLargeWindow
+              ? 'bg-connectButtonInnerBackground py-1.5 px-2'
+              : 'bg-connectButtonBackground py-2 px-2.5'
+          )}
+        >
           {accountStatus === 'full' && (
             <span className="w-[24px] h-[24px] flex items-center justify-center">
               <img src={activeConnector.icon} alt="luno" />
@@ -115,8 +130,15 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
           )}
           <span
             aria-label="Wallet icon placeholder"
-            className={cs((displayPreference === 'name' && account?.name) ? 'text-ellipsis overflow-hidden max-w-[100px] whitespace-nowrap' : '')}>
-            {displayPreference === 'name' && account?.name ? account?.name : formatAddress(account?.address)}
+            className={cs(
+              displayPreference === 'name' && account?.name
+                ? 'text-ellipsis overflow-hidden max-w-[100px] whitespace-nowrap'
+                : ''
+            )}
+          >
+            {displayPreference === 'name' && account?.name
+              ? account?.name
+              : formatAddress(account?.address)}
           </span>
         </div>
       </button>
