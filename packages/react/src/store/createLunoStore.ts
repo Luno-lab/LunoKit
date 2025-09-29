@@ -103,7 +103,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
           publicKey: nextAccount.publicKey,
           address: nextAccount.address,
           name: nextAccount.name,
-          source: nextAccount.meta.source,
+          source: nextAccount.meta?.source,
         };
         await config.storage.setItem(
           PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO,
@@ -230,6 +230,10 @@ export const useLunoStore = create<LunoState>((set, get) => ({
         config.chains,
         chainIdToUse
       );
+
+      if (!accountsFromWallet || accountsFromWallet?.length === 0) {
+        throw new Error(`[LunoStore] No accounts found from wallet`);
+      }
 
       let selectedAccount = accountsFromWallet[0];
 
@@ -418,7 +422,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
       });
 
       await config.storage.setItem(PERSIST_KEY.LAST_CHAIN_ID, newChainId);
-    } catch (e) {
+    } catch (e: any) {
       set({
         apiError: e,
         isApiReady: false,
