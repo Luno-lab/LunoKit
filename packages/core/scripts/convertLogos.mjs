@@ -2,16 +2,16 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import fs from 'node:fs';
-import { dirname } from 'node:path';
+import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import path from 'node:path'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const MAX_SIZE = 48 * 1024;
 
-const HEADER = '// Copyright 2025 Luno contributors\n// SPDX-License-Identifier: MIT\n\n// Do not edit. Auto-generated via node scripts/convertLogos.mjs\n\n';
+const HEADER =
+  '// Copyright 2025 Luno contributors\n// SPDX-License-Identifier: MIT\n\n// Do not edit. Auto-generated via node scripts/convertLogos.mjs\n\n';
 
 /**
  * Convert string to camelCase
@@ -22,7 +22,9 @@ function stringCamelCase(str) {
   return str
     .split(/[-\s]+/)
     .map((word, index) => {
-      return index === 0 ? word.toLowerCase() : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      return index === 0
+        ? word.toLowerCase()
+        : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     })
     .join('');
 }
@@ -56,10 +58,10 @@ const oversized = {};
 const LOGO_TYPES = ['chains', 'wallets'];
 
 // Process SVG files
-LOGO_TYPES.forEach(type => {
+LOGO_TYPES.forEach((type) => {
   const typeDir = path.join(logosDir, type);
   fs.readdirSync(typeDir)
-    .filter(file => (file.endsWith('.svg') || file.endsWith('.webp')) && !file.startsWith('.'))
+    .filter((file) => (file.endsWith('.svg') || file.endsWith('.webp')) && !file.startsWith('.'))
     .forEach((file) => {
       const fullPath = path.join(typeDir, file);
       const fileName = path.basename(file, path.extname(file)); // 获取不带扩展名的文件名
@@ -106,12 +108,10 @@ LOGO_TYPES.forEach(type => {
 });
 
 if (Object.keys(result).length > 0) {
-  const indexContent = `${HEADER}${
-    Object.keys(result)
-      .sort()
-      .map(exportName => `export { ${exportName} } from './${result[exportName]}.js';`)
-      .join('\n')
-  }\n`;
+  const indexContent = `${HEADER}${Object.keys(result)
+    .sort()
+    .map((exportName) => `export { ${exportName} } from './${result[exportName]}.js';`)
+    .join('\n')}\n`;
 
   fs.writeFileSync(path.join(generatedDir, 'index.ts'), indexContent);
   console.log(`✅ Generated index.ts with ${Object.keys(result).length} exports`);
@@ -121,9 +121,7 @@ const allKeys = Object.keys(allLogos);
 const dupes = {};
 
 allKeys.forEach((a) => {
-  const duplicates = allKeys.filter((b) =>
-    a !== b && allLogos[a] === allLogos[b]
-  );
+  const duplicates = allKeys.filter((b) => a !== b && allLogos[a] === allLogos[b]);
 
   if (duplicates.length > 0) {
     dupes[a] = duplicates;
@@ -141,7 +139,9 @@ if (Object.keys(dupes).length > 0) {
 if (Object.keys(oversized).length > 0) {
   console.error('\n❌ Files exceeding 48KB limit:');
   Object.entries(oversized).forEach(([key, size]) => {
-    console.error(`   ${key}: ${Math.round(size / 1024)}KB (+${Math.round((size - MAX_SIZE) / 1024)}KB over limit)`);
+    console.error(
+      `   ${key}: ${Math.round(size / 1024)}KB (+${Math.round((size - MAX_SIZE) / 1024)}KB over limit)`
+    );
   });
   process.exit(1);
 }

@@ -1,5 +1,5 @@
-import { talismanWallet } from '../config/logos/generated'
-import { InjectConnector } from './inject'
+import { talismanWallet } from '../config/logos/generated';
+import { InjectConnector } from './inject';
 
 export const talismanConnector = () => {
   return new InjectConnector({
@@ -7,7 +7,8 @@ export const talismanConnector = () => {
     name: 'Talisman',
     icon: talismanWallet,
     links: {
-      browserExtension: 'https://chromewebstore.google.com/detail/talisman-wallet/fijngjgcjhjmmpcmkeiomlglpeiijkld'
-    }
+      browserExtension:
+        'https://chromewebstore.google.com/detail/talisman-wallet/fijngjgcjhjmmpcmkeiomlglpeiijkld',
+    },
   });
-}
+};

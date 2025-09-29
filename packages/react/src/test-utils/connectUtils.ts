@@ -1,13 +1,13 @@
 import { act } from '@testing-library/react';
-import { MockConnector, mockConfig } from './mocks';
-import { ConnectionStatus } from '../types';
-import { useConnect } from '../hooks';
-import { renderHook } from './render';
 import { expect, vi } from 'vitest';
+import { useConnect } from '../hooks';
+import { ConnectionStatus } from '../types';
+import { MockConnector, mockConfig } from './mocks';
+import { renderHook } from './render';
 
 export const setupConnection = () => {
   const { result } = renderHook(() => useConnect(), {
-    config: mockConfig
+    config: mockConfig,
   });
   return result;
 };
@@ -16,7 +16,7 @@ export const connectWallet = async (result: any, connectorId: string, targetChai
   await act(async () => {
     await result.current.connectAsync({
       connectorId,
-      ...(targetChainId && { targetChainId })
+      ...(targetChainId && { targetChainId }),
     });
   });
 };
@@ -26,7 +26,7 @@ export const setupErrorConnection = (onError: ReturnType<typeof vi.fn>) => {
   errorConnector.connect = vi.fn().mockRejectedValue(new Error('Connection failed'));
 
   const { result, rerender } = renderHook(() => useConnect({ onError }), {
-    config: { ...mockConfig, connectors: [errorConnector] }
+    config: { ...mockConfig, connectors: [errorConnector] },
   });
 
   return {
@@ -49,7 +49,6 @@ export const expectErrorState = (result: any, onError: ReturnType<typeof vi.fn>)
   expect(result.current.status).toBe(ConnectionStatus.Disconnected);
 };
 
-
 export const testHookLevelCallback = async (
   hookFn: any,
   mockConnector: MockConnector,
@@ -58,12 +57,12 @@ export const testHookLevelCallback = async (
   const onSuccess = vi.fn();
   const onSettled = vi.fn();
   const { result } = renderHook(() => hookFn({ onSuccess, onSettled, ...options }), {
-    config: mockConfig
+    config: mockConfig,
   });
 
   await act(async () => {
     await result.current.connectAsync({
-      connectorId: mockConnector.id
+      connectorId: mockConnector.id,
     });
   });
 
@@ -72,15 +71,9 @@ export const testHookLevelCallback = async (
   return result;
 };
 
-export const testCallTimeOptions = async (
-  hookFn: any,
-  mockConnector: MockConnector
-) => {
+export const testCallTimeOptions = async (hookFn: any, mockConnector: MockConnector) => {
   const callTimeOnSuccess = vi.fn();
-  const { result } = renderHook(
-    () => hookFn(),
-    { config: mockConfig }
-  );
+  const { result } = renderHook(() => hookFn(), { config: mockConfig });
 
   await act(async () => {
     await result.current.connectAsync(
@@ -93,17 +86,14 @@ export const testCallTimeOptions = async (
   return result;
 };
 
-export const testResetState = async (
-  hookFn: any,
-  mockConnector: MockConnector
-) => {
+export const testResetState = async (hookFn: any, mockConnector: MockConnector) => {
   const { result, rerender } = renderHook(() => hookFn(), {
-    config: mockConfig
+    config: mockConfig,
   });
 
   await act(async () => {
     await result.current.connectAsync({
-      connectorId: mockConnector.id
+      connectorId: mockConnector.id,
     });
   });
 

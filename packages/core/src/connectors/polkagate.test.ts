@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
+import { polkagateWallet } from '../config/logos/generated';
 import { polkagateConnector } from './polkagate';
-import { createConnectorTestSuite } from './test-helper'
-import { polkagateWallet } from '../config/logos/generated'
+import { createConnectorTestSuite } from './test-helper';
 
 describe(
   'polkagateConnector',
@@ -13,4 +13,4 @@ describe(
       icon: polkagateWallet,
     },
   })
-)
+);

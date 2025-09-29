@@ -1,10 +1,10 @@
-import { expect, afterEach, test, vi } from 'vitest';
-import { mockConfig, MockConnector, renderHook } from '../test-utils';
 import { act, waitFor } from '@testing-library/react';
-import { useConnect } from './useConnect';
-import { useSignMessage } from './useSignMessage';
+import { afterEach, expect, test, vi } from 'vitest';
+import { type MockConnector, mockConfig, renderHook } from '../test-utils';
 import { ConnectionStatus } from '../types';
-import { useLuno } from './useLuno'
+import { useConnect } from './useConnect';
+import { useLuno } from './useLuno';
+import { useSignMessage } from './useSignMessage';
 
 const connector = mockConfig.connectors[0] as MockConnector;
 const TEST_MESSAGE = 'Hello Polkadot';
@@ -16,13 +16,16 @@ afterEach(async () => {
 });
 
 test('useSignMessage', async () => {
-  const { result } = renderHook(() => ({
-    useConnect: useConnect(),
-    useSignMessage: useSignMessage(),
-    useLuno: useLuno(),
-  }), {
-    config: mockConfig
-  });
+  const { result } = renderHook(
+    () => ({
+      useConnect: useConnect(),
+      useSignMessage: useSignMessage(),
+      useLuno: useLuno(),
+    }),
+    {
+      config: mockConfig,
+    }
+  );
 
   expect(result.current.useSignMessage.data).toBeUndefined();
   expect(result.current.useSignMessage.isIdle).toBe(true);
@@ -31,7 +34,7 @@ test('useSignMessage', async () => {
   await act(async () => {
     try {
       await result.current.useSignMessage.signMessageAsync({
-        message: TEST_MESSAGE
+        message: TEST_MESSAGE,
       });
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
@@ -41,7 +44,7 @@ test('useSignMessage', async () => {
 
   await act(async () => {
     await result.current.useConnect.connectAsync({
-      connectorId: connector.id
+      connectorId: connector.id,
     });
   });
 
@@ -52,7 +55,7 @@ test('useSignMessage', async () => {
   await act(async () => {
     try {
       await result.current.useSignMessage.signMessageAsync({
-        message: ''
+        message: '',
       });
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
@@ -66,7 +69,7 @@ test('useSignMessage', async () => {
   await act(async () => {
     try {
       await result.current.useSignMessage.signMessageAsync({
-        message: TEST_MESSAGE
+        message: TEST_MESSAGE,
       });
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
@@ -78,7 +81,7 @@ test('useSignMessage', async () => {
 
   await act(async () => {
     await result.current.useSignMessage.signMessageAsync({
-      message: TEST_MESSAGE
+      message: TEST_MESSAGE,
     });
   });
 
@@ -88,7 +91,9 @@ test('useSignMessage', async () => {
 
   expect(result.current.useSignMessage.data).toBeDefined();
   expect(result.current.useSignMessage.data?.rawMessage).toBe(TEST_MESSAGE);
-  expect(result.current.useSignMessage.data?.addressUsed).toBe(result.current.useLuno.account.address);
+  expect(result.current.useSignMessage.data?.addressUsed).toBe(
+    result.current.useLuno.account.address
+  );
   expect(result.current.useSignMessage.data?.signature).toContain('signed_by_mock');
 
   await act(async () => {

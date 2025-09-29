@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { cs } from '../../utils';
 
 export interface ChainIconProps {
@@ -7,11 +7,7 @@ export interface ChainIconProps {
   className?: string;
 }
 
-export const ChainIcon: React.FC<ChainIconProps> = ({
-  chainIconUrl,
-  chainName,
-  className,
-}) => {
+export const ChainIcon: React.FC<ChainIconProps> = ({ chainIconUrl, chainName, className }) => {
   if (chainIconUrl) {
     return (
       <img
@@ -23,11 +19,13 @@ export const ChainIcon: React.FC<ChainIconProps> = ({
   }
 
   return (
-    <div className={cs(
-      'w-full h-full bg-gray-500 text-modalText font-semibold',
-      'flex items-center justify-center rounded-full',
-      className
-    )}>
+    <div
+      className={cs(
+        'w-full h-full bg-gray-500 text-modalText font-semibold',
+        'flex items-center justify-center rounded-full',
+        className
+      )}
+    >
       {chainName ? chainName.charAt(0).toUpperCase() : 'C'}
     </div>
   );

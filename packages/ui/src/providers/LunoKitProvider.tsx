@@ -1,13 +1,14 @@
-import React, { ReactNode, useState } from 'react';
 import { LunoProvider } from '@luno-kit/react';
-import type { Config as LunoCoreConfig } from '@luno-kit/react/types'
+import type { Config as LunoCoreConfig } from '@luno-kit/react/types';
 // @ts-ignore - @tanstack/react-query v5 API changes
-import { QueryClient, QueryClientProvider, QueryClientConfig } from '@tanstack/react-query';
-import { ModalProvider} from './ModalContext';
+import { QueryClient, type QueryClientConfig, QueryClientProvider } from '@tanstack/react-query';
+import type React from 'react';
+import { type ReactNode, useState } from 'react';
+import { AccountDetailsModal, ChainModal, ConnectModal } from '../components';
+import type { ModalSize } from '../components/Dialog';
+import type { LunokitThemeOverrides, PartialLunokitTheme } from '../theme';
 import { ThemeProvider } from '../theme';
-import type { PartialLunokitTheme, LunokitThemeOverrides } from '../theme';
-import { ConnectModal, AccountDetailsModal, ChainModal } from '../components'
-import { ModalSize } from '../components/Dialog'
+import { ModalProvider } from './ModalContext';
 
 export interface LunoKitProviderProps {
   children: ReactNode;
@@ -29,9 +30,7 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
       <LunoProvider config={config}>
         <ThemeProvider theme={theme}>
           <ModalProvider>
-            <div className={'font-base luno-kit'}>
-              {children}
-            </div>
+            <div className={'font-base luno-kit'}>{children}</div>
             <RenderModals modalSize={config.modalSize} />
           </ModalProvider>
         </ThemeProvider>
@@ -40,9 +39,11 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
   );
 };
 
-
-const RenderModals: React.FC<{modalSize?: ModalSize}> = ({ modalSize }: { modalSize?: ModalSize }) => {
-
+const RenderModals: React.FC<{ modalSize?: ModalSize }> = ({
+  modalSize,
+}: {
+  modalSize?: ModalSize;
+}) => {
   return (
     <>
       <ConnectModal size={modalSize} />
@@ -50,4 +51,4 @@ const RenderModals: React.FC<{modalSize?: ModalSize}> = ({ modalSize }: { modalS
       <ChainModal />
     </>
   );
-}
+};

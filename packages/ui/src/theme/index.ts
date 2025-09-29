@@ -1,2 +1,2 @@
+export { ThemeProvider, useLunoTheme } from './context';
 export * from './types';
-export { ThemeProvider, useLunoTheme } from './context'; 

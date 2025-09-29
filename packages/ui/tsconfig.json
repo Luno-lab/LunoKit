@@ -9,12 +9,10 @@
     "jsx": "react-jsx",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "bundler"
   },
   "include": ["src/**/*"],
-  "references": [
-    { "path": "../react" }
-  ],
+  "references": [{ "path": "../react" }],
   "exclude": ["node_modules", "dist"],
   "composite": true
 }

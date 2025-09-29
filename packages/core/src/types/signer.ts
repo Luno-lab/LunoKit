@@ -1,3 +1,6 @@
-import { InjectedSigner } from 'dedot/types'
+import type { PolkadotSigner as PapiSigner } from '@polkadot-api/pjs-signer';
+import type { InjectedSigner } from 'dedot/types';
 
-export interface Signer extends InjectedSigner {}
+interface Signer extends InjectedSigner {}
+
+export type { PapiSigner, Signer };

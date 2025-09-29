@@ -51,3 +51,5 @@ PROJECT_CONTEXT.md
 /scripts/*
 
 .envrc
+
+.biome/

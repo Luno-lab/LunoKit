@@ -1,6 +1,6 @@
 import { defineConfig } from 'tsup';
 
-export default defineConfig((options) => ( {
+export default defineConfig((options) => ({
   entry: ['src/index.ts'],
   banner: {
     js: "'use client'",
@@ -11,12 +11,7 @@ export default defineConfig((options) => ( {
   sourcemap: true,
   clean: !options.watch,
   minify: !options.watch,
-  external: [
-    'react',
-    'react-dom',
-    '@luno-kit/react',
-    '@tanstack/react-query',
-  ],
+  external: ['react', 'react-dom', '@luno-kit/react', '@tanstack/react-query'],
   tsconfig: './tsconfig.json',
   loader: {
     '.ttf': 'file',

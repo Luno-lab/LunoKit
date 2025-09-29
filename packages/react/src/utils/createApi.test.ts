@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { createApi } from './createApi';
-import { Config, wsProvider } from '@luno-kit/core';
+import { type Config, wsProvider } from '@luno-kit/core';
 import { LegacyClient } from 'dedot';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockClient } from '../test-utils';
+import { createApi } from './createApi';
 
 vi.mock('@luno-kit/core', async (importOriginal) => {
   const actual = await importOriginal();
@@ -95,9 +95,9 @@ describe('createApi', () => {
       const config = createMockConfig();
       const invalidChainId = '0xinvalid';
 
-      await expect(
-        createApi({ config, chainId: invalidChainId })
-      ).rejects.toThrow(`Configuration missing for chainId: ${invalidChainId}`);
+      await expect(createApi({ config, chainId: invalidChainId })).rejects.toThrow(
+        `Configuration missing for chainId: ${invalidChainId}`
+      );
 
       expect(mockWsProvider).not.toHaveBeenCalled();
       expect(MockClient).not.toHaveBeenCalled();
@@ -107,9 +107,9 @@ describe('createApi', () => {
       const config = createMockConfig();
       mockPolkadotClient.connect.mockRejectedValueOnce(new Error('Network timeout'));
 
-      await expect(
-        createApi({ config, chainId: validChainId })
-      ).rejects.toThrow('Failed to connect to Polkadot: Network timeout');
+      await expect(createApi({ config, chainId: validChainId })).rejects.toThrow(
+        'Failed to connect to Polkadot: Network timeout'
+      );
     });
   });
 });

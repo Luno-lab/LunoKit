@@ -1,9 +1,8 @@
+import type { Injected, InjectedAccount } from 'dedot/types';
+import { stringToHex } from 'dedot/utils';
+import type { Account, ConnectorLinks, Signer } from '../types';
+import { mapInjectedAccounts } from '../utils';
 import { BaseConnector } from './base';
-import type { Account, Signer } from '../types';
-import { mapInjectedAccounts } from '../utils'
-import { Injected, InjectedAccount } from 'dedot/types'
-import { stringToHex } from 'dedot/utils'
-import { ConnectorLinks } from '../types'
 
 export interface InjectConnectorOptions {
   id: string;
@@ -22,7 +21,7 @@ export class InjectConnector extends BaseConnector {
 
   private unsubscribe: (() => void) | null = null;
 
-  private specificInjector?: Injected = undefined
+  private specificInjector?: Injected = undefined;
 
   constructor(options: InjectConnectorOptions) {
     super();
@@ -54,7 +53,9 @@ export class InjectConnector extends BaseConnector {
     }
 
     try {
-      this.specificInjector = await window.injectedWeb3![this.injectorId]!.enable(appName);
+      this.specificInjector = (await window.injectedWeb3![this.injectorId]!.enable(
+        appName
+      )) as Injected;
 
       if (!this.specificInjector) {
         throw new Error(`Failed to enable the '${this.id}' extension.`);
@@ -68,7 +69,9 @@ export class InjectConnector extends BaseConnector {
 
       const rawAccounts = await this.specificInjector.accounts.get();
       if (rawAccounts.length === 0) {
-        throw new Error(`No accounts found in ${this.name}. Make sure accounts are visible and access is granted.`);
+        throw new Error(
+          `No accounts found in ${this.name}. Make sure accounts are visible and access is granted.`
+        );
       }
       this.accounts = mapInjectedAccounts(rawAccounts, this.id);
       console.log(`Connector ${this.id}: Initial accounts loaded`, this.accounts);
@@ -78,7 +81,6 @@ export class InjectConnector extends BaseConnector {
       this.emit('connect', [...this.accounts]);
 
       return [...this.accounts];
-
     } catch (error) {
       console.error(`Connector ${this.id}: Connection failed:`, error);
       await this.cleanup();
@@ -99,7 +101,7 @@ export class InjectConnector extends BaseConnector {
       throw new Error('Signer is not available or does not support signRaw.');
     }
     const accounts = await this.getAccounts();
-    if (!accounts.some(acc => acc.address.toLowerCase() === address.toLowerCase())) {
+    if (!accounts.some((acc) => acc.address.toLowerCase() === address.toLowerCase())) {
       throw new Error(`Address ${address} is not managed by ${this.name}.`);
     }
 
@@ -108,11 +110,10 @@ export class InjectConnector extends BaseConnector {
       const result = await signer.signRaw({ address, data: dataHex, type: 'bytes' });
       return result.signature;
     } catch (error: any) {
-      console.log('error', error)
+      console.log('error', error);
       throw new Error(`Connector ${this.id}: Failed to sign message: ${error.message}`);
     }
   }
-
 
   private async startSubscription(): Promise<void> {
     await this.cleanupSubscription();
@@ -145,11 +146,10 @@ export class InjectConnector extends BaseConnector {
     }
   }
 
-
   private async cleanup(): Promise<void> {
     await this.cleanupSubscription();
     this.accounts = [];
     this.signer = undefined;
-    this.specificInjector = undefined
+    this.specificInjector = undefined;
   }
 }

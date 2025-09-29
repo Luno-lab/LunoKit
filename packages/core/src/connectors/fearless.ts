@@ -1,5 +1,5 @@
-import { InjectConnector } from './inject'
-import { fearlessWallet } from '../config/logos/generated'
+import { fearlessWallet } from '../config/logos/generated';
+import { InjectConnector } from './inject';
 
 export const fearlessConnector = () => {
   return new InjectConnector({
@@ -7,7 +7,7 @@ export const fearlessConnector = () => {
     name: 'Fearless',
     icon: fearlessWallet,
     links: {
-      browserExtension: 'https://fearlesswallet.io'
-    }
+      browserExtension: 'https://fearlesswallet.io',
+    },
   });
-}
+};

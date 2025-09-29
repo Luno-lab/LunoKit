@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef } from 'react';
 
 export const useIsInitialized = () => {
   const isInitialized = useRef(false);
@@ -6,6 +6,6 @@ export const useIsInitialized = () => {
     isInitialized: isInitialized.current,
     markAsInitialized: () => {
       isInitialized.current = true;
-    }
+    },
   };
 };

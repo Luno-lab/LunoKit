@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { ConnectButton, useLunoTheme } from '@luno-kit/ui';
 import {
+  ConnectionStatus,
   useAccount,
   useAccounts,
-  useDisconnect,
-  useStatus,
-  useChain,
-  ConnectionStatus,
-  useBalance,
-  useChains,
-  useSwitchChain,
-  useSignMessage,
-  useSendTransaction,
   useApi,
+  useBalance,
+  useChain,
+  useChains,
+  useDisconnect,
+  useSendTransaction,
+  useSignMessage,
+  useStatus,
+  useSwitchChain,
+  useEstimatePaymentInfo,
 } from '@luno-kit/react';
+import { ConnectButton, useLunoTheme } from '@luno-kit/ui';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import { StagewiseToolbar } from '@stagewise/toolbar-react';
 import ReactPlugin from '@stagewise-plugins/react';
@@ -28,14 +30,21 @@ const App: React.FC = () => {
   const { data: balance } = useBalance({ address });
   const { switchChainAsync } = useSwitchChain();
   const { signMessageAsync, data: signMessageData } = useSignMessage();
-  const { sendTransactionAsync, data: sendTransactionData, isPending: isSendingTransaction, detailedStatus } = useSendTransaction();
+  const {
+    sendTransactionAsync,
+    data: sendTransactionData,
+    isPending: isSendingTransaction,
+    detailedStatus,
+  } = useSendTransaction();
   const { api, isApiReady, apiError } = useApi();
+  const { data: paymentInfo, estimate, isLoading: isEstimating } = useEstimatePaymentInfo();
 
+  console.log('paymentInfo', paymentInfo);
   const { themeMode, setThemeChoice } = useLunoTheme();
 
   const [transferForm, setTransferForm] = useState({
     to: '',
-    amount: ''
+    amount: '',
   });
 
   const showNotification = (title: string, message?: string) => {
@@ -53,7 +62,10 @@ const App: React.FC = () => {
       });
       showNotification('Signature successful', signature);
     } catch (error) {
-      showNotification('Signature failed', error instanceof Error ? error.message : 'Unknown error');
+      showNotification(
+        'Signature failed',
+        error instanceof Error ? error.message : 'Unknown error'
+      );
     }
   };
 
@@ -64,7 +76,7 @@ const App: React.FC = () => {
     }
 
     if (!currentChain) {
-      showNotification('Chain not available', 'Please select available chain')
+      showNotification('Chain not available', 'Please select available chain');
       return;
     }
 
@@ -75,19 +87,28 @@ const App: React.FC = () => {
 
     try {
       const decimals = currentChain.nativeCurrency.decimals || 12;
-      const amountInPlanck = BigInt(parseFloat(transferForm.amount) * Math.pow(10, decimals));
+      const amountInPlanck = BigInt(parseFloat(transferForm.amount) * 10 ** decimals);
+
+      await estimate(api.tx.balances.transferKeepAlive(transferForm.to, amountInPlanck));
+
       const result = await sendTransactionAsync({
-        extrinsic: api.tx.balances.transferKeepAlive(transferForm.to, amountInPlanck)
+        extrinsic: api.tx.balances.transferKeepAlive(transferForm.to, amountInPlanck),
       });
 
       if (result.status === 'success') {
-        showNotification('Transfer successful', `TxHash: ${result.transactionHash.slice(0, 10)}...`);
+        showNotification(
+          'Transfer successful',
+          `TxHash: ${result.transactionHash.slice(0, 10)}...`
+        );
         setTransferForm({ to: '', amount: '' });
       } else {
         showNotification('Transfer failed', result.errorMessage);
       }
     } catch (error) {
-      showNotification('Transfer failed', error instanceof Error ? error.message : 'An error occurred during the transfer process.');
+      showNotification(
+        'Transfer failed',
+        error instanceof Error ? error.message : 'An error occurred during the transfer process.'
+      );
     }
   };
 
@@ -102,22 +123,21 @@ const App: React.FC = () => {
       {/* Render only in the development environment StagewiseToolbar */}
       <StagewiseToolbar config={{ plugins: [ReactPlugin] }} />
       <div className="demo-page">
-
         {/* Hero Section */}
         <section className="hero">
           <div className="hero-content">
             <div className="hero-icon">
-              <img src="/favicon-96x96.png" alt=""/>
+              <img src="/favicon-96x96.png" alt="" />
             </div>
             <h1>Luno Wallet Kit</h1>
             <p className="hero-subtitle">
               The modern Polkadot wallet connection library for React applications
             </p>
-            <div className="hero-connect" style={{ marginBottom: '20px'}}>
-              <ConnectButton/>
+            <div className="hero-connect" style={{ marginBottom: '20px' }}>
+              <ConnectButton />
             </div>
             <div className="hero-connect">
-              <ConnectButton displayPreference={'name'}/>
+              <ConnectButton displayPreference={'name'} />
             </div>
           </div>
         </section>
@@ -127,7 +147,6 @@ const App: React.FC = () => {
           <div className="container">
             <h2>Live Demo</h2>
             <div className="features-grid">
-
               {/* Theme Control Card */}
               <div className="feature-card">
                 <div className="card-header">
@@ -138,25 +157,18 @@ const App: React.FC = () => {
                   <div className="theme-section">
                     <div className="status-item">
                       <span className="label">Current Theme:</span>
-                      <span className="value">{themeMode.charAt(0).toUpperCase() + themeMode.slice(1)}</span>
+                      <span className="value">
+                        {themeMode.charAt(0).toUpperCase() + themeMode.slice(1)}
+                      </span>
                     </div>
                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                      <button
-                        className="chain-switch-btn"
-                        onClick={() => setThemeChoice('light')}
-                      >
+                      <button className="chain-switch-btn" onClick={() => setThemeChoice('light')}>
                         Light Theme
                       </button>
-                      <button
-                        className="chain-switch-btn"
-                        onClick={() => setThemeChoice('dark')}
-                      >
+                      <button className="chain-switch-btn" onClick={() => setThemeChoice('dark')}>
                         Dark Theme
                       </button>
-                      <button
-                        className="chain-switch-btn"
-                        onClick={() => setThemeChoice('auto')}
-                      >
+                      <button className="chain-switch-btn" onClick={() => setThemeChoice('auto')}>
                         Auto Mode
                       </button>
                     </div>
@@ -200,15 +212,19 @@ const App: React.FC = () => {
                       </div>
                       {chains && chains.length > 1 && (
                         <div className="chain-list">
-                          {chains.filter(c => c.genesisHash !== currentChain.genesisHash).map(chain => (
-                            <button
-                              key={chain.genesisHash}
-                              className="chain-switch-btn"
-                              onClick={async () => await switchChainAsync({ chainId: chain.genesisHash })}
-                            >
-                              Switch to {chain.name}
-                            </button>
-                          ))}
+                          {chains
+                            .filter((c) => c.genesisHash !== currentChain.genesisHash)
+                            .map((chain) => (
+                              <button
+                                key={chain.genesisHash}
+                                className="chain-switch-btn"
+                                onClick={async () =>
+                                  await switchChainAsync({ chainId: chain.genesisHash })
+                                }
+                              >
+                                Switch to {chain.name}
+                              </button>
+                            ))}
                         </div>
                       )}
                     </div>
@@ -227,12 +243,8 @@ const App: React.FC = () => {
                 <div className="card-content">
                   {address ? (
                     <div className="balance-info">
-                      <div className="balance-amount">
-                        {balance?.formattedTotal ?? 0}
-                      </div>
-                      <div className="balance-symbol">
-                        {currentChain?.nativeCurrency.symbol}
-                      </div>
+                      <div className="balance-amount">{balance?.formattedTotal ?? 0}</div>
+                      <div className="balance-symbol">{currentChain?.nativeCurrency.symbol}</div>
                     </div>
                   ) : (
                     <span className="no-data">Connect wallet first</span>
@@ -253,15 +265,17 @@ const App: React.FC = () => {
                       <div className="account-address">{address}</div>
                       {accounts.length > 1 && (
                         <div className="account-list">
-                          {accounts.filter(acc => acc.publicKey !== account.publicKey).map(acc => (
-                            <button
-                              key={acc.publicKey as string}
-                              className="account-switch-btn"
-                              onClick={() => selectAccount(acc.publicKey)}
-                            >
-                              Switch to {acc.name || 'Unnamed'}
-                            </button>
-                          ))}
+                          {accounts
+                            .filter((acc) => acc.publicKey !== account.publicKey)
+                            .map((acc) => (
+                              <button
+                                key={acc.publicKey as string}
+                                className="account-switch-btn"
+                                onClick={() => selectAccount(acc.publicKey)}
+                              >
+                                Switch to {acc.name || 'Unnamed'}
+                              </button>
+                            ))}
                         </div>
                       )}
                     </div>
@@ -280,17 +294,16 @@ const App: React.FC = () => {
                 <div className="card-content">
                   {status === ConnectionStatus.Connected ? (
                     <div className="sign-section">
-                      <button
-                        className="sign-btn"
-                        onClick={handleSignMessage}
-                      >
+                      <button className="sign-btn" onClick={handleSignMessage}>
                         Sign Test Message
                       </button>
                       {signMessageData && (
                         <div className="sign-result">
                           <div className="result-item">
                             <span className="label">Signature:</span>
-                            <span className="value">{signMessageData.signature.slice(0, 20)}...</span>
+                            <span className="value">
+                              {signMessageData.signature.slice(0, 20)}...
+                            </span>
                           </div>
                         </div>
                       )}
@@ -318,23 +331,41 @@ const App: React.FC = () => {
                             className="form-input"
                             placeholder="..."
                             value={transferForm.to}
-                            onChange={(e) => setTransferForm(prev => ({ ...prev, to: e.target.value }))}
+                            onChange={(e) =>
+                              setTransferForm((prev) => ({ ...prev, to: e.target.value }))
+                            }
                           />
                         </div>
                         <div className="form-group">
-                          <label className="form-label">Amount ({currentChain?.nativeCurrency.symbol}):</label>
+                          <label className="form-label">
+                            Amount ({currentChain?.nativeCurrency.symbol}):
+                          </label>
                           <input
                             type="text"
                             className="form-input"
                             placeholder="1.0"
                             value={transferForm.amount}
-                            onChange={(e) => setTransferForm(prev => ({ ...prev, amount: e.target.value }))}
+                            onChange={(e) =>
+                              setTransferForm((prev) => ({ ...prev, amount: e.target.value }))
+                            }
                           />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-label">
+                            Estimate Gas: {paymentInfo?.partialFeeFormatted || 0}{' '}
+                            {currentChain?.nativeCurrency.symbol}
+                          </label>
                         </div>
                         <button
                           className="transfer-btn"
                           onClick={handleSendTransaction}
-                          disabled={!transferForm.to || !transferForm.amount || !isApiReady || isSendingTransaction}
+                          disabled={
+                            !transferForm.to ||
+                            !transferForm.amount ||
+                            !isApiReady ||
+                            isSendingTransaction ||
+                            isEstimating
+                          }
                         >
                           {isSendingTransaction ? 'Sending...' : 'Send Transaction'}
                         </button>
@@ -347,7 +378,9 @@ const App: React.FC = () => {
                           </div>
                           <div className="result-item">
                             <span className="label">Hash:</span>
-                            <span className="value">{sendTransactionData.transactionHash.slice(0, 20)}...</span>
+                            <span className="value">
+                              {sendTransactionData.transactionHash.slice(0, 20)}...
+                            </span>
                           </div>
                         </div>
                       )}
@@ -396,7 +429,6 @@ const App: React.FC = () => {
             </div>
           </div>
         </section>
-
       </div>
     </>
   );

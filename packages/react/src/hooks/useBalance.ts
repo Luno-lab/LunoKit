@@ -1,8 +1,12 @@
-import { QueryMultiItem, useSubscription, UseSubscriptionResult } from './useSubscription';
-import type { AccountBalance } from '../types';
+import { formatBalance } from '@luno-kit/core/utils';
 import type { LegacyClient } from 'dedot';
-import { useLuno } from './useLuno'
-import { formatBalance } from '@luno-kit/core/utils'
+import type { AccountBalance } from '../types';
+import { useLuno } from './useLuno';
+import {
+  type QueryMultiItem,
+  type UseSubscriptionResult,
+  useSubscription,
+} from './useSubscription';
 
 interface AccountData {
   data: {
@@ -24,7 +28,7 @@ export interface ChainProperties {
   tokenSymbol?: string;
 }
 
-const DEFAULT_TOKEN_DECIMALS = 10
+const DEFAULT_TOKEN_DECIMALS = 10;
 
 const transformBalance = (results: any[], chainProperties: ChainProperties) => {
   const accountInfo: AccountData = results[0];
@@ -44,14 +48,14 @@ const transformBalance = (results: any[], chainProperties: ChainProperties) => {
     transferable,
     formattedTransferable: formatBalance(transferable, chainProperties.tokenDecimals),
     formattedTotal: formatBalance(total, chainProperties.tokenDecimals),
-    locks: locks.map(lock => ({
+    locks: locks.map((lock) => ({
       id: lock.id,
       amount: lock.amount,
       reason: lock.reasons,
-      lockHuman: formatBalance(lock.amount, chainProperties.tokenDecimals)
-    }))
+      lockHuman: formatBalance(lock.amount, chainProperties.tokenDecimals),
+    })),
   } as AccountBalance;
-}
+};
 
 export interface UseBalanceProps {
   address?: string;
@@ -62,11 +66,7 @@ export type UseBalanceResult = UseSubscriptionResult<AccountBalance>;
 export const useBalance = ({ address }: UseBalanceProps): UseBalanceResult => {
   const { currentApi, isApiReady, currentChain } = useLuno();
 
-  return useSubscription<
-    QueryMultiItem[],
-    [AccountData, BalanceLock[]],
-    AccountBalance
-  >({
+  return useSubscription<QueryMultiItem[], [AccountData, BalanceLock[]], AccountBalance>({
     queryKey: '/native-balance',
     factory: (api: LegacyClient) => api.queryMulti,
     params: (api: LegacyClient) => [
@@ -75,14 +75,14 @@ export const useBalance = ({ address }: UseBalanceProps): UseBalanceResult => {
     ],
     options: {
       enabled: !!currentApi && isApiReady && !!address,
-      transform: (results, ) => {
+      transform: (results) => {
         const chainProperties: ChainProperties = {
           tokenDecimals: currentChain?.nativeCurrency?.decimals ?? DEFAULT_TOKEN_DECIMALS,
           tokenSymbol: currentChain?.nativeCurrency?.symbol,
           ss58Format: currentChain?.ss58Format,
         };
-        return transformBalance(results, chainProperties)
-      }
-    }
+        return transformBalance(results, chainProperties);
+      },
+    },
   });
-}
+};

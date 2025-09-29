@@ -1,11 +1,10 @@
-import { expect, afterEach, test } from 'vitest';
-import { mockConfig, MockConnector } from '../test-utils';
-import { renderHook } from '../test-utils';
 import { act, waitFor } from '@testing-library/react';
-import { useConnect } from './useConnect';
-import { useAccounts } from './useAccounts';
+import { afterEach, expect, test } from 'vitest';
+import { type MockConnector, mockConfig, renderHook } from '../test-utils';
 import { ConnectionStatus } from '../types';
+import { useAccounts } from './useAccounts';
 import { useChain } from './useChain';
+import { useConnect } from './useConnect';
 
 const connector = mockConfig.connectors[0] as MockConnector;
 
@@ -16,20 +15,23 @@ afterEach(async () => {
 });
 
 test('useAccounts', async () => {
-  const { result } = renderHook(() => ({
-    useAccounts: useAccounts(),
-    useConnect: useConnect(),
-    useChain: useChain(),
-  }), {
-    config: mockConfig
-  });
+  const { result } = renderHook(
+    () => ({
+      useAccounts: useAccounts(),
+      useConnect: useConnect(),
+      useChain: useChain(),
+    }),
+    {
+      config: mockConfig,
+    }
+  );
 
   expect(result.current.useAccounts.accounts).toEqual([]);
   expect(result.current.useAccounts.selectAccount).toBeDefined();
 
   await act(async () => {
     await result.current.useConnect.connectAsync({
-      connectorId: connector.id
+      connectorId: connector.id,
     });
   });
 

@@ -1,9 +1,6 @@
-export * from './chain';
-
 export * from './account';
-
+export * from './chain';
+export * from './config';
 export * from './connector';
 
-export * from './config';
-
-export * from './signer'
+export * from './signer';

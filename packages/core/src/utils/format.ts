@@ -25,9 +25,7 @@ export function formatBalance(
   }
 
   const paddedFraction = fraction.toString().padStart(decimals, '0');
-  const truncatedFraction = paddedFraction
-    .substring(0, fixedDecimals)
-    .replace(/0+$/, '');
+  const truncatedFraction = paddedFraction.substring(0, fixedDecimals).replace(/0+$/, '');
 
   return truncatedFraction ? `${whole.toString()}.${truncatedFraction}` : whole.toString();
 }
@@ -35,11 +33,7 @@ export function formatBalance(
 /**
  * format address display
  */
-export function formatAddress(
-  address?: string,
-  prefixLength = 4,
-  suffixLength = 4
-): string {
+export function formatAddress(address?: string, prefixLength = 4, suffixLength = 4): string {
   if (!address) return '';
   if (address.length <= prefixLength + suffixLength) return address;
 

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { isMobileDevice } from './device';
 
 describe('isMobileDevice', () => {
@@ -51,7 +51,7 @@ describe('isMobileDevice', () => {
       'Opera/9.80 (Android; Opera Mini/32.0.2254/85)',
     ];
 
-    mockUserAgents.forEach(userAgent => {
+    mockUserAgents.forEach((userAgent) => {
       Object.defineProperty(globalThis, 'window', {
         value: { navigator: { userAgent } },
         writable: true,
@@ -61,7 +61,7 @@ describe('isMobileDevice', () => {
       Object.defineProperty(globalThis, 'navigator', {
         value: {
           userAgent,
-          toString: () => userAgent
+          toString: () => userAgent,
         },
         writable: true,
         configurable: true,
@@ -78,7 +78,7 @@ describe('isMobileDevice', () => {
       'Mozilla/5.0 (X11; Linux x86_64)',
     ];
 
-    mockUserAgents.forEach(userAgent => {
+    mockUserAgents.forEach((userAgent) => {
       Object.defineProperty(globalThis, 'window', {
         value: { navigator: { userAgent } },
         writable: true,
@@ -88,7 +88,7 @@ describe('isMobileDevice', () => {
       Object.defineProperty(globalThis, 'navigator', {
         value: {
           userAgent,
-          toString: () => userAgent
+          toString: () => userAgent,
         },
         writable: true,
         configurable: true,
