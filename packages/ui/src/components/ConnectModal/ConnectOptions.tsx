@@ -8,6 +8,10 @@ interface Props {
   onConnect: (connector: Connector) => Promise<void>;
 }
 
+const popularConnectorIds = ['polkadot-js', 'subwallet-js', 'talisman', 'walletconnect', 'nova', 'nova-mobile']
+
+const moreConnectorIds = ['polkagate', 'fearless-wallet', 'mimir', 'enkrypt']
+
 export const ConnectOptions = React.memo(({ onConnect }: Props) => {
   const connectors = useConnectors();
 
@@ -23,34 +27,47 @@ export const ConnectOptions = React.memo(({ onConnect }: Props) => {
     );
   }
 
-  const installedConnectors = connectors.filter((c) => c.isInstalled());
-  const moreConnectors = connectors.filter((c) => !c.isInstalled());
+  const installedConnectors = connectors.filter(c => c.isInstalled())
+  const popularConnectors = connectors.filter(c => popularConnectorIds.includes(c.id) && !c.isInstalled())
+  const moreConnectors = connectors.filter(c => moreConnectorIds.includes(c.id) && !c.isInstalled())
+
+  const connectorGroup: { title: string; group: Connector[] }[] = useMemo(() => {
+    return [
+      {
+        title: 'Installed',
+        group: installedConnectors,
+      },
+      {
+        title: 'Popular',
+        group: popularConnectors,
+      },
+      {
+        title: 'More',
+        group: moreConnectors,
+      }
+    ]
+  }, [installedConnectors, popularConnectors, moreConnectors])
 
   return (
-    <div
-      className={
-        'flex flex-col items-start gap-4 w-full overflow-y-auto custom-scrollbar max-h-[400px]'
-      }
-    >
-      <div className={'flex flex-col items-start gap-2 w-full'}>
-        <div className={'text-sm text-accentColor font-semibold leading-base'}>Installed</div>
-        <div className={'flex flex-col items-start gap-1.5 w-full'}>
-          {installedConnectors.map((i) => (
-            <ConnectorItem key={i.id} connector={i} onConnect={() => onConnect(i)} />
-          ))}
-        </div>
-      </div>
-
-      {moreConnectors.length > 0 && (
-        <div className={'flex flex-col items-start gap-2 w-full'}>
-          <div className={'text-sm text-modalTextSecondary font-semibold leading-base'}>More</div>
-          <div className={'flex flex-col items-start gap-1 w-full'}>
-            {moreConnectors.map((i) => (
-              <ConnectorItem key={i.id} connector={i} onConnect={() => onConnect(i)} />
-            ))}
+    <div className={'flex flex-col items-start gap-4 w-full overflow-y-auto custom-scrollbar max-h-[400px]'}>
+      {connectorGroup.map(g => {
+        if (g.group.length === 0) return null
+        return (
+          <div key={g.title} className={'flex flex-col items-start gap-2 w-full'}>
+            <div className={cs(
+              'text-sm font-semibold leading-base',
+              g.title === 'Installed' ? 'text-accentColor' : 'text-modalTextSecondary'
+            )}>
+              {g.title}
+            </div>
+            <div className={'flex flex-col items-start gap-1.5 w-full'}>
+              {g.group.map(i => (
+                <ConnectorItem key={i.id} connector={i} onConnect={() => onConnect(i)}/>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )
+      })}
     </div>
   );
 });

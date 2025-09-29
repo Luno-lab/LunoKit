@@ -43,27 +43,21 @@ export const MainView: React.FC<MainViewProps> = ({ onViewChange, onModalClose }
                   chainIconUrl={chain?.chainIconUrl}
                   chainName={chain?.name}
                 />
-                <div
-                  className={
-                    'dot w-[8px] h-[8px] bg-accentColor absolute bottom-0 right-0 rounded-full'
-                  }
-                />
+                {/* <div className={'dot w-[8px] h-[8px] bg-accentColor absolute bottom-0 right-0 rounded-full'}/> */}
               </div>
               <div className={'flex flex-col items-start'}>
-                <span className="text-base leading-base text-modalText">
-                  {chain?.name || 'Polkadot'}
-                </span>
+                <span className="text-base leading-base text-modalText">{chain?.name || 'Polkadot'}</span>
                 {balance ? (
                   <span className={'text-modalTextSecondary text-xs leading-xs'}>
-                    {balance.formattedTransferable || '0.00'}{' '}
-                    {chain?.nativeCurrency?.symbol || 'DOT'}
+                   {balance.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
                   </span>
                 ) : (
-                  <span className="animate-pulse rounded w-[80px] h-[16px] bg-skeleton" />
+                  <span className="animate-pulse rounded w-[80px] h-[16px] bg-skeleton"/>
                 )}
               </div>
             </div>
-            <div className={'flex items-center justify-center'}>
+            <div
+              className={'flex items-center justify-center'}>
               <Arrow className={'w-[16px] h-[16px] text-modalTextSecondary'} />
             </div>
           </div>

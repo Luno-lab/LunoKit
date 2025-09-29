@@ -6,9 +6,10 @@ import { ChainIcon } from '../ChainIcon';
 
 interface ChainListProps {
   onChainSwitched?: (chain: Chain) => void;
+  className?: string
 }
 
-export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched }: ChainListProps) => {
+export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched, className = '' }: ChainListProps) => {
   const { chain: currentChain } = useChain();
   const chains = useChains();
   const { switchChainAsync } = useSwitchChain();
@@ -59,6 +60,7 @@ export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched }: ChainLi
               isSelected={chain.genesisHash === currentChain?.genesisHash}
               onSelect={handleChainSelect}
               isLoading={(switchingChain === chain.genesisHash || !isApiReady) && !apiError}
+              isSwitching={switchingChain === chain.genesisHash}
             />
           ))}
         </div>
@@ -78,30 +80,36 @@ interface ChainItemProps {
   isSelected: boolean;
   isLoading: boolean;
   onSelect: (chain: Chain) => void;
+  isSwitching: boolean;
 }
 
-const ChainItem: React.FC<ChainItemProps> = React.memo(
-  ({ chain, isSelected, isLoading, onSelect }) => {
-    return (
-      <button
-        onClick={() => onSelect(chain)}
-        disabled={isSelected || isLoading}
-        className={cs(
-          'flex items-center justify-between p-2.5 rounded-networkSelectItem',
-          'bg-networkSelectItemBackground',
-          'transition-colors duration-200',
-          isSelected || isLoading
-            ? 'cursor-default'
-            : 'cursor-pointer hover:bg-networkSelectItemBackgroundHover',
-          isLoading && 'opacity-80'
-        )}
-      >
-        <div className="flex items-center gap-2">
-          <ChainIcon
-            className={'w-[20px] h-[20px] flex items-center justify-center leading-[20px]'}
-            chainIconUrl={chain?.chainIconUrl}
-            chainName={chain?.name}
-          />
+
+const ChainItem: React.FC<ChainItemProps> = React.memo(({
+  chain,
+  isSelected,
+  isLoading,
+  onSelect,
+  isSwitching
+}) => {
+  return (
+    <button
+      onClick={() => onSelect(chain)}
+      disabled={isSelected || isLoading}
+      className={cs(
+        'flex items-center justify-between p-2.5 rounded-networkSelectItem',
+        'bg-networkSelectItemBackground',
+        'transition-colors duration-200',
+        (isSelected || isLoading)
+          ? 'cursor-default'
+          : 'cursor-pointer hover:bg-networkSelectItemBackgroundHover',
+        isLoading && 'opacity-80'
+      )}>
+      <div className="flex items-center gap-2">
+        <ChainIcon
+          className={'w-[20px] h-[20px] flex items-center justify-center leading-[20px]'}
+          chainIconUrl={chain?.chainIconUrl}
+          chainName={chain?.name}
+        />
 
           <div className="flex flex-col items-start">
             <span className="font-medium text-base text-modalText">{chain.name}</span>
@@ -112,7 +120,9 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(
           {isSelected ? (
             isLoading ? (
               <>
-                <span className="text-accentColor text-xs leading-xs mr-1.5">Switching</span>
+                <span className="text-accentColor text-xs leading-xs mr-1.5">
+                  {isSwitching ? 'Switching' : 'Connecting'}
+                </span>
                 <div className="loading text-accentColor w-[15px] h-[15px]"></div>
               </>
             ) : (
