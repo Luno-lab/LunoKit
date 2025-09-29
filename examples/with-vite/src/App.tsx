@@ -139,9 +139,6 @@ const App: React.FC = () => {
             <div className="hero-connect">
               <ConnectButton displayPreference={'name'}/>
             </div>
-            <div className="hero-connect">
-              <ConnectButton displayPreference={'name'} />
-            </div>
           </div>
         </section>
 

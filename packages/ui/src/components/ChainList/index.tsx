@@ -3,6 +3,7 @@ import type { Chain } from '@luno-kit/react/types';
 import React, { useMemo, useState } from 'react';
 import { cs } from '../../utils';
 import { ChainIcon } from '../ChainIcon';
+import { Search } from '../../assets/icons'
 
 interface ChainListProps {
   onChainSwitched?: (chain: Chain) => void;
@@ -13,20 +14,23 @@ export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched, className
   const { chain: currentChain } = useChain();
   const chains = useChains();
   const { switchChainAsync } = useSwitchChain();
-  const { isApiReady, apiError } = useApi();
+  const { isApiReady, apiError } = useApi()
 
   const [switchingChain, setSwitchingChain] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredChains = useMemo(() => {
-    return chains.filter((chain) =>
-      searchQuery.trim() ? chain.name.toLowerCase().includes(searchQuery.toLowerCase()) : true
-    );
+    return chains
+      .filter(chain =>
+        searchQuery.trim()
+          ? chain.name.toLowerCase().includes(searchQuery.toLowerCase())
+          : true
+      )
   }, [chains, searchQuery]);
 
   const handleChainSelect = async (chain: Chain) => {
     if (chain.genesisHash === currentChain?.genesisHash) return;
-    if (!isApiReady && !apiError) return;
+    if (!isApiReady && !apiError) return
 
     setSwitchingChain(chain.genesisHash);
     try {
@@ -40,20 +44,23 @@ export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched, className
   };
 
   return (
-    <>
+    <div className={cs('flex flex-col gap-3.5', className)}>
       <div className="relative pt-1">
-        <input
-          type="text"
-          placeholder="Search by name"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-accentColor focus:outline-none focus:border-transparent"
-        />
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-modalTextSecondary" />
+          <input
+            type="text"
+            placeholder="Search by name"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-3 py-2 text-sm border border-networkSelectItemBackgroundHover rounded-md focus:ring-2 focus:ring-accentColor focus:outline-none focus:border-transparent"
+          />
+        </div>
       </div>
 
       {filteredChains.length > 0 && (
-        <div className="flex flex-col gap-1.5 overflow-y-auto custom-scrollbar max-h-[450px]">
-          {filteredChains.map((chain) => (
+        <div className="flex flex-col gap-1.5 overflow-y-auto max-h-[380px]">
+          {filteredChains.map(chain => (
             <ChainItem
               key={chain.genesisHash}
               chain={chain}
@@ -68,12 +75,14 @@ export const ChainList: React.FC<ChainListProps> = ({ onChainSwitched, className
 
       {filteredChains.length === 0 && (
         <div className="flex items-center justify-center py-12">
-          <span className="text-modalTextSecondary text-xs">No chains available</span>
+          <span className="text-modalTextSecondary text-xs">
+            No chains available
+          </span>
         </div>
       )}
-    </>
-  );
-};
+    </div>
+  )
+}
 
 interface ChainItemProps {
   chain: Chain;
@@ -83,13 +92,8 @@ interface ChainItemProps {
   isSwitching: boolean;
 }
 
-
 const ChainItem: React.FC<ChainItemProps> = React.memo(({
-  chain,
-  isSelected,
-  isLoading,
-  onSelect,
-  isSwitching
+  chain, isSelected, isLoading, onSelect, isSwitching
 }) => {
   return (
     <button
