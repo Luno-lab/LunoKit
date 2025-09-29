@@ -1,27 +1,37 @@
-import React, { useMemo } from 'react';
-import { cs } from '../../utils';
+import { useAccount, useBalance, useChain, useChains, useDisconnect } from '@luno-kit/react';
+import { getExplorerUrl } from '@luno-kit/react/utils';
+import type React from 'react';
+import { useMemo } from 'react';
 import { Arrow, Disconnect, List, Switch } from '../../assets/icons';
+import { cs } from '../../utils';
 import { ChainIcon } from '../ChainIcon';
-import { AccountModalView } from './index'
-import {useAccount, useBalance, useChain, useDisconnect} from '@luno-kit/react'
-import { getExplorerUrl } from '@luno-kit/react/utils'
+import { AccountModalView } from './index';
 
 interface MainViewProps {
   onViewChange: (view: AccountModalView) => void;
   onModalClose: () => void;
 }
 
-export const MainView: React.FC<MainViewProps> = ({
-  onViewChange,
-  onModalClose,
-}) => {
+export const MainView: React.FC<MainViewProps> = ({ onViewChange, onModalClose }) => {
   const { address } = useAccount();
   const { chain } = useChain();
+  const chains = useChains();
   const { disconnectAsync } = useDisconnect();
-  const { data: balance } = useBalance({ address });
+  const { data: balance } = useBalance({ address: chains.length > 0 ? address : undefined });
 
   const items = useMemo(() => {
-    return [
+    const chainSelectOptions = [
+      {
+        key: 'View on Explorer',
+        content: (
+          <>
+            <List className={'w-[24px] h-[24px]'} />
+            <span className="text-base text-accountActionItemText">View on Explorer</span>
+          </>
+        ),
+        onClick: () =>
+          window.open(getExplorerUrl(chain?.blockExplorers?.default?.url!, address, 'address')),
+      },
       {
         key: 'Chain Name',
         content: (
@@ -36,34 +46,29 @@ export const MainView: React.FC<MainViewProps> = ({
                 {/* <div className={'dot w-[8px] h-[8px] bg-accentColor absolute bottom-0 right-0 rounded-full'}/> */}
               </div>
               <div className={'flex flex-col items-start'}>
-                <span className="text-base leading-base text-modalText">{chain?.name || 'Polkadot'}</span>
+                <span className="text-base leading-base text-modalText">
+                  {chain?.name || 'Polkadot'}
+                </span>
                 {balance ? (
                   <span className={'text-modalTextSecondary text-xs leading-xs'}>
-                   {balance.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
+                    {balance.formattedTransferable || '0.00'}{' '}
+                    {chain?.nativeCurrency?.symbol || 'DOT'}
                   </span>
                 ) : (
-                  <span className="animate-pulse rounded w-[80px] h-[16px] bg-skeleton"/>
+                  <span className="animate-pulse rounded w-[80px] h-[16px] bg-skeleton" />
                 )}
               </div>
             </div>
-            <div
-              className={'flex items-center justify-center'}>
+            <div className={'flex items-center justify-center'}>
               <Arrow className={'w-[16px] h-[16px] text-modalTextSecondary'} />
             </div>
           </div>
         ),
-        onClick: () => onViewChange(AccountModalView.switchChain)
+        onClick: () => onViewChange(AccountModalView.switchChain),
       },
-      {
-        key: 'View on Explorer',
-        content: (
-          <>
-            <List className={'w-[24px] h-[24px]'} />
-            <span className="text-base text-accountActionItemText">View on Explorer</span>
-          </>
-        ),
-        onClick: () => window.open(getExplorerUrl(chain?.blockExplorers?.default?.url!, address, 'address'))
-      },
+    ];
+
+    const normalOptions = [
       {
         key: 'Switch Account',
         content: (
@@ -72,10 +77,12 @@ export const MainView: React.FC<MainViewProps> = ({
             <span className="text-base text-accountActionItemText">Switch Account</span>
           </>
         ),
-        onClick: () => onViewChange(AccountModalView.switchAccount)
-      }
+        onClick: () => onViewChange(AccountModalView.switchAccount),
+      },
     ];
-  }, [onViewChange, chain, address, balance])
+
+    return chains.length > 0 ? [...chainSelectOptions, ...normalOptions] : [...normalOptions];
+  }, [onViewChange, chain, address, balance, chains]);
 
   const handleDisconnect = async () => {
     await disconnectAsync();
@@ -85,17 +92,17 @@ export const MainView: React.FC<MainViewProps> = ({
   return (
     <div className="flex flex-col items-center gap-3 w-full">
       <div className="flex flex-col gap-1.5 w-full px-4">
-        {items.map(i => (
+        {items.map((i) => (
           <SelectItem key={i.key} onClick={i.onClick}>
             {i.content}
           </SelectItem>
         ))}
       </div>
-      <div className={'w-full mx-[-100px] h-[1px] bg-separatorLine'}/>
+      <div className={'w-full mx-[-100px] h-[1px] bg-separatorLine'} />
 
       <div className={'w-full px-4 pb-4'}>
         <SelectItem onClick={handleDisconnect}>
-          <Disconnect  />
+          <Disconnect />
           <span className="font-medium text-base text-accountActionItemText">Disconnect</span>
         </SelectItem>
       </div>

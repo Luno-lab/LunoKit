@@ -1,15 +1,14 @@
-import { expect, afterEach, describe, it, vi } from 'vitest';
-import { mockConfig, MockConnector, mockClient } from '../test-utils';
-import { renderHook } from '../test-utils';
 import { act, waitFor } from '@testing-library/react';
-import { useConnect } from './useConnect';
-import { useBalance } from './useBalance';
-import { useAccount } from './useAccount';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { type MockConnector, mockClient, mockConfig, renderHook } from '../test-utils';
 import { ConnectionStatus } from '../types';
+import { useAccount } from './useAccount';
+import { useBalance } from './useBalance';
+import { useConnect } from './useConnect';
 import { useLuno } from './useLuno';
 
 vi.mock('../utils/createApi', () => ({
-  createApi: () => Promise.resolve(mockClient.polkadot)
+  createApi: () => Promise.resolve(mockClient.polkadot),
 }));
 
 const connector = mockConfig.connectors[0] as MockConnector;
@@ -22,14 +21,17 @@ describe('useBalance', () => {
   });
 
   it('should handle balance query when connected', async () => {
-    const { result } = renderHook(() => ({
-      useAccount: useAccount(),
-      useConnect: useConnect(),
-      useLuno: useLuno(),
-      useBalance: useBalance({ address: undefined })
-    }), {
-      config: mockConfig
-    });
+    const { result } = renderHook(
+      () => ({
+        useAccount: useAccount(),
+        useConnect: useConnect(),
+        useLuno: useLuno(),
+        useBalance: useBalance({ address: undefined }),
+      }),
+      {
+        config: mockConfig,
+      }
+    );
 
     expect(result.current.useBalance.data).toBeUndefined();
     expect(result.current.useBalance.isLoading).toBe(false);
@@ -42,7 +44,7 @@ describe('useBalance', () => {
 
     await act(async () => {
       await result.current.useConnect.connectAsync({
-        connectorId: connector.id
+        connectorId: connector.id,
       });
     });
 
@@ -50,11 +52,13 @@ describe('useBalance', () => {
       expect(result.current.useConnect.status).toBe(ConnectionStatus.Connected);
     });
 
-    const { result: balanceResult } = renderHook(() =>
+    const { result: balanceResult } = renderHook(
+      () =>
         useBalance({
-          address: result.current.useAccount.address
-        }), {
-        config: mockConfig
+          address: result.current.useAccount.address,
+        }),
+      {
+        config: mockConfig,
       }
     );
 
@@ -87,11 +91,14 @@ describe('useBalance', () => {
   });
 
   it('should be disabled when API is not ready', async () => {
-    const { result } = renderHook(() => ({
-      useBalance: useBalance({ address: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY' })
-    }), {
-      config: mockConfig
-    });
+    const { result } = renderHook(
+      () => ({
+        useBalance: useBalance({ address: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY' }),
+      }),
+      {
+        config: mockConfig,
+      }
+    );
 
     expect(result.current.useBalance.data).toBeUndefined();
     expect(result.current.useBalance.isLoading).toBe(false);

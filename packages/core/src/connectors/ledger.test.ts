@@ -1,9 +1,10 @@
 import { describe } from 'vitest';
-import { createWalletConnectTestSuite } from './test-helper';
 import { ledgerWallet } from '../config/logos/generated';
-import { ledgerConnector } from './ledger'
+import { ledgerConnector } from './ledger';
+import { createWalletConnectTestSuite } from './test-helper';
 
-describe('ledgerConnector',
+describe(
+  'ledgerConnector',
   createWalletConnectTestSuite({
     getConnector: ledgerConnector,
     expected: {

@@ -1,5 +1,5 @@
+import { ConnectButton } from '@luno-kit/ui';
 import React from 'react';
-import { ConnectButton } from '@luno-kit/ui'
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
         padding: '12px',
       }}
     >
-      <ConnectButton/>
+      <ConnectButton />
     </div>
   );
 }

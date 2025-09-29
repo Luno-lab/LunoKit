@@ -4,5 +4,5 @@ export const isMobileDevice = () => {
       window.navigator.userAgent.toLowerCase()
     );
   }
-  return false
+  return false;
 };

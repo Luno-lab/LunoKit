@@ -6,9 +6,7 @@ import type { Transport } from '../types';
  * @param url - WebSocket RPC URL or URL array (for fallback).
  * @returns WsProvider instance.
  */
-export function wsProvider(
-  url: string | string[],
-): WsProvider {
+export function wsProvider(url: string | string[]): WsProvider {
   return new WsProvider(url);
 }
 

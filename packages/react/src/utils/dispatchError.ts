@@ -1,5 +1,5 @@
-import type { DispatchError } from 'dedot/codecs'
-import type { LegacyClient } from 'dedot'
+import type { LegacyClient } from 'dedot';
+import type { DispatchError } from 'dedot/codecs';
 
 export function getReadableDispatchError(api: LegacyClient, dispatchError: DispatchError): string {
   if (dispatchError.type === 'Module') {
@@ -12,7 +12,9 @@ export function getReadableDispatchError(api: LegacyClient, dispatchError: Dispa
 
       return `[useSendTransaction]: Module Error (index: ${dispatchError.value.index}, error: ${dispatchError.value.error})`;
     } catch (e) {
-      const { value: { error, index } } = dispatchError;
+      const {
+        value: { error, index },
+      } = dispatchError;
 
       return `[useSendTransaction]: Module Error (index: ${index}, error: ${error}) - Failed to decode: ${e instanceof Error ? e.message : 'Unknown error'}`;
     }

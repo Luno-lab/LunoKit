@@ -1,4 +1,4 @@
-import { Cuer } from 'cuer'
+import { Cuer } from 'cuer';
 
 export type ErrorCorrectionLevel = 'low' | 'medium' | 'quartile' | 'high';
 
@@ -11,28 +11,24 @@ interface Props {
   uri?: string;
 }
 
-export const QRCode = ({
-  logoBackground,
-  uri,
-  size,
-}: Props) => {
+export const QRCode = ({ logoBackground, uri, size }: Props) => {
   if (!uri) {
     const QR_GRID_SIZE = 57;
     const FINDER_SIZE_WITH_MARGIN = 8;
     const ARENA_GRID_SIZE = Math.floor(QR_GRID_SIZE / 4);
-    
+
     const cellSize = size / QR_GRID_SIZE;
     const arenaSize = ARENA_GRID_SIZE * cellSize;
     const arenaStart = Math.ceil(QR_GRID_SIZE / 2 - ARENA_GRID_SIZE / 2);
     const arenaEnd = arenaStart + ARENA_GRID_SIZE;
-    
+
     const generateSkeletonDots = () => {
       const dots = [];
       for (let i = 0; i < QR_GRID_SIZE; i++) {
         for (let j = 0; j < QR_GRID_SIZE; j++) {
           if (i >= arenaStart && i < arenaEnd && j >= arenaStart && j < arenaEnd) continue;
 
-          const isInFinder = 
+          const isInFinder =
             (i < FINDER_SIZE_WITH_MARGIN && j < FINDER_SIZE_WITH_MARGIN) ||
             (i < FINDER_SIZE_WITH_MARGIN && j >= QR_GRID_SIZE - FINDER_SIZE_WITH_MARGIN) ||
             (i >= QR_GRID_SIZE - FINDER_SIZE_WITH_MARGIN && j < FINDER_SIZE_WITH_MARGIN);
@@ -57,7 +53,11 @@ export const QRCode = ({
       return dots;
     };
 
-    const renderFinderPattern = ({ position }: { position: 'top-left' | 'top-right' | 'bottom-left' }) => {
+    const renderFinderPattern = ({
+      position,
+    }: {
+      position: 'top-left' | 'top-right' | 'bottom-left';
+    }) => {
       const finderSize = 7 * cellSize;
       const positionStyles = {
         'top-left': { top: 0, left: 0 },
@@ -66,28 +66,28 @@ export const QRCode = ({
       };
 
       return (
-        <div 
+        <div
           className="absolute z-[4]"
-          style={{ 
-            width: `${finderSize}px`, 
+          style={{
+            width: `${finderSize}px`,
             height: `${finderSize}px`,
-            ...positionStyles[position]
+            ...positionStyles[position],
           }}
         >
-          <div 
+          <div
             className="absolute inset-0"
-            style={{ 
+            style={{
               borderRadius: `${2 * cellSize}px`,
               border: `${cellSize}px solid var(--color-walletSelectItemBackground)`,
             }}
           />
-          <div 
+          <div
             className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
             style={{
               width: `${3 * cellSize}px`,
               height: `${3 * cellSize}px`,
               borderRadius: `${0.5 * cellSize}px`,
-              backgroundColor: 'var(--color-walletSelectItemBackground)'
+              backgroundColor: 'var(--color-walletSelectItemBackground)',
             }}
           />
         </div>
@@ -96,17 +96,17 @@ export const QRCode = ({
 
     const renderArenaLogo = () => {
       const logoStart = arenaStart * cellSize;
-      
+
       return (
-        <div 
+        <div
           className="absolute z-[4] flex items-center justify-center box-border"
-          style={{ 
+          style={{
             width: `${arenaSize}px`,
             height: `${arenaSize}px`,
             left: `${logoStart}px`,
             top: `${logoStart}px`,
             borderRadius: `${cellSize}px`,
-            padding: `${cellSize / 2}px`
+            padding: `${cellSize / 2}px`,
           }}
         >
           <img
@@ -114,23 +114,23 @@ export const QRCode = ({
             alt="QR Code Logo"
             className="h-full w-full object-cover"
             style={{
-              borderRadius: `${cellSize}px`
+              borderRadius: `${cellSize}px`,
             }}
           />
         </div>
       );
     };
-    
+
     return (
-      <div 
+      <div
         className="relative overflow-hidden flex items-center justify-center"
-        style={{ 
-          width: size, 
+        style={{
+          width: size,
           height: size,
-          borderRadius: `${2 * cellSize}px`
+          borderRadius: `${2 * cellSize}px`,
         }}
       >
-        <svg 
+        <svg
           className="absolute inset-0 z-[3]"
           width={size}
           height={size}
@@ -138,26 +138,25 @@ export const QRCode = ({
         >
           {generateSkeletonDots()}
         </svg>
-        
-        <div 
+
+        <div
           className="absolute inset-0 z-[100]"
           style={{
-            background: 'linear-gradient(90deg, transparent 50%, var(--color-walletSelectItemBackgroundHover), transparent)',
+            background:
+              'linear-gradient(90deg, transparent 50%, var(--color-walletSelectItemBackgroundHover), transparent)',
             backgroundSize: '200% 100%',
             transform: 'scale(1.5) rotate(45deg)',
-            animation: 'shimmer 1000ms linear infinite both'
+            animation: 'shimmer 1000ms linear infinite both',
           }}
         />
-        
+
         {renderFinderPattern({ position: 'top-left' })}
         {renderFinderPattern({ position: 'top-right' })}
         {renderFinderPattern({ position: 'bottom-left' })}
-        
+
         {logoBackground && renderArenaLogo()}
       </div>
-    )
+    );
   }
-  return (
-    <Cuer arena={logoBackground} value={uri} />
-  )
-}
+  return <Cuer arena={logoBackground} value={uri} />;
+};

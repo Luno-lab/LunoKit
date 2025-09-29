@@ -1,21 +1,22 @@
 import type { Config } from '@luno-kit/core/types';
-import { renderHook as baseRenderHook, RenderHookOptions } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { renderHook as baseRenderHook, type RenderHookOptions } from '@testing-library/react';
 import type { ReactNode } from 'react';
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
-import { LunoProvider } from '../context'
+import { LunoProvider } from '../context';
 
-export interface CustomRenderHookOptions<TProps> extends Omit<RenderHookOptions<TProps>, 'wrapper'> {
+export interface CustomRenderHookOptions<TProps>
+  extends Omit<RenderHookOptions<TProps>, 'wrapper'> {
   config: Config;
 }
 
-export const queryClient = new QueryClient()
+export const queryClient = new QueryClient();
 
 export function renderHook<TResult, TProps>(
   useHook: (props: TProps) => TResult,
-  options: CustomRenderHookOptions<TProps>,
+  options: CustomRenderHookOptions<TProps>
 ) {
   const { config, ...restOptions } = options;
-  queryClient.clear()
+  queryClient.clear();
 
   const Wrapper = ({ children }: { children: ReactNode }) => (
     <QueryClientProvider client={queryClient}>

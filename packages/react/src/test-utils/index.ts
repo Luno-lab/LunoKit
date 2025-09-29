@@ -1,3 +1,3 @@
-export * from './mocks'
-export * from './render'
-export * from './connectUtils'
+export * from './connectUtils';
+export * from './mocks';
+export * from './render';

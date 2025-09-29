@@ -1,10 +1,9 @@
-import { expect, describe, it, vi, beforeEach, afterEach } from 'vitest';
-import { mockConfig } from '../test-utils';
-import { renderHook } from '../test-utils';
-import { useSubscription } from './useSubscription';
 import { waitFor } from '@testing-library/react';
-import { useLuno } from './useLuno'
-import {ConnectionStatus} from '../types'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockConfig, renderHook } from '../test-utils';
+import { ConnectionStatus } from '../types';
+import { useLuno } from './useLuno';
+import { useSubscription } from './useSubscription';
 
 vi.mock('./useLuno');
 const mockUseLuno = vi.mocked(useLuno);
@@ -24,19 +23,19 @@ describe('useSubscription', () => {
           account: vi.fn().mockImplementation((address, callback) => {
             setTimeout(() => callback('1000000000000'), 0);
             return Promise.resolve(() => Promise.resolve());
-          })
+          }),
         },
         balances: {
           locks: vi.fn().mockImplementation((address, callback) => {
             setTimeout(() => callback([]), 0);
             return Promise.resolve(() => Promise.resolve());
-          })
-        }
+          }),
+        },
       },
       queryMulti: vi.fn().mockImplementation((queries, callback) => {
         setTimeout(() => callback(['1000000000000', []]), 0);
         return Promise.resolve(() => Promise.resolve());
-      })
+      }),
     };
 
     mockUseLuno.mockReturnValue({
@@ -63,13 +62,15 @@ describe('useSubscription', () => {
 
   describe('Basic Subscriptions', () => {
     it('should handle block number subscription', async () => {
-      const { result } = renderHook(() =>
+      const { result } = renderHook(
+        () =>
           useSubscription({
             queryKey: '/block-number',
             factory: (api) => api.query.system.number,
             params: [],
-          }), {
-          config: mockConfig
+          }),
+        {
+          config: mockConfig,
         }
       );
 
@@ -79,7 +80,8 @@ describe('useSubscription', () => {
     });
 
     it('should handle balance subscription with transform', async () => {
-      const { result } = renderHook(() =>
+      const { result } = renderHook(
+        () =>
           useSubscription({
             queryKey: '/balance',
             factory: (api) => api.query.system.account,
@@ -87,34 +89,43 @@ describe('useSubscription', () => {
             options: {
               transform: (data) => ({
                 free: data,
-                formatted: `${parseInt(data) / 10 ** 10} DOT`
-              })
-            }
-          }), {
-          config: mockConfig
+                formatted: `${parseInt(data) / 10 ** 10} DOT`,
+              }),
+            },
+          }),
+        {
+          config: mockConfig,
         }
       );
 
       await waitFor(() => expect(result.current.data).toBeDefined());
       expect(result.current.data).toEqual({
         free: '1000000000000',
-        formatted: '100 DOT'
+        formatted: '100 DOT',
       });
     });
   });
 
   describe('Multi Query', () => {
     it('should handle multi query subscription', async () => {
-      const { result } = renderHook(() =>
+      const { result } = renderHook(
+        () =>
           useSubscription({
             queryKey: '/account-details',
             factory: (api) => api.queryMulti,
-            params: (api) => ([
-              { fn: api.query.system.account, args: ['5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'] },
-              { fn: api.query.balances.locks, args: ['5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'] }
-            ]),
-          }), {
-          config: mockConfig
+            params: (api) => [
+              {
+                fn: api.query.system.account,
+                args: ['5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'],
+              },
+              {
+                fn: api.query.balances.locks,
+                args: ['5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'],
+              },
+            ],
+          }),
+        {
+          config: mockConfig,
         }
       );
 
@@ -125,15 +136,17 @@ describe('useSubscription', () => {
 
   describe('Error Handling', () => {
     it('should handle subscription errors', async () => {
-      const { result } = renderHook(() =>
+      const { result } = renderHook(
+        () =>
           useSubscription({
             queryKey: '/error',
             factory: () => {
               throw new Error('Subscription failed');
             },
             params: [],
-          }), {
-          config: mockConfig
+          }),
+        {
+          config: mockConfig,
         }
       );
 
@@ -143,14 +156,16 @@ describe('useSubscription', () => {
     });
 
     it('should not subscribe when disabled', async () => {
-      const { result } = renderHook(() =>
+      const { result } = renderHook(
+        () =>
           useSubscription({
             queryKey: '/block-number',
             factory: (api) => api.query.system.number,
             params: [],
-            options: { enabled: false }
-          }), {
-          config: mockConfig
+            options: { enabled: false },
+          }),
+        {
+          config: mockConfig,
         }
       );
 

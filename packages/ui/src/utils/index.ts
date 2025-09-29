@@ -1,2 +1,2 @@
-export * from './cs'
-export * from './debounce'
+export * from './cs';
+export * from './debounce';

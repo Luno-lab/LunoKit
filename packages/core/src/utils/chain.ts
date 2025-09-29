@@ -1,4 +1,4 @@
-import type { Chain } from '../types'
+import type { Chain } from '../types';
 
 export function defineChain(chain: Chain): Chain {
   return chain;
@@ -8,7 +8,11 @@ export function getChainToken(chain: Chain): string {
   return chain.nativeCurrency.symbol;
 }
 
-export function getExplorerUrl(explorerUrl = '', data = '', type: 'transaction' | 'address' | 'block' = 'transaction'): string {
+export function getExplorerUrl(
+  explorerUrl = '',
+  data = '',
+  type: 'transaction' | 'address' | 'block' = 'transaction'
+): string {
   if (!explorerUrl) return '';
 
   switch (type) {

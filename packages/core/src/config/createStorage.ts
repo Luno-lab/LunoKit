@@ -1,4 +1,4 @@
-import type { LunoStorage, RawStorage } from '../types'
+import type { LunoStorage, RawStorage } from '../types';
 
 // Defines the parameters for the createStorage function.
 export interface CreateStorageParameters {
@@ -29,7 +29,10 @@ export function createStorage({
         // Normalize undefined or null to null
         return value == null ? null : String(value);
       } catch (error) {
-        console.error(`[LunoStorage] Error getting item "${keySuffix}" (full key: "${getKey(keySuffix)}"):`, error);
+        console.error(
+          `[LunoStorage] Error getting item "${keySuffix}" (full key: "${getKey(keySuffix)}"):`,
+          error
+        );
         return null; // Return null on error to indicate failure
       }
     },
@@ -40,7 +43,10 @@ export function createStorage({
         // Await to handle both sync and async RawStorage setItem methods consistently
         await storage.setItem(fullKey, value);
       } catch (error) {
-        console.error(`[LunoStorage] Error setting item "${keySuffix}" (full key: "${getKey(keySuffix)}"):`, error);
+        console.error(
+          `[LunoStorage] Error setting item "${keySuffix}" (full key: "${getKey(keySuffix)}"):`,
+          error
+        );
         // Errors during setItem are logged but don't typically need to be propagated further in the same way getItem might.
       }
     },
@@ -51,7 +57,10 @@ export function createStorage({
         // Await to handle both sync and async RawStorage removeItem methods consistently
         await storage.removeItem(fullKey);
       } catch (error) {
-        console.error(`[LunoStorage] Error removing item "${keySuffix}" (full key: "${getKey(keySuffix)}"):`, error);
+        console.error(
+          `[LunoStorage] Error removing item "${keySuffix}" (full key: "${getKey(keySuffix)}"):`,
+          error
+        );
       }
     },
   };

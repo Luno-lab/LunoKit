@@ -3,13 +3,7 @@
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "fixed": [],
-  "linked": [
-    [
-      "@luno-kit/core",
-      "@luno-kit/react",
-      "@luno-kit/ui"
-    ]
-  ],
+  "linked": [["@luno-kit/core", "@luno-kit/react", "@luno-kit/ui"]],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",

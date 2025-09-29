@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
+import { subwalletWallet } from '../config/logos/generated';
 import { subwalletConnector } from './subwallet';
-import { createConnectorTestSuite } from './test-helper'
-import { subwalletWallet } from '../config/logos/generated'
+import { createConnectorTestSuite } from './test-helper';
 
 describe(
   'subwalletConnector',
@@ -13,4 +13,4 @@ describe(
       icon: subwalletWallet,
     },
   })
-)
+);

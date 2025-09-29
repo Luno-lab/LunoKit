@@ -6,13 +6,16 @@
     "build": "pnpm -r --stream --filter './packages/**' run build",
     "clean": "pnpm --filter './packages/**' run clean",
     "dev": "pnpm --filter './packages/**' dev",
-    "lint": "pnpm --filter './packages/**' lint",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "changeset": "changeset",
-    "publish": "pnpm clean && pnpm build && changeset publish"
+    "publish": "pnpm clean && pnpm build && changeset publish",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write ."
   },
   "devDependencies": {
+    "@biomejs/biome": "2.2.4",
     "@changesets/cli": "^2.29.2",
     "@vitest/coverage-v8": "3.2.4",
     "eslint": "^8.56.0",

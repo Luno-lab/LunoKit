@@ -1,13 +1,12 @@
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import type { LegacyClient } from 'dedot';
+import type { Callback, GenericStorageQuery, Unsub } from 'dedot/types';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLuno } from './useLuno';
-import type { Callback } from 'dedot/types'
-import type { LegacyClient } from 'dedot';
-import type { Unsub } from 'dedot/types';
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { GenericStorageQuery } from 'dedot/types'
 
-type SubscriptionFn<TArgs extends any[], TData> =
-  (...params: [...TArgs, Callback<TData>]) => Promise<() => Promise<void>>;
+type SubscriptionFn<TArgs extends any[], TData> = (
+  ...params: [...TArgs, Callback<TData>]
+) => Promise<() => Promise<void>>;
 
 export interface UseSubscriptionOptions<TData, TTransformed = TData> {
   enabled?: boolean;
@@ -15,8 +14,9 @@ export interface UseSubscriptionOptions<TData, TTransformed = TData> {
   defaultValue?: TTransformed;
 }
 
-type ApiBoundSubscriptionFactory<TArgs extends any[], TData> =
-  (api: LegacyClient) => SubscriptionFn<TArgs, TData>;
+type ApiBoundSubscriptionFactory<TArgs extends any[], TData> = (
+  api: LegacyClient
+) => SubscriptionFn<TArgs, TData>;
 
 export interface QueryMultiItem {
   fn: GenericStorageQuery;
@@ -38,10 +38,13 @@ export interface UseSubscriptionResult<TTransformed> {
 
 const defaultTransform = <T>(data: T): T => data;
 
-export const useSubscription = <TArgs extends any[], TData, TTransformed = TData>(
-  { queryKey: userQueryKey, factory, params, options = {} }: UseSubscriptionProps<TArgs, TData, TTransformed>
-): UseSubscriptionResult<TTransformed> => {
-  const [error, setError] = useState<Error | undefined>(undefined)
+export const useSubscription = <TArgs extends any[], TData, TTransformed = TData>({
+  queryKey: userQueryKey,
+  factory,
+  params,
+  options = {},
+}: UseSubscriptionProps<TArgs, TData, TTransformed>): UseSubscriptionResult<TTransformed> => {
+  const [error, setError] = useState<Error | undefined>(undefined);
   const { currentApi, isApiReady } = useLuno();
   const queryClient = useQueryClient();
   const {
@@ -56,11 +59,10 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
     return typeof params === 'function' ? [params(currentApi)] : params;
   }, [params, currentApi, isApiReady]);
 
-  const queryKey = useMemo(() => [
-    userQueryKey,
-    resolvedParams,
-    currentApi?.genesisHash
-  ], [userQueryKey, resolvedParams, currentApi?.genesisHash]);
+  const queryKey = useMemo(
+    () => [userQueryKey, resolvedParams, currentApi?.genesisHash],
+    [userQueryKey, resolvedParams, currentApi?.genesisHash]
+  );
 
   useEffect(() => {
     if (unsubscribeRef.current) {
@@ -85,7 +87,6 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
           setError(new Error(`[useSubscription]: ${err}`));
         }
       };
-
 
       boundFn(...resolvedParams, callback)
         .then((unsub: Unsub) => {
@@ -119,6 +120,6 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
   return {
     data: data as TTransformed | undefined,
     error: error as Error | undefined,
-    isLoading: !!(enabled && isApiReady && !data)
+    isLoading: !!(enabled && isApiReady && !data),
   };
 };

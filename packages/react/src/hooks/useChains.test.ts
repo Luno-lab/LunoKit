@@ -1,19 +1,21 @@
-import { expect, test, vi } from 'vitest';
-import { mockConfig, mockClient } from '../test-utils';
-import { renderHook } from '../test-utils';
-import { useChains } from './useChains';
 import { waitFor } from '@testing-library/react';
+import { expect, test, vi } from 'vitest';
+import { mockClient, mockConfig, renderHook } from '../test-utils';
+import { useChains } from './useChains';
 
 vi.mock('../utils/createApi', () => ({
-  createApi: () => Promise.resolve(mockClient.polkadot)
+  createApi: () => Promise.resolve(mockClient.polkadot),
 }));
 
 test('useChains', async () => {
-  const { result } = renderHook(() => ({
-    useChains: useChains()
-  }), {
-    config: mockConfig
-  });
+  const { result } = renderHook(
+    () => ({
+      useChains: useChains(),
+    }),
+    {
+      config: mockConfig,
+    }
+  );
 
   await waitFor(() => {
     expect(result.current.useChains.length).toBeGreaterThan(0);

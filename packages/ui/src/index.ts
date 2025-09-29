@@ -1,3 +1,2 @@
-export { ConnectButton } from './components'
-export * from './providers'
-
+export { ConnectButton } from './components';
+export * from './providers';

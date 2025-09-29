@@ -1,5 +1,5 @@
-import { novaWallet } from '../config/logos/generated'
-import { InjectConnector } from './inject'
+import { novaWallet } from '../config/logos/generated';
+import { InjectConnector } from './inject';
 
 export class NovaMobileConnector extends InjectConnector {
   constructor() {
@@ -9,8 +9,8 @@ export class NovaMobileConnector extends InjectConnector {
       icon: novaWallet,
       injectorId: 'polkadot-js',
       links: {
-        deepLink: 'https://app.novawallet.io/open/dapp'
-      }
+        deepLink: 'https://app.novawallet.io/open/dapp',
+      },
     });
   }
 
@@ -29,4 +29,4 @@ export class NovaMobileConnector extends InjectConnector {
   }
 }
 
-export const novaMobileConnector = () => new NovaMobileConnector()
+export const novaMobileConnector = () => new NovaMobileConnector();

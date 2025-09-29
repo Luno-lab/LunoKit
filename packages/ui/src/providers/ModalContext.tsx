@@ -1,5 +1,13 @@
-import React, { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { ConnectionStatus, useStatus } from '@luno-kit/react'
+import { ConnectionStatus, useStatus } from '@luno-kit/react';
+import React, {
+  createContext,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 function useModalVisibility() {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,11 +39,23 @@ interface ModalProviderProps {
 }
 
 export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
-  const { isOpen: isConnectModalOpen, open: openConnectModal, close: closeConnectModal } = useModalVisibility();
-  const { isOpen: isAccountModalOpen, open: openAccountModal, close: closeAccountModal } = useModalVisibility();
-  const { isOpen: isChainModalOpen, open: openChainModal, close: closeChainModal } = useModalVisibility();
+  const {
+    isOpen: isConnectModalOpen,
+    open: openConnectModal,
+    close: closeConnectModal,
+  } = useModalVisibility();
+  const {
+    isOpen: isAccountModalOpen,
+    open: openAccountModal,
+    close: closeAccountModal,
+  } = useModalVisibility();
+  const {
+    isOpen: isChainModalOpen,
+    open: openChainModal,
+    close: closeChainModal,
+  } = useModalVisibility();
 
-  const connectionStatus = useStatus()
+  const connectionStatus = useStatus();
 
   const closeAllModals = useCallback(() => {
     closeConnectModal();
@@ -44,38 +64,49 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
   }, [closeConnectModal, closeAccountModal, closeChainModal]);
 
   useEffect(() => {
-    if (connectionStatus === ConnectionStatus.Disconnected) { closeAccountModal(); closeChainModal(); }
+    if (connectionStatus === ConnectionStatus.Disconnected) {
+      closeAccountModal();
+      closeChainModal();
+    }
   }, [connectionStatus, closeAccountModal, closeChainModal]);
 
-
-  const contextValue = useMemo(() => ({
-    isConnectModalOpen,
-    isAccountModalOpen,
-    isChainModalOpen,
-    openConnectModal: connectionStatus !== ConnectionStatus.Connected ? openConnectModal : undefined,
-    closeConnectModal,
-    openAccountModal: connectionStatus === ConnectionStatus.Connected ? openAccountModal : undefined,
-    closeAccountModal,
-    openChainModal: connectionStatus === ConnectionStatus.Connected ? openChainModal: undefined,
-    closeChainModal,
-    closeAllModals,
-  }), [
-    isConnectModalOpen, openConnectModal, closeConnectModal,
-    isAccountModalOpen, openAccountModal, closeAccountModal,
-    isChainModalOpen, openChainModal, closeChainModal,
-    closeAllModals, connectionStatus
-  ]);
-
-  return (
-    <ModalContext.Provider value={contextValue}>
-      {children}
-    </ModalContext.Provider>
+  const contextValue = useMemo(
+    () => ({
+      isConnectModalOpen,
+      isAccountModalOpen,
+      isChainModalOpen,
+      openConnectModal:
+        connectionStatus !== ConnectionStatus.Connected ? openConnectModal : undefined,
+      closeConnectModal,
+      openAccountModal:
+        connectionStatus === ConnectionStatus.Connected ? openAccountModal : undefined,
+      closeAccountModal,
+      openChainModal: connectionStatus === ConnectionStatus.Connected ? openChainModal : undefined,
+      closeChainModal,
+      closeAllModals,
+    }),
+    [
+      isConnectModalOpen,
+      openConnectModal,
+      closeConnectModal,
+      isAccountModalOpen,
+      openAccountModal,
+      closeAccountModal,
+      isChainModalOpen,
+      openChainModal,
+      closeChainModal,
+      closeAllModals,
+      connectionStatus,
+    ]
   );
+
+  return <ModalContext.Provider value={contextValue}>{children}</ModalContext.Provider>;
 };
 
 export const useConnectModal = (): { isOpen: boolean; open?: () => void; close: () => void } => {
   const context = useContext(ModalContext);
-  if (!context) throw new Error('[ModalContext]: useConnectModal must be used within a ModalProvider');
+  if (!context)
+    throw new Error('[ModalContext]: useConnectModal must be used within a ModalProvider');
 
   return {
     isOpen: context.isConnectModalOpen,
@@ -86,7 +117,8 @@ export const useConnectModal = (): { isOpen: boolean; open?: () => void; close: 
 
 export const useAccountModal = (): { isOpen: boolean; open?: () => void; close: () => void } => {
   const context = useContext(ModalContext);
-  if (!context) throw new Error('[ModalContext]: useAccountModal must be used within a ModalProvider');
+  if (!context)
+    throw new Error('[ModalContext]: useAccountModal must be used within a ModalProvider');
   return {
     isOpen: context.isAccountModalOpen,
     open: context.openAccountModal,
@@ -96,7 +128,8 @@ export const useAccountModal = (): { isOpen: boolean; open?: () => void; close: 
 
 export const useChainModal = (): { isOpen: boolean; open?: () => void; close: () => void } => {
   const context = useContext(ModalContext);
-  if (!context) throw new Error('[ModalContext]: useChainModal must be used within a ModalProvider');
+  if (!context)
+    throw new Error('[ModalContext]: useChainModal must be used within a ModalProvider');
   return {
     isOpen: context.isChainModalOpen,
     open: context.openChainModal,
@@ -104,8 +137,9 @@ export const useChainModal = (): { isOpen: boolean; open?: () => void; close: ()
   };
 };
 
-export const useCloseAllModals = (): () => void => {
+export const useCloseAllModals = (): (() => void) => {
   const context = useContext(ModalContext);
-  if (!context) throw new Error('[ModalContext]: useCloseAllModals must be used within a ModalProvider');
+  if (!context)
+    throw new Error('[ModalContext]: useCloseAllModals must be used within a ModalProvider');
   return context.closeAllModals;
-}
+};
