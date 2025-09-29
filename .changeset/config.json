@@ -7,7 +7,7 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["with-cra", "with-nextjs-app", "with-nextjs-pages", "with-vite"],
+  "ignore": ["with-cra", "with-nextjs-app", "with-nextjs-pages", "with-vite", "with-vite-papi"],
   "___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": {
     "updateInternalDependencies": "patch"
   }
