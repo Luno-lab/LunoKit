@@ -300,11 +300,12 @@ export const useLunoStore = create<LunoState>((set, get) => ({
             `[LunoStore] After connection, target chain ID "${chainIdToSet}" was not found in config. Current chain state might not have changed. Not persisting chainId.`
           );
         }
-      } else {
-        console.warn(
-          `[LunoStore] Could not determine target chain ID after connection. Please check config.`
-        );
       }
+      // else {
+      //   console.warn(
+      //     `[LunoStore] Could not determine target chain ID after connection. Please check config.`
+      //   );
+      // }
     } catch (err: any) {
       cleanupActiveConnectorListeners();
       set({
