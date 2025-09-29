@@ -1,7 +1,7 @@
 import { useConnectors } from '@luno-kit/react';
 import type { Connector } from '@luno-kit/react/types';
 import { isMobileDevice } from '@luno-kit/react/utils';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { cs } from '../../utils';
 
 interface Props {
