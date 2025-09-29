@@ -201,13 +201,12 @@ export class WalletConnectConnector extends BaseConnector {
           await this.provider.disconnect(),
           new Promise((_, reject) =>
             setTimeout(() => reject(new Error('Disconnect timeout')), 5000)
-          )
+          ),
         ]);
       }
-    } catch (e) {
-    }
+    } catch (e) {}
 
-    await this.cleanup()
+    await this.cleanup();
     this.emit('disconnect');
   }
 

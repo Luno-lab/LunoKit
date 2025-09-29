@@ -37,9 +37,9 @@ const App: React.FC = () => {
     detailedStatus,
   } = useSendTransaction();
   const { api, isApiReady, apiError } = useApi();
-  const { data: paymentInfo, estimate, isLoading: isEstimating } = useEstimatePaymentInfo()
+  const { data: paymentInfo, estimate, isLoading: isEstimating } = useEstimatePaymentInfo();
 
-  console.log('paymentInfo', paymentInfo)
+  console.log('paymentInfo', paymentInfo);
   const { themeMode, setThemeChoice } = useLunoTheme();
 
   const [transferForm, setTransferForm] = useState({
@@ -133,11 +133,11 @@ const App: React.FC = () => {
             <p className="hero-subtitle">
               The modern Polkadot wallet connection library for React applications
             </p>
-            <div className="hero-connect" style={{ marginBottom: '20px'}}>
-              <ConnectButton/>
+            <div className="hero-connect" style={{ marginBottom: '20px' }}>
+              <ConnectButton />
             </div>
             <div className="hero-connect">
-              <ConnectButton displayPreference={'name'}/>
+              <ConnectButton displayPreference={'name'} />
             </div>
           </div>
         </section>
@@ -351,7 +351,10 @@ const App: React.FC = () => {
                           />
                         </div>
                         <div className="form-group">
-                          <label className="form-label">Estimate Gas: {paymentInfo?.partialFeeFormatted || 0} {currentChain?.nativeCurrency.symbol}</label>
+                          <label className="form-label">
+                            Estimate Gas: {paymentInfo?.partialFeeFormatted || 0}{' '}
+                            {currentChain?.nativeCurrency.symbol}
+                          </label>
                         </div>
                         <button
                           className="transfer-btn"

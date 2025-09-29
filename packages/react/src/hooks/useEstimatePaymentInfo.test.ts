@@ -3,7 +3,7 @@ import { afterEach, expect, test, vi } from 'vitest';
 import { type MockConnector, mockConfig, renderHook } from '../test-utils';
 import { useEstimatePaymentInfo } from './useEstimatePaymentInfo';
 import { useConnect } from './useConnect';
-import { ConnectionStatus } from '../types'
+import { ConnectionStatus } from '../types';
 
 const connector = mockConfig.connectors[0] as MockConnector;
 

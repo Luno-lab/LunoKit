@@ -8,9 +8,16 @@ interface Props {
   onConnect: (connector: Connector) => Promise<void>;
 }
 
-const popularConnectorIds = ['polkadot-js', 'subwallet-js', 'talisman', 'walletconnect', 'nova', 'nova-mobile']
+const popularConnectorIds = [
+  'polkadot-js',
+  'subwallet-js',
+  'talisman',
+  'walletconnect',
+  'nova',
+  'nova-mobile',
+];
 
-const moreConnectorIds = ['polkagate', 'fearless-wallet', 'mimir', 'enkrypt']
+const moreConnectorIds = ['polkagate', 'fearless-wallet', 'mimir', 'enkrypt'];
 
 export const ConnectOptions = React.memo(({ onConnect }: Props) => {
   const connectors = useConnectors();
@@ -27,9 +34,13 @@ export const ConnectOptions = React.memo(({ onConnect }: Props) => {
     );
   }
 
-  const installedConnectors = connectors.filter(c => c.isInstalled())
-  const popularConnectors = connectors.filter(c => popularConnectorIds.includes(c.id) && !c.isInstalled())
-  const moreConnectors = connectors.filter(c => moreConnectorIds.includes(c.id) && !c.isInstalled())
+  const installedConnectors = connectors.filter((c) => c.isInstalled());
+  const popularConnectors = connectors.filter(
+    (c) => popularConnectorIds.includes(c.id) && !c.isInstalled()
+  );
+  const moreConnectors = connectors.filter(
+    (c) => moreConnectorIds.includes(c.id) && !c.isInstalled()
+  );
 
   const connectorGroup: { title: string; group: Connector[] }[] = useMemo(() => {
     return [
@@ -44,29 +55,35 @@ export const ConnectOptions = React.memo(({ onConnect }: Props) => {
       {
         title: 'More',
         group: moreConnectors,
-      }
-    ]
-  }, [installedConnectors, popularConnectors, moreConnectors])
+      },
+    ];
+  }, [installedConnectors, popularConnectors, moreConnectors]);
 
   return (
-    <div className={'flex flex-col items-start gap-4 w-full overflow-y-auto custom-scrollbar max-h-[400px]'}>
-      {connectorGroup.map(g => {
-        if (g.group.length === 0) return null
+    <div
+      className={
+        'flex flex-col items-start gap-4 w-full overflow-y-auto custom-scrollbar max-h-[400px]'
+      }
+    >
+      {connectorGroup.map((g) => {
+        if (g.group.length === 0) return null;
         return (
           <div key={g.title} className={'flex flex-col items-start gap-2 w-full'}>
-            <div className={cs(
-              'text-sm font-semibold leading-base',
-              g.title === 'Installed' ? 'text-accentColor' : 'text-modalTextSecondary'
-            )}>
+            <div
+              className={cs(
+                'text-sm font-semibold leading-base',
+                g.title === 'Installed' ? 'text-accentColor' : 'text-modalTextSecondary'
+              )}
+            >
               {g.title}
             </div>
             <div className={'flex flex-col items-start gap-1.5 w-full'}>
-              {g.group.map(i => (
-                <ConnectorItem key={i.id} connector={i} onConnect={() => onConnect(i)}/>
+              {g.group.map((i) => (
+                <ConnectorItem key={i.id} connector={i} onConnect={() => onConnect(i)} />
               ))}
             </div>
           </div>
-        )
+        );
       })}
     </div>
   );
