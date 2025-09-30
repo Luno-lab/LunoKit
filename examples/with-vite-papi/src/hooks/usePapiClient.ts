@@ -13,7 +13,7 @@ export interface PapiClientState {
 }
 
 export function usePapiClient() {
-  const { data: papiSigner,  } = usePapiSigner();
+  const { data: papiSigner } = usePapiSigner();
   const { address } = useAccount();
   const [state, setState] = useState<PapiClientState>({
     client: null,
