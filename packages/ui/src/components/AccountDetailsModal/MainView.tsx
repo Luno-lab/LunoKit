@@ -22,17 +22,6 @@ export const MainView: React.FC<MainViewProps> = ({ onViewChange, onModalClose }
   const items = useMemo(() => {
     const chainSelectOptions = [
       {
-        key: 'View on Explorer',
-        content: (
-          <>
-            <List className={'w-[24px] h-[24px]'} />
-            <span className="text-base text-accountActionItemText">View on Explorer</span>
-          </>
-        ),
-        onClick: () =>
-          window.open(getExplorerUrl(chain?.blockExplorers?.default?.url!, address, 'address')),
-      },
-      {
         key: 'Chain Name',
         content: (
           <div className={'flex items-stretch w-full justify-between'}>
@@ -65,6 +54,17 @@ export const MainView: React.FC<MainViewProps> = ({ onViewChange, onModalClose }
           </div>
         ),
         onClick: () => onViewChange(AccountModalView.switchChain),
+      },
+      {
+        key: 'View on Explorer',
+        content: (
+          <>
+            <List className={'w-[24px] h-[24px]'} />
+            <span className="text-base text-accountActionItemText">View on Explorer</span>
+          </>
+        ),
+        onClick: () =>
+          window.open(getExplorerUrl(chain?.blockExplorers?.default?.url!, address, 'address')),
       },
     ];
 
