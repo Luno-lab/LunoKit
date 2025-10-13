@@ -2,7 +2,7 @@ import { useAccount, useBalance, useChain, useChains, useDisconnect } from '@lun
 import { getExplorerUrl } from '@luno-kit/react/utils';
 import type React from 'react';
 import { useMemo } from 'react';
-import { Arrow, Disconnect, List, Switch } from '../../assets/icons';
+import { Arrow, Coin, Disconnect, List, Switch } from '../../assets/icons';
 import { cs } from '../../utils';
 import { ChainIcon } from '../ChainIcon';
 import { AccountModalView } from './index';
@@ -20,68 +20,76 @@ export const MainView: React.FC<MainViewProps> = ({ onViewChange, onModalClose }
   const { data: balance } = useBalance({ address: chains.length > 0 ? address : undefined });
 
   const items = useMemo(() => {
-    const chainSelectOptions = [
-      {
-        key: 'Chain Name',
-        content: (
-          <div className={'flex items-stretch w-full justify-between'}>
-            <div className={'flex items-center gap-2'}>
-              <div className="relative">
-                <ChainIcon
-                  className="w-[24px] h-[24px]"
-                  chainIconUrl={chain?.chainIconUrl}
-                  chainName={chain?.name}
-                />
-                {/* <div className={'dot w-[8px] h-[8px] bg-accentColor absolute bottom-0 right-0 rounded-full'}/> */}
-              </div>
-              <div className={'flex flex-col items-start'}>
-                <span className="text-base leading-base text-modalText">
-                  {chain?.name || 'Polkadot'}
-                </span>
-                {balance ? (
-                  <span className={'text-modalTextSecondary text-xs leading-xs'}>
-                    {balance.formattedTransferable || '0.00'}{' '}
-                    {chain?.nativeCurrency?.symbol || 'DOT'}
-                  </span>
-                ) : (
-                  <span className="animate-pulse rounded w-[80px] h-[16px] bg-skeleton" />
-                )}
-              </div>
+    const chainNameItem = {
+      key: 'Chain Name',
+      content: (
+        <div className={'flex items-stretch w-full justify-between'}>
+          <div className={'flex items-center gap-2'}>
+            <div className="relative">
+              <ChainIcon
+                className="w-[24px] h-[24px]"
+                chainIconUrl={chain?.chainIconUrl}
+                chainName={chain?.name}
+              />
+              <div className={'dot w-[8px] h-[8px] bg-accentColor absolute bottom-0 right-0 rounded-full'} />
             </div>
-            <div className={'flex items-center justify-center'}>
-              <Arrow className={'w-[16px] h-[16px] text-modalTextSecondary'} />
+            <div className={'flex flex-col items-start'}>
+            <span className="text-base leading-base text-modalText">
+              {chain?.name || 'Polkadot'}
+            </span>
+              {balance ? (
+                <span className={'text-modalTextSecondary text-xs leading-xs'}>
+                {balance.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
+              </span>
+              ) : (
+                <span className="animate-pulse rounded w-[80px] h-[16px] bg-skeleton" />
+              )}
             </div>
           </div>
-        ),
-        onClick: () => onViewChange(AccountModalView.switchChain),
-      },
-      {
-        key: 'View on Explorer',
-        content: (
-          <>
-            <List className={'w-[24px] h-[24px]'} />
-            <span className="text-base text-accountActionItemText">View on Explorer</span>
-          </>
-        ),
-        onClick: () =>
-          window.open(getExplorerUrl(chain?.blockExplorers?.default?.url!, address, 'address')),
-      },
-    ];
+          <div className={'flex items-center justify-center'}>
+            <Arrow className={'w-[16px] h-[16px] text-modalTextSecondary'} />
+          </div>
+        </div>
+      ),
+      onClick: () => onViewChange(AccountModalView.switchChain),
+    };
 
-    const normalOptions = [
-      {
-        key: 'Switch Account',
-        content: (
-          <>
-            <Switch className={'w-[24px] h-[24px]'} />
-            <span className="text-base text-accountActionItemText">Switch Account</span>
-          </>
-        ),
-        onClick: () => onViewChange(AccountModalView.switchAccount),
-      },
-    ];
+    const switchAccountItem = {
+      key: 'Switch Account',
+      content: (
+        <>
+          <Switch className={'w-[24px] h-[24px]'} />
+          <span className="text-base text-accountActionItemText">Switch Account</span>
+        </>
+      ),
+      onClick: () => onViewChange(AccountModalView.switchAccount),
+    };
 
-    return chains.length > 0 ? [...chainSelectOptions, ...normalOptions] : [...normalOptions];
+    const assetListItem = {
+      key: 'View Assets',
+      content: (
+        <>
+          <Coin className={'w-[24px] h-[24px]'} />
+          <span className="text-base text-accountActionItemText">View Assets</span>
+        </>
+      ),
+      onClick: () => onViewChange(AccountModalView.assetList),
+    };
+
+    const explorerItem = {
+      key: 'View on Explorer',
+      content: (
+        <>
+          <List className={'w-[24px] h-[24px]'} />
+          <span className="text-base text-accountActionItemText">View on Explorer</span>
+        </>
+      ),
+      onClick: () => window.open(getExplorerUrl(chain?.blockExplorers?.default?.url!, address, 'address')),
+    };
+
+    return chains.length > 0
+      ? [chainNameItem, explorerItem, switchAccountItem, assetListItem]
+      : [switchAccountItem];
   }, [onViewChange, chain, address, balance, chains]);
 
   const handleDisconnect = async () => {

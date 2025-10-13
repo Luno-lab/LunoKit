@@ -23,9 +23,9 @@ function generateTransportsFromChains(chains: readonly Chain[]): Record<string, 
   const transports: Record<string, Transport> = {};
 
   for (const chain of chains) {
-    const wsUrl = chain.rpcUrls.webSocket?.[0];
+    const wsUrl = chain.rpcUrls.webSocket;
     if (wsUrl) {
-      transports[chain.genesisHash] = wsUrl;
+      transports[chain.genesisHash] = wsUrl
     } else {
       console.warn(
         `No WebSocket URL found for chain "${chain.name}" (${chain.genesisHash}). Skipping transport generation.`
@@ -49,6 +49,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     scaledResponses,
     customTypes,
     customRpc,
+    subscan,
   } = parameters;
 
   if (!connectors || connectors.length === 0) {
@@ -84,6 +85,8 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     transports: Object.freeze({ ...finalTransports }) as Readonly<Record<string, Transport>>,
     storage,
     autoConnect,
+
+    subscan,
   };
 
   console.log('[createConfig]: Luno Core Config created:', config);

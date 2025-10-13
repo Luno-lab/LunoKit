@@ -19,6 +19,9 @@ export const polkadot: Chain = {
   blockExplorers: { default: { name: 'Subscan', url: 'https://polkadot.subscan.io' } },
   chainIconUrl: polkadotChain,
   testnet: false,
+  subscan: {
+    url: 'https://polkadot.api.subscan.io'
+  },
 };
 
 export const polkadotAssetHub: Chain = {
@@ -36,6 +39,9 @@ export const polkadotAssetHub: Chain = {
   blockExplorers: { default: { name: 'Subscan', url: 'https://assethub-polkadot.subscan.io' } },
   chainIconUrl: assethubChain,
   testnet: false,
+  subscan: {
+    url: 'https://assethub-polkadot.api.subscan.io'
+  },
 };
 
 export const polkadotPeople: Chain = {
@@ -50,6 +56,9 @@ export const polkadotPeople: Chain = {
   blockExplorers: { default: { name: 'Subscan', url: 'https://people-polkadot.subscan.io' } },
   chainIconUrl: peopleChain,
   testnet: false,
+  subscan: {
+    url: 'https://people-polkadot.api.subscan.io'
+  },
 };
 
 export const polkadotCoretime: Chain = {
@@ -67,6 +76,9 @@ export const polkadotCoretime: Chain = {
   blockExplorers: { default: { name: 'Subscan', url: 'https://coretime-polkadot.subscan.io' } },
   chainIconUrl: coretimeChain,
   testnet: false,
+  subscan: {
+    url: 'https://coretime-polkadot.api.subscan.io'
+  },
 };
 
 export const polkadotCollectives: Chain = {
@@ -84,4 +96,7 @@ export const polkadotCollectives: Chain = {
   blockExplorers: { default: { name: 'Subscan', url: 'https://collectives-polkadot.subscan.io' } },
   chainIconUrl: collectivesChain,
   testnet: false,
+  subscan: {
+    url: 'https://collectives-polkadot.api.subscan.io'
+  },
 };

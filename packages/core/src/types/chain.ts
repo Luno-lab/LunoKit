@@ -1,4 +1,5 @@
 import type { HexString } from './account';
+import { Transport } from './config'
 
 export interface Chain {
   genesisHash: HexString;
@@ -12,7 +13,7 @@ export interface Chain {
   };
 
   rpcUrls: {
-    webSocket: readonly string[];
+    webSocket: Transport;
     http?: readonly string[];
   };
 
@@ -26,4 +27,8 @@ export interface Chain {
   testnet: boolean;
 
   chainIconUrl: string;
+
+  subscan?: {
+    url: string;
+  };
 }

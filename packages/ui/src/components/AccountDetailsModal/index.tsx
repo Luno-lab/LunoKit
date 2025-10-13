@@ -11,11 +11,13 @@ import { Dialog, DialogClose, DialogTitle } from '../Dialog';
 import { MainView } from './MainView';
 import { SwitchAccountView } from './SwitchAccountView';
 import { SwitchChainView } from './SwitchChainView';
+import { AssetListView } from './AssetList'
 
 export enum AccountModalView {
   main = 'main',
   switchAccount = 'switchAccount',
   switchChain = 'switchChain',
+  assetList = 'assetList',
 }
 
 export const AccountDetailsModal: React.FC = () => {
@@ -32,8 +34,9 @@ export const AccountDetailsModal: React.FC = () => {
   }, [close]);
 
   const viewTitle = useMemo(() => {
-    if (currentView === AccountModalView.switchAccount) return 'Switch Account';
+    if (currentView === AccountModalView.switchAccount) return SwitchAccountView.title;
     if (currentView === AccountModalView.switchChain) return SwitchChainView.title;
+    if (currentView === AccountModalView.assetList) return AssetListView.title;
     return null;
   }, [currentView]);
 
@@ -47,6 +50,9 @@ export const AccountDetailsModal: React.FC = () => {
       ),
       [AccountModalView.switchChain]: (
         <SwitchChainView onBack={() => handleViewChange(AccountModalView.main)} />
+      ),
+      [AccountModalView.assetList]: (
+        <AssetListView />
       ),
     }),
     [handleViewChange, handleModalClose]

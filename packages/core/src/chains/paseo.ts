@@ -10,6 +10,9 @@ export const paseo: Chain = {
   blockExplorers: { default: { name: 'Subscan', url: 'https://paseo.subscan.io/' } },
   chainIconUrl: paseoChain,
   testnet: true,
+  subscan: {
+    url: 'https://paseo.api.subscan.io'
+  },
 };
 
 export const paseoAssetHub: Chain = {
@@ -23,6 +26,9 @@ export const paseoAssetHub: Chain = {
   blockExplorers: { default: { name: 'Subscan', url: 'https://assethub-paseo.subscan.io' } },
   chainIconUrl: assethubPaseoChain,
   testnet: true,
+  subscan: {
+    url: 'https://assethub-paseo.api.subscan.io'
+  },
 };
 
 export const paseoPassetHub: Chain = {

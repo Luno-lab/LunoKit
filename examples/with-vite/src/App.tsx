@@ -39,7 +39,6 @@ const App: React.FC = () => {
   const { api, isApiReady, apiError } = useApi();
   const { data: paymentInfo, estimate, isLoading: isEstimating } = useEstimatePaymentInfo();
 
-  console.log('paymentInfo', paymentInfo);
   const { themeMode, setThemeChoice } = useLunoTheme();
 
   const [transferForm, setTransferForm] = useState({
