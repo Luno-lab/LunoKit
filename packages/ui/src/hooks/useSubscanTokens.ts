@@ -41,8 +41,8 @@ const fetchAssets = async ({
       throw new Error(`Subscan API error: ${result.message}`);
     }
 
-    const assets = result.data.assets
-    const native = result.data.native
+    const assets = result.data.assets || []
+    const native = result.data.native || []
 
     const nfts = assets
       .filter((i: AssetData) => i.token_image || i.unique_id?.includes('nft'))
@@ -54,7 +54,7 @@ const fetchAssets = async ({
         symbol: i.symbol,
       }))
 
-    const tokens = (assets || [])
+    const tokens = assets
       .filter((i: AssetData) => !i.token_image && !i.unique_id?.includes('nft'))
       .map((i: AssetData) => ({
         balance: i.balance,
@@ -64,7 +64,7 @@ const fetchAssets = async ({
         symbol: i.symbol,
       }))
 
-    const nativeTokens = (native || []).map((i: AssetData) => ({
+    const nativeTokens = native.map((i: AssetData) => ({
       balance: i.balance,
       decimals: i.decimals,
       balanceFormatted: formatBalance(i.balance, i.decimals, i.decimals),
