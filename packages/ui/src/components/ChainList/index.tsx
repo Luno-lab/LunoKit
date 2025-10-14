@@ -2,7 +2,7 @@ import { useApi, useChain, useChains, useSwitchChain } from '@luno-kit/react';
 import type { Chain } from '@luno-kit/react/types';
 import React, { useMemo, useState } from 'react';
 import { cs } from '../../utils';
-import { ChainIcon } from '../ChainIcon';
+import { Icon } from '../ChainIcon';
 import { Search } from '../../assets/icons';
 
 interface ChainListProps {
@@ -107,10 +107,10 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(
         )}
       >
         <div className="flex items-center gap-2">
-          <ChainIcon
+          <Icon
             className={'w-[20px] h-[20px] flex items-center justify-center leading-[20px]'}
-            chainIconUrl={chain?.chainIconUrl}
-            chainName={chain?.name}
+            iconUrl={chain?.chainIconUrl}
+            resourceName={chain?.name}
           />
 
           <div className="flex flex-col items-start">

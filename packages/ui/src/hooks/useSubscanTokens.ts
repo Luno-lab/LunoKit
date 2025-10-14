@@ -10,6 +10,14 @@ export interface AssetItem {
   symbol: string;
 }
 
+interface AssetData {
+  balance: string;
+  decimals: number;
+  token_image?: string;
+  unique_id?: string;
+  symbol: string;
+}
+
 const fetchAssets = async ({
   apiUrl, apiKey, address
 }: { apiUrl: string; apiKey: string; address: string }): Promise<{ nfts: AssetItem[]; tokens: AssetItem[] }> => {
@@ -20,9 +28,7 @@ const fetchAssets = async ({
         'Content-Type': 'application/json',
         'X-API-Key': apiKey
       },
-      //todo
-      // body: JSON.stringify({ address })
-      body: JSON.stringify({ address: '13zFVp9pdsJCJPeVBBRiSAkhBgZ4qENVEZBvfbs9Ft4rHVM8' })
+      body: JSON.stringify({ address }),
     });
 
     if (!response.ok) {
@@ -36,20 +42,11 @@ const fetchAssets = async ({
     }
 
     const assets = result.data.assets
+    const native = result.data.native
 
     const nfts = assets
-      .filter(i => i.token_image || i.unique_id.includes('nft'))
-      .map(i => ({
-        balance: i.balance,
-        decimals: i.decimals,
-        balanceFormatted: formatBalance(i.balance),
-        logoURI: i.token_image,
-        symbol: i.symbol,
-      }))
-
-    const tokens = assets
-      .filter(i => !i.token_image && !i.unique_id.includes('nft'))
-      .map(i => ({
+      .filter((i: AssetData) => i.token_image || i.unique_id?.includes('nft'))
+      .map((i: AssetData) => ({
         balance: i.balance,
         decimals: i.decimals,
         balanceFormatted: formatBalance(i.balance, i.decimals),
@@ -57,9 +54,27 @@ const fetchAssets = async ({
         symbol: i.symbol,
       }))
 
+    const tokens = (assets || [])
+      .filter((i: AssetData) => !i.token_image && !i.unique_id?.includes('nft'))
+      .map((i: AssetData) => ({
+        balance: i.balance,
+        decimals: i.decimals,
+        balanceFormatted: formatBalance(i.balance, i.decimals, i.decimals),
+        logoURI: i.token_image,
+        symbol: i.symbol,
+      }))
+
+    const nativeTokens = (native || []).map((i: AssetData) => ({
+      balance: i.balance,
+      decimals: i.decimals,
+      balanceFormatted: formatBalance(i.balance, i.decimals, i.decimals),
+      logoURI: '',
+      symbol: i.symbol,
+    }))
+
     return {
       nfts: nfts || [],
-      tokens: tokens || [],
+      tokens: [...nativeTokens, ...tokens],
     }
 
   } catch (error) {

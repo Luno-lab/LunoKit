@@ -1,7 +1,7 @@
 import React, { useMemo, useState}  from 'react';
 import { useSubscanTokens, AssetItem as AssetItemType } from '../../hooks/useSubscanTokens'
 import { cs } from '../../utils'
-import { ChainIcon } from '../ChainIcon'
+import { Icon } from '../ChainIcon'
 
 enum AssetFilter {
   tokens = 'Tokens',
@@ -12,6 +12,31 @@ const FILTER_TABS = [
   { key: AssetFilter.tokens, label: AssetFilter.tokens },
   { key: AssetFilter.nfts, label: AssetFilter.nfts },
 ] as const;
+
+
+const TOKEN_ICONS: Record<string, string> = {
+  'DOT': 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/acala_custom_DOT.png',
+  'KSM': 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/bifrost-kusama_custom_KSM.png',
+  'WND': 'https://westend.subscan.io/_next/image?url=%2Fchains%2Fwestend%2Ftokens%2FWND.png&w=3840&q=75',
+  'PAS': 'https://paseo.subscan.io/_next/image?url=%2Fchains%2Fpaseo%2Ftokens%2FPAS.png&w=3840&q=75',
+
+  'GLMR': 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/acala_custom_GLMR.png',
+  'MOVR': 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/bifrost-kusama_custom_MOVR.png',
+  'ASTR': 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/acala_custom_ASTR.png',
+
+  'USDT': 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/assethub-polkadot_asset_USDt.png',
+  'USDC': 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/assethub-polkadot_asset_USDC.svg',
+};
+
+const getAssetIconUrl = (symbol: string): string => {
+  const normalizedSymbol = symbol?.toUpperCase().trim() || '';
+
+  if (TOKEN_ICONS[normalizedSymbol]) {
+    return TOKEN_ICONS[normalizedSymbol];
+  }
+
+  return '';
+};
 
 export const AssetList: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<AssetFilter>(AssetFilter.tokens);
@@ -88,7 +113,7 @@ export const AssetList: React.FC = () => {
         ))}
       </div>
 
-      <div className="overflow-y-auto custom-scrollbar flex-1 h-[300px]">
+      <div className="overflow-y-auto custom-scrollbar flex-1 min-h-[350px] max-h-[350px]">
         {renderContent()}
       </div>
     </div>
@@ -101,6 +126,8 @@ interface AssetItemProps {
 
 const AssetItem: React.FC<AssetItemProps> = React.memo(
   ({ asset }) => {
+    const iconUrl = asset.logoURI || getAssetIconUrl(asset.symbol);
+
     return (
       <div
         className={cs(
@@ -110,14 +137,17 @@ const AssetItem: React.FC<AssetItemProps> = React.memo(
         )}
       >
         <div className="flex items-center gap-2">
-          <ChainIcon
+          <Icon
             className={'w-[30px] h-[30px] flex items-center justify-center leading-[25px]'}
-            chainIconUrl={asset.logoURI}
-            chainName={`${asset.symbol}-asset`}
+            iconUrl={iconUrl}
+            resourceName={`${asset.symbol}-asset`}
           />
 
           <div className="flex flex-col items-start">
             <span className="font-medium text-base leading-base text-modalText">{asset.symbol || 'Unknown'}</span>
+            <span className={'text-xs text-modalTextSecondary font-medium whitespace-nowrap'}>
+              {asset.balanceFormatted}
+            </span>
           </div>
         </div>
       </div>
