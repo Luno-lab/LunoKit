@@ -17,7 +17,7 @@ export interface UseSwitchChainResult {
   chains: Chain[];
   currentChain?: Chain;
   currentChainId?: string;
-  data: void | undefined;
+  data: undefined;
   error: Error | null;
   isError: boolean;
   isIdle: boolean;
@@ -45,7 +45,7 @@ export const useSwitchChain = (hookLevelConfig?: UseSwitchChainOptions): UseSwit
     chains: config?.chains ? [...config.chains] : [],
     currentChain,
     currentChainId,
-    data: mutationResult.data,
+    data: mutationResult.data as undefined,
     error: mutationResult.error,
     isError: mutationResult.isError,
     isIdle: mutationResult.isIdle,

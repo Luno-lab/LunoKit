@@ -1,5 +1,5 @@
 import { act, waitFor } from '@testing-library/react';
-import { afterEach, beforeEach, expect, test } from 'vitest';
+import { afterEach, expect, test } from 'vitest';
 import { type MockConnector, mockConfig, renderHook } from '../test-utils';
 import { ConnectionStatus } from '../types';
 import { useAccount } from './useAccount';

@@ -7,11 +7,11 @@ import {
   useChain,
   useChains,
   useDisconnect,
+  useEstimatePaymentInfo,
   useSendTransaction,
   useSignMessage,
   useStatus,
   useSwitchChain,
-  useEstimatePaymentInfo,
 } from '@luno-kit/react';
 import { ConnectButton, useLunoTheme } from '@luno-kit/ui';
 import type React from 'react';
@@ -134,7 +134,7 @@ const App: React.FC = () => {
               The modern Polkadot wallet connection library for React applications
             </p>
 
-            <div className="hero-connect" >
+            <div className="hero-connect">
               <ConnectButton />
             </div>
             {/*<div className="hero-connect">*/}

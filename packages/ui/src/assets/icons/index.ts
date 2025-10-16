@@ -4,6 +4,6 @@ export { default as Close } from './Close';
 export { default as Copy } from './Copy';
 export { default as Disconnect } from './Disconnect';
 export { default as List } from './List';
-export { default as Success } from './Success';
 export { default as Search } from './Search';
+export { default as Success } from './Success';
 export { default as Switch } from './Switch';

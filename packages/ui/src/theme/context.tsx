@@ -94,7 +94,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
             return preference.preferredTheme;
           }
         }
-      } catch (e) {
+      } catch (_e) {
         // Ignore parsing errors
       }
     }
@@ -115,7 +115,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
           const preference = JSON.parse(saved);
           return preference?.isAuto ?? false;
         }
-      } catch (e) {
+      } catch (_e) {
         // Ignore parsing errors
       }
     }
