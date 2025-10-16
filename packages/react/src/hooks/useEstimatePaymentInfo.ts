@@ -1,7 +1,7 @@
-import { useCallback, useState } from 'react';
-import type { ISubmittableExtrinsic, TxPaymentInfo } from 'dedot/types';
-import { useLuno } from './useLuno';
 import { formatBalance } from '@luno-kit/core/utils';
+import type { ISubmittableExtrinsic, TxPaymentInfo } from 'dedot/types';
+import { useCallback, useState } from 'react';
+import { useLuno } from './useLuno';
 
 interface PaymentInfo extends TxPaymentInfo {
   partialFeeFormatted: string;

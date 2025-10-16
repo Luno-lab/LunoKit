@@ -14,7 +14,7 @@ export const Copy: React.FC<CopyProps> = ({ copyText, label, className = '' }) =
 
   const copyToClipboard = useCallback(async (text: string): Promise<boolean> => {
     try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
+      if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(text);
         setIsCopied(true);
         setTimeout(() => setIsCopied(false), 2000);

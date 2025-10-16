@@ -1,9 +1,9 @@
 import { useApi, useChain, useChains, useSwitchChain } from '@luno-kit/react';
 import type { Chain } from '@luno-kit/react/types';
 import React, { useMemo, useState } from 'react';
+import { Search } from '../../assets/icons';
 import { cs } from '../../utils';
 import { ChainIcon } from '../ChainIcon';
-import { Search } from '../../assets/icons';
 
 interface ChainListProps {
   onChainSwitched?: (chain: Chain) => void;

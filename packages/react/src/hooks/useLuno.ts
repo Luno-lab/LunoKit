@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { LunoContext, type LunoContextState } from '../context/LunoContext';
 
 export const useLuno = (): LunoContextState => {
