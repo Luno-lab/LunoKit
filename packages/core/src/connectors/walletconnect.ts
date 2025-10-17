@@ -1,4 +1,4 @@
-import { type SessionTypes, SignClientTypes } from '@walletconnect/types';
+import type { SessionTypes } from '@walletconnect/types';
 import type { IUniversalProvider, Metadata } from '@walletconnect/universal-provider';
 import type { SignerPayloadJSON, SignerPayloadRaw, SignerResult } from 'dedot/types';
 import { walletconnectWallet } from '../config/logos/generated';

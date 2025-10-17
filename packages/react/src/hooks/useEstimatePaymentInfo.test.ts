@@ -1,15 +1,15 @@
 import { act, waitFor } from '@testing-library/react';
 import { afterEach, expect, test, vi } from 'vitest';
 import { type MockConnector, mockConfig, renderHook } from '../test-utils';
-import { useEstimatePaymentInfo } from './useEstimatePaymentInfo';
-import { useConnect } from './useConnect';
 import { ConnectionStatus } from '../types';
+import { useConnect } from './useConnect';
+import { useEstimatePaymentInfo } from './useEstimatePaymentInfo';
 
 const connector = mockConfig.connectors[0] as MockConnector;
 
 vi.mock('@luno-kit/core/utils', () => ({
   formatBalance: vi.fn((value: bigint, decimals: number) => {
-    return `${(Number(value) / Math.pow(10, decimals)).toFixed(4)}`;
+    return `${(Number(value) / 10 ** decimals).toFixed(4)}`;
   }),
 }));
 

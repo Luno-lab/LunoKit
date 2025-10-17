@@ -2,7 +2,6 @@ import { createConfig } from '@luno-kit/core';
 import { BaseConnector } from '@luno-kit/core/connectors';
 import type { Chain, Config } from '@luno-kit/core/types';
 import { render, waitFor } from '@testing-library/react';
-import React from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useIsInitialized } from '../hooks/useIsInitialized';
 import { useLunoStore } from '../store';

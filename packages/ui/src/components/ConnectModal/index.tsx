@@ -159,16 +159,14 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ size = 'wide' }) => 
           </div>
 
           {!isWide && currentView === ConnectModalView.connectOptions && (
-            <>
-              <p
-                className={
-                  'cursor-pointer w-full pt-4 text-sm leading-sm text-accentColor font-medium text-center hover:text-modalText'
-                }
-                onClick={() => window.open('https://polkadot.com/get-started/wallets/')}
-              >
-                New to wallets?
-              </p>
-            </>
+            <p
+              className={
+                'cursor-pointer w-full pt-4 text-sm leading-sm text-accentColor font-medium text-center hover:text-modalText'
+              }
+              onClick={() => window.open('https://polkadot.com/get-started/wallets/')}
+            >
+              New to wallets?
+            </p>
           )}
         </div>
 

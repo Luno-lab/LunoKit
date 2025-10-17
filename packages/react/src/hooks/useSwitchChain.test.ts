@@ -11,7 +11,7 @@ const connector = mockConfig.connectors[0] as MockConnector;
 
 vi.mock('../utils', () => ({
   createApi: vi.fn().mockResolvedValue(null),
-  sleep: vi.fn().mockImplementation((ms = 1000) => Promise.resolve()),
+  sleep: vi.fn().mockImplementation((_ms = 1000) => Promise.resolve()),
 }));
 
 afterEach(async () => {

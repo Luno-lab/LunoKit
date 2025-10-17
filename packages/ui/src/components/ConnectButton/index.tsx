@@ -129,7 +129,6 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
             </span>
           )}
           <span
-            aria-label="Wallet icon placeholder"
             className={cs(
               displayPreference === 'name' && account?.name
                 ? 'text-ellipsis overflow-hidden max-w-[115px] whitespace-nowrap'

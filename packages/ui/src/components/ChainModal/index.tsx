@@ -4,9 +4,7 @@ import { useChainModal } from '../../providers';
 import { ChainList } from '../ChainList';
 import { Dialog, DialogClose, DialogTitle } from '../Dialog';
 
-export type ChainModalProps = {};
-
-export const ChainModal: React.FC<ChainModalProps> = () => {
+export const ChainModal: React.FC = () => {
   const { isOpen, close } = useChainModal();
 
   return (

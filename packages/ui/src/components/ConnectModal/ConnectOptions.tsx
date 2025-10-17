@@ -22,18 +22,6 @@ const moreConnectorIds = ['polkagate', 'fearless-wallet', 'mimir', 'enkrypt'];
 export const ConnectOptions = React.memo(({ onConnect }: Props) => {
   const connectors = useConnectors();
 
-  if (isMobileDevice()) {
-    const filteredConnectors = connectors.filter((i) => i.links.deepLink);
-
-    return (
-      <div className={'flex flex-col items-start gap-1 w-full'}>
-        {filteredConnectors.map((i) => (
-          <ConnectorItem key={`${i.id}-${i.name}`} connector={i} onConnect={() => onConnect(i)} />
-        ))}
-      </div>
-    );
-  }
-
   const installedConnectors = connectors.filter((c) => c.isInstalled());
   const popularConnectors = connectors.filter(
     (c) => popularConnectorIds.includes(c.id) && !c.isInstalled()
@@ -58,6 +46,18 @@ export const ConnectOptions = React.memo(({ onConnect }: Props) => {
       },
     ];
   }, [installedConnectors, popularConnectors, moreConnectors]);
+
+  if (isMobileDevice()) {
+    const filteredConnectors = connectors.filter((i) => i.links.deepLink);
+
+    return (
+      <div className={'flex flex-col items-start gap-1 w-full'}>
+        {filteredConnectors.map((i) => (
+          <ConnectorItem key={`${i.id}-${i.name}`} connector={i} onConnect={() => onConnect(i)} />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div
