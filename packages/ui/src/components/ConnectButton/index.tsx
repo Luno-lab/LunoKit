@@ -2,7 +2,7 @@ import { formatAddress } from '@luno-kit/react/utils';
 import type React from 'react';
 import { useConnectButton, useWindowSize } from '../../hooks';
 import { cs } from '../../utils';
-import { Icon } from '../ChainIcon';
+import { Icon } from '../Icon';
 
 export const transitionClassName =
   'transition-transform transition-[125] hover:scale-[1.03] transition-ease';
@@ -81,11 +81,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
           aria-label="Switch chain"
         >
           {chainStatus === 'full' || chainStatus === 'icon' ? (
-            <Icon
-              iconUrl={chainIconUrl}
-              resourceName={chainName}
-              className="w-[24px] h-[24px]"
-            />
+            <Icon iconUrl={chainIconUrl} resourceName={chainName} className="w-[24px] h-[24px]" />
           ) : null}
           {(chainStatus === 'full' || chainStatus === 'name') && isLargeWindow && (
             <span>{currentChain?.name || 'Unknown Chain'}</span>

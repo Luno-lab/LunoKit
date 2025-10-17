@@ -1,10 +1,17 @@
-import {useAccount, useBalance, useChain, useChains, useConfig, useDisconnect} from '@luno-kit/react';
+import {
+  useAccount,
+  useBalance,
+  useChain,
+  useChains,
+  useConfig,
+  useDisconnect,
+} from '@luno-kit/react';
 import { getExplorerUrl } from '@luno-kit/react/utils';
 import type React from 'react';
 import { useMemo } from 'react';
 import { Arrow, Coin, Disconnect, List, Switch } from '../../assets/icons';
 import { cs } from '../../utils';
-import { Icon } from '../ChainIcon';
+import { Icon } from '../Icon';
 import { AccountModalView } from './index';
 
 interface MainViewProps {
@@ -18,7 +25,7 @@ export const MainView: React.FC<MainViewProps> = ({ onViewChange, onModalClose }
   const chains = useChains();
   const { disconnectAsync } = useDisconnect();
   const { data: balance } = useBalance({ address: chains.length > 0 ? address : undefined });
-  const config = useConfig()
+  const config = useConfig();
 
   const items = useMemo(() => {
     const chainNameItem = {
@@ -35,14 +42,13 @@ export const MainView: React.FC<MainViewProps> = ({ onViewChange, onModalClose }
               {/* <div className={'dot w-[8px] h-[8px] bg-accentColor absolute bottom-0 right-0 rounded-full'}/> */}
             </div>
             <div className={'flex flex-col items-start'}>
-                <span className="text-base leading-base text-modalText">
-                  {chain?.name || 'Polkadot'}
-                </span>
+              <span className="text-base leading-base text-modalText">
+                {chain?.name || 'Polkadot'}
+              </span>
               {balance ? (
                 <span className={'text-modalTextSecondary text-xs leading-xs'}>
-                    {balance.formattedTransferable || '0.00'}{' '}
-                  {chain?.nativeCurrency?.symbol || 'DOT'}
-                  </span>
+                  {balance.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
+                </span>
               ) : (
                 <span className="animate-pulse rounded w-[80px] h-[16px] bg-skeleton" />
               )}
@@ -86,7 +92,8 @@ export const MainView: React.FC<MainViewProps> = ({ onViewChange, onModalClose }
           <span className="text-base text-accountActionItemText">View on Explorer</span>
         </>
       ),
-      onClick: () => window.open(getExplorerUrl(chain?.blockExplorers?.default?.url!, address, 'address')),
+      onClick: () =>
+        window.open(getExplorerUrl(chain?.blockExplorers?.default?.url!, address, 'address')),
     };
 
     if (chains.length === 0) return [switchAccountItem];

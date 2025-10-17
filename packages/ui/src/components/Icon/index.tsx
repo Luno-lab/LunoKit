@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
 import type React from 'react';
+import { useMemo, useState } from 'react';
 import { cs } from '../../utils';
 
 export interface IconProps {
@@ -12,16 +12,8 @@ export const Icon: React.FC<IconProps> = ({ iconUrl, resourceName, className }) 
   const [isLoading, setIsLoading] = useState(!!iconUrl);
   const [hasError, setHasError] = useState(false);
 
-  const bgColor= useMemo(() => {
-    const colors = [
-      '#3B82F6',
-      '#10B981',
-      '#F59E0B',
-      '#EF4444',
-      '#8B5CF6',
-      '#EC4899',
-      '#06B6D4',
-    ];
+  const bgColor = useMemo(() => {
+    const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4'];
 
     if (!resourceName) return colors[0];
 
@@ -37,7 +29,7 @@ export const Icon: React.FC<IconProps> = ({ iconUrl, resourceName, className }) 
     if (!resourceName) return '-';
 
     const match = resourceName.match(/^([^-]+)-/);
-    if (match && match[1]) {
+    if (match?.[1]) {
       return match[1].charAt(0).toUpperCase();
     }
 
@@ -48,10 +40,8 @@ export const Icon: React.FC<IconProps> = ({ iconUrl, resourceName, className }) 
     return (
       <div className={cs('relative w-full h-full', className)}>
         {isLoading && (
-          <div
-            className="absolute inset-0 flex items-center justify-center rounded-full animate-pulse bg-gray-500"
-          >
-            <div className="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin"/>
+          <div className="absolute inset-0 flex items-center justify-center rounded-full animate-pulse bg-gray-500">
+            <div className="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin" />
           </div>
         )}
 

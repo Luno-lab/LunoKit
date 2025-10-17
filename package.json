@@ -12,9 +12,7 @@
     "publish": "pnpm clean && pnpm build && changeset publish",
     "lint": "biome check ./packages",
     "lint:fix": "biome check --write ./packages",
-    "format": "biome format --check .",
-    "format:fix": "biome format --write .",
-    "ci:check": "biome check ./packages && biome format --check ."
+    "format": "biome format --write ."
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.6",

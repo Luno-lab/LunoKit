@@ -11,7 +11,7 @@ export const westend: Chain = {
   chainIconUrl: westendChain,
   testnet: true,
   subscan: {
-    url: 'https://westend.api.subscan.io'
+    url: 'https://westend.api.subscan.io',
   },
 };
 
@@ -30,6 +30,6 @@ export const westendAssetHub: Chain = {
   chainIconUrl: assethubWestendChain,
   testnet: true,
   subscan: {
-    url: 'https://assethub-westend.api.subscan.io'
+    url: 'https://assethub-westend.api.subscan.io',
   },
 };

@@ -66,8 +66,8 @@ const lunoConfig = createConfig({
   connectors: connectors,
   autoConnect: true,
   subscan: {
-    apiKey: import.meta.env.VITE_SUBSCAN_API_KEY
-  }
+    apiKey: import.meta.env.VITE_SUBSCAN_API_KEY,
+  },
 });
 
 createRoot(document.getElementById('root')!).render(

@@ -1,5 +1,5 @@
 import type { HexString } from './account';
-import { Transport } from './config'
+import type { Transport } from './config';
 
 export interface Chain {
   genesisHash: HexString;

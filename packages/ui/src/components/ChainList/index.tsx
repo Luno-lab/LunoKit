@@ -3,7 +3,7 @@ import type { Chain } from '@luno-kit/react/types';
 import React, { useMemo, useState } from 'react';
 import { Search } from '../../assets/icons';
 import { cs } from '../../utils';
-import { Icon } from '../ChainIcon';
+import { Icon } from '../Icon';
 
 interface ChainListProps {
   onChainSwitched?: (chain: Chain) => void;

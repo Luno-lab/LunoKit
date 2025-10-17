@@ -1,5 +1,5 @@
-import React from 'react';
-import { AssetList } from '../AssetList'
+import type React from 'react';
+import { AssetList } from '../AssetList';
 
 interface ViewComponent extends React.FC {
   title?: string;

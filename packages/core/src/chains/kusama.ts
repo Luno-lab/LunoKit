@@ -18,7 +18,7 @@ export const kusama: Chain = {
   chainIconUrl: kusamaChain,
   testnet: false,
   subscan: {
-    url: 'https://kusama.api.subscan.io'
+    url: 'https://kusama.api.subscan.io',
   },
 };
 
@@ -37,7 +37,7 @@ export const kusamaAssetHub: Chain = {
   chainIconUrl: assethubKusamaChain,
   testnet: false,
   subscan: {
-    url: 'https://assethub-kusama.api.subscan.io'
+    url: 'https://assethub-kusama.api.subscan.io',
   },
 };
 
@@ -53,7 +53,7 @@ export const kusamaPeople: Chain = {
   chainIconUrl: peopleKusamaChain,
   testnet: false,
   subscan: {
-    url: 'https://people-kusama.api.subscan.io'
+    url: 'https://people-kusama.api.subscan.io',
   },
 };
 
@@ -69,6 +69,6 @@ export const kusamaCoretime: Chain = {
   chainIconUrl: coretimeKusamaChain,
   testnet: false,
   subscan: {
-    url: 'https://coretime-kusama.api.subscan.io'
+    url: 'https://coretime-kusama.api.subscan.io',
   },
 };

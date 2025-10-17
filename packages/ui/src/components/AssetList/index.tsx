@@ -1,7 +1,7 @@
-import React, { useMemo, useState}  from 'react';
-import { useSubscanTokens, AssetItem as AssetItemType } from '../../hooks/useSubscanTokens'
-import { cs } from '../../utils'
-import { Icon } from '../ChainIcon'
+import React, { useMemo, useState } from 'react';
+import { type AssetItem as AssetItemType, useSubscanTokens } from '../../hooks/useSubscanTokens';
+import { cs } from '../../utils';
+import { Icon } from '../Icon';
 
 enum AssetFilter {
   tokens = 'Tokens',
@@ -13,19 +13,18 @@ const FILTER_TABS = [
   { key: AssetFilter.nfts, label: AssetFilter.nfts },
 ] as const;
 
-
 const TOKEN_ICONS: Record<string, string> = {
-  'DOT': 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/acala_custom_DOT.png',
-  'KSM': 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/bifrost-kusama_custom_KSM.png',
-  'WND': 'https://westend.subscan.io/_next/image?url=%2Fchains%2Fwestend%2Ftokens%2FWND.png&w=3840&q=75',
-  'PAS': 'https://paseo.subscan.io/_next/image?url=%2Fchains%2Fpaseo%2Ftokens%2FPAS.png&w=3840&q=75',
+  DOT: 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/acala_custom_DOT.png',
+  KSM: 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/bifrost-kusama_custom_KSM.png',
+  WND: 'https://westend.subscan.io/_next/image?url=%2Fchains%2Fwestend%2Ftokens%2FWND.png&w=3840&q=75',
+  PAS: 'https://paseo.subscan.io/_next/image?url=%2Fchains%2Fpaseo%2Ftokens%2FPAS.png&w=3840&q=75',
 
-  'GLMR': 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/acala_custom_GLMR.png',
-  'MOVR': 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/bifrost-kusama_custom_MOVR.png',
-  'ASTR': 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/acala_custom_ASTR.png',
+  GLMR: 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/acala_custom_GLMR.png',
+  MOVR: 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/bifrost-kusama_custom_MOVR.png',
+  ASTR: 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/acala_custom_ASTR.png',
 
-  'USDT': 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/assethub-polkadot_asset_USDt.png',
-  'USDC': 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/assethub-polkadot_asset_USDC.svg',
+  USDT: 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/assethub-polkadot_asset_USDt.png',
+  USDC: 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/assethub-polkadot_asset_USDC.svg',
 };
 
 const getAssetIconUrl = (symbol: string): string => {
@@ -40,7 +39,7 @@ const getAssetIconUrl = (symbol: string): string => {
 
 export const AssetList: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<AssetFilter>(AssetFilter.tokens);
-  const { data, isLoading, error } = useSubscanTokens()
+  const { data, isLoading, error } = useSubscanTokens();
 
   const listData: AssetItemType[] = useMemo(() => {
     if (!data) return [];
@@ -53,9 +52,9 @@ export const AssetList: React.FC = () => {
     if (isLoading) {
       return (
         <div className="flex flex-col gap-1.5 min-h-[300px]">
-          {Array(5).fill(0).map((_, index) => (
+          {[1, 2, 3, 4, 5].map((num) => (
             <div
-              key={`skeleton-${index}`}
+              key={`skeleton-${num}`}
               className="animate-pulse bg-networkSelectItemBackground h-[44px] rounded-networkSelectItem"
             />
           ))}
@@ -97,7 +96,7 @@ export const AssetList: React.FC = () => {
   return (
     <div className={'flex flex-col gap-3.5 p-4 pt-0'}>
       <div className="flex items-center gap-1.5 w-full">
-        {FILTER_TABS.map(tab => (
+        {FILTER_TABS.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveFilter(tab.key)}
@@ -121,36 +120,36 @@ export const AssetList: React.FC = () => {
 };
 
 interface AssetItemProps {
-  asset: AssetItemType
+  asset: AssetItemType;
 }
 
-const AssetItem: React.FC<AssetItemProps> = React.memo(
-  ({ asset }) => {
-    const iconUrl = asset.logoURI || getAssetIconUrl(asset.symbol);
+const AssetItem: React.FC<AssetItemProps> = React.memo(({ asset }) => {
+  const iconUrl = asset.logoURI || getAssetIconUrl(asset.symbol);
 
-    return (
-      <div
-        className={cs(
-          'flex items-center justify-between p-2.5 rounded-networkSelectItem cursor-default',
-          'bg-networkSelectItemBackground',
-          'transition-colors duration-200',
-        )}
-      >
-        <div className="flex items-center gap-2">
-          <Icon
-            className={'w-[30px] h-[30px] flex items-center justify-center leading-[25px]'}
-            iconUrl={iconUrl}
-            resourceName={`${asset.symbol}-asset`}
-          />
+  return (
+    <div
+      className={cs(
+        'flex items-center justify-between p-2.5 rounded-networkSelectItem cursor-default',
+        'bg-networkSelectItemBackground',
+        'transition-colors duration-200'
+      )}
+    >
+      <div className="flex items-center gap-2">
+        <Icon
+          className={'w-[30px] h-[30px] flex items-center justify-center leading-[25px]'}
+          iconUrl={iconUrl}
+          resourceName={`${asset.symbol}-asset`}
+        />
 
-          <div className="flex flex-col items-start">
-            <span className="font-medium text-base leading-base text-modalText">{asset.symbol || 'Unknown'}</span>
-            <span className={'text-xs text-modalTextSecondary font-medium whitespace-nowrap'}>
-              {asset.balanceFormatted}
-            </span>
-          </div>
+        <div className="flex flex-col items-start">
+          <span className="font-medium text-base leading-base text-modalText">
+            {asset.symbol || 'Unknown'}
+          </span>
+          <span className={'text-xs text-modalTextSecondary font-medium whitespace-nowrap'}>
+            {asset.balanceFormatted}
+          </span>
         </div>
       </div>
-    );
-  }
-);
+    </div>
+  );
+});

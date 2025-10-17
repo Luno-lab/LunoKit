@@ -25,7 +25,7 @@ function generateTransportsFromChains(chains: readonly Chain[]): Record<string, 
   for (const chain of chains) {
     const wsUrl = chain.rpcUrls.webSocket;
     if (wsUrl) {
-      transports[chain.genesisHash] = wsUrl
+      transports[chain.genesisHash] = wsUrl;
     } else {
       console.warn(
         `No WebSocket URL found for chain "${chain.name}" (${chain.genesisHash}). Skipping transport generation.`

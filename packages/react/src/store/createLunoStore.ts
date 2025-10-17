@@ -1,7 +1,7 @@
 import { isSameAddress } from '@luno-kit/core/utils';
 import { create } from 'zustand';
 import { PERSIST_KEY } from '../constants';
-import type { Account, Chain, LunoState } from '../types';
+import type { Chain, LunoState } from '../types';
 import { ConnectionStatus } from '../types';
 import { createApi } from '../utils';
 
@@ -173,12 +173,12 @@ export const useLunoStore = create<LunoState>((set, get) => ({
           PERSIST_KEY.RECENT_SELECTED_ACCOUNT_INFO
         );
 
-        const storedAccountJson = lastStoredAccountJson || recentStoredAccountJson
+        const storedAccountJson = lastStoredAccountJson || recentStoredAccountJson;
         if (storedAccountJson) {
           const storedAccount: StoredAccountInfo = JSON.parse(storedAccountJson);
 
-          const restoredAccount = accountsFromWallet.find(
-            (acc) => isSameAddress(acc.address, storedAccount.address)
+          const restoredAccount = accountsFromWallet.find((acc) =>
+            isSameAddress(acc.address, storedAccount.address)
           );
 
           if (restoredAccount) {
@@ -213,8 +213,14 @@ export const useLunoStore = create<LunoState>((set, get) => ({
       try {
         config.storage.setItem(PERSIST_KEY.LAST_CONNECTOR_ID, connector.id);
         config.storage.setItem(PERSIST_KEY.RECENT_CONNECTOR_ID, connector.id);
-        config.storage.setItem(PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO, JSON.stringify(storedAccountInfo));
-        config.storage.setItem(PERSIST_KEY.RECENT_SELECTED_ACCOUNT_INFO, JSON.stringify(storedAccountInfo));
+        config.storage.setItem(
+          PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO,
+          JSON.stringify(storedAccountInfo)
+        );
+        config.storage.setItem(
+          PERSIST_KEY.RECENT_SELECTED_ACCOUNT_INFO,
+          JSON.stringify(storedAccountInfo)
+        );
         console.log(`[LunoStore] Persisted connectorId: ${connector.id}`);
       } catch (e) {
         console.error('[LunoStore] Failed to persist connectorId to storage:', e);

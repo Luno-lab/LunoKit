@@ -8,10 +8,10 @@ import { useAccountModal } from '../../providers';
 import { cs } from '../../utils';
 import { Copy } from '../Copy';
 import { Dialog, DialogClose, DialogTitle } from '../Dialog';
+import { AssetListView } from './AssetList';
 import { MainView } from './MainView';
 import { SwitchAccountView } from './SwitchAccountView';
 import { SwitchChainView } from './SwitchChainView';
-import { AssetListView } from './AssetList'
 
 export enum AccountModalView {
   main = 'main',
@@ -51,9 +51,7 @@ export const AccountDetailsModal: React.FC = () => {
       [AccountModalView.switchChain]: (
         <SwitchChainView onBack={() => handleViewChange(AccountModalView.main)} />
       ),
-      [AccountModalView.assetList]: (
-        <AssetListView />
-      ),
+      [AccountModalView.assetList]: <AssetListView />,
     }),
     [handleViewChange, handleModalClose]
   );
