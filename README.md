@@ -8,6 +8,8 @@
 [![codecov](https://codecov.io/gh/Luno-lab/LunoKit/branch/main/graph/badge.svg)](https://codecov.io/gh/Luno-lab/LunoKit)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Luno-lab/LunoKit)
 
+<img width="375" height="150" alt="Image" src="https://github.com/user-attachments/assets/24498555-3bf7-486e-94f0-622da8aca11f" />
+
 </div>
 
 Luno Kit is a React library that makes it easy to add Polkadot wallet connection to your dapp.
