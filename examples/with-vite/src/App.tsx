@@ -134,7 +134,7 @@ const App: React.FC = () => {
               The modern Polkadot wallet connection library for React applications
             </p>
 
-            <div className="hero-connect">
+            <div className="hero-connect" >
               <ConnectButton />
             </div>
             {/*<div className="hero-connect">*/}
