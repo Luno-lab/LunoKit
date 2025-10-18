@@ -87,9 +87,9 @@ describe('useSubscription', () => {
             factory: (api) => api.query.system.account,
             params: ['5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'],
             options: {
-              transform: (data) => ({
+              transform: (data: string) => ({
                 free: data,
-                formatted: `${parseInt(data) / 10 ** 10} DOT`,
+                formatted: `${parseInt(data, 10) / 10 ** 10} DOT`,
               }),
             },
           }),

@@ -52,7 +52,7 @@ export function useAnimatedViews<T>({
         const newHeight = currentViewRef.current.offsetHeight;
 
         container
-          .animate([{ height: currentHeight + 'px' }, { height: newHeight + 'px' }], {
+          .animate([{ height: `${currentHeight}px` }, { height: `${newHeight}px` }], {
             duration: animationDuration,
             easing: animationEasing,
             fill: 'forwards',

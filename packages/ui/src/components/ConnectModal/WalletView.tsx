@@ -66,14 +66,14 @@ export const WalletView = React.memo(
 
                 <div className="min-h-[20px] flex items-center justify-center ">
                   {selectedConnector.links?.browserExtension ? (
-                    <p
+                    <div
                       onClick={() => window.open(selectedConnector.links.browserExtension)}
                       className={
                         'cursor-pointer text-sm text-accentColor font-medium text-center hover:text-modalText'
                       }
                     >
                       Don't have {selectedConnector.name}?
-                    </p>
+                    </div>
                   ) : qrCode ? (
                     <Copy
                       className={'text-sm leading-sm font-medium text-accentColor'}
@@ -100,14 +100,14 @@ export const WalletView = React.memo(
                 </p>
                 {connectState.isConnecting && <div className="loading text-modalText"></div>}
                 {!selectedConnector.isInstalled() && selectedConnector.links.browserExtension && (
-                  <p
+                  <div
                     onClick={() => window.open(selectedConnector.links.browserExtension)}
                     className={
                       'cursor-pointer pt-6 text-sm text-accentColor font-medium text-center hover:text-modalText'
                     }
                   >
                     Don‘t have {selectedConnector.name}?
-                  </p>
+                  </div>
                 )}
                 {!connectState.isConnecting &&
                   connectState.isError &&
@@ -129,14 +129,14 @@ export const WalletView = React.memo(
               <div className={'w-[160px] h-[160px] mb-4'}>
                 <SpiralAnimation />
               </div>
-              <p
+              <div
                 className={
                   'cursor-pointer  text-base leading-base text-accentColor font-semibold text-center'
                 }
                 onClick={() => window.open('https://polkadot.com/get-started/wallets/')}
               >
                 New to wallets?
-              </p>
+              </div>
 
               <p
                 className={
