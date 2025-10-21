@@ -36,8 +36,7 @@ const fetchAssets = async ({
         'Content-Type': 'application/json',
         'X-API-Key': apiKey,
       },
-      // body: JSON.stringify({ address }),
-      body: JSON.stringify({ address: '14wbgzqY6w8buJUPkWJPoVUtjFunvwPhS4R6vrahkvNzR4gW' }),
+      body: JSON.stringify({ address }),
     });
 
     if (!response.ok) {
