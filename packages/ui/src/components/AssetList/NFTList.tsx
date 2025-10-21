@@ -40,7 +40,7 @@ export const NFTList = React.memo(() => {
   if (!listData.length) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[300px] text-center">
-        <div className="text-modalTextSecondary mb-2">No Tokens found</div>
+        <div className="text-modalTextSecondary mb-2">No NFTs found</div>
         <div className="text-sm text-modalTextSecondary">
           Connect to a different chain or address to view more assets
         </div>
