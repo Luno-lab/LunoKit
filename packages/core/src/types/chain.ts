@@ -29,6 +29,7 @@ export interface Chain {
   chainIconUrl: string;
 
   subscan?: {
-    url: string;
+    api: string;
+    url: string
   };
 }

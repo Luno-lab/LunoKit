@@ -20,7 +20,8 @@ export const polkadot: Chain = {
   chainIconUrl: polkadotChain,
   testnet: false,
   subscan: {
-    url: 'https://polkadot.api.subscan.io',
+    url: 'https://polkadot.subscan.io',
+    api: 'https://polkadot.api.subscan.io',
   },
 };
 
@@ -40,7 +41,8 @@ export const polkadotAssetHub: Chain = {
   chainIconUrl: assethubChain,
   testnet: false,
   subscan: {
-    url: 'https://assethub-polkadot.api.subscan.io',
+    url: 'https://assethub-polkadot.subscan.io',
+    api: 'https://assethub-polkadot.api.subscan.io',
   },
 };
 
@@ -57,7 +59,8 @@ export const polkadotPeople: Chain = {
   chainIconUrl: peopleChain,
   testnet: false,
   subscan: {
-    url: 'https://people-polkadot.api.subscan.io',
+    url: 'https://people-polkadot.subscan.io',
+    api: 'https://people-polkadot.api.subscan.io',
   },
 };
 
@@ -77,7 +80,8 @@ export const polkadotCoretime: Chain = {
   chainIconUrl: coretimeChain,
   testnet: false,
   subscan: {
-    url: 'https://coretime-polkadot.api.subscan.io',
+    url: 'https://coretime-polkadot.subscan.io',
+    api: 'https://coretime-polkadot.api.subscan.io',
   },
 };
 
@@ -97,6 +101,7 @@ export const polkadotCollectives: Chain = {
   chainIconUrl: collectivesChain,
   testnet: false,
   subscan: {
-    url: 'https://collectives-polkadot.api.subscan.io',
+    url: 'https://collectives-polkadot.subscan.io',
+    api: 'https://collectives-polkadot.api.subscan.io',
   },
 };

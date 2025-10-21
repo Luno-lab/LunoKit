@@ -11,7 +11,8 @@ export const paseo: Chain = {
   chainIconUrl: paseoChain,
   testnet: true,
   subscan: {
-    url: 'https://paseo.api.subscan.io',
+    url: 'https://paseo.subscan.io',
+    api: 'https://paseo.api.subscan.io',
   },
 };
 
@@ -27,7 +28,8 @@ export const paseoAssetHub: Chain = {
   chainIconUrl: assethubPaseoChain,
   testnet: true,
   subscan: {
-    url: 'https://assethub-paseo.api.subscan.io',
+    url: 'https://assethub-paseo.subscan.io',
+    api: 'https://assethub-paseo.api.subscan.io',
   },
 };
 
