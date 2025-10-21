@@ -6,9 +6,10 @@ export interface IconProps {
   iconUrl?: string;
   resourceName?: string;
   className?: string;
+  rounded?: boolean;
 }
 
-export const Icon: React.FC<IconProps> = ({ iconUrl, resourceName, className }) => {
+export const Icon: React.FC<IconProps> = ({ iconUrl, resourceName, className, rounded = true }) => {
   const [isLoading, setIsLoading] = useState(!!iconUrl);
   const [hasError, setHasError] = useState(false);
 

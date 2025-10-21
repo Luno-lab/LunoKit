@@ -94,7 +94,7 @@ export const AccountDetailsModal: React.FC = () => {
           ) : (
             <>
               <button
-                className="flex items-center justify-center w-[30px] h-[30px] cursor-pointer rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover  transition-colors duration-200"
+                className="flex items-center justify-center w-[30px] h-[30px] cursor-pointer rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover transition-colors duration-200"
                 onClick={() => handleViewChange(AccountModalView.main)}
                 aria-label="Back"
               >

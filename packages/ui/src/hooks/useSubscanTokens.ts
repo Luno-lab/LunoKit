@@ -8,6 +8,7 @@ export interface AssetItem {
   balanceFormatted: string;
   logoURI: string;
   symbol: string;
+  assetId: string;
 }
 
 interface AssetData {
@@ -16,6 +17,7 @@ interface AssetData {
   token_image?: string;
   unique_id?: string;
   symbol: string;
+  asset_id: string;
 }
 
 const fetchAssets = async ({
@@ -34,7 +36,8 @@ const fetchAssets = async ({
         'Content-Type': 'application/json',
         'X-API-Key': apiKey,
       },
-      body: JSON.stringify({ address }),
+      // body: JSON.stringify({ address }),
+      body: JSON.stringify({ address: '14wbgzqY6w8buJUPkWJPoVUtjFunvwPhS4R6vrahkvNzR4gW' }),
     });
 
     if (!response.ok) {
@@ -58,6 +61,7 @@ const fetchAssets = async ({
         balanceFormatted: formatBalance(i.balance, i.decimals),
         logoURI: i.token_image,
         symbol: i.symbol,
+        assetId: i.asset_id,
       }));
 
     const tokens = assets
@@ -68,6 +72,7 @@ const fetchAssets = async ({
         balanceFormatted: formatBalance(i.balance, i.decimals, i.decimals),
         logoURI: i.token_image,
         symbol: i.symbol,
+        assetId: i.asset_id,
       }));
 
     const nativeTokens = native.map((i: AssetData) => ({
@@ -76,6 +81,7 @@ const fetchAssets = async ({
       balanceFormatted: formatBalance(i.balance, i.decimals, i.decimals),
       logoURI: '',
       symbol: i.symbol,
+      assetId: 0,
     }));
 
     return {
@@ -93,7 +99,7 @@ export function useSubscanTokens() {
   const config = useConfig();
   const { chain } = useChain();
 
-  const apiUrl = chain?.subscan?.url;
+  const apiUrl = chain?.subscan?.api;
   const apiKey = config?.subscan?.apiKey;
 
   return useQuery({

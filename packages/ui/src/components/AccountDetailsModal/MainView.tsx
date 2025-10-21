@@ -99,7 +99,7 @@ export const MainView: React.FC<MainViewProps> = ({ onViewChange, onModalClose }
     if (chains.length === 0) return [switchAccountItem];
 
     return config?.subscan?.apiKey
-      ? [chainNameItem, explorerItem, switchAccountItem, assetListItem]
+      ? [chainNameItem, explorerItem, assetListItem, switchAccountItem]
       : [chainNameItem, explorerItem, switchAccountItem];
   }, [onViewChange, chain, address, balance, chains, config]);
 
