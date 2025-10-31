@@ -1,7 +1,7 @@
-import { EmptyWallet } from '../../assets/icons'
+import { EmptyWallet } from '../../assets/icons';
 
 interface Props {
-  type: 'Tokens' | 'NFTs'
+  type: 'Tokens' | 'NFTs';
 }
 
 export const EmptyAsset = ({ type }: Props) => {
@@ -13,5 +13,5 @@ export const EmptyAsset = ({ type }: Props) => {
         Switch to a different network or account to view more assets
       </div>
     </div>
-  )
-}
+  );
+};

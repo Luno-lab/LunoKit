@@ -13,7 +13,7 @@ export const Icon: React.FC<IconProps> = ({ iconUrl, resourceName, className }) 
   const [hasError, setHasError] = useState(false);
 
   const bgColor = useMemo(() => {
-    if (resourceName?.includes('token')) return '#E6007A'
+    if (resourceName?.includes('token')) return '#E6007A';
     const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4'];
 
     if (!resourceName) return colors[0];
@@ -41,7 +41,7 @@ export const Icon: React.FC<IconProps> = ({ iconUrl, resourceName, className }) 
     return (
       <div className={cs('relative w-full h-full', className)}>
         {isLoading && (
-          <div className="absolute fuck inset-0 flex items-center justify-center rounded-full animate-pulse bg-skeleton"/>
+          <div className="absolute fuck inset-0 flex items-center justify-center rounded-full animate-pulse bg-skeleton" />
         )}
 
         <img

@@ -30,6 +30,6 @@ export interface Chain {
 
   subscan?: {
     api: string;
-    url: string
+    url: string;
   };
 }

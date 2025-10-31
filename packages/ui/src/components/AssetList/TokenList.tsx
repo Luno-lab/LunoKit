@@ -1,9 +1,8 @@
-import React, { useMemo } from 'react'
-import { type AssetItem as AssetItemType, useSubscanTokens} from '../../hooks/useSubscanTokens'
-import { cs } from '../../utils'
-import { Icon } from '../Icon'
-import {EmptyAsset} from './EmptyAsset'
-
+import React, { useMemo } from 'react';
+import { type AssetItem as AssetItemType, useSubscanTokens } from '../../hooks/useSubscanTokens';
+import { cs } from '../../utils';
+import { Icon } from '../Icon';
+import { EmptyAsset } from './EmptyAsset';
 
 const TOKEN_ICONS: Record<string, string> = {
   DOT: 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/acala_custom_DOT.png',
@@ -28,7 +27,6 @@ const getAssetIconUrl = (symbol: string): string => {
 
   return '';
 };
-
 
 export const TokenList = React.memo(() => {
   const { data, isLoading, error } = useSubscanTokens();
@@ -73,8 +71,8 @@ export const TokenList = React.memo(() => {
         <TokenItem asset={item} key={`${item.symbol}-${item.balance}`} />
       ))}
     </div>
-  )
-})
+  );
+});
 
 interface TokenItemProps {
   asset: AssetItemType;

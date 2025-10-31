@@ -1,9 +1,9 @@
-import React, { useMemo, useState } from 'react'
-import { type AssetItem as AssetItemType, useSubscanTokens } from '../../hooks/useSubscanTokens'
-import { cs } from '../../utils'
-import { Link } from '../../assets/icons'
-import { useAccount, useChain } from '@luno-kit/react'
-import { EmptyAsset } from './EmptyAsset'
+import { useAccount, useChain } from '@luno-kit/react';
+import React, { useMemo, useState } from 'react';
+import { Link } from '../../assets/icons';
+import { type AssetItem as AssetItemType, useSubscanTokens } from '../../hooks/useSubscanTokens';
+import { cs } from '../../utils';
+import { EmptyAsset } from './EmptyAsset';
 
 export const NFTList = React.memo(() => {
   const { data, isLoading, error } = useSubscanTokens();
@@ -50,8 +50,8 @@ export const NFTList = React.memo(() => {
         ))}
       </div>
     </div>
-  )
-})
+  );
+});
 
 interface NFTItemProps {
   asset: AssetItemType;
@@ -63,13 +63,13 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
   const [isLoading, setIsLoading] = useState(!!asset.logoURI);
 
   const linkExplorer = useMemo(() => {
-    if (!chain?.subscan?.url) return ''
+    if (!chain?.subscan?.url) return '';
 
     const subscanUrl = chain.subscan.url.endsWith('/')
       ? chain.subscan.url.slice(0, -1)
       : chain.subscan.url;
-    return `${subscanUrl}/nft_item?collection_id=${asset.assetId}&address=${address}`
-  }, [chain, asset, address])
+    return `${subscanUrl}/nft_item?collection_id=${asset.assetId}&address=${address}`;
+  }, [chain, asset, address]);
 
   return (
     <div
@@ -80,7 +80,11 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
       )}
     >
       <div className="flex flex-col items-center justify-center gap-1">
-        <div className={'relative w-[125px] h-[125px] flex items-center justify-center rounded-[6px] overflow-hidden'}>
+        <div
+          className={
+            'relative w-[125px] h-[125px] flex items-center justify-center rounded-[6px] overflow-hidden'
+          }
+        >
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center animate-pulse bg-gray-500">
               <div className="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin" />

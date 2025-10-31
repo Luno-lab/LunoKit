@@ -1,8 +1,8 @@
 import type React from 'react';
 import { useState } from 'react';
 import { cs } from '../../utils';
-import { TokenList } from './TokenList'
-import { NFTList } from './NFTList'
+import { NFTList } from './NFTList';
+import { TokenList } from './TokenList';
 
 enum AssetFilter {
   tokens = 'Tokens',
@@ -42,5 +42,3 @@ export const AssetList: React.FC = () => {
     </div>
   );
 };
-
-
