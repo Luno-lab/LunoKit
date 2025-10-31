@@ -6,14 +6,14 @@ export interface IconProps {
   iconUrl?: string;
   resourceName?: string;
   className?: string;
-  rounded?: boolean;
 }
 
-export const Icon: React.FC<IconProps> = ({ iconUrl, resourceName, className, rounded = true }) => {
+export const Icon: React.FC<IconProps> = ({ iconUrl, resourceName, className }) => {
   const [isLoading, setIsLoading] = useState(!!iconUrl);
   const [hasError, setHasError] = useState(false);
 
   const bgColor = useMemo(() => {
+    if (resourceName?.includes('token')) return '#E6007A'
     const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4'];
 
     if (!resourceName) return colors[0];
@@ -41,9 +41,7 @@ export const Icon: React.FC<IconProps> = ({ iconUrl, resourceName, className, ro
     return (
       <div className={cs('relative w-full h-full', className)}>
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center rounded-full animate-pulse bg-gray-500">
-            <div className="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin" />
-          </div>
+          <div className="absolute fuck inset-0 flex items-center justify-center rounded-full animate-pulse bg-skeleton"/>
         )}
 
         <img

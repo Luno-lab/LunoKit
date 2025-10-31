@@ -2,7 +2,8 @@ import React, { useMemo, useState } from 'react'
 import { type AssetItem as AssetItemType, useSubscanTokens } from '../../hooks/useSubscanTokens'
 import { cs } from '../../utils'
 import { Link } from '../../assets/icons'
-import {useAccount, useChain} from '@luno-kit/react'
+import { useAccount, useChain } from '@luno-kit/react'
+import { EmptyAsset } from './EmptyAsset'
 
 export const NFTList = React.memo(() => {
   const { data, isLoading, error } = useSubscanTokens();
@@ -19,7 +20,7 @@ export const NFTList = React.memo(() => {
         {[1, 2, 3, 4, 5, 6].map((num) => (
           <div
             key={`skeleton-${num}`}
-            className="animate-pulse bg-networkSelectItemBackground w-[145px] h-[180px] rounded-networkSelectItem"
+            className="animate-pulse bg-skeleton w-[145px] h-[180px] rounded-networkSelectItem"
           />
         ))}
       </div>
@@ -38,14 +39,7 @@ export const NFTList = React.memo(() => {
   }
 
   if (!listData.length) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[300px] text-center">
-        <div className="text-modalTextSecondary mb-2">No NFTs found</div>
-        <div className="text-sm text-modalTextSecondary">
-          Connect to a different chain or address to view more assets
-        </div>
-      </div>
-    );
+    return <EmptyAsset type={'NFTs'} />;
   }
 
   return (

@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import { type AssetItem as AssetItemType, useSubscanTokens} from '../../hooks/useSubscanTokens'
 import { cs } from '../../utils'
 import { Icon } from '../Icon'
+import {EmptyAsset} from './EmptyAsset'
 
 
 const TOKEN_ICONS: Record<string, string> = {
@@ -44,7 +45,7 @@ export const TokenList = React.memo(() => {
         {[1, 2, 3, 4, 5, 6, 7].map((num) => (
           <div
             key={`skeleton-${num}`}
-            className="animate-pulse bg-networkSelectItemBackground h-[44px] rounded-networkSelectItem"
+            className="animate-pulse bg-skeleton h-[44px] rounded-networkSelectItem"
           />
         ))}
       </div>
@@ -63,14 +64,7 @@ export const TokenList = React.memo(() => {
   }
 
   if (!listData.length) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[300px] text-center">
-        <div className="text-modalTextSecondary mb-2">No Tokens found</div>
-        <div className="text-sm text-modalTextSecondary">
-          Connect to a different chain or address to view more assets
-        </div>
-      </div>
-    );
+    return <EmptyAsset type={'Tokens'} />;
   }
 
   return (
@@ -101,7 +95,7 @@ const TokenItem: React.FC<TokenItemProps> = React.memo(({ asset }) => {
         <Icon
           className={'w-[30px] h-[30px] flex items-center justify-center leading-[25px]'}
           iconUrl={iconUrl}
-          resourceName={`${asset.symbol}-asset`}
+          resourceName={`${asset.symbol}-token`}
         />
 
         <div className="flex flex-col items-start">

@@ -110,7 +110,7 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(
           <Icon
             className={'w-[20px] h-[20px] flex items-center justify-center leading-[20px]'}
             iconUrl={chain?.chainIconUrl}
-            resourceName={chain?.name}
+            resourceName={`${chain?.name}-chain`}
           />
 
           <div className="flex flex-col items-start">

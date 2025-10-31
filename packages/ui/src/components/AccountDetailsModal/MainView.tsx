@@ -37,7 +37,7 @@ export const MainView: React.FC<MainViewProps> = ({ onViewChange, onModalClose }
               <Icon
                 className="w-[24px] h-[24px]"
                 iconUrl={chain?.chainIconUrl}
-                resourceName={chain?.name}
+                resourceName={`${chain?.name}-chain`}
               />
               {/* <div className={'dot w-[8px] h-[8px] bg-accentColor absolute bottom-0 right-0 rounded-full'}/> */}
             </div>
