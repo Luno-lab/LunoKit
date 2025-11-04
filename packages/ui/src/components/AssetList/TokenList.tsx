@@ -4,20 +4,6 @@ import { cs } from '../../utils';
 import { Icon } from '../Icon';
 import { EmptyAsset } from './EmptyAsset';
 
-const TOKEN_ICONS: Record<string, string> = {
-  DOT: 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/acala_custom_DOT.png',
-  KSM: 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/bifrost-kusama_custom_KSM.png',
-  WND: 'https://westend.subscan.io/_next/image?url=%2Fchains%2Fwestend%2Ftokens%2FWND.png&w=3840&q=75',
-  PAS: 'https://paseo.subscan.io/_next/image?url=%2Fchains%2Fpaseo%2Ftokens%2FPAS.png&w=3840&q=75',
-
-  GLMR: 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/acala_custom_GLMR.png',
-  MOVR: 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/bifrost-kusama_custom_MOVR.png',
-  ASTR: 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/acala_custom_ASTR.png',
-
-  USDT: 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/assethub-polkadot_asset_USDt.png',
-  USDC: 'https://raw.githubusercontent.com/subscan-explorer/assets-info/main/logos/assethub-polkadot_asset_USDC.svg',
-};
-
 const getAssetIconUrl = (symbol: string): string => {
   const normalizedSymbol = symbol?.toLowerCase().trim() || '';
 
@@ -25,7 +11,7 @@ const getAssetIconUrl = (symbol: string): string => {
 };
 
 export const TokenList = React.memo(() => {
-  const { data, isLoading, error } = useSubscanTokens();
+  const { data, error, isFetching } = useSubscanTokens();
 
   const listData: AssetItemType[] = useMemo(() => {
     if (!data) return [];
@@ -33,7 +19,7 @@ export const TokenList = React.memo(() => {
     return data.tokens;
   }, [data]);
 
-  if (isLoading) {
+  if (isFetching) {
     return (
       <div className="flex flex-col gap-1.5 min-h-[300px]">
         {[1, 2, 3, 4, 5].map((num) => (
@@ -77,7 +63,6 @@ interface TokenItemProps {
 const TokenItem: React.FC<TokenItemProps> = React.memo(({ asset }) => {
   const iconUrl = asset.logoURI || getAssetIconUrl(asset.symbol);
 
-  // Calculate total value in USD
   const displayValue = React.useMemo(() => {
     if (!asset.price) return null;
     const balance = parseFloat(asset.balance) / 10 ** asset.decimals;

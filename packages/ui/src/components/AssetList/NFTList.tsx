@@ -6,7 +6,7 @@ import { cs } from '../../utils';
 import { EmptyAsset } from './EmptyAsset';
 
 export const NFTList = React.memo(() => {
-  const { data, isLoading, error } = useSubscanTokens();
+  const { data, isFetching, error } = useSubscanTokens();
 
   const listData: AssetItemType[] = useMemo(() => {
     if (!data) return [];
@@ -14,7 +14,7 @@ export const NFTList = React.memo(() => {
     return data.nfts;
   }, [data]);
 
-  if (isLoading) {
+  if (isFetching) {
     return (
       <div className="flex justify-center w-full">
         <div className="flex flex-wrap justify-between max-w-[350px] w-full min-h-[300px] gap-y-4">
@@ -75,8 +75,6 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
       ? chain.subscan.url.slice(0, -1)
       : chain.subscan.url;
 
-    if (asset.contract)
-      return `${subscanUrl}/nft_item?contract=${asset.contract}&address=${address}`;
     return `${subscanUrl}/nft_item?collection_id=${asset.assetId}&address=${address}`;
   }, [chain, asset, address]);
 

@@ -52,6 +52,7 @@ export interface LunokitTheme {
     errorForeground: string;
     info: string;
     infoForeground: string;
+    defaultIconBackground: string;
 
     // Skeleton screen
     skeleton: string;

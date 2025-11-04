@@ -8,7 +8,7 @@ import { useAccountModal } from '../../providers';
 import { cs } from '../../utils';
 import { Copy } from '../Copy';
 import { Dialog, DialogClose, DialogTitle } from '../Dialog';
-import { AssetListView } from './AssetList';
+import { AssetListView } from './AssetListView';
 import { MainView } from './MainView';
 import { SwitchAccountView } from './SwitchAccountView';
 import { SwitchChainView } from './SwitchChainView';

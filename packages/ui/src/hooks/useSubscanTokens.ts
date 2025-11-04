@@ -10,7 +10,6 @@ export interface AssetItem {
   symbol: string;
   assetId: string;
   price?: string;
-  contract?: string;
 }
 
 interface AssetData {
@@ -21,7 +20,6 @@ interface AssetData {
   symbol: string;
   asset_id?: string;
   price?: string;
-  contract?: string;
 }
 
 const fetchAssets = async ({
@@ -56,8 +54,6 @@ const fetchAssets = async ({
     const assets = result.data.assets || [];
     const native = result.data.native || [];
 
-    const erc721 = result.data.ERC721 || [];
-    const erc20 = result.data.ERC20 || [];
     const builtin = result.data.builtin || [];
 
     const nfts = assets
@@ -71,17 +67,6 @@ const fetchAssets = async ({
         assetId: i.asset_id,
         price: i.price,
       }));
-
-    const erc721Nfts = erc721.map((i: AssetData) => ({
-      balance: i.balance,
-      decimals: i.decimals,
-      balanceFormatted: formatBalance(i.balance, i.decimals),
-      logoURI: i.token_image,
-      symbol: i.symbol,
-      assetId: i.unique_id,
-      contract: i.contract,
-      price: i.price,
-    }));
 
     const tokens = assets
       .filter((i: AssetData) => !i.token_image && !i.unique_id?.includes('nft'))
@@ -115,19 +100,9 @@ const fetchAssets = async ({
       price: i.price,
     }));
 
-    const erc20Tokens = erc20.map((i: AssetData) => ({
-      balance: i.balance,
-      decimals: i.decimals,
-      balanceFormatted: formatBalance(i.balance, i.decimals, 4),
-      logoURI: '',
-      symbol: i.symbol,
-      assetId: i.unique_id,
-      price: i.price,
-    }));
-
     return {
-      nfts: [...nfts, ...erc721Nfts],
-      tokens: [...nativeTokens, ...tokens, ...builtinTokens, ...erc20Tokens],
+      nfts: [...nfts],
+      tokens: [...nativeTokens, ...tokens, ...builtinTokens],
     };
   } catch (error) {
     console.error('Failed to fetch tokens from Subscan:', error);

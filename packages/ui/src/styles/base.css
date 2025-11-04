@@ -49,6 +49,8 @@
   --color-info: var(--color-info);
   --color-infoForeground: var(--color-infoForeground);
 
+  --color-defaultIconBackground: var(--color-defaultIconBackground);
+
   /* Radius utilities */
   --radius-walletSelectItem: var(--radius-walletSelectItem);
   --radius-connectButton: var(--radius-connectButton);
@@ -168,6 +170,7 @@
   --color-info: #3b82f6;
   --color-infoForeground: #ffffff;
   --color-skeleton: rgba(0, 0, 0, 0.08);
+  --color-defaultIconBackground: #E6007A;
 }
 
 /* Dark Theme Variables */
@@ -210,6 +213,7 @@
   --color-info: #3b82f6;
   --color-infoForeground: #ffffff;
   --color-skeleton: rgba(255, 255, 255, 0.09);
+  --color-defaultIconBackground: #E6007A;
 
   /* Radii */
   --radius-walletSelectItem: 6px;

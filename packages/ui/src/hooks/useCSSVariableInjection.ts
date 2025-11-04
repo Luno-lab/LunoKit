@@ -40,6 +40,7 @@ const ALL_THEME_VARS = [
   '--color-info',
   '--color-infoForeground',
   '--color-skeleton',
+  '--color-defaultIconBackground',
   '--font-body',
   '--radius-walletSelectItem',
   '--radius-connectButton',

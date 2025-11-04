@@ -13,6 +13,7 @@ import { Arrow, Coin, Disconnect, List, Switch } from '../../assets/icons';
 import { cs } from '../../utils';
 import { Icon } from '../Icon';
 import { AccountModalView } from './index';
+import {useSubscanTokens} from '../../hooks/useSubscanTokens'
 
 interface MainViewProps {
   onViewChange: (view: AccountModalView) => void;
@@ -26,6 +27,7 @@ export const MainView: React.FC<MainViewProps> = ({ onViewChange, onModalClose }
   const { disconnectAsync } = useDisconnect();
   const { data: balance } = useBalance({ address: chains.length > 0 ? address : undefined });
   const config = useConfig();
+  const { refetch } = useSubscanTokens()
 
   const items = useMemo(() => {
     const chainNameItem = {
@@ -81,7 +83,10 @@ export const MainView: React.FC<MainViewProps> = ({ onViewChange, onModalClose }
           <span className="text-base text-accountActionItemText">View Assets</span>
         </>
       ),
-      onClick: () => onViewChange(AccountModalView.assetList),
+      onClick: () => {
+        onViewChange(AccountModalView.assetList);
+        refetch();
+      },
     };
 
     const explorerItem = {
