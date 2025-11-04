@@ -21,11 +21,11 @@ export const TokenList = React.memo(() => {
 
   if (isFetching) {
     return (
-      <div className="flex flex-col gap-1.5 min-h-[300px]">
+      <div className="luno:flex luno:flex-col luno:gap-1.5 luno:min-h-[300px]">
         {[1, 2, 3, 4, 5].map((num) => (
           <div
             key={`skeleton-${num}`}
-            className="animate-pulse bg-skeleton h-[54px] rounded-assetSelectItem"
+            className="luno:animate-pulse luno:bg-skeleton luno:h-[54px] luno:rounded-assetSelectItem"
           />
         ))}
       </div>
@@ -34,9 +34,9 @@ export const TokenList = React.memo(() => {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[300px] text-center p-4">
-        <div className="text-error mb-2">Failed to load assets</div>
-        <div className="text-modalTextSecondary text-sm">
+      <div className="luno:flex luno:flex-col luno:items-center luno:justify-center luno:min-h-[300px] luno:text-center luno:p-4">
+        <div className="luno:text-error luno:mb-2">Failed to load assets</div>
+        <div className="luno:text-modalTextSecondary luno:text-sm">
           {error instanceof Error ? error.message : 'Unknown error'}
         </div>
       </div>
@@ -48,7 +48,7 @@ export const TokenList = React.memo(() => {
   }
 
   return (
-    <div className="flex flex-col gap-1.5" role="list" aria-label="Token list">
+    <div className="luno:flex luno:flex-col luno:gap-1.5" role="list" aria-label="Token list">
       {listData.map((item) => (
         <TokenItem asset={item} key={`${item.symbol}-${item.balance}`} />
       ))}
@@ -75,32 +75,32 @@ const TokenItem: React.FC<TokenItemProps> = React.memo(({ asset }) => {
     <div
       role="listitem"
       className={cs(
-        'flex items-center justify-between p-2.5 rounded-assetSelectItem cursor-default',
-        'bg-assetSelectItemBackground',
-        'transition-colors duration-200'
+        'luno:flex luno:items-center luno:justify-between luno:p-2.5 luno:rounded-assetSelectItem luno:cursor-default',
+        'luno:bg-assetSelectItemBackground',
+        'luno:transition-colors luno:duration-200'
       )}
     >
-      <div className="flex items-center gap-2">
+      <div className="luno:flex luno:items-center luno:gap-2">
         <Icon
-          className={'w-[30px] h-[30px] flex items-center justify-center'}
+          className={'luno:w-[30px] luno:h-[30px] luno:flex luno:items-center luno:justify-center'}
           iconUrl={iconUrl}
           resourceName={`${asset.symbol}-token`}
         />
 
-        <div className="flex flex-col items-start">
-          <span className="font-medium text-sm leading-sm text-modalText">
+        <div className="luno:flex luno:flex-col luno:items-start">
+          <span className="luno:font-medium luno:text-sm luno:leading-sm luno:text-modalText">
             {asset.symbol || 'Unknown'}
           </span>
-          <span className={'text-xs text-modalTextSecondary font-medium whitespace-nowrap'}>
+          <span className={'luno:text-xs luno:text-modalTextSecondary luno:font-medium luno:whitespace-nowrap'}>
             {asset.balanceFormatted}
           </span>
         </div>
       </div>
 
       {asset.price && (
-        <div className="flex flex-col items-end">
-          <span className="font-medium text-sm leading-sm text-modalText">{displayValue}</span>
-          <span className={'text-xs text-modalTextSecondary font-medium whitespace-nowrap'}>
+        <div className="luno:flex luno:flex-col luno:items-end">
+          <span className="luno:font-medium luno:text-sm luno:leading-sm luno:text-modalText">{displayValue}</span>
+          <span className={'luno:text-xs luno:text-modalTextSecondary luno:font-medium luno:whitespace-nowrap'}>
             ${asset.price}
           </span>
         </div>

@@ -31,8 +31,8 @@ export const Copy: React.FC<CopyProps> = ({ copyText, label, className = '' }) =
     <button
       type="button"
       className={cs(
-        'cursor-pointer bg-transparent border-none p-1 m-0 inline-flex items-center justify-center gap-1',
-        'rounded-modalControlButton hover:bg-modalControlButtonBackgroundHover transition-colors duration-200',
+        'luno:cursor-pointer luno:bg-transparent luno:border-none luno:p-1 luno:m-0 luno:inline-flex luno:items-center luno:justify-center luno:gap-1',
+        'luno:rounded-modalControlButton luno:hover:bg-modalControlButtonBackgroundHover luno:transition-colors luno:duration-200',
         className
       )}
       onClick={() => !isCopied && copyText && copyToClipboard(copyText)}
@@ -40,7 +40,7 @@ export const Copy: React.FC<CopyProps> = ({ copyText, label, className = '' }) =
       disabled={isCopied}
     >
       {isCopied ? (
-        <Success className="text-accentColor" width={16} height={16} />
+        <Success className="luno:text-accentColor" width={16} height={16} />
       ) : (
         <CopyIcon width={16} height={16} />
       )}

@@ -6,10 +6,10 @@ interface Props {
 
 export const EmptyAsset = ({ type }: Props) => {
   return (
-    <div className="flex flex-col gap-1 items-center justify-center min-h-[300px] text-center">
-      <EmptyWallet className={'w-[38px] h-[38px] mb-2'} />
-      <div className="text-modalText text-base leading-base">No {type} found</div>
-      <div className="text-sm text-modalTextSecondary max-w-[260px]">
+    <div className="luno:flex luno:flex-col luno:gap-1 luno:items-center luno:justify-center luno:min-h-[300px] luno:text-center">
+      <EmptyWallet className={'luno:w-[38px] luno:h-[38px] luno:mb-2'} />
+      <div className="luno:text-modalText luno:text-base luno:leading-base">No {type} found</div>
+      <div className="luno:text-sm luno:text-modalTextSecondary luno:max-w-[260px]">
         Switch to a different network or account to view more assets
       </div>
     </div>

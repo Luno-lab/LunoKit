@@ -16,12 +16,12 @@ export const NFTList = React.memo(() => {
 
   if (isFetching) {
     return (
-      <div className="flex justify-center w-full">
-        <div className="flex flex-wrap justify-between max-w-[350px] w-full min-h-[300px] gap-y-4">
+      <div className="luno:flex luno:justify-center luno:w-full">
+        <div className="luno:flex luno:flex-wrap luno:justify-between luno:max-w-[350px] luno:w-full luno:min-h-[300px] luno:gap-y-4">
           {[1, 2, 3, 4].map((num) => (
             <div
               key={`skeleton-${num}`}
-              className="animate-pulse bg-skeleton w-[155px] h-[198px] rounded-assetSelectItem"
+              className="luno:animate-pulse luno:bg-skeleton luno:w-[155px] luno:h-[198px] luno:rounded-assetSelectItem"
             />
           ))}
         </div>
@@ -31,9 +31,9 @@ export const NFTList = React.memo(() => {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[300px] text-center p-4">
-        <div className="text-error mb-2">Failed to load assets</div>
-        <div className="text-modalTextSecondary text-sm">
+      <div className="luno:flex luno:flex-col luno:items-center luno:justify-center luno:min-h-[300px] luno:text-center luno:p-4">
+        <div className="luno:text-error luno:mb-2">Failed to load assets</div>
+        <div className="luno:text-modalTextSecondary luno:text-sm">
           {error instanceof Error ? error.message : 'Unknown error'}
         </div>
       </div>
@@ -45,9 +45,9 @@ export const NFTList = React.memo(() => {
   }
 
   return (
-    <div className="flex justify-center w-full">
+    <div className="luno:flex luno:justify-center luno:w-full">
       <div
-        className="flex flex-wrap justify-between max-w-[350px] w-full gap-y-4"
+        className="luno:flex luno:flex-wrap luno:justify-between luno:max-w-[350px] luno:w-full luno:gap-y-4"
         role="list"
         aria-label="NFT list"
       >
@@ -83,20 +83,20 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
       role="listitem"
       aria-label="b list"
       className={cs(
-        'w-[155px] h-[198px] flex items-center p-2.5 rounded-assetSelectItem cursor-default',
-        'bg-assetSelectItemBackground',
-        'transition-colors duration-200'
+        'luno:w-[155px] luno:h-[198px] luno:flex luno:items-center luno:p-2.5 luno:rounded-assetSelectItem luno:cursor-default',
+        'luno:bg-assetSelectItemBackground',
+        'luno:transition-colors luno:duration-200'
       )}
     >
-      <div className="flex flex-col items-center justify-center">
+      <div className="luno:flex luno:flex-col luno:items-center luno:justify-center">
         <div
           className={
-            'relative w-[135px] h-[135px] flex items-center justify-center rounded-[6px] overflow-hidden'
+            'luno:relative luno:w-[135px] luno:h-[135px] luno:flex luno:items-center luno:justify-center luno:rounded-[6px] luno:overflow-hidden'
           }
         >
           {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center animate-pulse bg-gray-500">
-              <div className="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin" />
+            <div className="luno:absolute luno:inset-0 luno:flex luno:items-center luno:justify-center luno:animate-pulse luno:bg-gray-500">
+              <div className="luno:w-4 luno:h-4 luno:border-2 luno:border-t-transparent luno:border-white luno:rounded-full luno:animate-spin" />
             </div>
           )}
           {asset.logoURI ? (
@@ -104,30 +104,30 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
               src={asset.logoURI}
               alt={`${asset.symbol}-NFT`}
               className={cs(
-                'w-full h-full object-cover',
-                isLoading ? 'opacity-0' : 'opacity-100 transition-opacity duration-200'
+                'luno:w-full luno:h-full luno:object-cover',
+                isLoading ? 'luno:opacity-0' : 'luno:opacity-100 luno:transition-opacity luno:duration-200'
               )}
               onLoad={() => setIsLoading(false)}
               onError={() => setIsLoading(false)}
             />
           ) : (
-            <DefaultNFT className={'w-full h-full object-cover'} />
+            <DefaultNFT className={'luno:w-full luno:h-full luno:object-cover'} />
           )}
         </div>
 
-        <div className={'flex items-center justify-between w-full mt-0.5'}>
-          <span className="font-medium text-sm leading-sm text-modalText">
+        <div className={'luno:flex luno:items-center luno:justify-between luno:w-full luno:mt-0.5'}>
+          <span className="luno:font-medium luno:text-sm luno:leading-sm tluno:ext-modalText">
             {asset.balance || '-'} NFTs
           </span>
           <button
-            className="cursor-pointer bg-transparent border-none p-1 m-0 inline-flex items-center justify-center gap-1 rounded-modalControlButton hover:bg-modalControlButtonBackgroundHover transition-colors duration-200"
+            className="luno:cursor-pointer luno:bg-transparent luno:border-none luno:p-1 luno:m-0 luno:inline-flex luno:items-center luno:justify-center luno:gap-1 luno:rounded-modalControlButton luno:hover:bg-modalControlButtonBackgroundHover luno:transition-colors luno:duration-200"
             onClick={() => linkExplorer && window.open(linkExplorer)}
             aria-label="Back"
           >
             <Link />
           </button>
         </div>
-        <div className="w-full text-left text-xs text-modalTextSecondary font-medium whitespace-nowrap max-w-[135px] overflow-hidden text-ellipsis">
+        <div className="luno:w-full luno:text-left luno:text-xs luno:text-modalTextSecondary luno:font-medium luno:whitespace-nowrap luno:max-w-[135px] luno:overflow-hidden luno:text-ellipsis">
           {asset.symbol || asset.assetId}
         </div>
       </div>

@@ -79,7 +79,7 @@ export const SpiralAnimation: React.FC<SpiralAnimationProps> = ({
     <div
       ref={containerRef}
       className={cs(
-        'text-accentColor inline-flex w-full h-full justify-center align-center',
+        'luno:text-accentColor luno:inline-flex luno:w-full luno:h-full luno:justify-center luno:align-center',
         className
       )}
     />

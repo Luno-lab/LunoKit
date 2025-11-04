@@ -25,17 +25,17 @@ export const Icon: React.FC<IconProps> = ({ iconUrl, resourceName, className }) 
 
   if (iconUrl && !hasError) {
     return (
-      <div className={cs('relative w-full h-full', className)}>
+      <div className={cs('luno:relative luno:w-full luno:h-full', className)}>
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center rounded-full animate-pulse bg-skeleton" />
+          <div className="luno:absolute luno:inset-0 luno:flex luno:items-center luno:justify-center luno:rounded-full luno:animate-pulse luno:bg-skeleton" />
         )}
 
         <img
           src={iconUrl}
           alt={resourceName || 'icon'}
           className={cs(
-            'w-full h-full object-cover rounded-full',
-            isLoading ? 'opacity-0' : 'opacity-100 transition-opacity duration-200'
+            'luno:w-full luno:h-full luno:object-cover luno:rounded-full',
+            isLoading ? 'luno:opacity-0' : 'luno:opacity-100 luno:transition-opacity luno:duration-200'
           )}
           onLoad={() => setIsLoading(false)}
           onError={() => {
@@ -50,8 +50,8 @@ export const Icon: React.FC<IconProps> = ({ iconUrl, resourceName, className }) 
   return (
     <div
       className={cs(
-        'w-full h-full text-white font-semibold',
-        'flex items-center justify-center rounded-full bg-defaultIconBackground',
+        'luno:w-full luno:h-full luno:text-white luno:font-semibold',
+        'luno:flex luno:items-center luno:justify-center luno:rounded-full luno:bg-defaultIconBackground',
         className
       )}
     >

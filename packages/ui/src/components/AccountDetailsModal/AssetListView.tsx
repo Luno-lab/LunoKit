@@ -7,7 +7,7 @@ interface ViewComponent extends React.FC {
 
 export const AssetListView: ViewComponent = () => {
   return (
-    <div className={'relative'}>
+    <div className={'luno:relative'}>
       <AssetList />
     </div>
   );

@@ -67,7 +67,7 @@ export const QRCode = ({ logoBackground, uri, size }: Props) => {
 
       return (
         <div
-          className="absolute z-[4]"
+          className="luno:absolute luno:z-[4]"
           style={{
             width: `${finderSize}px`,
             height: `${finderSize}px`,
@@ -75,14 +75,14 @@ export const QRCode = ({ logoBackground, uri, size }: Props) => {
           }}
         >
           <div
-            className="absolute inset-0"
+            className="luno:absolute luno:inset-0"
             style={{
               borderRadius: `${2 * cellSize}px`,
               border: `${cellSize}px solid var(--color-walletSelectItemBackground)`,
             }}
           />
           <div
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+            className="luno:absolute luno:left-1/2 luno:top-1/2 luno:-translate-x-1/2 luno:-translate-y-1/2"
             style={{
               width: `${3 * cellSize}px`,
               height: `${3 * cellSize}px`,
@@ -99,7 +99,7 @@ export const QRCode = ({ logoBackground, uri, size }: Props) => {
 
       return (
         <div
-          className="absolute z-[4] flex items-center justify-center box-border"
+          className="luno:absolute luno:z-[4] luno:flex luno:items-center luno:justify-center luno:box-border"
           style={{
             width: `${arenaSize}px`,
             height: `${arenaSize}px`,
@@ -112,7 +112,7 @@ export const QRCode = ({ logoBackground, uri, size }: Props) => {
           <img
             src={logoBackground}
             alt="QR Code Logo"
-            className="h-full w-full object-cover"
+            className="luno:h-full luno:w-full luno:object-cover"
             style={{
               borderRadius: `${cellSize}px`,
             }}
@@ -123,7 +123,7 @@ export const QRCode = ({ logoBackground, uri, size }: Props) => {
 
     return (
       <div
-        className="relative overflow-hidden flex items-center justify-center"
+        className="luno:relative luno:overflow-hidden luno:flex luno:items-center luno:justify-center"
         style={{
           width: size,
           height: size,
@@ -131,7 +131,7 @@ export const QRCode = ({ logoBackground, uri, size }: Props) => {
         }}
       >
         <svg
-          className="absolute inset-0 z-[3]"
+          className="luno:absolute luno:inset-0 luno:z-[3]"
           width={size}
           height={size}
           viewBox={`0 0 ${QR_GRID_SIZE} ${QR_GRID_SIZE}`}
@@ -140,7 +140,7 @@ export const QRCode = ({ logoBackground, uri, size }: Props) => {
         </svg>
 
         <div
-          className="absolute inset-0 z-[100]"
+          className="luno:absolute luno:inset-0 luno:z-[100]"
           style={{
             background:
               'linear-gradient(90deg, transparent 50%, var(--color-walletSelectItemBackgroundHover), transparent)',
