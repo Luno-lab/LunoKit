@@ -46,7 +46,11 @@ export const NFTList = React.memo(() => {
 
   return (
     <div className="flex justify-center w-full">
-      <div className="flex flex-wrap justify-between max-w-[350px] w-full gap-y-4" role="list" aria-label="NFT list">
+      <div
+        className="flex flex-wrap justify-between max-w-[350px] w-full gap-y-4"
+        role="list"
+        aria-label="NFT list"
+      >
         {listData.map((item) => (
           <NFTItem asset={item} key={`${item.symbol}-${item.balance}`} />
         ))}
@@ -71,13 +75,15 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
       ? chain.subscan.url.slice(0, -1)
       : chain.subscan.url;
 
-    if (asset.contract) return `${subscanUrl}/nft_item?contract=${asset.contract}&address=${address}`
+    if (asset.contract)
+      return `${subscanUrl}/nft_item?contract=${asset.contract}&address=${address}`;
     return `${subscanUrl}/nft_item?collection_id=${asset.assetId}&address=${address}`;
   }, [chain, asset, address]);
 
   return (
     <div
       role="listitem"
+      aria-label="b list"
       className={cs(
         'w-[155px] h-[198px] flex items-center p-2.5 rounded-assetSelectItem cursor-default',
         'bg-assetSelectItemBackground',
@@ -107,7 +113,7 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
               onError={() => setIsLoading(false)}
             />
           ) : (
-            <DefaultNFT className={'w-full h-full object-cover'}/>
+            <DefaultNFT className={'w-full h-full object-cover'} />
           )}
         </div>
 

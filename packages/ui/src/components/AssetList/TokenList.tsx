@@ -21,7 +21,7 @@ const TOKEN_ICONS: Record<string, string> = {
 const getAssetIconUrl = (symbol: string): string => {
   const normalizedSymbol = symbol?.toLowerCase().trim() || '';
 
-  return `https://raw.githubusercontent.com/Luno-lab/luno-assets/refs/heads/main/assets/tokens/${normalizedSymbol}.webp`
+  return `https://raw.githubusercontent.com/Luno-lab/luno-assets/refs/heads/main/assets/tokens/${normalizedSymbol}.webp`;
 };
 
 export const TokenList = React.memo(() => {
@@ -80,7 +80,7 @@ const TokenItem: React.FC<TokenItemProps> = React.memo(({ asset }) => {
   // Calculate total value in USD
   const displayValue = React.useMemo(() => {
     if (!asset.price) return null;
-    const balance = parseFloat(asset.balance) / Math.pow(10, asset.decimals);
+    const balance = parseFloat(asset.balance) / 10 ** asset.decimals;
     const price = parseFloat(asset.price);
     const total = balance * price;
     return `$${total.toFixed(2)}`;
@@ -114,9 +114,7 @@ const TokenItem: React.FC<TokenItemProps> = React.memo(({ asset }) => {
 
       {asset.price && (
         <div className="flex flex-col items-end">
-          <span className="font-medium text-sm leading-sm text-modalText">
-            {displayValue}
-          </span>
+          <span className="font-medium text-sm leading-sm text-modalText">{displayValue}</span>
           <span className={'text-xs text-modalTextSecondary font-medium whitespace-nowrap'}>
             ${asset.price}
           </span>
