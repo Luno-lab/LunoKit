@@ -10,10 +10,10 @@ import { getExplorerUrl } from '@luno-kit/react/utils';
 import type React from 'react';
 import { useMemo } from 'react';
 import { Arrow, Coin, Disconnect, List, Switch } from '../../assets/icons';
+import { useSubscanTokens } from '../../hooks/useSubscanTokens';
 import { cs } from '../../utils';
 import { Icon } from '../Icon';
 import { AccountModalView } from './index';
-import {useSubscanTokens} from '../../hooks/useSubscanTokens'
 
 interface MainViewProps {
   onViewChange: (view: AccountModalView) => void;
@@ -27,7 +27,7 @@ export const MainView: React.FC<MainViewProps> = ({ onViewChange, onModalClose }
   const { disconnectAsync } = useDisconnect();
   const { data: balance } = useBalance({ address: chains.length > 0 ? address : undefined });
   const config = useConfig();
-  const { refetch } = useSubscanTokens()
+  const { refetch } = useSubscanTokens();
 
   const items = useMemo(() => {
     const chainNameItem = {

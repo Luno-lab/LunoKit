@@ -170,7 +170,7 @@
   --color-info: #3b82f6;
   --color-infoForeground: #ffffff;
   --color-skeleton: rgba(0, 0, 0, 0.08);
-  --color-defaultIconBackground: #E6007A;
+  --color-defaultIconBackground: #e6007a;
 }
 
 /* Dark Theme Variables */
@@ -213,7 +213,7 @@
   --color-info: #3b82f6;
   --color-infoForeground: #ffffff;
   --color-skeleton: rgba(255, 255, 255, 0.09);
-  --color-defaultIconBackground: #E6007A;
+  --color-defaultIconBackground: #e6007a;
 
   /* Radii */
   --radius-walletSelectItem: 6px;
