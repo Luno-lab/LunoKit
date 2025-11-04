@@ -40,10 +40,10 @@ export const TokenList = React.memo(() => {
   if (isLoading) {
     return (
       <div className="flex flex-col gap-1.5 min-h-[300px]">
-        {[1, 2, 3, 4, 5, 6, 7].map((num) => (
+        {[1, 2, 3, 4, 5].map((num) => (
           <div
             key={`skeleton-${num}`}
-            className="animate-pulse bg-skeleton h-[44px] rounded-networkSelectItem"
+            className="animate-pulse bg-skeleton h-[54px] rounded-networkSelectItem"
           />
         ))}
       </div>
@@ -53,7 +53,7 @@ export const TokenList = React.memo(() => {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[300px] text-center p-4">
-        <div className="text-red-500 mb-2">Failed to load assets</div>
+        <div className="text-error mb-2">Failed to load assets</div>
         <div className="text-modalTextSecondary text-sm">
           {error instanceof Error ? error.message : 'Unknown error'}
         </div>
@@ -66,7 +66,7 @@ export const TokenList = React.memo(() => {
   }
 
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-1.5" role="list" aria-label="Token list">
       {listData.map((item) => (
         <TokenItem asset={item} key={`${item.symbol}-${item.balance}`} />
       ))}
@@ -81,8 +81,18 @@ interface TokenItemProps {
 const TokenItem: React.FC<TokenItemProps> = React.memo(({ asset }) => {
   const iconUrl = asset.logoURI || getAssetIconUrl(asset.symbol);
 
+  // Calculate total value in USD
+  const displayValue = React.useMemo(() => {
+    if (!asset.price) return null;
+    const balance = parseFloat(asset.balance) / Math.pow(10, asset.decimals);
+    const price = parseFloat(asset.price);
+    const total = balance * price;
+    return `$${total.toFixed(2)}`;
+  }, [asset.balance, asset.decimals, asset.price]);
+
   return (
     <div
+      role="listitem"
       className={cs(
         'flex items-center justify-between p-2.5 rounded-networkSelectItem cursor-default',
         'bg-networkSelectItemBackground',
@@ -91,13 +101,13 @@ const TokenItem: React.FC<TokenItemProps> = React.memo(({ asset }) => {
     >
       <div className="flex items-center gap-2">
         <Icon
-          className={'w-[30px] h-[30px] flex items-center justify-center leading-[25px]'}
+          className={'w-[30px] h-[30px] flex items-center justify-center'}
           iconUrl={iconUrl}
           resourceName={`${asset.symbol}-token`}
         />
 
         <div className="flex flex-col items-start">
-          <span className="font-medium text-base leading-base text-modalText">
+          <span className="font-medium text-sm leading-sm text-modalText">
             {asset.symbol || 'Unknown'}
           </span>
           <span className={'text-xs text-modalTextSecondary font-medium whitespace-nowrap'}>
@@ -105,6 +115,17 @@ const TokenItem: React.FC<TokenItemProps> = React.memo(({ asset }) => {
           </span>
         </div>
       </div>
+
+      {asset.price && (
+        <div className="flex flex-col items-end">
+          <span className="font-medium text-sm leading-sm text-modalText">
+            {displayValue}
+          </span>
+          <span className={'text-xs text-modalTextSecondary font-medium whitespace-nowrap'}>
+            ${asset.price}
+          </span>
+        </div>
+      )}
     </div>
   );
 });

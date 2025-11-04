@@ -9,6 +9,7 @@ export interface AssetItem {
   logoURI: string;
   symbol: string;
   assetId: string;
+  price?: string; // USD price per token
 }
 
 interface AssetData {
@@ -18,6 +19,7 @@ interface AssetData {
   unique_id?: string;
   symbol: string;
   asset_id: string;
+  price?: string;
 }
 
 const fetchAssets = async ({
@@ -61,6 +63,7 @@ const fetchAssets = async ({
         logoURI: i.token_image,
         symbol: i.symbol,
         assetId: i.asset_id,
+        price: i.price,
       }));
 
     const tokens = assets
@@ -72,6 +75,7 @@ const fetchAssets = async ({
         logoURI: i.token_image,
         symbol: i.symbol,
         assetId: i.asset_id,
+        price: i.price,
       }));
 
     const nativeTokens = native.map((i: AssetData) => ({
@@ -81,6 +85,7 @@ const fetchAssets = async ({
       logoURI: '',
       symbol: i.symbol,
       assetId: 0,
+      price: i.price,
     }));
 
     return {
@@ -93,11 +98,12 @@ const fetchAssets = async ({
   }
 };
 
-export function useSubscanTokens() {
-  const { address } = useAccount();
+export function useSubscanTokens(overrideAddress?: string) {
+  const { address: accountAddress } = useAccount();
   const config = useConfig();
   const { chain } = useChain();
 
+  const address = overrideAddress || accountAddress;
   const apiUrl = chain?.subscan?.api;
   const apiKey = config?.subscan?.apiKey;
 

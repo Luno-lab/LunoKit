@@ -17,8 +17,6 @@ import { ConnectButton, useLunoTheme } from '@luno-kit/ui';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import './App.css';
-import { StagewiseToolbar } from '@stagewise/toolbar-react';
-import ReactPlugin from '@stagewise-plugins/react';
 
 const App: React.FC = () => {
   const status = useStatus();
@@ -118,10 +116,7 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <>
-      {/* Render only in the development environment StagewiseToolbar */}
-      <StagewiseToolbar config={{ plugins: [ReactPlugin] }} />
-      <div className="demo-page">
+    <div className="demo-page">
         {/* Hero Section */}
         <section className="hero">
           <div className="hero-content">
@@ -430,7 +425,6 @@ const App: React.FC = () => {
           </div>
         </section>
       </div>
-    </>
   );
 };
 

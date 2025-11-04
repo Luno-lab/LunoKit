@@ -16,13 +16,15 @@ export const NFTList = React.memo(() => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-wrap justify-center gap-4 min-h-[300px]">
-        {[1, 2, 3, 4, 5, 6].map((num) => (
-          <div
-            key={`skeleton-${num}`}
-            className="animate-pulse bg-skeleton w-[145px] h-[180px] rounded-networkSelectItem"
-          />
-        ))}
+      <div className="flex justify-center w-full">
+        <div className="flex flex-wrap justify-between max-w-[350px] w-full min-h-[300px] gap-y-4">
+          {[1, 2, 3, 4].map((num) => (
+            <div
+              key={`skeleton-${num}`}
+              className="animate-pulse bg-skeleton w-[155px] h-[198px] rounded-networkSelectItem"
+            />
+          ))}
+        </div>
       </div>
     );
   }
@@ -30,7 +32,7 @@ export const NFTList = React.memo(() => {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[300px] text-center p-4">
-        <div className="text-red-500 mb-2">Failed to load assets</div>
+        <div className="text-error mb-2">Failed to load assets</div>
         <div className="text-modalTextSecondary text-sm">
           {error instanceof Error ? error.message : 'Unknown error'}
         </div>
@@ -43,8 +45,8 @@ export const NFTList = React.memo(() => {
   }
 
   return (
-    <div className="flex justify-center w-full px-[10px]">
-      <div className="flex flex-wrap justify-start gap-4 max-w-[320px] w-full">
+    <div className="flex justify-center w-full">
+      <div className="flex flex-wrap justify-between max-w-[350px] w-full gap-y-4" role="list" aria-label="NFT list">
         {listData.map((item) => (
           <NFTItem asset={item} key={`${item.symbol}-${item.balance}`} />
         ))}
@@ -73,16 +75,17 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
 
   return (
     <div
+      role="listitem"
       className={cs(
-        'w-[145px] h-[180px] flex items-center px-2 rounded-networkSelectItem cursor-default',
+        'w-[155px] h-[198px] flex items-center p-2.5 rounded-networkSelectItem cursor-default',
         'bg-networkSelectItemBackground',
         'transition-colors duration-200'
       )}
     >
-      <div className="flex flex-col items-center justify-center gap-1">
+      <div className="flex flex-col items-center justify-center">
         <div
           className={
-            'relative w-[125px] h-[125px] flex items-center justify-center rounded-[6px] overflow-hidden'
+            'relative w-[135px] h-[135px] flex items-center justify-center rounded-[6px] overflow-hidden'
           }
         >
           {isLoading && (
@@ -102,20 +105,20 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
           />
         </div>
 
-        <div className={'flex items-center justify-between w-full'}>
-          <span className="font-medium text-base leading-base text-modalText">
+        <div className={'flex items-center justify-between w-full mt-0.5'}>
+          <span className="font-medium text-sm leading-sm text-modalText">
             {asset.balance || '-'} NFTs
           </span>
           <button
-            className="flex items-center justify-center w-[16px] h-[16px] cursor-pointer rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover transition-colors duration-200"
+            className="cursor-pointer bg-transparent border-none p-1 m-0 inline-flex items-center justify-center gap-1 rounded-modalControlButton hover:bg-modalControlButtonBackgroundHover transition-colors duration-200"
             onClick={() => linkExplorer && window.open(linkExplorer)}
             aria-label="Back"
           >
             <Link />
           </button>
         </div>
-        <div className="w-full text-left text-xs text-modalTextSecondary font-medium whitespace-nowrap max-w-[120px] overflow-hidden text-ellipsis">
-          {asset.symbol} {asset.symbol} {asset.symbol}
+        <div className="w-full text-left text-xs text-modalTextSecondary font-medium whitespace-nowrap max-w-[135px] overflow-hidden text-ellipsis">
+          {asset.symbol}
         </div>
       </div>
     </div>
