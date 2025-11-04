@@ -2,7 +2,6 @@ import type { SVGProps } from 'react';
 
 const SvgCoin = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    t="1759034464265"
     className="icon"
     viewBox="0 0 1024 1024"
     version="1.1"

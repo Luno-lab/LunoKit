@@ -3,7 +3,6 @@ import type { SVGProps } from 'react';
 const SvgDefaultNFT = (props: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    t="1762228358388"
     viewBox="0 0 1024 1024"
     version="1.1"
     p-id="8135"
