@@ -250,6 +250,6 @@
 /*  font-family: var(--font-body);*/
 /*}*/
 
-/*.luno-kit *::-webkit-scrollbar {*/
-/*  display: none; !* Chrome, Safari and Opera *!*/
-/*}*/
+.luno-kit *::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
