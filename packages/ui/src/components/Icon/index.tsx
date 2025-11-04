@@ -41,7 +41,7 @@ export const Icon: React.FC<IconProps> = ({ iconUrl, resourceName, className }) 
     return (
       <div className={cs('relative w-full h-full', className)}>
         {isLoading && (
-          <div className="absolute fuck inset-0 flex items-center justify-center rounded-full animate-pulse bg-skeleton" />
+          <div className="absolute inset-0 flex items-center justify-center rounded-full animate-pulse bg-skeleton" />
         )}
 
         <img

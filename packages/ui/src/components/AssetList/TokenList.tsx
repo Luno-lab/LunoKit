@@ -19,13 +19,9 @@ const TOKEN_ICONS: Record<string, string> = {
 };
 
 const getAssetIconUrl = (symbol: string): string => {
-  const normalizedSymbol = symbol?.toUpperCase().trim() || '';
+  const normalizedSymbol = symbol?.toLowerCase().trim() || '';
 
-  if (TOKEN_ICONS[normalizedSymbol]) {
-    return TOKEN_ICONS[normalizedSymbol];
-  }
-
-  return '';
+  return `https://raw.githubusercontent.com/Luno-lab/luno-assets/refs/heads/main/assets/tokens/${normalizedSymbol}.webp`
 };
 
 export const TokenList = React.memo(() => {
@@ -43,7 +39,7 @@ export const TokenList = React.memo(() => {
         {[1, 2, 3, 4, 5].map((num) => (
           <div
             key={`skeleton-${num}`}
-            className="animate-pulse bg-skeleton h-[54px] rounded-networkSelectItem"
+            className="animate-pulse bg-skeleton h-[54px] rounded-assetSelectItem"
           />
         ))}
       </div>
@@ -94,8 +90,8 @@ const TokenItem: React.FC<TokenItemProps> = React.memo(({ asset }) => {
     <div
       role="listitem"
       className={cs(
-        'flex items-center justify-between p-2.5 rounded-networkSelectItem cursor-default',
-        'bg-networkSelectItemBackground',
+        'flex items-center justify-between p-2.5 rounded-assetSelectItem cursor-default',
+        'bg-assetSelectItemBackground',
         'transition-colors duration-200'
       )}
     >

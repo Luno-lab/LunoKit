@@ -28,6 +28,8 @@ export interface LunokitTheme {
     networkSelectItemBackgroundHover: string;
     networkSelectItemText: string;
 
+    assetSelectItemBackground: string;
+
     navigationButtonBackground: string;
 
     separatorLine: string;
@@ -65,6 +67,7 @@ export interface LunokitTheme {
     accountSelectItem: string;
     currentNetworkButton: string;
     networkSelectItem: string;
+    assetSelectItem: string;
     modal: string;
     modalMobile: string;
   };

@@ -34,6 +34,8 @@
   --color-networkSelectItemBackgroundHover: var(--color-networkSelectItemBackgroundHover);
   --color-networkSelectItemText: var(--color-networkSelectItemText);
 
+  --color-assetSelectItemBackground: var(--color-assetSelectItemBackground);
+
   --color-navigationButtonBackground: var(--color-navigationButtonBackground);
   --color-separatorLine: var(--color-separatorLine);
   --color-skeleton: var(--color-skeleton);
@@ -55,6 +57,7 @@
   --radius-accountSelectItem: var(--radius-accountSelectItem);
   --radius-currentNetworkButton: var(--radius-currentNetworkButton);
   --radius-networkSelectItem: var(--radius-networkSelectItem);
+  --radius-assetSelectItem: var(--radius-assetSelectItem);
   --radius-modal: var(--radius-modal);
   --radius-modalMobile: var(--radius-modalMobile);
 
@@ -114,6 +117,7 @@
   --radius-accountSelectItem: 6px;
   --radius-currentNetworkButton: 6px;
   --radius-networkSelectItem: 6px;
+  --radius-assetSelectItem: 6px;
   --radius-modal: 6px;
   --radius-modalMobile: 24px;
 
@@ -145,6 +149,7 @@
   --color-networkSelectItemBackground: rgba(0, 0, 0, 0.035);
   --color-networkSelectItemBackgroundHover: rgba(0, 0, 0, 0.08);
   --color-networkSelectItemText: #211f26;
+  --color-assetSelectItemBackground: rgba(0, 0, 0, 0.035);
   --color-navigationButtonBackground: rgba(0, 0, 0, 0.15);
   --color-separatorLine: rgba(0, 0, 0, 0.035);
   --color-modalBackground: #ffffff;
@@ -186,6 +191,7 @@
   --color-networkSelectItemBackground: rgba(255, 255, 255, 0.035);
   --color-networkSelectItemBackgroundHover: rgba(255, 255, 255, 0.09);
   --color-networkSelectItemText: #ffffff;
+  --color-assetSelectItemBackground: rgba(255, 255, 255, 0.035);
   --color-navigationButtonBackground: rgba(255, 255, 255, 0.15);
   --color-separatorLine: rgba(74, 75, 88, 0.75);
   --color-modalBackground: #3a3b43;
@@ -213,6 +219,7 @@
   --radius-accountSelectItem: 6px;
   --radius-currentNetworkButton: 6px;
   --radius-networkSelectItem: 6px;
+  --radius-assetSelectItem: 6px;
   --radius-modal: 6px;
   --radius-modalMobile: 24px;
 

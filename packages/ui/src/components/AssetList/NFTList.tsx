@@ -1,6 +1,6 @@
 import { useAccount, useChain } from '@luno-kit/react';
 import React, { useMemo, useState } from 'react';
-import { Link } from '../../assets/icons';
+import { DefaultNFT, Link } from '../../assets/icons';
 import { type AssetItem as AssetItemType, useSubscanTokens } from '../../hooks/useSubscanTokens';
 import { cs } from '../../utils';
 import { EmptyAsset } from './EmptyAsset';
@@ -21,7 +21,7 @@ export const NFTList = React.memo(() => {
           {[1, 2, 3, 4].map((num) => (
             <div
               key={`skeleton-${num}`}
-              className="animate-pulse bg-skeleton w-[155px] h-[198px] rounded-networkSelectItem"
+              className="animate-pulse bg-skeleton w-[155px] h-[198px] rounded-assetSelectItem"
             />
           ))}
         </div>
@@ -70,6 +70,8 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
     const subscanUrl = chain.subscan.url.endsWith('/')
       ? chain.subscan.url.slice(0, -1)
       : chain.subscan.url;
+
+    if (asset.contract) return `${subscanUrl}/nft_item?contract=${asset.contract}&address=${address}`
     return `${subscanUrl}/nft_item?collection_id=${asset.assetId}&address=${address}`;
   }, [chain, asset, address]);
 
@@ -77,8 +79,8 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
     <div
       role="listitem"
       className={cs(
-        'w-[155px] h-[198px] flex items-center p-2.5 rounded-networkSelectItem cursor-default',
-        'bg-networkSelectItemBackground',
+        'w-[155px] h-[198px] flex items-center p-2.5 rounded-assetSelectItem cursor-default',
+        'bg-assetSelectItemBackground',
         'transition-colors duration-200'
       )}
     >
@@ -93,16 +95,20 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
               <div className="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin" />
             </div>
           )}
-          <img
-            src={asset.logoURI}
-            alt={`${asset.symbol}-NFT`}
-            className={cs(
-              'w-full h-full object-cover',
-              isLoading ? 'opacity-0' : 'opacity-100 transition-opacity duration-200'
-            )}
-            onLoad={() => setIsLoading(false)}
-            onError={() => setIsLoading(false)}
-          />
+          {asset.logoURI ? (
+            <img
+              src={asset.logoURI}
+              alt={`${asset.symbol}-NFT`}
+              className={cs(
+                'w-full h-full object-cover',
+                isLoading ? 'opacity-0' : 'opacity-100 transition-opacity duration-200'
+              )}
+              onLoad={() => setIsLoading(false)}
+              onError={() => setIsLoading(false)}
+            />
+          ) : (
+            <DefaultNFT className={'w-full h-full object-cover'}/>
+          )}
         </div>
 
         <div className={'flex items-center justify-between w-full mt-0.5'}>
@@ -118,7 +124,7 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
           </button>
         </div>
         <div className="w-full text-left text-xs text-modalTextSecondary font-medium whitespace-nowrap max-w-[135px] overflow-hidden text-ellipsis">
-          {asset.symbol}
+          {asset.symbol || asset.assetId}
         </div>
       </div>
     </div>
