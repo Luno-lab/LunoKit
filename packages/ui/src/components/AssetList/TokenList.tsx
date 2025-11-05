@@ -16,7 +16,11 @@ export const TokenList = React.memo(() => {
   const listData: AssetItemType[] = useMemo(() => {
     if (!data) return [];
 
-    return data.tokens;
+    return [...data.tokens].sort((a, b) => {
+      const aTotal = a.price ? (parseFloat(a.balance) / 10 ** a.decimals) * parseFloat(a.price) : 0;
+      const bTotal = b.price ? (parseFloat(b.balance) / 10 ** b.decimals) * parseFloat(b.price) : 0;
+      return bTotal - aTotal;
+    });
   }, [data]);
 
   if (isFetching) {
