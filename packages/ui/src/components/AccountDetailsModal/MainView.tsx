@@ -41,7 +41,7 @@ export const MainView: React.FC<MainViewProps> = ({ onViewChange, onModalClose }
                 iconUrl={chain?.chainIconUrl}
                 resourceName={`${chain?.name}-chain`}
               />
-              {/* <div className={'dot w-[8px] h-[8px] bg-accentColor absolute bottom-0 right-0 rounded-full'}/> */}
+              {/* <div className={'dot luno:w-[8px] luno:h-[8px] luno:bg-accentColor luno:absolute luno:bottom-0 luno:right-0 luno:rounded-full'}/> */}
             </div>
             <div className={'luno:flex luno:flex-col luno:items-start'}>
               <span className="luno:text-base luno:leading-base luno:text-modalText">

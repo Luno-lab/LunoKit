@@ -112,7 +112,7 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
         </div>
 
         <div className={'luno:flex luno:items-center luno:justify-between luno:w-full luno:mt-0.5'}>
-          <span className="luno:font-medium luno:text-sm luno:leading-sm tluno:ext-modalText">
+          <span className="luno:font-medium luno:text-sm luno:leading-sm luno:text-modalText">
             {asset.balance || '-'} NFTs
           </span>
           <button

@@ -101,7 +101,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ size = 'wide' }) => 
     <Dialog open={isOpen} onOpenChange={_onOpenChange}>
       <div
         className={cs(
-          'luno:flex items-stretch luno:justify-between luno:w-full luno:md:max-h-[504px] luno:md:max-w-[724px]'
+          'luno:flex luno:items-stretch luno:justify-between luno:w-full luno:md:max-h-[504px] luno:md:max-w-[724px]'
         )}
       >
         <div
@@ -115,7 +115,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ size = 'wide' }) => 
           <div
             className={cs(
               'luno:flex luno:items-center luno:justify-between luno:w-full',
-              !isWide && 'pb-4'
+              !isWide && 'luno:pb-4'
             )}
           >
             {currentView === ConnectModalView.connectOptions ? (
@@ -134,7 +134,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ size = 'wide' }) => 
               <>
                 <button
                   className={cs(
-                    'flex items-center justify-center w-[30px] h-[30px] cursor-pointer rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover transition-colors duration-200'
+                    'luno:flex luno:items-center luno:justify-center luno:w-[30px] luno:h-[30px] luno:cursor-pointer luno:rounded-modalControlButton luno:border-none luno:hover:bg-modalControlButtonBackgroundHover luno:transition-colors luno:duration-200'
                   )}
                   onClick={() => handleViewChange(ConnectModalView.connectOptions)}
                   aria-label="Back"
