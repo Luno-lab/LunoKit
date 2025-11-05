@@ -35,7 +35,9 @@ export const Icon: React.FC<IconProps> = ({ iconUrl, resourceName, className }) 
           alt={resourceName || 'icon'}
           className={cs(
             'luno:w-full luno:h-full luno:object-cover luno:rounded-full',
-            isLoading ? 'luno:opacity-0' : 'luno:opacity-100 luno:transition-opacity luno:duration-200'
+            isLoading
+              ? 'luno:opacity-0'
+              : 'luno:opacity-100 luno:transition-opacity luno:duration-200'
           )}
           onLoad={() => setIsLoading(false)}
           onError={() => {

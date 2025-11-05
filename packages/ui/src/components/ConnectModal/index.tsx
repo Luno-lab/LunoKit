@@ -112,10 +112,15 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ size = 'wide' }) => 
               : 'luno:md:min-w-[360px]'
           )}
         >
-          <div className={cs('luno:flex luno:items-center luno:justify-between luno:w-full', !isWide && 'pb-4')}>
+          <div
+            className={cs(
+              'luno:flex luno:items-center luno:justify-between luno:w-full',
+              !isWide && 'pb-4'
+            )}
+          >
             {currentView === ConnectModalView.connectOptions ? (
               <>
-                {!isWide && <div className={cs("luno:w-[30px] luno:h-[30px]")} aria-hidden />}
+                {!isWide && <div className={cs('luno:w-[30px] luno:h-[30px]')} aria-hidden />}
                 <DialogTitle
                   className={cs(
                     'luno:text-lg luno:leading-lg luno:text-modalText luno:font-bold',
@@ -128,7 +133,9 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ size = 'wide' }) => 
             ) : (
               <>
                 <button
-                  className={cs("flex items-center justify-center w-[30px] h-[30px] cursor-pointer rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover transition-colors duration-200")}
+                  className={cs(
+                    'flex items-center justify-center w-[30px] h-[30px] cursor-pointer rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover transition-colors duration-200'
+                  )}
                   onClick={() => handleViewChange(ConnectModalView.connectOptions)}
                   aria-label="Back"
                 >
@@ -154,7 +161,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ size = 'wide' }) => 
               </DialogClose>
             )}
           </div>
-          <div ref={containerRef} className={cs("luno:relative luno:overflow-hidden luno:w-full")}>
+          <div ref={containerRef} className={cs('luno:relative luno:overflow-hidden luno:w-full')}>
             <div ref={currentViewRef}>{viewComponents[currentView]}</div>
           </div>
 

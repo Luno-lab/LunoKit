@@ -19,7 +19,7 @@ export const AssetList: React.FC = () => {
 
   return (
     <div className={cs('luno:flex luno:flex-col luno:gap-3.5 luno:p-4 luno:pt-0')}>
-      <div className={cs("luno:flex luno:items-center luno:gap-1.5 luno:w-full")}>
+      <div className={cs('luno:flex luno:items-center luno:gap-1.5 luno:w-full')}>
         {FILTER_TABS.map((tab) => (
           <button
             key={tab.key}
@@ -36,7 +36,7 @@ export const AssetList: React.FC = () => {
         ))}
       </div>
 
-      <div className={cs("luno:overflow-y-auto luno:flex-1 luno:min-h-[350px] luno:max-h-[350px]")}>
+      <div className={cs('luno:overflow-y-auto luno:flex-1 luno:min-h-[350px] luno:max-h-[350px]')}>
         {activeFilter === AssetFilter.tokens ? <TokenList /> : <NFTList />}
       </div>
     </div>

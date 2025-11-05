@@ -70,7 +70,9 @@ const AccountItem: React.FC<AccountItemProps> = React.memo(
           'luno:bg-accountSelectItemBackground',
           'luno:text-left luno:flex luno:items-center luno:justify-between luno:gap-2',
           'luno:transition-colors luno:duration-200',
-          isSelected ? 'luno:cursor-auto' : 'luno:cursor-pointer luno:hover:bg-accountSelectItemBackgroundHover'
+          isSelected
+            ? 'luno:cursor-auto'
+            : 'luno:cursor-pointer luno:hover:bg-accountSelectItemBackgroundHover'
         )}
         aria-label={account.name || address}
         disabled={isSelected}

@@ -46,9 +46,7 @@ export const NFTList = React.memo(() => {
 
   return (
     <div className="luno:flex luno:justify-center luno:w-full">
-      <div
-        className="luno:flex luno:flex-wrap luno:justify-between luno:max-w-[350px] luno:w-full luno:gap-y-4"
-      >
+      <div className="luno:flex luno:flex-wrap luno:justify-between luno:max-w-[350px] luno:w-full luno:gap-y-4">
         {listData.map((item) => (
           <NFTItem asset={item} key={`${item.symbol}-${item.balance}`} />
         ))}
@@ -101,7 +99,9 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
               alt={`${asset.symbol}-NFT`}
               className={cs(
                 'luno:w-full luno:h-full luno:object-cover',
-                isLoading ? 'luno:opacity-0' : 'luno:opacity-100 luno:transition-opacity luno:duration-200'
+                isLoading
+                  ? 'luno:opacity-0'
+                  : 'luno:opacity-100 luno:transition-opacity luno:duration-200'
               )}
               onLoad={() => setIsLoading(false)}
               onError={() => setIsLoading(false)}

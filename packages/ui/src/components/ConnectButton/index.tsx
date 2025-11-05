@@ -84,7 +84,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
             <Icon
               iconUrl={chainIconUrl}
               resourceName={`${chainName}-chain`}
-              className={cs("luno:w-[24px] luno:h-[24px]")}
+              className={cs('luno:w-[24px] luno:h-[24px]')}
             />
           ) : null}
           {(chainStatus === 'full' || chainStatus === 'name') && isLargeWindow && (
@@ -103,14 +103,18 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
         aria-label="Open account modal"
       >
         {configuredChains.length > 0 && showBalance && isLargeWindow && (
-          <div className={cs("luno:p-2 luno:pl-3")}>
+          <div className={cs('luno:p-2 luno:pl-3')}>
             {balance ? (
               <span>
                 {balance?.formattedTransferable || balance?.formattedTotal || 0}{' '}
                 {currentChain?.nativeCurrency?.symbol || ''}
               </span>
             ) : (
-              <span className={cs("luno:block luno:animate-pulse luno:rounded luno:w-[80px] luno:h-[20px] luno:bg-accountActionItemBackgroundHover")} />
+              <span
+                className={cs(
+                  'luno:block luno:animate-pulse luno:rounded luno:w-[80px] luno:h-[20px] luno:bg-accountActionItemBackgroundHover'
+                )}
+              />
             )}
           </div>
         )}
@@ -124,7 +128,11 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
           )}
         >
           {accountStatus === 'full' && (
-            <span className={cs("luno:w-[24px] luno:h-[24px] luno:flex luno:items-center luno:justify-center")}>
+            <span
+              className={cs(
+                'luno:w-[24px] luno:h-[24px] luno:flex luno:items-center luno:justify-center'
+              )}
+            >
               <img src={activeConnector.icon} alt="luno account" />
             </span>
           )}
