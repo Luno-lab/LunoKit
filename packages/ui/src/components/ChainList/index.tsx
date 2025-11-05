@@ -108,13 +108,17 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(
       >
         <div className="luno:flex luno:items-center luno:gap-2">
           <Icon
-            className={'luno:w-[20px] luno:h-[20px] luno:flex luno:items-center luno:justify-center luno:leading-[20px]'}
+            className={
+              'luno:w-[20px] luno:h-[20px] luno:flex luno:items-center luno:justify-center luno:leading-[20px]'
+            }
             iconUrl={chain?.chainIconUrl}
             resourceName={`${chain?.name}-chain`}
           />
 
           <div className="luno:flex luno:flex-col luno:items-start">
-            <span className="luno:font-medium luno:text-base luno:text-modalText">{chain.name}</span>
+            <span className="luno:font-medium luno:text-base luno:text-modalText">
+              {chain.name}
+            </span>
           </div>
         </div>
 

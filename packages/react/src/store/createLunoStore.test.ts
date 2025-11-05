@@ -543,5 +543,4 @@ describe('createLunoStore', () => {
       expect(state.currentChainId).toBe('0x456');
     });
   });
-
 });

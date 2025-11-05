@@ -1,3 +1,4 @@
+/* biome-ignore lint/style/useNamingConvention: this is a specific case */
 @import "tailwindcss" prefix(luno) important;
 
 @theme inline {

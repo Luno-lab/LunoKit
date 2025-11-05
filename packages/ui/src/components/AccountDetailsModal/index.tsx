@@ -65,18 +65,34 @@ export const AccountDetailsModal: React.FC = () => {
           currentView === AccountModalView.main ? 'luno:gap-5' : 'luno:gap-3.5'
         )}
       >
-        <div className={cs("luno:flex luno:items-stretch luno:justify-between luno:w-full luno:px-4 luno:pt-4")}>
+        <div
+          className={cs(
+            'luno:flex luno:items-stretch luno:justify-between luno:w-full luno:px-4 luno:pt-4'
+          )}
+        >
           {currentView === AccountModalView.main ? (
             <div className={cs('luno:flex luno:items-center luno:gap-3 luno:max-w-[80%]')}>
               {activeConnector?.icon && (
-                <div className={cs('luno:flex luno:items-center luno:justify-center luno:w-[40px] luno:h-[40px] luno:shrink-0')}>
-                  <img src={activeConnector.icon} alt="luno" className={cs("luno:w-full luno:h-full luno:object-contain")} />
+                <div
+                  className={cs(
+                    'luno:flex luno:items-center luno:justify-center luno:w-[40px] luno:h-[40px] luno:shrink-0'
+                  )}
+                >
+                  <img
+                    src={activeConnector.icon}
+                    alt="luno"
+                    className={cs('luno:w-full luno:h-full luno:object-contain')}
+                  />
                 </div>
               )}
-              <div className={cs("luno:flex luno:flex-col luno:items-start luno:gap-1.5 luno:max-w-full")}>
+              <div
+                className={cs(
+                  'luno:flex luno:flex-col luno:items-start luno:gap-1.5 luno:max-w-full'
+                )}
+              >
                 <DialogTitle className={'luno:sr-only'}>Account Details</DialogTitle>
-                <div className={cs("luno:flex luno:items-center luno:gap-0.5 luno:w-full")}>
-                  <span className={cs("luno:text-base luno:text-modalText luno:font-semibold")}>
+                <div className={cs('luno:flex luno:items-center luno:gap-0.5 luno:w-full')}>
+                  <span className={cs('luno:text-base luno:text-modalText luno:font-semibold')}>
                     {formatAddress(address)}
                   </span>
                   <Copy copyText={address} />
@@ -94,24 +110,34 @@ export const AccountDetailsModal: React.FC = () => {
           ) : (
             <>
               <button
-                className={cs("luno:flex luno:items-center luno:justify-center luno:w-[30px] luno:h-[30px] luno:cursor-pointer luno:rounded-modalControlButton luno:border-none luno:hover:bg-modalControlButtonBackgroundHover luno:transition-colors luno:duration-200")}
+                className={cs(
+                  'luno:flex luno:items-center luno:justify-center luno:w-[30px] luno:h-[30px] luno:cursor-pointer luno:rounded-modalControlButton luno:border-none luno:hover:bg-modalControlButtonBackgroundHover luno:transition-colors luno:duration-200'
+                )}
                 onClick={() => handleViewChange(AccountModalView.main)}
                 aria-label="Back"
               >
                 <Back />
               </button>
-              <DialogTitle className={cs("luno:text-lg luno:leading-lg luno:text-modalText luno:font-semibold luno:transition-opacity luno:duration-300")}>
+              <DialogTitle
+                className={cs(
+                  'luno:text-lg luno:leading-lg luno:text-modalText luno:font-semibold luno:transition-opacity luno:duration-300'
+                )}
+              >
                 {viewTitle}
               </DialogTitle>
             </>
           )}
 
-          <DialogClose className={cs("luno:shrink-0 luno:z-10 luno:flex luno:items-center luno:justify-center luno:h-[30px] luno:w-[30px] luno:rounded-modalControlButton luno:border-none luno:hover:bg-modalControlButtonBackgroundHover luno:transition-colors luno:duration-200 luno:cursor-pointer")}>
+          <DialogClose
+            className={cs(
+              'luno:shrink-0 luno:z-10 luno:flex luno:items-center luno:justify-center luno:h-[30px] luno:w-[30px] luno:rounded-modalControlButton luno:border-none luno:hover:bg-modalControlButtonBackgroundHover luno:transition-colors luno:duration-200 luno:cursor-pointer'
+            )}
+          >
             <Close />
           </DialogClose>
         </div>
 
-        <div ref={containerRef} className={cs("luno:relative")}>
+        <div ref={containerRef} className={cs('luno:relative')}>
           <div ref={currentViewRef}>{viewComponents[currentView]}</div>
         </div>
       </div>

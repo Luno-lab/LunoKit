@@ -91,7 +91,11 @@ const TokenItem: React.FC<TokenItemProps> = React.memo(({ asset }) => {
           <span className="luno:font-medium luno:text-sm luno:leading-sm luno:text-modalText">
             {asset.symbol || 'Unknown'}
           </span>
-          <span className={'luno:text-xs luno:text-modalTextSecondary luno:font-medium luno:whitespace-nowrap'}>
+          <span
+            className={
+              'luno:text-xs luno:text-modalTextSecondary luno:font-medium luno:whitespace-nowrap'
+            }
+          >
             {asset.balanceFormatted}
           </span>
         </div>
@@ -99,8 +103,14 @@ const TokenItem: React.FC<TokenItemProps> = React.memo(({ asset }) => {
 
       {asset.price && (
         <div className="luno:flex luno:flex-col luno:items-end">
-          <span className="luno:font-medium luno:text-sm luno:leading-sm luno:text-modalText">{displayValue}</span>
-          <span className={'luno:text-xs luno:text-modalTextSecondary luno:font-medium luno:whitespace-nowrap'}>
+          <span className="luno:font-medium luno:text-sm luno:leading-sm luno:text-modalText">
+            {displayValue}
+          </span>
+          <span
+            className={
+              'luno:text-xs luno:text-modalTextSecondary luno:font-medium luno:whitespace-nowrap'
+            }
+          >
             ${asset.price}
           </span>
         </div>

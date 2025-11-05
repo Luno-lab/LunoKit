@@ -27,7 +27,9 @@ export const WalletView = React.memo(
       <div
         className={cs(
           'luno:flex luno:flex-col luno:items-center',
-          isWide ? 'luno:w-[450px] luno:p-4 luno:min-h-[472px]' : 'luno:justify-center luno:w-full luno:min-h-[400px]'
+          isWide
+            ? 'luno:w-[450px] luno:p-4 luno:min-h-[472px]'
+            : 'luno:justify-center luno:w-full luno:min-h-[400px]'
         )}
       >
         {isWide && (
@@ -76,7 +78,9 @@ export const WalletView = React.memo(
                     </div>
                   ) : qrCode ? (
                     <Copy
-                      className={'luno:text-sm luno:leading-sm luno:font-medium luno:text-accentColor'}
+                      className={
+                        'luno:text-sm luno:leading-sm luno:font-medium luno:text-accentColor'
+                      }
                       copyText={qrCode}
                       label={'Copy Link'}
                     />
@@ -98,7 +102,9 @@ export const WalletView = React.memo(
                 >
                   Confirm connection in the extension
                 </p>
-                {connectState.isConnecting && <div className="loading luno:text-modalText luno:w-[24px]"></div>}
+                {connectState.isConnecting && (
+                  <div className="loading luno:text-modalText luno:w-[24px]"></div>
+                )}
                 {!selectedConnector.isInstalled() && selectedConnector.links.browserExtension && (
                   <div
                     onClick={() => window.open(selectedConnector.links.browserExtension)}

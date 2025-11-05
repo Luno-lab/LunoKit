@@ -94,7 +94,9 @@ export const MainView: React.FC<MainViewProps> = ({ onViewChange, onModalClose }
       content: (
         <>
           <List className={'luno:w-[24px] luno:h-[24px]'} />
-          <span className="luno:text-base luno:text-accountActionItemText luno:font-medium">View on Explorer</span>
+          <span className="luno:text-base luno:text-accountActionItemText luno:font-medium">
+            View on Explorer
+          </span>
         </>
       ),
       onClick: () =>

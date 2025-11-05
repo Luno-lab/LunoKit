@@ -68,7 +68,10 @@ export const ConnectOptions = React.memo(({ onConnect }: Props) => {
       {connectorGroup.map((g) => {
         if (g.group.length === 0) return null;
         return (
-          <div key={g.title} className={'luno:flex luno:flex-col luno:items-start luno:gap-2 luno:w-full'}>
+          <div
+            key={g.title}
+            className={'luno:flex luno:flex-col luno:items-start luno:gap-2 luno:w-full'}
+          >
             <div
               className={cs(
                 'luno:text-sm luno:font-semibold luno:leading-base',
@@ -108,7 +111,9 @@ const ConnectorItem: React.FC<ConnectorItemProps> = React.memo(({ connector, onC
         <img src={connector.icon} alt={connector.name} className="luno:w-full luno:h-full" />
       </div>
 
-      <span className="luno:font-semibold luno:leading-base luno:text-base luno:text-modalText">{connector.name}</span>
+      <span className="luno:font-semibold luno:leading-base luno:text-base luno:text-modalText">
+        {connector.name}
+      </span>
     </button>
   );
 });
