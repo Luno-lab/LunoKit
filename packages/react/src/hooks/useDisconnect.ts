@@ -8,14 +8,13 @@ export interface UseDisconnectResult {
   disconnect: (options?: UseDisconnectOptions) => void;
   disconnectAsync: (options?: UseDisconnectOptions) => Promise<void>;
   status: ConnectionStatus;
-  data: void | undefined;
+  data: undefined;
   error: Error | null;
   isError: boolean;
   isIdle: boolean;
   isPending: boolean;
   isSuccess: boolean;
   reset: () => void;
-  variables: void | undefined;
 }
 
 export const useDisconnect = (hookLevelConfig?: UseDisconnectOptions): UseDisconnectResult => {
@@ -32,13 +31,12 @@ export const useDisconnect = (hookLevelConfig?: UseDisconnectOptions): UseDiscon
     disconnectAsync: (options?: UseDisconnectOptions) =>
       mutationResult.mutateAsync(undefined, options),
     status,
-    data: mutationResult.data,
+    data: mutationResult.data as undefined,
     error: mutationResult.error,
     isError: mutationResult.isError,
     isIdle: mutationResult.isIdle,
     isPending: mutationResult.isPending,
     isSuccess: mutationResult.isSuccess,
     reset: mutationResult.reset,
-    variables: mutationResult.variables,
   };
 };

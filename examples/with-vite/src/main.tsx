@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import { createConfig } from '@luno-kit/react';
 import {
+  type Chain,
   kusama,
   kusamaAssetHub,
   kusamaCoretime,
@@ -45,6 +46,67 @@ const connectors = [
   novaConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID }),
 ];
 
+// Custom chains
+const astar: Chain = {
+  genesisHash: '0x9eb76c5184c4ab8679d2d5d819fdf90b9c001403e9e17da2e14b6d8aec4029c6',
+  name: 'Astar',
+  nativeCurrency: { name: 'Astar', symbol: 'ASTR', decimals: 18 },
+  rpcUrls: {
+    webSocket: [
+      'wss://astar.api.onfinality.io/public-ws',
+      'wss://astar-rpc.dwellir.com',
+      'wss://astar.public.curie.radiumblock.co/ws',
+      'wss://1rpc.io/astr',
+    ],
+    http: [
+      'https://astar.api.onfinality.io/public',
+      'https://astar-rpc.dwellir.com',
+      'https://astar.public.curie.radiumblock.co/http',
+      'https://astar.public.blastapi.io',
+    ],
+  },
+  ss58Format: 5,
+  blockExplorers: {
+    default: { name: 'Subscan', url: 'https://astar.subscan.io' },
+  },
+  chainIconUrl: 'https://astar.subscan.io/_next/image?url=%2Fchains%2Fastar%2Flogo-mini.png&w=256&q=75',
+  testnet: false,
+  subscan: {
+    url: 'https://astar.subscan.io',
+    api: 'https://astar.api.subscan.io',
+  },
+};
+
+const hydration: Chain = {
+  genesisHash: '0xafdc188f45c71dacbaa0b62e16a91f726c7b8699a9748cdf715459de6b7f366d',
+  name: 'Hydration',
+  nativeCurrency: { name: 'Hydration', symbol: 'HDX', decimals: 12 },
+  rpcUrls: {
+    webSocket: [
+      'wss://hydradx-rpc.dwellir.com',
+      'wss://rpc.hydradx.cloud',
+      'wss://hydradx.api.onfinality.io/public-ws',
+      'wss://rpc.helikon.io/hydradx',
+    ],
+    http: [
+      'https://hydradx-rpc.dwellir.com',
+      'https://rpc.hydradx.cloud',
+      'https://hydradx.api.onfinality.io/public',
+      'https://rpc.helikon.io/hydradx',
+    ],
+  },
+  ss58Format: 63,
+  blockExplorers: {
+    default: { name: 'Subscan', url: 'https://hydradx.subscan.io' },
+  },
+  chainIconUrl: 'https://hydration.subscan.io/_next/image?url=%2Fchains%2Fhydration%2Ftokens%2FHDX.png&w=128&q=75',
+  testnet: false,
+  subscan: {
+    url: 'https://hydradx.subscan.io',
+    api: 'https://hydradx.api.subscan.io',
+  },
+};
+
 const lunoConfig = createConfig({
   appName: 'luno with-vite example',
   chains: [
@@ -52,6 +114,8 @@ const lunoConfig = createConfig({
     kusama,
     westend,
     paseo,
+    astar,
+    hydration,
     polkadotAssetHub,
     polkadotCoretime,
     polkadotCollectives,
@@ -65,6 +129,9 @@ const lunoConfig = createConfig({
   ],
   connectors: connectors,
   autoConnect: true,
+  subscan: {
+    apiKey: import.meta.env.VITE_SUBSCAN_API_KEY,
+  },
 });
 
 createRoot(document.getElementById('root')!).render(

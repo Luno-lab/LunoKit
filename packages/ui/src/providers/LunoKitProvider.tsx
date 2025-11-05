@@ -30,7 +30,7 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
       <LunoProvider config={config}>
         <ThemeProvider theme={theme}>
           <ModalProvider>
-            <div className={'font-base luno-kit'}>{children}</div>
+            <div>{children}</div>
             <RenderModals modalSize={config.modalSize} />
           </ModalProvider>
         </ThemeProvider>

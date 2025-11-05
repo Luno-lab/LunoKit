@@ -8,6 +8,7 @@ import { useAccountModal } from '../../providers';
 import { cs } from '../../utils';
 import { Copy } from '../Copy';
 import { Dialog, DialogClose, DialogTitle } from '../Dialog';
+import { AssetListView } from './AssetListView';
 import { MainView } from './MainView';
 import { SwitchAccountView } from './SwitchAccountView';
 import { SwitchChainView } from './SwitchChainView';
@@ -16,6 +17,7 @@ export enum AccountModalView {
   main = 'main',
   switchAccount = 'switchAccount',
   switchChain = 'switchChain',
+  assetList = 'assetList',
 }
 
 export const AccountDetailsModal: React.FC = () => {
@@ -32,8 +34,9 @@ export const AccountDetailsModal: React.FC = () => {
   }, [close]);
 
   const viewTitle = useMemo(() => {
-    if (currentView === AccountModalView.switchAccount) return 'Switch Account';
+    if (currentView === AccountModalView.switchAccount) return SwitchAccountView.title;
     if (currentView === AccountModalView.switchChain) return SwitchChainView.title;
+    if (currentView === AccountModalView.assetList) return AssetListView.title;
     return null;
   }, [currentView]);
 
@@ -48,6 +51,7 @@ export const AccountDetailsModal: React.FC = () => {
       [AccountModalView.switchChain]: (
         <SwitchChainView onBack={() => handleViewChange(AccountModalView.main)} />
       ),
+      [AccountModalView.assetList]: <AssetListView />,
     }),
     [handleViewChange, handleModalClose]
   );
@@ -56,31 +60,31 @@ export const AccountDetailsModal: React.FC = () => {
     <Dialog open={isOpen} onOpenChange={handleModalClose}>
       <div
         className={cs(
-          'flex flex-col w-full md:w-[360px] max-h-[512px] text-modalText',
-          'bg-modalBackground shadow-modal',
-          currentView === AccountModalView.main ? 'gap-5' : 'gap-3.5'
+          'luno:flex luno:flex-col luno:w-full luno:md:w-[360px] luno:max-h-[512px] luno:text-modalText',
+          'luno:bg-modalBackground luno:shadow-modal',
+          currentView === AccountModalView.main ? 'luno:gap-5' : 'luno:gap-3.5'
         )}
       >
-        <div className="flex items-stretch justify-between w-full px-4 pt-4">
+        <div className={cs("luno:flex luno:items-stretch luno:justify-between luno:w-full luno:px-4 luno:pt-4")}>
           {currentView === AccountModalView.main ? (
-            <div className={'flex items-center gap-3 max-w-[80%]'}>
+            <div className={cs('luno:flex luno:items-center luno:gap-3 luno:max-w-[80%]')}>
               {activeConnector?.icon && (
-                <div className={'flex items-center justify-center w-[40px] h-[40px] shrink-0'}>
-                  <img src={activeConnector.icon} alt="" className="w-full h-full object-contain" />
+                <div className={cs('luno:flex luno:items-center luno:justify-center luno:w-[40px] luno:h-[40px] luno:shrink-0')}>
+                  <img src={activeConnector.icon} alt="luno" className={cs("luno:w-full luno:h-full luno:object-contain")} />
                 </div>
               )}
-              <div className="flex flex-col items-start gap-1.5 max-w-full">
-                <DialogTitle className={'sr-only'}>Account Details</DialogTitle>
-                <div className="flex items-center gap-0.5 w-full ">
-                  <span className="text-base text-modalText font-semibold">
+              <div className={cs("luno:flex luno:flex-col luno:items-start luno:gap-1.5 luno:max-w-full")}>
+                <DialogTitle className={'luno:sr-only'}>Account Details</DialogTitle>
+                <div className={cs("luno:flex luno:items-center luno:gap-0.5 luno:w-full")}>
+                  <span className={cs("luno:text-base luno:text-modalText luno:font-semibold")}>
                     {formatAddress(address)}
                   </span>
                   <Copy copyText={address} />
                 </div>
                 <div
                   className={cs(
-                    'text-sm leading-sm text-modalTextSecondary font-medium text-ellipsis overflow-hidden whitespace-nowrap',
-                    account?.name && account?.name.length > 30 ? 'w-[90%]' : ''
+                    'luno:text-sm luno:leading-sm luno:text-modalTextSecondary luno:font-medium luno:text-ellipsis luno:overflow-hidden luno:whitespace-nowrap',
+                    account?.name && account?.name.length > 30 ? 'luno:w-[90%]' : ''
                   )}
                 >
                   {account?.name || activeConnector?.name}
@@ -90,24 +94,24 @@ export const AccountDetailsModal: React.FC = () => {
           ) : (
             <>
               <button
-                className="flex items-center justify-center w-[30px] h-[30px] cursor-pointer rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover  transition-colors duration-200"
+                className={cs("luno:flex luno:items-center luno:justify-center luno:w-[30px] luno:h-[30px] luno:cursor-pointer luno:rounded-modalControlButton luno:border-none luno:hover:bg-modalControlButtonBackgroundHover luno:transition-colors luno:duration-200")}
                 onClick={() => handleViewChange(AccountModalView.main)}
                 aria-label="Back"
               >
                 <Back />
               </button>
-              <DialogTitle className="text-lg leading-lg text-modalText font-semibold transition-opacity duration-300">
+              <DialogTitle className={cs("luno:text-lg luno:leading-lg luno:text-modalText luno:font-semibold luno:transition-opacity luno:duration-300")}>
                 {viewTitle}
               </DialogTitle>
             </>
           )}
 
-          <DialogClose className="shrink-0 z-10 flex items-center justify-center h-[30px] w-[30px] rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover  transition-colors duration-200 cursor-pointer">
+          <DialogClose className={cs("luno:shrink-0 luno:z-10 luno:flex luno:items-center luno:justify-center luno:h-[30px] luno:w-[30px] luno:rounded-modalControlButton luno:border-none luno:hover:bg-modalControlButtonBackgroundHover luno:transition-colors luno:duration-200 luno:cursor-pointer")}>
             <Close />
           </DialogClose>
         </div>
 
-        <div ref={containerRef} className="relative">
+        <div ref={containerRef} className={cs("luno:relative")}>
           <div ref={currentViewRef}>{viewComponents[currentView]}</div>
         </div>
       </div>

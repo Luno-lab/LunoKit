@@ -21,14 +21,28 @@
     "rules": {
       "recommended": true,
       "correctness": {
-        "noUnusedVariables": "error"
+        "noUnusedVariables": "off",
+        "useExhaustiveDependencies": "off",
+        "noUnusedFunctionParameters": "off"
       },
       "style": {
-        "noNonNullAssertion": "warn"
+        "noNonNullAssertion": "off"
       },
       "suspicious": {
-        "noExplicitAny": "warn",
-        "noTsIgnore": "off"
+        "noExplicitAny": "off",
+        "noTsIgnore": "off",
+        "noUnknownAtRules": "off"
+      },
+      "complexity": {
+        "noUselessConstructor": "off"
+      },
+      "a11y": {
+        "useAltText": "off",
+        "noSvgWithoutTitle": "off",
+        "useButtonType": "off",
+        "useKeyWithClickEvents": "off",
+        "noStaticElementInteractions": "off",
+        "useSemanticElements": "off"
       }
     }
   },

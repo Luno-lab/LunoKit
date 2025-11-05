@@ -101,25 +101,25 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ size = 'wide' }) => 
     <Dialog open={isOpen} onOpenChange={_onOpenChange}>
       <div
         className={cs(
-          'flex items-stretch justify-between w-full md:max-h-[504px] md:max-w-[724px]'
+          'luno:flex items-stretch luno:justify-between luno:w-full luno:md:max-h-[504px] luno:md:max-w-[724px]'
         )}
       >
         <div
           className={cs(
-            'flex flex-col items-start py-4 px-5 w-full md:w-auto',
+            'luno:flex luno:flex-col luno:items-start luno:py-4 luno:px-5 luno:w-full luno:md:w-auto',
             isWide
-              ? 'md:min-w-[300px] border-r-[1px] border-r-solid border-r-separatorLine'
-              : 'md:min-w-[360px]'
+              ? 'luno:md:min-w-[300px] luno:border-r-[1px] luno:border-r-solid luno:border-r-separatorLine'
+              : 'luno:md:min-w-[360px]'
           )}
         >
-          <div className={cs('flex items-center justify-between w-full', !isWide && 'pb-4')}>
+          <div className={cs('luno:flex luno:items-center luno:justify-between luno:w-full', !isWide && 'pb-4')}>
             {currentView === ConnectModalView.connectOptions ? (
               <>
-                {!isWide && <div className="w-[30px] h-[30px]" aria-hidden />}
+                {!isWide && <div className={cs("luno:w-[30px] luno:h-[30px]")} aria-hidden />}
                 <DialogTitle
                   className={cs(
-                    'text-lg leading-lg text-modalText font-bold',
-                    isWide ? 'pb-6' : 'flex-1 text-center'
+                    'luno:text-lg luno:leading-lg luno:text-modalText luno:font-bold',
+                    isWide ? 'luno:pb-6' : 'luno:flex-1 luno:text-center'
                   )}
                 >
                   Connect Wallet
@@ -128,7 +128,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ size = 'wide' }) => 
             ) : (
               <>
                 <button
-                  className="flex items-center justify-center w-[30px] h-[30px] cursor-pointer rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover  transition-colors duration-200"
+                  className={cs("flex items-center justify-center w-[30px] h-[30px] cursor-pointer rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover transition-colors duration-200")}
                   onClick={() => handleViewChange(ConnectModalView.connectOptions)}
                   aria-label="Back"
                 >
@@ -136,7 +136,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ size = 'wide' }) => 
                 </button>
                 <DialogTitle
                   className={cs(
-                    'text-lg leading-lg text-modalText font-semibold transition-opacity duration-300'
+                    'luno:text-lg luno:leading-lg luno:text-modalText luno:font-semibold luno:transition-opacity luno:duration-300'
                   )}
                 >
                   {selectedConnector?.name}
@@ -147,28 +147,26 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ size = 'wide' }) => 
             {!isWide && (
               <DialogClose
                 className={
-                  'z-10 w-[30px] h-[30px] flex items-center justify-center cursor-pointer rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover  transition-colors duration-200'
+                  'luno:z-10 luno:w-[30px] luno:h-[30px] luno:flex luno:items-center luno:justify-center luno:cursor-pointer luno:rounded-modalControlButton luno:border-none luno:hover:bg-modalControlButtonBackgroundHover luno:transition-colors luno:duration-200'
                 }
               >
                 <Close />
               </DialogClose>
             )}
           </div>
-          <div ref={containerRef} className="relative overflow-hidden w-full">
+          <div ref={containerRef} className={cs("luno:relative luno:overflow-hidden luno:w-full")}>
             <div ref={currentViewRef}>{viewComponents[currentView]}</div>
           </div>
 
           {!isWide && currentView === ConnectModalView.connectOptions && (
-            <>
-              <p
-                className={
-                  'cursor-pointer w-full pt-4 text-sm leading-sm text-accentColor font-medium text-center hover:text-modalText'
-                }
-                onClick={() => window.open('https://polkadot.com/get-started/wallets/')}
-              >
-                New to wallets?
-              </p>
-            </>
+            <p
+              className={
+                'luno:cursor-pointer luno:w-full luno:pt-4 luno:text-sm luno:leading-sm luno:text-accentColor luno:font-medium luno:text-center luno:hover:text-modalText'
+              }
+              onClick={() => window.open('https://polkadot.com/get-started/wallets/')}
+            >
+              New to wallets?
+            </p>
           )}
         </div>
 

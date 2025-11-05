@@ -16,7 +16,7 @@ export interface UseConnectResult {
   connectors: Connector[];
   activeConnector?: Connector;
   status: ConnectionStatus;
-  data: void | undefined;
+  data: undefined;
   error: Error | null;
   isError: boolean;
   isIdle: boolean;
@@ -45,7 +45,7 @@ export const useConnect = (hookLevelConfig?: UseConnectOptions): UseConnectResul
     connectors: config?.connectors ? [...config.connectors] : [],
     activeConnector,
     status,
-    data: mutationResult.data,
+    data: mutationResult.data as undefined,
     error: mutationResult.error,
     isError: mutationResult.isError,
     isIdle: mutationResult.isIdle,

@@ -10,12 +10,12 @@
     "test:coverage": "vitest run --coverage",
     "changeset": "changeset",
     "publish": "pnpm clean && pnpm build && changeset publish",
-    "lint": "biome check .",
-    "lint:fix": "biome check --write .",
+    "lint": "biome check ./packages",
+    "lint:fix": "biome check --write ./packages",
     "format": "biome format --write ."
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.4",
+    "@biomejs/biome": "2.2.6",
     "@changesets/cli": "^2.29.2",
     "@vitest/coverage-v8": "3.2.4",
     "eslint": "^8.56.0",

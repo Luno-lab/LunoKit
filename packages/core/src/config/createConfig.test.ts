@@ -78,7 +78,7 @@ describe('createConfig', () => {
           }),
         ],
         transports: {
-          [polkadot.genesisHash]: polkadot.rpcUrls.webSocket![0],
+          [polkadot.genesisHash]: polkadot.rpcUrls.webSocket,
         },
         storage: expect.any(Object),
         autoConnect: true,
@@ -175,7 +175,7 @@ describe('createConfig', () => {
 
       const config = createConfig(params);
 
-      expect(config.transports[polkadot.genesisHash]).toBe(polkadot.rpcUrls.webSocket![0]);
+      expect(config.transports[polkadot.genesisHash]).toBe(polkadot.rpcUrls.webSocket);
     });
 
     it('should warn when chain has no WebSocket URL', () => {
@@ -211,7 +211,7 @@ describe('createConfig', () => {
       const config = createConfig(params);
 
       expect(config.transports).toEqual({
-        [chainWithWs.genesisHash]: polkadot.rpcUrls.webSocket![0],
+        [chainWithWs.genesisHash]: polkadot.rpcUrls.webSocket,
         [chainWithoutWs.genesisHash]: 'wss://fallback.endpoint.com',
       });
     });

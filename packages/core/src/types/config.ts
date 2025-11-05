@@ -16,7 +16,7 @@ export interface LunoStorage {
 }
 
 // export type Transport = WsProvider;
-export type Transport = string;
+export type Transport = Readonly<string[]>;
 
 type LunoApiOptions = Partial<Omit<ApiOptions, 'provider' | 'signer'>> & {
   customTypes?: Record<string, AnyShape>;
@@ -31,6 +31,11 @@ export interface CreateConfigParameters extends LunoApiOptions {
 
   storage?: LunoStorage;
   autoConnect?: boolean;
+  subscan?: {
+    apiKey: string;
+    cacheTime?: number;
+    retryCount?: number;
+  };
 }
 
 export interface Config extends LunoApiOptions {
@@ -40,4 +45,9 @@ export interface Config extends LunoApiOptions {
   readonly transports: Readonly<Record<string, Transport>>;
   readonly storage: LunoStorage;
   readonly autoConnect: boolean;
+  readonly subscan?: {
+    apiKey: string;
+    cacheTime?: number;
+    retryCount?: number;
+  };
 }

@@ -106,14 +106,7 @@ export function useSendTransaction(
           .signAndSend(
             account.address,
             { signer },
-            ({
-              status,
-              dispatchError,
-              events,
-              dispatchInfo,
-              txHash,
-              txIndex,
-            }: ISubmittableResult) => {
+            ({ status, dispatchError, events, dispatchInfo, txHash }: ISubmittableResult) => {
               const resolveAndUnsubscribe = (receipt: TransactionReceipt) => {
                 if (unsubscribe) unsubscribe();
                 resolve(receipt);

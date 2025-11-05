@@ -4,20 +4,18 @@ import { useChainModal } from '../../providers';
 import { ChainList } from '../ChainList';
 import { Dialog, DialogClose, DialogTitle } from '../Dialog';
 
-export type ChainModalProps = {};
-
-export const ChainModal: React.FC<ChainModalProps> = () => {
+export const ChainModal: React.FC = () => {
   const { isOpen, close } = useChainModal();
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
-      <div className="flex flex-col w-full md:w-[360px] max-h-[512px] p-4 gap-3.5 text-modalText">
-        <div className="flex items-center justify-between w-full">
-          <div className="w-[30px]" /> {/* Placeholder to keep title centered */}
-          <DialogTitle className="text-lg leading-lg text-modalText font-semibold transition-opacity duration-300">
+      <div className="luno:flex luno:flex-col luno:w-full luno:md:w-[360px] luno:max-h-[512px] luno:p-4 luno:gap-3.5 luno:text-modalText">
+        <div className="luno:flex luno:items-center luno:justify-between luno:w-full">
+          <div className="luno:w-[30px]" /> {/* Placeholder to keep title centered */}
+          <DialogTitle className="luno:text-lg luno:leading-lg luno:text-modalText luno:font-semibold luno:transition-opacity luno:duration-300">
             Select Network
           </DialogTitle>
-          <DialogClose className="z-10 flex items-center justify-center h-[30px] w-[30px] rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover transition-colors duration-200 cursor-pointer">
+          <DialogClose className="luno:z-10 luno:flex luno:items-center luno:justify-center luno:h-[30px] luno:w-[30px] luno:rounded-modalControlButton luno:border-none luno:hover:bg-modalControlButtonBackgroundHover luno:transition-colors luno:duration-200 luno:cursor-pointer">
             <Close />
           </DialogClose>
         </div>

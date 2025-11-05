@@ -32,7 +32,7 @@ afterEach(async () => {
 
 test('useSendTransaction', async () => {
   let resolveSignAndSend: (value: any) => void;
-  let statusCallback: Function;
+  let statusCallback: any;
 
   mockExtrinsic.signAndSend.mockImplementation((address, { signer }, callback) => {
     statusCallback = callback;
@@ -89,7 +89,7 @@ test('useSendTransaction', async () => {
 
 test('should handle transaction error states', async () => {
   let resolveSignAndSend: (value: any) => void;
-  let statusCallback: Function;
+  let statusCallback: any;
 
   mockExtrinsic.signAndSend.mockImplementation((address, { signer }, callback) => {
     statusCallback = callback;
@@ -123,7 +123,7 @@ test('should handle transaction error states', async () => {
     .sendTransactionAsync({
       extrinsic: mockExtrinsic,
     })
-    .catch((e) => {});
+    .catch((_e) => {});
 
   await waitFor(() => {
     expect(mockExtrinsic.signAndSend).toHaveBeenCalled();

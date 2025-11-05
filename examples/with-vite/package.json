@@ -12,8 +12,6 @@
   "dependencies": {
     "@luno-kit/react": "workspace:*",
     "@luno-kit/ui": "workspace:*",
-    "@stagewise-plugins/react": "^0.5.1",
-    "@stagewise/toolbar-react": "^0.5.1",
     "@tanstack/react-query": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:"
