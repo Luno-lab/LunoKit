@@ -6,7 +6,8 @@
     "useIgnoreFile": true
   },
   "files": {
-    "ignoreUnknown": false
+    "ignoreUnknown": false,
+    "includes": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.json"]
   },
   "formatter": {
     "enabled": true,
@@ -23,7 +24,8 @@
       "correctness": {
         "noUnusedVariables": "off",
         "useExhaustiveDependencies": "off",
-        "noUnusedFunctionParameters": "off"
+        "noUnusedFunctionParameters": "off",
+        "noUnknownMediaFeatureName": "off"
       },
       "style": {
         "noNonNullAssertion": "off"
