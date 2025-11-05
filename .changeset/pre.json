@@ -12,6 +12,7 @@
     "@luno-kit/ui": "0.0.8"
   },
   "changesets": [
-    "four-maps-divide"
+    "four-maps-divide",
+    "old-spies-tease"
   ]
 }

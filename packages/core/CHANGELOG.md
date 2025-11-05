@@ -1,5 +1,15 @@
 # @luno-kit/core
 
+## 0.0.9-beta.1
+
+### Patch Changes
+
+- 1ac1bce: Fix the issue of CSS isolation, resolve the problem of account reset after reconnection, and add AssetList
+
+  - Fix the issue of CSS isolation
+  - Resolve the problem of account reset after reconnection
+  - Add AssetList
+
 ## 0.0.9-beta.0
 
 ### Patch Changes
