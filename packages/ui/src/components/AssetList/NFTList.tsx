@@ -48,8 +48,6 @@ export const NFTList = React.memo(() => {
     <div className="luno:flex luno:justify-center luno:w-full">
       <div
         className="luno:flex luno:flex-wrap luno:justify-between luno:max-w-[350px] luno:w-full luno:gap-y-4"
-        role="list"
-        aria-label="NFT list"
       >
         {listData.map((item) => (
           <NFTItem asset={item} key={`${item.symbol}-${item.balance}`} />
@@ -80,8 +78,6 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
 
   return (
     <div
-      role="listitem"
-      aria-label="b list"
       className={cs(
         'luno:w-[155px] luno:h-[198px] luno:flex luno:items-center luno:p-2.5 luno:rounded-assetSelectItem luno:cursor-default',
         'luno:bg-assetSelectItemBackground',
@@ -122,7 +118,6 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
           <button
             className="luno:cursor-pointer luno:bg-transparent luno:border-none luno:p-1 luno:m-0 luno:inline-flex luno:items-center luno:justify-center luno:gap-1 luno:rounded-modalControlButton luno:hover:bg-modalControlButtonBackgroundHover luno:transition-colors luno:duration-200"
             onClick={() => linkExplorer && window.open(linkExplorer)}
-            aria-label="Back"
           >
             <Link />
           </button>

@@ -48,9 +48,9 @@ export const TokenList = React.memo(() => {
   }
 
   return (
-    <div className="luno:flex luno:flex-col luno:gap-1.5" role="list" aria-label="Token list">
+    <div className="luno:flex luno:flex-col luno:gap-1.5">
       {listData.map((item) => (
-        <TokenItem asset={item} key={`${item.symbol}-${item.balance}`} />
+        <TokenItem asset={item} key={`${item.symbol}-${item.assetId}`} />
       ))}
     </div>
   );
