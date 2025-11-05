@@ -63,6 +63,7 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
   const { chain } = useChain();
   const { address } = useAccount();
   const [isLoading, setIsLoading] = useState(!!asset.logoURI);
+  const [imgSrc, setImgSrc] = useState(asset.logoURI);
 
   const linkExplorer = useMemo(() => {
     if (!chain?.subscan?.url) return '';
@@ -93,9 +94,9 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
               <div className="luno:w-4 luno:h-4 luno:border-2 luno:border-t-transparent luno:border-white luno:rounded-full luno:animate-spin" />
             </div>
           )}
-          {asset.logoURI ? (
+          {imgSrc ? (
             <img
-              src={asset.logoURI}
+              src={imgSrc}
               alt={`${asset.symbol}-NFT`}
               className={cs(
                 'luno:w-full luno:h-full luno:object-cover',
@@ -104,7 +105,10 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
                   : 'luno:opacity-100 luno:transition-opacity luno:duration-200'
               )}
               onLoad={() => setIsLoading(false)}
-              onError={() => setIsLoading(false)}
+              onError={() => {
+                setIsLoading(false);
+                setImgSrc('');
+              }}
             />
           ) : (
             <DefaultNFT className={'luno:w-full luno:h-full luno:object-cover'} />
@@ -112,7 +116,7 @@ const NFTItem: React.FC<NFTItemProps> = React.memo(({ asset }) => {
         </div>
 
         <div className={'luno:flex luno:items-center luno:justify-between luno:w-full luno:mt-0.5'}>
-          <span className="luno:font-medium luno:text-sm luno:leading-sm tluno:ext-modalText">
+          <span className="luno:font-medium luno:text-sm luno:leading-sm luno:text-modalText">
             {asset.balance || '-'} NFTs
           </span>
           <button

@@ -133,7 +133,7 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(
               </>
             ) : (
               <span className="luno:relative luno:flex luno:w-[10px] luno:h-[10px]">
-                <span className="luno:[animation:ping_1.2s_cubic-bezier(0,0,0.2,1)_infinite] luno:absolute luno:top-[0] luno:left-[0] luno:inline-flex luno:h-full luno:w-full luno:rounded-full luno:bg-accentColor luno:opacity-75" />
+                <span className="luno:[animation:ping_1.2s_cubic-bezier(0,0,0.2,1)_infinite] luno:absolute luno:top-[0] luno:left-[0] luno:inline-flex luno:h-full luno:w-full luno:rounded-full luno:bg-accentColor" />
                 <span className="luno:relative luno:inline-flex luno:rounded-full luno:h-full luno:w-full luno:bg-accentColor"></span>
               </span>
             )
