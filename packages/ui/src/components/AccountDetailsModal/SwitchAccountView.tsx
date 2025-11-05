@@ -32,7 +32,7 @@ export const SwitchAccountView: ViewComponent = ({ onBack }) => {
   );
 
   return (
-    <div className="flex flex-col gap-1.5 pt-3 overflow-auto max-h-[400px] no-scrollbar p-4 pt-0">
+    <div className="luno:flex luno:flex-col luno:gap-1.5 luno:overflow-auto luno:max-h-[400px] luno:no-scrollbar luno:p-4 luno:pt-0">
       {accounts.map((acc) => (
         <AccountItem
           key={acc.address}
@@ -45,7 +45,7 @@ export const SwitchAccountView: ViewComponent = ({ onBack }) => {
   );
 };
 
-SwitchAccountView.title = 'Switch Accounts';
+SwitchAccountView.title = 'Switch Account';
 
 interface AccountItemProps {
   isSelected: boolean;
@@ -66,38 +66,40 @@ const AccountItem: React.FC<AccountItemProps> = React.memo(
         type="button"
         onClick={() => selectAccount(account)}
         className={cs(
-          'px-3.5 py-2.5 w-full rounded-accountSelectItem border-none',
-          'bg-accountSelectItemBackground',
-          'text-left flex items-center justify-between gap-2',
-          'transition-colors duration-200',
-          isSelected ? 'cursor-auto' : 'cursor-pointer hover:bg-accountSelectItemBackgroundHover'
+          'luno:px-3.5 luno:py-2.5 luno:w-full luno:rounded-accountSelectItem luno:border-none',
+          'luno:bg-accountSelectItemBackground',
+          'luno:text-left luno:flex luno:items-center luno:justify-between luno:gap-2',
+          'luno:transition-colors luno:duration-200',
+          isSelected
+            ? 'luno:cursor-auto'
+            : 'luno:cursor-pointer luno:hover:bg-accountSelectItemBackgroundHover'
         )}
         aria-label={account.name || address}
         disabled={isSelected}
       >
-        <div className="flex items-center gap-2 grow overflow-hidden">
-          <div className="shrink-0 w-[24px] h-[24px] rounded-full flex items-center justify-center">
+        <div className="luno:flex luno:items-center luno:gap-2 luno:grow luno:overflow-hidden">
+          <div className="luno:shrink-0 luno:w-[24px] luno:h-[24px] luno:rounded-full luno:flex luno:items-center luno:justify-center">
             {connector?.icon && <img src={connector?.icon} alt="luno account" />}
           </div>
-          <div className="flex flex-col items-start overflow-hidden">
-            <span className="whitespace-nowrap max-w-full text-ellipsis overflow-hidden font-medium text-sm leading-sm text-accountSelectItemText">
+          <div className="luno:flex luno:flex-col luno:items-start luno:overflow-hidden">
+            <span className="luno:whitespace-nowrap luno:max-w-full luno:text-ellipsis luno:overflow-hidden luno:font-medium luno:text-sm luno:leading-sm luno:text-accountSelectItemText">
               {account.name || formatAddress(address)}
             </span>
             {chains.length > 0 &&
               (balance ? (
-                <span className="text-xs text-modalTextSecondary font-medium">
+                <span className="luno:text-xs luno:text-modalTextSecondary luno:font-medium">
                   {balance?.formattedTransferable || '0.00'}{' '}
                   {chain?.nativeCurrency?.symbol || 'DOT'}
                 </span>
               ) : (
-                <span className="animate-pulse rounded w-[60px] h-[16px] bg-skeleton" />
+                <span className="luno:animate-pulse luno:rounded luno:w-[60px] luno:h-[16px] luno:bg-skeleton" />
               ))}
           </div>
         </div>
 
         {isSelected && (
-          <div className="shrink-0 border-[1px] border-solid border-accentColor rounded-full overflow-hidden flex items-center justify-center w-[18px] h-[18px]">
-            <div className="rounded-full bg-accentColor w-[10px] h-[10px]" />
+          <div className="luno:shrink-0 luno:border-[1px] luno:border-solid luno:border-accentColor luno:rounded-full luno:overflow-hidden luno:flex luno:items-center luno:justify-center luno:w-[18px] luno:h-[18px]">
+            <div className="luno:rounded-full luno:bg-accentColor luno:w-[10px] luno:h-[10px]" />
           </div>
         )}
       </button>

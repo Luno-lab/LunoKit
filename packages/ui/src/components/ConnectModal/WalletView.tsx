@@ -26,17 +26,19 @@ export const WalletView = React.memo(
     return (
       <div
         className={cs(
-          'flex flex-col items-center',
-          isWide ? 'w-[450px] p-4 min-h-[472px]' : 'justify-center w-full min-h-[400px]'
+          'luno:flex luno:flex-col luno:items-center',
+          isWide
+            ? 'luno:w-[450px] luno:p-4 luno:min-h-[472px]'
+            : 'luno:justify-center luno:w-full luno:min-h-[400px]'
         )}
       >
         {isWide && (
-          <div className={'w-full'}>
-            <div className={'flex items-center justify-between'}>
+          <div className={'luno:w-full'}>
+            <div className={'luno:flex luno:items-center luno:justify-between'}>
               <div />
               <DialogClose
                 className={
-                  'z-10 w-[30px] h-[30px] flex items-center justify-center cursor-pointer rounded-modalControlButton border-none hover:bg-modalControlButtonBackgroundHover  transition-colors duration-200'
+                  'luno:z-10 luno:w-[30px] luno:h-[30px] luno:flex luno:items-center luno:justify-center luno:cursor-pointer luno:rounded-modalControlButton luno:border-none luno:hover:bg-modalControlButtonBackgroundHover luno:transition-colors luno:duration-200'
                 }
               >
                 <Close />
@@ -47,36 +49,38 @@ export const WalletView = React.memo(
 
         <div
           className={cs(
-            'flex items-center gap-4 flex-col grow justify-center',
-            selectedConnector && showQRCode ? 'max-w-[300px]' : 'max-w-[360px]'
+            'luno:flex luno:items-center luno:gap-4 luno:flex-col luno:grow luno:justify-center',
+            selectedConnector && showQRCode ? 'luno:max-w-[300px]' : 'luno:max-w-[360px]'
           )}
         >
           {selectedConnector ? (
             showQRCode ? (
-              <div className={'flex flex-col items-center gap-2.5'}>
+              <div className={'luno:flex luno:flex-col luno:items-center luno:gap-2.5'}>
                 <QRCode size={300} logoBackground={selectedConnector.icon} uri={qrCode} />
                 <div
                   className={
-                    'text-base leading-base font-medium text-center text-modalTextSecondary'
+                    'luno:text-base luno:leading-base luno:font-medium luno:text-center luno:text-modalTextSecondary'
                   }
                 >
                   Scan the QR code with{' '}
                   {selectedConnector.id === 'nova' ? 'the Nova' : 'your phone'}
                 </div>
 
-                <div className="min-h-[20px] flex items-center justify-center ">
+                <div className="luno:min-h-[20px] luno:flex luno:items-center luno:justify-center">
                   {selectedConnector.links?.browserExtension ? (
                     <div
                       onClick={() => window.open(selectedConnector.links.browserExtension)}
                       className={
-                        'cursor-pointer text-sm text-accentColor font-medium text-center hover:text-modalText'
+                        'luno:cursor-pointer luno:text-sm luno:text-accentColor luno:font-medium luno:text-center luno:hover:text-modalText'
                       }
                     >
                       Don't have {selectedConnector.name}?
                     </div>
                   ) : qrCode ? (
                     <Copy
-                      className={'text-sm leading-sm font-medium text-accentColor'}
+                      className={
+                        'luno:text-sm luno:leading-sm luno:font-medium luno:text-accentColor'
+                      }
                       copyText={qrCode}
                       label={'Copy Link'}
                     />
@@ -85,25 +89,27 @@ export const WalletView = React.memo(
               </div>
             ) : (
               <>
-                <div className={'w-[80px] h-[80px]'}>
-                  <img src={selectedConnector.icon} className={'w-full h-full'} alt="" />
+                <div className={'luno:w-[80px] luno:h-[80px]'}>
+                  <img src={selectedConnector.icon} className={'luno:w-full luno:h-full'} alt="" />
                 </div>
-                <p className={'text-lg leading-lg text-modalFont font-bold'}>
+                <p className={'luno:text-lg luno:leading-lg luno:text-modalFont luno:font-bold'}>
                   Opening {selectedConnector.name}...
                 </p>
                 <p
                   className={
-                    'pb-[10px] text-base text-modalTextSecondary leading-base font-medium text-center'
+                    'luno:pb-[10px] luno:text-base luno:text-modalTextSecondary luno:leading-base luno:font-medium luno:text-center'
                   }
                 >
                   Confirm connection in the extension
                 </p>
-                {connectState.isConnecting && <div className="loading text-modalText"></div>}
+                {connectState.isConnecting && (
+                  <div className="loading luno:text-modalText luno:w-[24px]"></div>
+                )}
                 {!selectedConnector.isInstalled() && selectedConnector.links.browserExtension && (
                   <div
                     onClick={() => window.open(selectedConnector.links.browserExtension)}
                     className={
-                      'cursor-pointer pt-6 text-sm text-accentColor font-medium text-center hover:text-modalText'
+                      'luno:cursor-pointer luno:pt-6 luno:text-sm luno:text-accentColor luno:font-medium luno:text-center luno:hover:text-modalText'
                     }
                   >
                     Don‘t have {selectedConnector.name}?
@@ -114,7 +120,7 @@ export const WalletView = React.memo(
                   selectedConnector.isInstalled() && (
                     <button
                       className={cs(
-                        'rounded-connectButton focus:outline-none py-[4px] px-[12px] cursor-pointer font-semibold text-sm text-modalText bg-connectButtonBackground shadow-connectButton active:scale-[0.95]',
+                        'luno:rounded-connectButton luno:focus:outline-none luno:py-[4px] luno:px-[12px] luno:cursor-pointer luno:font-semibold luno:text-sm luno:text-modalText luno:bg-connectButtonBackground luno:shadow-connectButton luno:active:scale-[0.95]',
                         transitionClassName
                       )}
                       onClick={() => onConnect(selectedConnector!)}
@@ -126,12 +132,12 @@ export const WalletView = React.memo(
             )
           ) : (
             <>
-              <div className={'w-[160px] h-[160px] mb-4'}>
+              <div className={'luno:w-[160px] luno:h-[160px] luno:mb-4'}>
                 <SpiralAnimation />
               </div>
               <div
                 className={
-                  'cursor-pointer  text-base leading-base text-accentColor font-semibold text-center'
+                  'luno:cursor-pointer luno:text-base luno:leading-base luno:text-accentColor luno:font-semibold luno:text-center'
                 }
                 onClick={() => window.open('https://polkadot.com/get-started/wallets/')}
               >
@@ -140,7 +146,7 @@ export const WalletView = React.memo(
 
               <p
                 className={
-                  'text-modalTextSecondary w-[250px] text-sm leading-sm font-medium text-center'
+                  'luno:text-modalTextSecondary luno:w-[250px] luno:text-sm luno:leading-sm luno:font-medium luno:text-center'
                 }
               >
                 Connect your wallet to start exploring and interacting with DApps.

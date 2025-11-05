@@ -17,6 +17,10 @@ export const kusama: Chain = {
   blockExplorers: { default: { name: 'Subscan', url: 'https://kusama.subscan.io' } },
   chainIconUrl: kusamaChain,
   testnet: false,
+  subscan: {
+    url: 'https://kusama.subscan.io',
+    api: 'https://kusama.api.subscan.io',
+  },
 };
 
 export const kusamaAssetHub: Chain = {
@@ -33,6 +37,10 @@ export const kusamaAssetHub: Chain = {
   blockExplorers: { default: { name: 'Subscan', url: 'https://assethub-kusama.subscan.io' } },
   chainIconUrl: assethubKusamaChain,
   testnet: false,
+  subscan: {
+    url: 'https://assethub-kusama.subscan.io',
+    api: 'https://assethub-kusama.api.subscan.io',
+  },
 };
 
 export const kusamaPeople: Chain = {
@@ -46,6 +54,10 @@ export const kusamaPeople: Chain = {
   blockExplorers: { default: { name: 'Subscan', url: 'https://people-kusama.subscan.io' } },
   chainIconUrl: peopleKusamaChain,
   testnet: false,
+  subscan: {
+    url: 'https://people-kusama.subscan.io',
+    api: 'https://people-kusama.api.subscan.io',
+  },
 };
 
 export const kusamaCoretime: Chain = {
@@ -59,4 +71,8 @@ export const kusamaCoretime: Chain = {
   blockExplorers: { default: { name: 'Subscan', url: 'https://coretime-kusama.subscan.io' } },
   chainIconUrl: coretimeKusamaChain,
   testnet: false,
+  subscan: {
+    url: 'https://coretime-kusama.subscan.io',
+    api: 'https://coretime-kusama.api.subscan.io',
+  },
 };

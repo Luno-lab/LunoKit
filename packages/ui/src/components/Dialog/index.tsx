@@ -37,24 +37,24 @@ const DialogRoot: React.FC<DialogProps> = ({
       <DialogPrimitive.Portal>
         {React.createElement(DialogPrimitive.Overlay as any, {
           className: cs(
-            'fixed inset-0 z-[100] bg-modalBackdrop luno-kit',
-            'data-[state=open]:[animation:overlay-in_150ms_ease-out]',
+            'luno:fixed luno:inset-0 luno:z-[100] luno:bg-modalBackdrop luno-kit',
+            'luno:data-[state=open]:[animation:overlay-in_150ms_ease-out]',
             overlayClassName
           ),
         })}
         <DialogPrimitive.Content
           className={cs(
-            'luno-kit font-body fixed z-[200] text-modalText text-base leading-base',
-            'bg-modalBackground shadow-modal focus:outline-none overflow-hidden border border-modalBorder',
-            'transition-all duration-200',
+            'luno-kit luno:font-body luno:fixed luno:z-[200] luno:text-modalText luno:text-base luno:leading-base',
+            'luno:bg-modalBackground luno:shadow-modal luno:focus:outline-none luno:overflow-hidden luno:border luno:border-modalBorder',
+            'luno:transition-all luno:duration-200',
 
-            'rounded-t-modalMobile bottom-0 left-0 w-full',
-            'translate-y-0 -translate-x-0',
-            'data-[state=open]:[animation:slide-up_200ms_ease-out]',
+            'luno:rounded-t-modalMobile luno:bottom-0 luno:left-0 luno:w-full',
+            'luno:translate-y-0 luno:-translate-x-0',
+            'luno:data-[state=open]:[animation:slide-up_200ms_ease-out]',
 
-            'md:bottom-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2',
-            'md:w-auto md:rounded-modal',
-            'md:data-[state=open]:[animation:dialog-in_150ms_ease-out]',
+            'luno:md:bottom-auto luno:md:left-1/2 luno:md:top-1/2 luno:md:-translate-x-1/2 luno:md:-translate-y-1/2',
+            'luno:md:w-auto luno:md:rounded-modal',
+            'luno:md:data-[state=open]:[animation:dialog-in_150ms_ease-out]',
             contentClassName
           )}
         >

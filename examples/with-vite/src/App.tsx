@@ -17,8 +17,6 @@ import { ConnectButton, useLunoTheme } from '@luno-kit/ui';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import './App.css';
-import { StagewiseToolbar } from '@stagewise/toolbar-react';
-import ReactPlugin from '@stagewise-plugins/react';
 
 const App: React.FC = () => {
   const status = useStatus();
@@ -39,7 +37,6 @@ const App: React.FC = () => {
   const { api, isApiReady, apiError } = useApi();
   const { data: paymentInfo, estimate, isLoading: isEstimating } = useEstimatePaymentInfo();
 
-  console.log('paymentInfo', paymentInfo);
   const { themeMode, setThemeChoice } = useLunoTheme();
 
   const [transferForm, setTransferForm] = useState({
@@ -119,10 +116,7 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <>
-      {/* Render only in the development environment StagewiseToolbar */}
-      <StagewiseToolbar config={{ plugins: [ReactPlugin] }} />
-      <div className="demo-page">
+    <div className="demo-page">
         {/* Hero Section */}
         <section className="hero">
           <div className="hero-content">
@@ -134,7 +128,7 @@ const App: React.FC = () => {
               The modern Polkadot wallet connection library for React applications
             </p>
 
-            <div className="hero-connect" >
+            <div className="hero-connect">
               <ConnectButton />
             </div>
             {/*<div className="hero-connect">*/}
@@ -431,7 +425,6 @@ const App: React.FC = () => {
           </div>
         </section>
       </div>
-    </>
   );
 };
 

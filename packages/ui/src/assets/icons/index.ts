@@ -1,8 +1,12 @@
 export { default as Arrow } from './Arrow';
 export { default as Back } from './Back';
 export { default as Close } from './Close';
+export { default as Coin } from './Coin';
 export { default as Copy } from './Copy';
+export { default as DefaultNFT } from './DefaultNFT';
 export { default as Disconnect } from './Disconnect';
+export { default as EmptyWallet } from './EmptyWallet';
+export { default as Link } from './Link';
 export { default as List } from './List';
 export { default as Search } from './Search';
 export { default as Success } from './Success';

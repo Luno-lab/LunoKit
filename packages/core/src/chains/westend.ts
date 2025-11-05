@@ -10,6 +10,10 @@ export const westend: Chain = {
   blockExplorers: { default: { name: 'Subscan', url: 'https://westend.subscan.io' } },
   chainIconUrl: westendChain,
   testnet: true,
+  subscan: {
+    url: 'https://westend.subscan.io',
+    api: 'https://westend.api.subscan.io',
+  },
 };
 
 export const westendAssetHub: Chain = {
@@ -26,4 +30,8 @@ export const westendAssetHub: Chain = {
   blockExplorers: { default: { name: 'Subscan', url: 'https://assethub-westend.subscan.io' } },
   chainIconUrl: assethubWestendChain,
   testnet: true,
+  subscan: {
+    url: 'https://assethub-westend.subscan.io',
+    api: 'https://assethub-westend.api.subscan.io',
+  },
 };

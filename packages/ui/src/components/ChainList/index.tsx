@@ -3,7 +3,7 @@ import type { Chain } from '@luno-kit/react/types';
 import React, { useMemo, useState } from 'react';
 import { Search } from '../../assets/icons';
 import { cs } from '../../utils';
-import { ChainIcon } from '../ChainIcon';
+import { Icon } from '../Icon';
 
 interface ChainListProps {
   onChainSwitched?: (chain: Chain) => void;
@@ -44,22 +44,22 @@ export const ChainList: React.FC<ChainListProps> = ({
   };
 
   return (
-    <div className={cs('flex flex-col gap-3.5', className)}>
-      <div className="relative pt-1">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-modalTextSecondary" />
+    <div className={cs('luno:flex luno:flex-col luno:gap-3.5', className)}>
+      <div className="luno:relative luno:pt-1">
+        <div className="luno:relative">
+          <Search className="luno:absolute luno:left-3 luno:top-1/2 luno:transform luno:-translate-y-1/2 luno:w-4 luno:h-4 luno:text-modalTextSecondary" />
           <input
             type="text"
             placeholder="Search by name"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-3 py-2 text-sm border border-networkSelectItemBackgroundHover rounded-md focus:ring-2 focus:ring-accentColor focus:outline-none focus:border-transparent"
+            className="luno:w-full luno:pl-10 luno:pr-3 luno:py-2 luno:text-sm luno:border luno:border-networkSelectItemBackgroundHover luno:rounded-md luno:focus:ring-2 luno:focus:ring-accentColor luno:focus:outline-none luno:focus:border-transparent"
           />
         </div>
       </div>
 
       {filteredChains.length > 0 && (
-        <div className="flex flex-col gap-1.5 overflow-y-auto max-h-[380px]">
+        <div className="luno:flex luno:flex-col luno:gap-1.5 luno:overflow-y-auto luno:max-h-[380px]">
           {filteredChains.map((chain) => (
             <ChainItem
               key={chain.genesisHash}
@@ -74,8 +74,8 @@ export const ChainList: React.FC<ChainListProps> = ({
       )}
 
       {filteredChains.length === 0 && (
-        <div className="flex items-center justify-center py-12">
-          <span className="text-modalTextSecondary text-xs">No chains available</span>
+        <div className="luno:flex luno:items-center luno:justify-center luno:py-12">
+          <span className="luno:text-modalTextSecondary luno:text-xs">No chains available</span>
         </div>
       )}
     </div>
@@ -97,40 +97,44 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(
         onClick={() => onSelect(chain)}
         disabled={isSelected || isLoading}
         className={cs(
-          'flex items-center justify-between p-2.5 rounded-networkSelectItem',
-          'bg-networkSelectItemBackground',
-          'transition-colors duration-200',
+          'luno:flex luno:items-center luno:justify-between luno:p-2.5 luno:rounded-networkSelectItem',
+          'luno:bg-networkSelectItemBackground',
+          'luno:transition-colors luno:duration-200',
           isSelected || isLoading
-            ? 'cursor-default'
-            : 'cursor-pointer hover:bg-networkSelectItemBackgroundHover',
-          isLoading && 'opacity-80'
+            ? 'luno:cursor-default'
+            : 'luno:cursor-pointer luno:hover:bg-networkSelectItemBackgroundHover',
+          isLoading && 'luno:opacity-80'
         )}
       >
-        <div className="flex items-center gap-2">
-          <ChainIcon
-            className={'w-[20px] h-[20px] flex items-center justify-center leading-[20px]'}
-            chainIconUrl={chain?.chainIconUrl}
-            chainName={chain?.name}
+        <div className="luno:flex luno:items-center luno:gap-2">
+          <Icon
+            className={
+              'luno:w-[20px] luno:h-[20px] luno:flex luno:items-center luno:justify-center luno:leading-[20px]'
+            }
+            iconUrl={chain?.chainIconUrl}
+            resourceName={`${chain?.name}-chain`}
           />
 
-          <div className="flex flex-col items-start">
-            <span className="font-medium text-base text-modalText">{chain.name}</span>
+          <div className="luno:flex luno:flex-col luno:items-start">
+            <span className="luno:font-medium luno:text-base luno:text-modalText">
+              {chain.name}
+            </span>
           </div>
         </div>
 
-        <div className="flex items-center justify-center h-[20px]">
+        <div className="luno:flex luno:items-center luno:justify-center luno:h-[20px]">
           {isSelected ? (
             isLoading ? (
               <>
-                <span className="text-accentColor text-xs leading-xs mr-1.5">
+                <span className="luno:text-accentColor luno:text-xs luno:leading-xs luno:mr-1.5">
                   {isSwitching ? 'Switching' : 'Connecting'}
                 </span>
-                <div className="loading text-accentColor w-[15px] h-[15px]"></div>
+                <div className="loading luno:text-accentColor luno:w-[15px] luno:h-[15px]"></div>
               </>
             ) : (
-              <span className="status-dot-container">
-                <span className="ping-animation"></span>
-                <span className="status-dot"></span>
+              <span className="luno:relative luno:flex luno:w-[10px] luno:h-[10px]">
+                <span className="luno:[animation:ping_1.2s_cubic-bezier(0,0,0.2,1)_infinite] luno:absolute luno:top-[0] luno:left-[0] luno:inline-flex luno:h-full luno:w-full luno:rounded-full luno:bg-accentColor luno:opacity-75" />
+                <span className="luno:relative luno:inline-flex luno:rounded-full luno:h-full luno:w-full luno:bg-accentColor"></span>
               </span>
             )
           ) : null}

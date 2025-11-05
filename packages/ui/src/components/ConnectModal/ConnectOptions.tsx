@@ -51,7 +51,7 @@ export const ConnectOptions = React.memo(({ onConnect }: Props) => {
     const filteredConnectors = connectors.filter((i) => i.links.deepLink);
 
     return (
-      <div className={'flex flex-col items-start gap-1 w-full'}>
+      <div className={'luno:flex luno:flex-col luno:items-start luno:gap-1 luno:w-full'}>
         {filteredConnectors.map((i) => (
           <ConnectorItem key={`${i.id}-${i.name}`} connector={i} onConnect={() => onConnect(i)} />
         ))}
@@ -62,22 +62,25 @@ export const ConnectOptions = React.memo(({ onConnect }: Props) => {
   return (
     <div
       className={
-        'flex flex-col items-start gap-4 w-full overflow-y-auto custom-scrollbar max-h-[400px]'
+        'luno:flex luno:flex-col luno:items-start luno:gap-4 luno:w-full luno:overflow-y-auto luno:max-h-[400px]'
       }
     >
       {connectorGroup.map((g) => {
         if (g.group.length === 0) return null;
         return (
-          <div key={g.title} className={'flex flex-col items-start gap-2 w-full'}>
+          <div
+            key={g.title}
+            className={'luno:flex luno:flex-col luno:items-start luno:gap-2 luno:w-full'}
+          >
             <div
               className={cs(
-                'text-sm font-semibold leading-base',
-                g.title === 'Installed' ? 'text-accentColor' : 'text-modalTextSecondary'
+                'luno:text-sm luno:font-semibold luno:leading-base',
+                g.title === 'Installed' ? 'luno:text-accentColor' : 'luno:text-modalTextSecondary'
               )}
             >
               {g.title}
             </div>
-            <div className={'flex flex-col items-start gap-1.5 w-full'}>
+            <div className={'luno:flex luno:flex-col luno:items-start luno:gap-1.5 luno:w-full'}>
               {g.group.map((i) => (
                 <ConnectorItem key={i.id} connector={i} onConnect={() => onConnect(i)} />
               ))}
@@ -99,16 +102,18 @@ const ConnectorItem: React.FC<ConnectorItemProps> = React.memo(({ connector, onC
     <button
       onClick={onConnect}
       className={cs(
-        'cursor-pointer bg-walletSelectItemBackground p-2 w-full flex items-center gap-3 rounded-walletSelectItem border-none',
-        'hover:bg-walletSelectItemBackgroundHover transition-transform active:scale-[0.95]',
-        'text-left'
+        'luno:cursor-pointer luno:bg-walletSelectItemBackground luno:p-2 luno:w-full luno:flex luno:items-center luno:gap-3 luno:rounded-walletSelectItem luno:border-none',
+        'luno:hover:bg-walletSelectItemBackgroundHover luno:transition-transform luno:active:scale-[0.95]',
+        'luno:text-left'
       )}
     >
-      <div className={'w-[28px] h-[28px] rounded-[6px] overflow-hidden'}>
-        <img src={connector.icon} alt={connector.name} className="w-full h-full" />
+      <div className={'luno:w-[28px] luno:h-[28px] luno:rounded-[6px] luno:overflow-hidden'}>
+        <img src={connector.icon} alt={connector.name} className="luno:w-full luno:h-full" />
       </div>
 
-      <span className="font-semibold leading-base text-base text-modalText">{connector.name}</span>
+      <span className="luno:font-semibold luno:leading-base luno:text-base luno:text-modalText">
+        {connector.name}
+      </span>
     </button>
   );
 });
