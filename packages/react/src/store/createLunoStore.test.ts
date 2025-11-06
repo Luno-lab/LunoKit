@@ -543,4 +543,47 @@ describe('createLunoStore', () => {
       expect(state.currentChainId).toBe('0x456');
     });
   });
+
+  describe('event handler behavior', () => {
+    let accountsChangedHandler: any;
+    let disconnectHandler: any;
+
+    beforeEach(async () => {
+      useLunoStore.setState({ config: mockConfig });
+      mockConnector.connect.mockResolvedValue([
+        { publicKey: '0xabc', address: 'addr1', name: 'Account 1', meta: { source: 'test' } },
+      ]);
+
+      mockConnector.on.mockImplementation((event, handler) => {
+        if (event === 'accountsChanged') {
+          accountsChangedHandler = handler;
+        } else if (event === 'disconnect') {
+          disconnectHandler = handler;
+        }
+      });
+
+      await store.connect('test-connector');
+    });
+
+    it('should handle accountsChanged event', async () => {
+      const newAccounts = [
+        { publicKey: '0xnew', address: 'newAddr', name: 'New Account', meta: { source: 'test' } },
+      ];
+
+      await accountsChangedHandler(newAccounts);
+
+      const state = useLunoStore.getState();
+      expect(state.accounts).toEqual(newAccounts);
+      expect(state.account).toBe(newAccounts[0]);
+    });
+
+    it('should handle disconnect event', async () => {
+      disconnectHandler();
+
+      const state = useLunoStore.getState();
+      expect(state.status).toBe(ConnectionStatus.Disconnected);
+      expect(state.activeConnector).toBeUndefined();
+      expect(state.accounts).toEqual([]);
+    });
+  });
 });
