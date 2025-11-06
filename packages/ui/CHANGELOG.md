@@ -1,5 +1,13 @@
 # @luno-kit/ui
 
+## 0.0.10
+
+### Patch Changes
+
+- 3a62c64: Fix accounts changed & disconnect event
+- Updated dependencies [3a62c64]
+  - @luno-kit/react@0.0.10
+
 ## 0.0.9
 
 ### Patch Changes
