@@ -1,5 +1,11 @@
 # @luno-kit/core
 
+## 0.0.10
+
+### Patch Changes
+
+- 3a62c64: Fix accounts changed & disconnect event
+
 ## 0.0.9
 
 ### Patch Changes
