@@ -1,5 +1,25 @@
 # @luno-kit/ui
 
+## 0.0.9
+
+### Patch Changes
+
+- 59eec8b: Fix the issue of CSS isolation, resolve the problem of account reset after reconnection, and add AssetList
+
+  - Fix the issue of CSS isolation
+  - Resolve the problem of account reset after reconnection
+  - Add AssetList
+
+- 1ac1bce: Fix the issue of CSS isolation, resolve the problem of account reset after reconnection, and add AssetList
+
+  - Fix the issue of CSS isolation
+  - Resolve the problem of account reset after reconnection
+  - Add AssetList
+
+- Updated dependencies [59eec8b]
+- Updated dependencies [1ac1bce]
+  - @luno-kit/react@0.0.9
+
 ## 0.0.9-beta.0
 
 ### Patch Changes
