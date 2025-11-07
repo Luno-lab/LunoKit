@@ -3,7 +3,7 @@
 <div align="center">
 
 [![npm version](https://img.shields.io/npm/v/@luno-kit/ui.svg)](https://www.npmjs.com/package/@luno-kit/ui)
-[![npm downloads](https://img.shields.io/npm/dm/@luno-kit/ui.svg)](https://www.npmjs.com/package/@luno-kit/ui)
+[![npm downloads](https://badgen.net/npm/dm/@luno-kit/ui)](https://www.npmjs.com/package/@luno-kit/ui)
 [![CI](https://github.com/Luno-lab/LunoKit/actions/workflows/pr-check.yml/badge.svg)](https://github.com/Luno-lab/LunoKit/actions/workflows/pr-check.yml)
 [![codecov](https://codecov.io/gh/Luno-lab/LunoKit/branch/main/graph/badge.svg)](https://codecov.io/gh/Luno-lab/LunoKit)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Luno-lab/LunoKit)
