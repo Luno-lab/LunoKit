@@ -27,7 +27,7 @@ const connectors = [
 
 const lunoConfig = createConfig({
   appName: 'luno with-vite example',
-  chains: [polkadot, kusama, westend, paseo],
+  chains: [polkadot, kusama, westend],
   connectors: connectors,
   autoConnect: true,
 });
