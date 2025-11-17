@@ -11,5 +11,7 @@
     "@luno-kit/react": "0.0.10",
     "@luno-kit/ui": "0.0.10"
   },
-  "changesets": []
+  "changesets": [
+    "late-guests-end"
+  ]
 }
