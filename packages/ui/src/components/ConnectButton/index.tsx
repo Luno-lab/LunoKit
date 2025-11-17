@@ -48,7 +48,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
         type="button"
         onClick={() => openConnectModal?.()}
         className={cs(
-          'luno:cursor-pointer luno:font-semibold luno:inline-flex luno:items-center luno:justify-center luno:focus:outline-none',
+          'luno-kit luno:cursor-pointer luno:font-semibold luno:inline-flex luno:items-center luno:justify-center luno:focus:outline-none',
           'luno:text-connectButtonText luno:bg-connectButtonBackground luno:shadow-button luno:active:scale-[0.95]',
           'luno:rounded-connectButton',
           transitionClassName,
@@ -64,7 +64,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
   return (
     <div
       className={cs(
-        'luno:text-modalText luno:flex luno:items-stretch luno:bg-transparent luno:font-semibold luno:text-base luno:leading-base luno:gap-3',
+        'luno-kit luno:text-modalText luno:flex luno:items-stretch luno:bg-transparent luno:font-semibold luno:text-base luno:leading-base luno:gap-3',
         className
       )}
     >
