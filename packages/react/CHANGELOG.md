@@ -1,5 +1,13 @@
 # @luno-kit/react
 
+## 0.0.11-beta.0
+
+### Patch Changes
+
+- ef72b4f: Fix the import of tailwindcss and remove the import of the base classes.
+- Updated dependencies [ef72b4f]
+  - @luno-kit/core@0.0.11-beta.0
+
 ## 0.0.10
 
 ### Patch Changes
