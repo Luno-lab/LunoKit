@@ -103,7 +103,7 @@ export const WalletView = React.memo(
                   Confirm connection in the extension
                 </p>
                 {connectState.isConnecting && (
-                  <div className="loading luno:text-modalText luno:w-[24px]"></div>
+                  <div className="luno-loading luno:text-modalText luno:w-[24px]"></div>
                 )}
                 {!selectedConnector.isInstalled() && selectedConnector.links.browserExtension && (
                   <div
