@@ -129,7 +129,7 @@ const ChainItem: React.FC<ChainItemProps> = React.memo(
                 <span className="luno:text-accentColor luno:text-xs luno:leading-xs luno:mr-1.5">
                   {isSwitching ? 'Switching' : 'Connecting'}
                 </span>
-                <div className="loading luno:text-accentColor luno:w-[15px] luno:h-[15px]"></div>
+                <div className="luno-loading luno:text-accentColor luno:w-[15px] luno:h-[15px]"></div>
               </>
             ) : (
               <span className="luno:relative luno:flex luno:w-[10px] luno:h-[10px]">

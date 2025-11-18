@@ -1,4 +1,5 @@
-@import "tailwindcss" prefix(luno) important;
+@import "tailwindcss/utilities.css" layer(utilities) prefix(luno) important;
+@import "tailwindcss/theme.css" layer(theme) prefix(luno) important;
 
 @theme inline {
   /* Color utilities */
@@ -101,10 +102,6 @@
 
 @custom-variant light (&:where([data-theme=light], [data-theme=light] *));
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
-
-.luno-kit * {
-  box-sizing: border-box;
-}
 
 /* Default Light Theme Variables */
 :root {
@@ -236,7 +233,7 @@
 }
 
 /* Loading Animation */
-.loading {
+.luno-loading {
   @apply luno:pointer-events-none luno:inline-block luno:aspect-square luno:bg-current luno:align-middle;
   mask-size: 100%;
   mask-repeat: no-repeat;
@@ -251,5 +248,231 @@
 /*}*/
 
 .luno-kit *::-webkit-scrollbar {
-  display: none; /* Chrome, Safari and Opera */
+  display: none;
+}
+
+@layer base {
+  .luno-kit,
+  .luno-kit *,
+  .luno-kit *::after,
+  .luno-kit *::before,
+  .luno-kit *::backdrop,
+  .luno-kit *::file-selector-button {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0 solid;
+  }
+
+  .luno-kit,
+  .luno-kit :host {
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    tab-size: 4;
+    font-family: var(--luno-default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");
+    font-feature-settings: var(--luno-default-font-feature-settings, normal);
+    font-variation-settings: var(--luno-default-font-variation-settings, normal);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .luno-kit hr {
+    height: 0;
+    color: inherit;
+    border-top-width: 1px;
+  }
+
+  .luno-kit abbr:where([title]) {
+    -webkit-text-decoration: underline dotted;
+    text-decoration: underline dotted;
+  }
+
+  .luno-kit h1,
+  .luno-kit h2,
+  .luno-kit h3,
+  .luno-kit h4,
+  .luno-kit h5,
+  .luno-kit h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
+  .luno-kit a {
+    color: inherit;
+    -webkit-text-decoration: inherit;
+    text-decoration: inherit;
+  }
+
+  .luno-kit b,
+  .luno-kit strong {
+    font-weight: bolder;
+  }
+
+  .luno-kit code,
+  .luno-kit kbd,
+  .luno-kit samp,
+  .luno-kit pre {
+    font-family: var(--luno-default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);
+    font-feature-settings: var(--luno-default-mono-font-feature-settings, normal);
+    font-variation-settings: var(--luno-default-mono-font-variation-settings, normal);
+    font-size: 1em;
+  }
+
+  .luno-kit small {
+    font-size: 80%;
+  }
+
+  .luno-kit sub,
+  .luno-kit sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+  }
+
+  .luno-kit sub {
+    bottom: -0.25em;
+  }
+
+  .luno-kit sup {
+    top: -0.5em;
+  }
+
+  .luno-kit table {
+    text-indent: 0;
+    border-color: inherit;
+    border-collapse: collapse;
+  }
+
+  .luno-kit :-moz-focusring {
+    outline: auto;
+  }
+
+  .luno-kit progress {
+    vertical-align: baseline;
+  }
+
+  .luno-kit summary {
+    display: list-item;
+  }
+
+  .luno-kit ol,
+  .luno-kit ul,
+  .luno-kit menu {
+    list-style: none;
+  }
+
+  .luno-kit img,
+  .luno-kit svg,
+  .luno-kit video,
+  .luno-kit canvas,
+  .luno-kit audio,
+  .luno-kit iframe,
+  .luno-kit embed,
+  .luno-kit object {
+    display: block;
+    vertical-align: middle;
+  }
+
+  .luno-kit img,
+  .luno-kit video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .luno-kit button,
+  .luno-kit input,
+  .luno-kit select,
+  .luno-kit optgroup,
+  .luno-kit textarea,
+  .luno-kit ::file-selector-button {
+    font: inherit;
+    font-feature-settings: inherit;
+    font-variation-settings: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    border-radius: 0;
+    background-color: transparent;
+    opacity: 1;
+  }
+
+  .luno-kit :where(select:is([multiple], [size])) optgroup {
+    font-weight: bolder;
+  }
+
+  .luno-kit :where(select:is([multiple], [size])) optgroup option {
+    padding-inline-start: 20px;
+  }
+
+  .luno-kit ::file-selector-button {
+    margin-inline-end: 4px;
+  }
+
+  .luno-kit ::placeholder {
+    opacity: 1;
+  }
+
+  @supports (not (-webkit-appearance: -apple-pay-button)) or (contain-intrinsic-size: 1px) {
+    .luno-kit ::placeholder {
+      color: currentcolor;
+      @supports (color: color-mix(in lab, red, red)) {
+        color: color-mix(in oklab, currentcolor 50%, transparent);
+      }
+    }
+  }
+
+  .luno-kit textarea {
+    resize: vertical;
+  }
+
+  .luno-kit ::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+
+  .luno-kit ::-webkit-date-and-time-value {
+    min-height: 1lh;
+    text-align: inherit;
+  }
+
+  .luno-kit ::-webkit-datetime-edit {
+    display: inline-flex;
+  }
+
+  .luno-kit ::-webkit-datetime-edit-fields-wrapper {
+    padding: 0;
+  }
+
+  .luno-kit ::-webkit-datetime-edit,
+  .luno-kit ::-webkit-datetime-edit-year-field,
+  .luno-kit ::-webkit-datetime-edit-month-field,
+  .luno-kit ::-webkit-datetime-edit-day-field,
+  .luno-kit ::-webkit-datetime-edit-hour-field,
+  .luno-kit ::-webkit-datetime-edit-minute-field,
+  .luno-kit ::-webkit-datetime-edit-second-field,
+  .luno-kit ::-webkit-datetime-edit-millisecond-field,
+  .luno-kit ::-webkit-datetime-edit-meridiem-field {
+    padding-block: 0;
+  }
+
+  .luno-kit ::-webkit-calendar-picker-indicator {
+    line-height: 1;
+  }
+
+  .luno-kit :-moz-ui-invalid {
+    box-shadow: none;
+  }
+
+  .luno-kit button,
+  .luno-kit input:where([type="button"], [type="reset"], [type="submit"]),
+  .luno-kit ::file-selector-button {
+    appearance: button;
+  }
+
+  .luno-kit ::-webkit-inner-spin-button,
+  .luno-kit ::-webkit-outer-spin-button {
+    height: auto;
+  }
+
+  .luno-kit [hidden]:where(:not([hidden="until-found"])) {
+    display: none !important;
+  }
 }
