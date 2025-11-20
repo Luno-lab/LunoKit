@@ -1,4 +1,5 @@
 import type { Connector } from '@luno-kit/react/types';
+import type { AppInfo } from '../../providers'
 import React from 'react';
 import { Close } from '../../assets/icons';
 import { cs } from '../../utils';
@@ -7,6 +8,7 @@ import { Copy } from '../Copy';
 import { DialogClose } from '../Dialog';
 import { QRCode } from '../QRCode';
 import { SpiralAnimation } from '../SpiralAnimation';
+import {renderAppInfoContent} from '../../utils/renderAppInfo'
 
 interface Props {
   selectedConnector: Connector | null;
@@ -17,10 +19,11 @@ interface Props {
     isConnecting: boolean;
     isError: boolean;
   };
+  appInfo?: Partial<AppInfo>;
 }
 
 export const WalletView = React.memo(
-  ({ selectedConnector, onConnect, qrCode, isWide, connectState }: Props) => {
+  ({ selectedConnector, onConnect, qrCode, isWide, connectState, appInfo }: Props) => {
     const showQRCode = selectedConnector?.hasConnectionUri();
 
     return (
@@ -50,7 +53,8 @@ export const WalletView = React.memo(
         <div
           className={cs(
             'luno:flex luno:items-center luno:gap-4 luno:flex-col luno:grow luno:justify-center',
-            selectedConnector && showQRCode ? 'luno:max-w-[300px]' : 'luno:max-w-[360px]'
+            selectedConnector && showQRCode ? 'luno:max-w-[300px]' : 'luno:max-w-[360px]',
+            appInfo?.disclaimer && 'luno:pt-12'
           )}
         >
           {selectedConnector ? (
@@ -132,25 +136,38 @@ export const WalletView = React.memo(
             )
           ) : (
             <>
-              <div className={'luno:w-[160px] luno:h-[160px] luno:mb-4'}>
-                <SpiralAnimation />
-              </div>
-              <div
-                className={
-                  'luno:cursor-pointer luno:text-base luno:leading-base luno:text-accentColor luno:font-semibold luno:text-center'
-                }
-                onClick={() => window.open('https://polkadot.com/get-started/wallets/')}
-              >
-                New to wallets?
-              </div>
-
-              <p
-                className={
-                  'luno:text-modalTextSecondary luno:w-[250px] luno:text-sm luno:leading-sm luno:font-medium luno:text-center'
-                }
-              >
-                Connect your wallet to start exploring and interacting with DApps.
-              </p>
+              {renderAppInfoContent(
+                appInfo?.decorativeImage,
+                <div className={'luno:w-[160px] luno:h-[160px] luno:mb-4'}>
+                  <SpiralAnimation />
+                </div>
+              )}
+              {renderAppInfoContent(
+                appInfo?.guideText,
+                <div
+                  className={
+                    'luno:cursor-pointer luno:text-base luno:leading-base luno:text-accentColor luno:font-semibold luno:text-center'
+                  }
+                  onClick={() => window.open('https://polkadot.com/get-started/wallets/')}
+                >
+                  New to wallets?
+                </div>
+              )}
+              {renderAppInfoContent(
+                appInfo?.description,
+                <p
+                  className={
+                    'luno:text-modalTextSecondary luno:w-[250px] luno:text-sm luno:leading-sm luno:font-medium luno:text-center'
+                  }
+                >
+                  Connect your wallet to start exploring and interacting with DApps.
+                </p>
+              )}
+              {appInfo?.disclaimer && (
+                <div className={'luno:grow-1 luno:flex luno:items-end luno:text-modalTextSecondary luno:text-sm luno:leading-sm luno:font-medium luno:text-center'}>
+                  {appInfo?.disclaimer}
+                </div>
+              )}
             </>
           )}
         </div>

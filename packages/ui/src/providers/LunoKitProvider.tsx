@@ -10,11 +10,19 @@ import type { LunokitThemeOverrides, PartialLunokitTheme } from '../theme';
 import { ThemeProvider } from '../theme';
 import { ModalProvider } from './ModalContext';
 
+export interface AppInfo {
+  decorativeImage: React.ReactNode;
+  guideText: React.ReactNode;
+  description: React.ReactNode;
+  disclaimer: React.ReactNode;
+}
+
 export interface LunoKitProviderProps {
   children: ReactNode;
   config: LunoCoreConfig & { modalSize?: ModalSize };
   queryClientConfig?: QueryClientConfig;
-  theme?: PartialLunokitTheme | LunokitThemeOverrides; // Support both complete themes and partial overrides
+  theme?: PartialLunokitTheme | LunokitThemeOverrides;
+  appInfo?: Partial<AppInfo>;
 }
 
 export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
@@ -22,6 +30,7 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
   config,
   queryClientConfig,
   theme,
+  appInfo,
 }) => {
   const [queryClient] = useState(() => new QueryClient(queryClientConfig));
 
@@ -31,7 +40,7 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
         <ThemeProvider theme={theme}>
           <ModalProvider>
             <div>{children}</div>
-            <RenderModals modalSize={config.modalSize} />
+            <RenderModals appInfo={appInfo} modalSize={config.modalSize} />
           </ModalProvider>
         </ThemeProvider>
       </LunoProvider>
@@ -39,14 +48,18 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
   );
 };
 
-const RenderModals: React.FC<{ modalSize?: ModalSize }> = ({
-  modalSize,
-}: {
+interface RenderModalsProps {
   modalSize?: ModalSize;
-}) => {
+  appInfo?: Partial<AppInfo>;
+}
+
+const RenderModals: React.FC<RenderModalsProps> = ({
+  modalSize,
+  appInfo,
+}: RenderModalsProps) => {
   return (
     <>
-      <ConnectModal size={modalSize} />
+      <ConnectModal size={modalSize} appInfo={appInfo} />
       <AccountDetailsModal />
       <ChainModal />
     </>

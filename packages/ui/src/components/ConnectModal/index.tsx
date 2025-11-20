@@ -6,11 +6,12 @@ import { useEffect, useMemo, useState } from 'react';
 import { Back, Close } from '../../assets/icons';
 import { useWindowSize } from '../../hooks';
 import { useAnimatedViews } from '../../hooks/useAnimatedViews';
-import { useConnectModal } from '../../providers';
+import { type AppInfo, useConnectModal } from '../../providers';
 import { cs } from '../../utils';
 import { Dialog, DialogClose, DialogTitle, type ModalSize } from '../Dialog';
 import { ConnectOptions } from './ConnectOptions';
 import { WalletView } from './WalletView';
+import {renderAppInfoContent} from '../../utils/renderAppInfo'
 
 export enum ConnectModalView {
   connectOptions = 'Connect Wallet',
@@ -19,9 +20,10 @@ export enum ConnectModalView {
 
 export interface ConnectModalProps {
   size?: ModalSize;
+  appInfo?: Partial<AppInfo>;
 }
 
-export const ConnectModal: React.FC<ConnectModalProps> = ({ size = 'wide' }) => {
+export const ConnectModal: React.FC<ConnectModalProps> = ({ appInfo, size = 'wide' }) => {
   const { isOpen, close } = useConnectModal();
   const {
     connectAsync,
@@ -86,10 +88,11 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ size = 'wide' }) => 
           selectedConnector={selectedConnector}
           qrCode={qrCode}
           onConnect={handleConnect}
+          appInfo={appInfo}
         />
       ),
     };
-  }, [isWide, selectedConnector, qrCode, handleConnect, isConnecting, connectError]);
+  }, [isWide, selectedConnector, qrCode, handleConnect, isConnecting, connectError, appInfo]);
 
   useEffect(() => {
     if (isWide && currentView === ConnectModalView.walletView) {
@@ -166,14 +169,17 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ size = 'wide' }) => 
           </div>
 
           {!isWide && currentView === ConnectModalView.connectOptions && (
-            <p
-              className={
-                'luno:cursor-pointer luno:w-full luno:pt-4 luno:text-sm luno:leading-sm luno:text-accentColor luno:font-medium luno:text-center luno:hover:text-modalText'
-              }
-              onClick={() => window.open('https://polkadot.com/get-started/wallets/')}
-            >
-              New to wallets?
-            </p>
+            renderAppInfoContent(
+              appInfo?.guideText,
+              <p
+                className={
+                  'luno:cursor-pointer luno:w-full luno:pt-4 luno:text-sm luno:leading-sm luno:text-accentColor luno:font-medium luno:text-center luno:hover:text-modalText'
+                }
+                onClick={() => window.open('https://polkadot.com/get-started/wallets/')}
+              >
+                New to wallets?
+              </p>
+            )
           )}
         </div>
 
@@ -184,6 +190,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ size = 'wide' }) => 
             selectedConnector={selectedConnector}
             qrCode={qrCode}
             onConnect={handleConnect}
+            appInfo={appInfo}
           />
         )}
       </div>
