@@ -1,14 +1,14 @@
 import type { Connector } from '@luno-kit/react/types';
-import type { AppInfo } from '../../providers'
 import React from 'react';
 import { Close } from '../../assets/icons';
+import type { AppInfo } from '../../providers';
 import { cs } from '../../utils';
+import { renderAppInfoContent } from '../../utils/renderAppInfo';
 import { transitionClassName } from '../ConnectButton';
 import { Copy } from '../Copy';
 import { DialogClose } from '../Dialog';
 import { QRCode } from '../QRCode';
 import { SpiralAnimation } from '../SpiralAnimation';
-import {renderAppInfoContent} from '../../utils/renderAppInfo'
 
 interface Props {
   selectedConnector: Connector | null;
@@ -164,7 +164,11 @@ export const WalletView = React.memo(
                 </p>
               )}
               {appInfo?.disclaimer && (
-                <div className={'luno:grow-1 luno:flex luno:items-end luno:text-modalTextSecondary luno:text-sm luno:leading-sm luno:font-medium luno:text-center'}>
+                <div
+                  className={
+                    'luno:grow-1 luno:flex luno:items-end luno:text-modalTextSecondary luno:text-sm luno:leading-sm luno:font-medium luno:text-center'
+                  }
+                >
                   {appInfo?.disclaimer}
                 </div>
               )}

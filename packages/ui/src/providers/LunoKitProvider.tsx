@@ -45,10 +45,7 @@ interface RenderModalsProps {
   appInfo?: Partial<AppInfo>;
 }
 
-const RenderModals: React.FC<RenderModalsProps> = ({
-  modalSize,
-  appInfo,
-}: RenderModalsProps) => {
+const RenderModals: React.FC<RenderModalsProps> = ({ modalSize, appInfo }: RenderModalsProps) => {
   return (
     <>
       <ConnectModal size={modalSize} appInfo={appInfo} />

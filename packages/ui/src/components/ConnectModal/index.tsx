@@ -8,10 +8,10 @@ import { useWindowSize } from '../../hooks';
 import { useAnimatedViews } from '../../hooks/useAnimatedViews';
 import { type AppInfo, useConnectModal } from '../../providers';
 import { cs } from '../../utils';
+import { renderAppInfoContent } from '../../utils/renderAppInfo';
 import { Dialog, DialogClose, DialogTitle, type ModalSize } from '../Dialog';
 import { ConnectOptions } from './ConnectOptions';
 import { WalletView } from './WalletView';
-import {renderAppInfoContent} from '../../utils/renderAppInfo'
 
 export enum ConnectModalView {
   connectOptions = 'Connect Wallet',
@@ -168,7 +168,8 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ appInfo, size = 'wid
             <div ref={currentViewRef}>{viewComponents[currentView]}</div>
           </div>
 
-          {!isWide && currentView === ConnectModalView.connectOptions && (
+          {!isWide &&
+            currentView === ConnectModalView.connectOptions &&
             renderAppInfoContent(
               appInfo?.guideText,
               <p
@@ -179,8 +180,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ appInfo, size = 'wid
               >
                 New to wallets?
               </p>
-            )
-          )}
+            )}
         </div>
 
         {isWide && (
