@@ -120,9 +120,11 @@ export function useSendTransaction(
 
               switch (status.type) {
                 case 'Broadcasting':
+                  setTxStatus('pending');
                   setDetailedTxStatus('broadcasting');
                   break;
                 case 'BestChainBlockIncluded':
+                  setTxStatus('pending');
                   setDetailedTxStatus('inBlock');
                   break;
                 case 'Finalized':
