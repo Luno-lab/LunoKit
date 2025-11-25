@@ -35,12 +35,16 @@ export interface SendTransactionVariables {
   extrinsic: ISubmittableExtrinsic;
 }
 
+export interface UseSendTransactionConfig {
+  waitFor?: 'inBlock' | 'finalized';
+}
+
 export type UseSendTransactionOptions = LunoMutationOptions<
   TransactionReceipt,
   Error,
   SendTransactionVariables,
   unknown
->;
+> & UseSendTransactionConfig;
 
 export interface UseSendTransactionResult {
   sendTransaction: (
@@ -74,8 +78,12 @@ export function useSendTransaction(
   const [detailedTxStatus, setDetailedTxStatus] = useState<DetailedTxStatus>('idle');
   const [txError, setTxError] = useState<Error | null>(null);
 
+  const waitFor = hookLevelConfig?.waitFor ?? 'finalized';
+
   const sendTransactionFn = useCallback(
     async (variables: SendTransactionVariables): Promise<TransactionReceipt> => {
+      setTxStatus('idle');
+      setDetailedTxStatus('idle');
       if (!currentApi || !isApiReady) {
         throw new Error('[useSendTransaction]: Polkadot API is not ready.');
       }
@@ -97,7 +105,6 @@ export function useSendTransaction(
       }
 
       setTxStatus('signing');
-      setDetailedTxStatus('idle');
 
       return new Promise<TransactionReceipt>((resolve, reject) => {
         let unsubscribe: (() => void) | undefined;
@@ -118,6 +125,26 @@ export function useSendTransaction(
                 reject(error);
               };
 
+              const createReceipt = (
+                blockHash: HexString,
+                blockNumber: number | undefined,
+                error: DispatchError | undefined,
+              ): TransactionReceipt => {
+                const hasError = Boolean(error);
+                return {
+                  transactionHash: txHash,
+                  blockHash: blockHash,
+                  blockNumber,
+                  events,
+                  status: hasError ? 'failed' : 'success',
+                  dispatchError: error || undefined,
+                  errorMessage: error
+                    ? getReadableDispatchError(currentApi, error)
+                    : undefined,
+                  dispatchInfo,
+                };
+              };
+
               switch (status.type) {
                 case 'Broadcasting':
                   setTxStatus('pending');
@@ -126,32 +153,20 @@ export function useSendTransaction(
                 case 'BestChainBlockIncluded':
                   setTxStatus('pending');
                   setDetailedTxStatus('inBlock');
+                  if (waitFor === 'inBlock') {
+                    setTxStatus(dispatchError ? 'failed' : 'success');
+                    resolveAndUnsubscribe(
+                      createReceipt(status.value?.blockHash, status.value?.blockNumber, dispatchError)
+                    );
+                  }
                   break;
                 case 'Finalized':
-                  setTxStatus('success');
                   setDetailedTxStatus('finalized');
-                  if (dispatchError) {
-                    resolveAndUnsubscribe({
-                      transactionHash: txHash,
-                      blockHash: status.value?.blockHash,
-                      blockNumber: status.value?.blockNumber,
-                      events,
-                      status: 'failed',
-                      dispatchError,
-                      errorMessage: getReadableDispatchError(currentApi, dispatchError),
-                      dispatchInfo,
-                    });
-                  } else {
-                    resolveAndUnsubscribe({
-                      transactionHash: txHash,
-                      blockHash: status.value?.blockHash,
-                      blockNumber: status.value?.blockNumber,
-                      events,
-                      status: 'success',
-                      dispatchError: undefined,
-                      errorMessage: undefined,
-                      dispatchInfo,
-                    });
+                  if (waitFor === 'finalized') {
+                    setTxStatus(dispatchError ? 'failed' : 'success');
+                    resolveAndUnsubscribe(
+                      createReceipt(status.value?.blockHash, status.value?.blockNumber, dispatchError)
+                    );
                   }
                   break;
                 case 'Invalid':
@@ -181,7 +196,7 @@ export function useSendTransaction(
           });
       });
     },
-    [currentApi, isApiReady, activeConnector, account, setTxStatus, setDetailedTxStatus]
+    [currentApi, isApiReady, activeConnector, account, setTxStatus, setDetailedTxStatus, waitFor]
   );
 
   const mutationResult = useLunoMutation<
