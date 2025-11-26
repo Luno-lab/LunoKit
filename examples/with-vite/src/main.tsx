@@ -29,6 +29,7 @@ import {
   subwalletConnector,
   talismanConnector,
   walletConnectConnector,
+  onekeyConnector,
 } from '@luno-kit/react/connectors';
 import { LunoKitProvider } from '@luno-kit/ui';
 import App from './App.tsx';
@@ -43,6 +44,7 @@ const connectors = [
   fearlessConnector(),
   mimirConnector(),
   enkryptConnector(),
+  onekeyConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID }),
   walletConnectConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID }),
   novaConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID }),
 ];
