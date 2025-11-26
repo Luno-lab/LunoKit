@@ -5,6 +5,7 @@ export { InjectConnector } from './inject';
 export { mimirConnector } from './mimir';
 export { novaConnector } from './nova';
 export { novaMobileConnector } from './novaMobile';
+export { onekeyConnector } from './onekey';
 export { polkadotjsConnector } from './polkadot-js';
 export { polkagateConnector } from './polkagate';
 export { subwalletConnector } from './subwallet';

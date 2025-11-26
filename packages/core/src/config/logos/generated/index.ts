@@ -17,6 +17,7 @@ export { kusamaChain } from './kusamaChain.js';
 export { ledgerWallet } from './ledgerWallet.js';
 export { mimirWallet } from './mimirWallet.js';
 export { novaWallet } from './novaWallet.js';
+export { onekeyWallet } from './onekeyWallet.js';
 export { paseoChain } from './paseoChain.js';
 export { peopleChain } from './peopleChain.js';
 export { peopleKusamaChain } from './peopleKusamaChain.js';
