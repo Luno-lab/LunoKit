@@ -44,7 +44,7 @@ const connectors = [
   fearlessConnector(),
   mimirConnector(),
   enkryptConnector(),
-  onekeyConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID }),
+  onekeyConnector(),
   walletConnectConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID }),
   novaConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID }),
 ];
