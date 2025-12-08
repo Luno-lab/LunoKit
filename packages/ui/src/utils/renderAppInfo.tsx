@@ -1,21 +1,18 @@
-import type React from 'react';
-import { isValidElement } from 'react';
+import React from 'react';
 
-export function renderAppInfoContent(
-  customContent: React.ReactNode | undefined,
+// Render helper for plain text content; keeps default styling/handlers when provided.
+export function renderAppInfoText(
+  customText: string | undefined,
   defaultContent: React.ReactNode
 ): React.ReactNode {
-  if (!customContent) {
+  if (!customText) {
     return defaultContent;
   }
 
-  if (typeof customContent === 'string') {
-    const className = isValidElement(defaultContent)
-      ? (defaultContent.props as { className?: string })?.className
-      : undefined;
-
-    return <div className={className}>{customContent}</div>;
+  if (React.isValidElement(defaultContent)) {
+    const { className, children: _children, ...rest } = defaultContent.props || {};
+    return React.createElement(defaultContent.type, { ...rest, className }, customText);
   }
 
-  return customContent;
+  return customText;
 }

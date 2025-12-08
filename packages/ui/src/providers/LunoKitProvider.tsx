@@ -8,11 +8,23 @@ import type { LunokitThemeOverrides, PartialLunokitTheme } from '../theme';
 import { ThemeProvider } from '../theme';
 import { ModalProvider } from './ModalContext';
 
+export interface DecorativeImage {
+  light: string;
+  dark?: string;
+}
+
+export interface PolicyLinks {
+  terms: string;
+  privacy: string;
+  target?: '_blank' | '_self';
+}
+
 export interface AppInfo {
-  decorativeImage: React.ReactNode;
-  guideText: React.ReactNode;
-  description: React.ReactNode;
-  disclaimer: React.ReactNode;
+  decorativeImage?: DecorativeImage;
+  guideText?: string;
+  guideLink?: string;
+  description?: string;
+  policyLinks?: PolicyLinks;
 }
 
 export interface LunoKitProviderProps {
