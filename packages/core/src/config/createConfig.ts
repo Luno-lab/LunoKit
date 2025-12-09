@@ -44,7 +44,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     transports = {},
     storage = defaultLunoStorage,
     autoConnect = true,
-    cacheMetadata,
+    cacheMetadata = true,
     metadata,
     scaledResponses,
     customTypes,
