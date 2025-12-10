@@ -18,6 +18,7 @@ interface Props {
   connectState: {
     isConnecting: boolean;
     isError: boolean;
+    error: Error | null;
   };
   appInfo?: Partial<AppInfo>;
 }
@@ -104,7 +105,7 @@ export const WalletView = React.memo(
                     'luno:pb-[10px] luno:text-base luno:text-modalTextSecondary luno:leading-base luno:font-medium luno:text-center'
                   }
                 >
-                  Confirm connection in the extension
+                  {selectedConnector.id === 'ledger' ? connectState.error?.message : 'Confirm connection in the extension'}
                 </p>
                 {connectState.isConnecting && (
                   <div className="luno-loading luno:text-modalText luno:w-[24px]"></div>

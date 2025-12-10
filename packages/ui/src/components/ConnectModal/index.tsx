@@ -30,6 +30,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ appInfo, size = 'wid
     reset: resetConnect,
     isPending: isConnecting,
     isError: connectError,
+    error: connectErrorMsg
   } = useConnect();
   const [selectedConnector, setSelectedConnector] = useState<Connector | null>(null);
   const [qrCode, setQrCode] = useState<string | undefined>();
@@ -83,7 +84,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ appInfo, size = 'wid
       [ConnectModalView.connectOptions]: <ConnectOptions onConnect={handleConnect} />,
       [ConnectModalView.walletView]: (
         <WalletView
-          connectState={{ isConnecting, isError: connectError }}
+          connectState={{ isConnecting, isError: connectError, error: connectErrorMsg }}
           isWide={isWide}
           selectedConnector={selectedConnector}
           qrCode={qrCode}
@@ -92,7 +93,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ appInfo, size = 'wid
         />
       ),
     };
-  }, [isWide, selectedConnector, qrCode, handleConnect, isConnecting, connectError, appInfo]);
+  }, [isWide, selectedConnector, qrCode, handleConnect, isConnecting, connectError, connectErrorMsg, appInfo]);
 
   useEffect(() => {
     if (isWide && currentView === ConnectModalView.walletView) {
@@ -185,7 +186,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ appInfo, size = 'wid
 
         {isWide && (
           <WalletView
-            connectState={{ isConnecting, isError: connectError }}
+            connectState={{ isConnecting, isError: connectError, error: connectErrorMsg }}
             isWide={isWide}
             selectedConnector={selectedConnector}
             qrCode={qrCode}
