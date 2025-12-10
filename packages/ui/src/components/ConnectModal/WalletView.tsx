@@ -1,9 +1,10 @@
 import type { Connector } from '@luno-kit/react/types';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Close } from '../../assets/icons';
-import type { AppInfo } from '../../providers';
+import { type AppInfo } from '../../providers';
+import { useLunoTheme } from '../../theme';
 import { cs } from '../../utils';
-import { renderAppInfoContent } from '../../utils/renderAppInfo';
+import { renderAppInfoText } from '../../utils/renderAppInfo';
 import { transitionClassName } from '../ConnectButton';
 import { Copy } from '../Copy';
 import { DialogClose } from '../Dialog';
@@ -25,6 +26,15 @@ interface Props {
 
 export const WalletView = React.memo(
   ({ selectedConnector, onConnect, qrCode, isWide, connectState, appInfo }: Props) => {
+    const { themeMode } = useLunoTheme();
+
+    const decorativeImage = useMemo(() => {
+      if (!appInfo?.decorativeImage) return undefined;
+      const { light, dark } = appInfo.decorativeImage;
+      const url = themeMode === 'dark' ? dark || light : light;
+      return { url };
+    }, [appInfo?.decorativeImage, themeMode]);
+
     const showQRCode = selectedConnector?.hasConnectionUri();
 
     return (
@@ -54,8 +64,7 @@ export const WalletView = React.memo(
         <div
           className={cs(
             'luno:flex luno:items-center luno:gap-4 luno:flex-col luno:grow luno:justify-center',
-            selectedConnector && showQRCode ? 'luno:max-w-[300px]' : 'luno:max-w-[360px]',
-            appInfo?.disclaimer && 'luno:pt-12'
+            selectedConnector && showQRCode ? 'luno:max-w-[300px]' : 'luno:max-w-[360px]'
           )}
         >
           {selectedConnector ? (
@@ -117,7 +126,7 @@ export const WalletView = React.memo(
                       'luno:cursor-pointer luno:pt-6 luno:text-sm luno:text-accentColor luno:font-medium luno:text-center luno:hover:text-modalText'
                     }
                   >
-                    Don‘t have {selectedConnector.name}?
+                    Don't have {selectedConnector.name}?
                   </div>
                 )}
                 {!connectState.isConnecting &&
@@ -136,25 +145,39 @@ export const WalletView = React.memo(
               </>
             )
           ) : (
-            <>
-              {renderAppInfoContent(
-                appInfo?.decorativeImage,
-                <div className={'luno:w-[160px] luno:h-[160px] luno:mb-4'}>
+            <div
+              className={
+                'luno:relative luno:flex luno:flex-col luno:items-center luno:w-full luno:grow luno:gap-4 luno:pt-[60px]'
+              }
+            >
+              {decorativeImage?.url ? (
+                <div className={'luno:w-[160px] luno:h-[160px]'}>
+                  <img
+                    src={decorativeImage.url}
+                    alt="Luno Kit"
+                    className={'luno:w-full luno:h-full luno:object-contain'}
+                  />
+                </div>
+              ) : (
+                <div className={'luno:w-[160px] luno:h-[160px]'}>
                   <SpiralAnimation />
                 </div>
               )}
-              {renderAppInfoContent(
+
+              {renderAppInfoText(
                 appInfo?.guideText,
                 <div
                   className={
-                    'luno:cursor-pointer luno:text-base luno:leading-base luno:text-accentColor luno:font-semibold luno:text-center'
+                    'luno:cursor-pointer luno:text-base luno:leading-base luno:text-accentColor luno:font-semibold luno:text-center luno:hover:text-modalText'
                   }
-                  onClick={() => window.open('https://polkadot.com/get-started/wallets/')}
+                  onClick={() =>
+                    window.open(appInfo?.guideLink || 'https://polkadot.com/get-started/wallets/')
+                  }
                 >
                   New to wallets?
                 </div>
               )}
-              {renderAppInfoContent(
+              {renderAppInfoText(
                 appInfo?.description,
                 <p
                   className={
@@ -164,16 +187,36 @@ export const WalletView = React.memo(
                   Connect your wallet to start exploring and interacting with DApps.
                 </p>
               )}
-              {appInfo?.disclaimer && (
-                <div
-                  className={
-                    'luno:grow-1 luno:flex luno:items-end luno:text-modalTextSecondary luno:text-sm luno:leading-sm luno:font-medium luno:text-center'
-                  }
-                >
-                  {appInfo?.disclaimer}
-                </div>
-              )}
-            </>
+
+              {isWide &&
+                appInfo?.policyLinks?.terms &&
+                appInfo?.policyLinks?.privacy && (
+                  <div
+                    className={
+                      'luno:absolute luno:bottom-0 luno:left-0 luno:right-0 luno:text-modalTextSecondary luno:text-xs luno:leading-xs luno:font-regular luno:text-center'
+                    }
+                  >
+                    <span>By connecting your wallet, you agree to our </span>
+                    <a
+                      href={appInfo.policyLinks.terms}
+                      target={appInfo.policyLinks.target || '_blank'}
+                      rel="noreferrer noopener"
+                      className={'luno:text-accentColor luno:font-regular luno:hover:text-modalText'}
+                    >
+                      Terms of Service
+                    </a>
+                    <span> &amp; </span>
+                    <a
+                      href={appInfo.policyLinks.privacy}
+                      target={appInfo.policyLinks.target || '_blank'}
+                      rel="noreferrer noopener"
+                      className={'luno:text-accentColor luno:font-medium luno:hover:text-modalText'}
+                    >
+                      Privacy Policy
+                    </a>
+                  </div>
+                )}
+            </div>
           )}
         </div>
 
