@@ -1,6 +1,7 @@
 import { isSameAddress } from '@luno-kit/core/utils';
 import { useLuno } from './useLuno';
 import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
+import type { Optional } from '../types';
 
 export interface SignMessageVariables {
   message: string;
@@ -20,10 +21,10 @@ export type UseSignMessageOptions = LunoMutationOptions<
 >;
 
 export interface UseSignMessageResult {
-  signMessage: (variables: SignMessageVariables, options?: UseSignMessageOptions) => void;
+  signMessage: (variables: SignMessageVariables, options?: Optional<UseSignMessageOptions>) => void;
   signMessageAsync: (
     variables: SignMessageVariables,
-    options?: UseSignMessageOptions
+    options?: Optional<UseSignMessageOptions>
   ) => Promise<SignMessageData>;
   data: SignMessageData | undefined;
   error: Error | null;
@@ -36,7 +37,7 @@ export interface UseSignMessageResult {
   variables: SignMessageVariables | undefined;
 }
 
-export function useSignMessage(hookLevelConfig?: UseSignMessageOptions): UseSignMessageResult {
+export function useSignMessage(hookLevelConfig?: Optional<UseSignMessageOptions>): UseSignMessageResult {
   const { activeConnector, account, accounts } = useLuno();
 
   const mutationFn = async (variables: SignMessageVariables): Promise<SignMessageData> => {

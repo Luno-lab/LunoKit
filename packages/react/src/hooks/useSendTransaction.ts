@@ -6,7 +6,7 @@ import type {
   ISubmittableResult,
 } from 'dedot/types';
 import { useCallback, useState } from 'react';
-import type { TxStatus } from '../types';
+import type { TxStatus, Optional } from '../types';
 import { getReadableDispatchError } from '../utils';
 import { useAccount } from './useAccount';
 import { useLuno } from './useLuno';
@@ -36,7 +36,7 @@ export interface SendTransactionVariables {
 }
 
 export interface UseSendTransactionConfig {
-  waitFor?: 'inBlock' | 'finalized';
+  waitFor?: Optional<'inBlock' | 'finalized'>;
 }
 
 export type UseSendTransactionOptions = LunoMutationOptions<
@@ -49,11 +49,11 @@ export type UseSendTransactionOptions = LunoMutationOptions<
 export interface UseSendTransactionResult {
   sendTransaction: (
     variables: SendTransactionVariables,
-    options?: UseSendTransactionOptions
+    options?: Optional<UseSendTransactionOptions>
   ) => void;
   sendTransactionAsync: (
     variables: SendTransactionVariables,
-    options?: UseSendTransactionOptions
+    options?: Optional<UseSendTransactionOptions>
   ) => Promise<TransactionReceipt>;
   data: TransactionReceipt | undefined;
   error: Error | null;
@@ -69,7 +69,7 @@ export interface UseSendTransactionResult {
 }
 
 export function useSendTransaction(
-  hookLevelConfig?: UseSendTransactionOptions
+  hookLevelConfig?: Optional<UseSendTransactionOptions>
 ): UseSendTransactionResult {
   const { activeConnector, currentApi, isApiReady } = useLuno();
   const { account } = useAccount();

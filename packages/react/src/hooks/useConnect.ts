@@ -1,18 +1,18 @@
-import type { ConnectionStatus, Connector } from '../types';
+import type { ConnectionStatus, Connector, Optional } from '../types';
 import { sleep } from '../utils';
 import { useLuno } from './useLuno';
 import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
 
 export interface ConnectVariables {
   connectorId: string;
-  targetChainId?: string;
+  targetChainId?: Optional<string>;
 }
 
 export type UseConnectOptions = LunoMutationOptions<void, Error, ConnectVariables, unknown>;
 
 export interface UseConnectResult {
-  connect: (variables: ConnectVariables, options?: UseConnectOptions) => void;
-  connectAsync: (variables: ConnectVariables, options?: UseConnectOptions) => Promise<void>;
+  connect: (variables: ConnectVariables, options?: Optional<UseConnectOptions>) => void;
+  connectAsync: (variables: ConnectVariables, options?: Optional<UseConnectOptions>) => Promise<void>;
   connectors: Connector[];
   activeConnector?: Connector;
   status: ConnectionStatus;
@@ -26,7 +26,7 @@ export interface UseConnectResult {
   variables: ConnectVariables | undefined;
 }
 
-export const useConnect = (hookLevelConfig?: UseConnectOptions): UseConnectResult => {
+export const useConnect = (hookLevelConfig?: Optional<UseConnectOptions>): UseConnectResult => {
   const { connect, config, activeConnector, status } = useLuno();
 
   const connectFn = async (variables: ConnectVariables): Promise<void> => {

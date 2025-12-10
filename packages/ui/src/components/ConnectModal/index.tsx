@@ -1,5 +1,5 @@
 import { useConnect } from '@luno-kit/react';
-import type { Connector } from '@luno-kit/react/types';
+import type { Connector, Optional } from '@luno-kit/react/types';
 import { isMobileDevice } from '@luno-kit/react/utils';
 import type React from 'react';
 import { useEffect, useMemo, useState } from 'react';
@@ -19,8 +19,8 @@ export enum ConnectModalView {
 }
 
 export interface ConnectModalProps {
-  size?: ModalSize;
-  appInfo?: Partial<AppInfo>;
+  size?: Optional<ModalSize>;
+  appInfo?: Optional<Partial<AppInfo>>;
 }
 
 export const ConnectModal: React.FC<ConnectModalProps> = ({ appInfo, size = 'wide' }) => {

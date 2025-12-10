@@ -3,15 +3,16 @@ import type { LegacyClient } from 'dedot';
 import type { Callback, GenericStorageQuery, Unsub } from 'dedot/types';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLuno } from './useLuno';
+import type { Optional } from '../types';
 
 type SubscriptionFn<TArgs extends any[], TData> = (
   ...params: [...TArgs, Callback<TData>]
 ) => Promise<() => Promise<void>>;
 
 export interface UseSubscriptionOptions<TData, TTransformed = TData> {
-  enabled?: boolean;
-  transform?: (data: TData) => TTransformed;
-  defaultValue?: TTransformed;
+  enabled?: Optional<boolean>;
+  transform?: Optional<(data: TData) => TTransformed>;
+  defaultValue?: Optional<TTransformed>;
 }
 
 type ApiBoundSubscriptionFactory<TArgs extends any[], TData> = (
