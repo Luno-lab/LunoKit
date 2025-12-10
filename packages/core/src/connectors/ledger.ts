@@ -179,13 +179,6 @@ export class LedgerConnector extends BaseConnector {
           throw new Error('Chain not found in your configuration chains');
         }
 
-        const coinType = chain.bip44?.coinType
-
-        if (!coinType) {
-          throw new Error('Ledger not supported this chain or you have not set the bip44 coin type!');
-        }
-
-
         try {
           await this.ensureTransportOpen();
 
