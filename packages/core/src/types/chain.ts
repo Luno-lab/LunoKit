@@ -14,22 +14,22 @@ export interface Chain {
 
   rpcUrls: {
     webSocket: Transport;
-    http?: readonly string[];
+    http?: Optional<readonly string[]>;
   };
 
   ss58Format: number;
 
-  blockExplorers?: {
-    default?: { name: string; url: string };
-    [key: string]: { name: string; url: string } | undefined;
-  };
+  blockExplorers?: Optional<{
+    default?: Optional<{ name: string; url: string }>;
+    [key: string]: Optional<{ name: string; url: string }>;
+  }>;
 
   testnet: boolean;
 
   chainIconUrl: string;
 
-  subscan?: {
+  subscan?: Optional<{
     api: string;
     url: string;
-  };
+  }>;
 }

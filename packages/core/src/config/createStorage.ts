@@ -3,7 +3,7 @@ import type { LunoStorage, RawStorage } from '../types';
 // Defines the parameters for the createStorage function.
 export interface CreateStorageParameters {
   storage: RawStorage;
-  keyPrefix?: string; // Optional key prefix, e.g., "luno."
+  keyPrefix?: Optional<string>; // Optional key prefix, e.g., "luno."
 }
 
 /**

@@ -9,7 +9,6 @@ import { LegacyClient, ExtraSignedExtension } from 'dedot';
 import { MerkleizedMetadata } from 'dedot/merkleized-metadata';
 import { Extrinsic } from 'dedot/codecs';
 
-
 export interface LedgerConnectorOptions {
   chains: Chain[]
 }
@@ -61,9 +60,9 @@ export class LedgerConnector extends BaseConnector {
   }
 
   public async connect(
-    appName: string,
-    chains?: Chain[],
-    targetChainId?: string
+    _appName: string,
+    _chains?: Optional<Chain[]>,
+    _targetChainId?: Optional<string>
   ): Promise<Account[] | undefined> {
     if (!(await this.isAvailable())) {
       throw new Error('WebUSB is not supported in this browser.');
@@ -99,7 +98,7 @@ export class LedgerConnector extends BaseConnector {
         throw new Error('Failed to retrieve address from Ledger.');
       }
 
-      const publicKeyHex: HexString | undefined = addressResult.pubKey as string
+      const publicKeyHex: Optional<HexString> = addressResult.pubKey as string
         ? `0x${addressResult.pubKey}`
         : undefined;
 

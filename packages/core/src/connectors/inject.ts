@@ -9,7 +9,7 @@ export interface InjectConnectorOptions {
   name: string;
   icon: string;
   links: ConnectorLinks;
-  injectorId?: string;
+  injectorId?: Optional<string>;
 }
 
 export class InjectConnector extends BaseConnector {
@@ -21,7 +21,7 @@ export class InjectConnector extends BaseConnector {
 
   private unsubscribe: (() => void) | null = null;
 
-  private specificInjector?: Injected = undefined;
+  private specificInjector?: Optional<Injected> = undefined;
 
   constructor(options: InjectConnectorOptions) {
     super();
