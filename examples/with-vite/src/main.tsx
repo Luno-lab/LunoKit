@@ -30,24 +30,12 @@ import {
   talismanConnector,
   walletConnectConnector,
   onekeyConnector,
+  ledgerConnector,
 } from '@luno-kit/react/connectors';
 import { LunoKitProvider } from '@luno-kit/ui';
 import App from './App.tsx';
 import '@luno-kit/ui/styles.css';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
-
-const connectors = [
-  polkadotjsConnector(),
-  subwalletConnector(),
-  talismanConnector(),
-  polkagateConnector(),
-  fearlessConnector(),
-  mimirConnector(),
-  enkryptConnector(),
-  onekeyConnector(),
-  walletConnectConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID }),
-  novaConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID }),
-];
 
 // Custom chains
 const astar: Chain = {
@@ -110,26 +98,42 @@ const hydration: Chain = {
   },
 };
 
+const chains = [
+  polkadot,
+  kusama,
+  westend,
+  paseo,
+  astar,
+  hydration,
+  polkadotAssetHub,
+  polkadotCoretime,
+  polkadotCollectives,
+  polkadotPeople,
+  kusamaAssetHub,
+  kusamaCoretime,
+  kusamaPeople,
+  paseoAssetHub,
+  paseoPassetHub,
+  westendAssetHub,
+];
+
+const connectors = [
+  polkadotjsConnector(),
+  subwalletConnector(),
+  talismanConnector(),
+  polkagateConnector(),
+  fearlessConnector(),
+  mimirConnector(),
+  enkryptConnector(),
+  onekeyConnector(),
+  ledgerConnector({ chains }),
+  walletConnectConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID }),
+  novaConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID }),
+];
+
 const lunoConfig = createConfig({
   appName: 'luno with-vite example',
-  chains: [
-    polkadot,
-    kusama,
-    westend,
-    paseo,
-    astar,
-    hydration,
-    polkadotAssetHub,
-    polkadotCoretime,
-    polkadotCollectives,
-    polkadotPeople,
-    kusamaAssetHub,
-    kusamaCoretime,
-    kusamaPeople,
-    paseoAssetHub,
-    paseoPassetHub,
-    westendAssetHub,
-  ],
+  chains,
   connectors: connectors,
   autoConnect: true,
   subscan: {
