@@ -344,7 +344,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
       });
 
       throw new Error(
-        `[LunoStore] Error connecting with ${connector.name}: ${err?.message || err}`
+        `${connector.name}: ${err?.message || err}`
       );
     }
   },
