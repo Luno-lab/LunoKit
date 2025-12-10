@@ -99,15 +99,9 @@ export class LedgerConnector extends BaseConnector {
         throw new Error('Failed to retrieve address from Ledger.');
       }
 
-      let publicKeyArray: any = [];
-      if (addressResult.pubKey) {
-        if (Array.isArray(addressResult.pubKey)) {
-          publicKeyArray = addressResult.pubKey;
-        } else if ((addressResult.pubKey as unknown) instanceof Uint8Array) {
-          publicKeyArray = Array.from(addressResult.pubKey as unknown as Uint8Array);
-        }
-      }
-      const publicKeyHex: HexString | undefined = publicKeyArray.length > 0 ? u8aToHex(publicKeyArray) : undefined;
+      const publicKeyHex: HexString | undefined = addressResult.pubKey as string
+        ? `0x${addressResult.pubKey}`
+        : undefined;
 
       this.accounts = [
         {
@@ -140,26 +134,15 @@ export class LedgerConnector extends BaseConnector {
   }
 
   public async signMessage(message: string, address: string): Promise<string | undefined> {
-    if (!address || !message) return undefined;
-
     const signer = await this.getSigner();
-    if (!signer || !signer?.signRaw) {
-      throw new Error('Signer is not available or does not support signRaw.');
+
+    if (!signer) {
+      throw new Error('No signer provided');
     }
 
-    const accounts = await this.getAccounts();
-    if (!accounts.some((acc) => acc.address.toLowerCase() === address.toLowerCase())) {
-      throw new Error(`Address ${address} is not managed by ${this.name}.`);
-    }
-
-    try {
-      const dataHex = stringToHex(message);
-      const result = await signer.signRaw({ address, data: dataHex, type: 'bytes' });
-      return result.signature;
-    } catch (error: any) {
-      console.error(`Connector ${this.id}: Failed to sign message:`, error);
-      throw new Error(`Connector ${this.id}: Failed to sign message: ${error.message}`);
-    }
+    const dataHex = stringToHex(message);
+    const result = await signer.signRaw!({ address, data: dataHex, type: 'bytes' });
+    return result.signature;
   }
 
   public async getSigner(): Promise<Signer> {
