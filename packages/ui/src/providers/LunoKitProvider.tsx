@@ -1,5 +1,5 @@
 import { LunoProvider } from '@luno-kit/react';
-import type { Config as LunoCoreConfig } from '@luno-kit/react/types';
+import type { Config as LunoCoreConfig, Optional } from '@luno-kit/react/types';
 import type React from 'react';
 import type { ReactNode } from 'react';
 import { AccountDetailsModal, ChainModal, ConnectModal } from '../components';
@@ -10,28 +10,28 @@ import { ModalProvider } from './ModalContext';
 
 export interface DecorativeImage {
   light: string;
-  dark?: string;
+  dark?: Optional<string>;
 }
 
 export interface PolicyLinks {
   terms: string;
   privacy: string;
-  target?: '_blank' | '_self';
+  target?: Optional<'_blank' | '_self'>;
 }
 
 export interface AppInfo {
-  decorativeImage?: DecorativeImage;
-  guideText?: string;
-  guideLink?: string;
-  description?: string;
-  policyLinks?: PolicyLinks;
+  decorativeImage?: Optional<DecorativeImage>;
+  guideText?: Optional<string>;
+  guideLink?: Optional<string>;
+  description?: Optional<string>;
+  policyLinks?: Optional<PolicyLinks>;
 }
 
 export interface LunoKitProviderProps {
   children: ReactNode;
-  config: LunoCoreConfig & { modalSize?: ModalSize };
-  theme?: PartialLunokitTheme | LunokitThemeOverrides;
-  appInfo?: Partial<AppInfo>;
+  config: LunoCoreConfig & { modalSize?: Optional<ModalSize> };
+  theme?: Optional<PartialLunokitTheme | LunokitThemeOverrides>;
+  appInfo?: Optional<Partial<AppInfo>>;
 }
 
 export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
@@ -53,8 +53,8 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
 };
 
 interface RenderModalsProps {
-  modalSize?: ModalSize;
-  appInfo?: Partial<AppInfo>;
+  modalSize?: Optional<ModalSize>;
+  appInfo?: Optional<Partial<AppInfo>>;
 }
 
 const RenderModals: React.FC<RenderModalsProps> = ({ modalSize, appInfo }: RenderModalsProps) => {

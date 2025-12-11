@@ -10,11 +10,12 @@ import {
 } from 'react';
 import { useCSSVariableInjection } from '../hooks/useCSSVariableInjection';
 import type { LunokitTheme, LunokitThemeOverrides, PartialLunokitTheme, ThemeMode } from './types';
+import type { Optional } from '@luno-kit/react/types';
 
 // Theme preference storage
 interface ThemePreference {
   isAuto: boolean;
-  preferredTheme?: ThemeMode;
+  preferredTheme?: Optional<ThemeMode>;
 }
 
 const THEME_STORAGE_KEY = 'luno.lastThemePreference';
@@ -35,7 +36,7 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 interface ThemeProviderProps {
   children: ReactNode;
-  theme?: PartialLunokitTheme | LunokitThemeOverrides;
+  theme?: Optional<PartialLunokitTheme | LunokitThemeOverrides>;
 }
 
 // Helper function to check if theme is complete or partial

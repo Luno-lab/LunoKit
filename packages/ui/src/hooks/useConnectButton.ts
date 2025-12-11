@@ -7,7 +7,7 @@ import {
   useChains,
   useStatus,
 } from '@luno-kit/react';
-import type { Account, AccountBalance, Chain, Connector } from '@luno-kit/react/types';
+import type { Account, AccountBalance, Chain, Connector, Optional } from '@luno-kit/react/types';
 import { useAccountModal, useChainModal, useConnectModal } from '../providers';
 
 export interface UseConnectButtonReturn {

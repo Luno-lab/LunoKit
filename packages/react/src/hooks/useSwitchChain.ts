@@ -9,10 +9,10 @@ export interface SwitchChainVariables {
 export type UseSwitchChainOptions = LunoMutationOptions<void, Error, SwitchChainVariables, unknown>;
 
 export interface UseSwitchChainResult {
-  switchChain: (variables: SwitchChainVariables, options?: UseSwitchChainOptions) => void;
+  switchChain: (variables: SwitchChainVariables, options?: Optional<UseSwitchChainOptions>) => void;
   switchChainAsync: (
     variables: SwitchChainVariables,
-    options?: UseSwitchChainOptions
+    options?: Optional<UseSwitchChainOptions>
   ) => Promise<void>;
   chains: Chain[];
   currentChain?: Chain;

@@ -19,7 +19,7 @@ interface AccountData {
 interface BalanceLock {
   id: string | number;
   amount: bigint | string | number;
-  reasons?: string | number;
+  reasons?: Optional<string | number>;
 }
 
 export interface ChainProperties {

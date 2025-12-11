@@ -9,14 +9,14 @@ export interface LunoContextState {
   activeConnector?: Optional<Connector>;
   accounts: Account[];
   account?: Optional<Account>;
-  setAccount: (accountOrPublicKey?: Account | HexString) => void;
+  setAccount: (accountOrPublicKey?: Optional<Account | HexString>) => void;
   currentChainId?: Optional<string>;
   currentChain?: Optional<Chain>;
   currentApi?: Optional<LegacyClient>;
   isApiReady: boolean;
   apiError: Error | null;
 
-  connect: (connectorId: string, targetChainId?: string) => Promise<void>;
+  connect: (connectorId: string, targetChainId?: Optional<string>) => Promise<void>;
   disconnect: () => Promise<void>;
   switchChain: (newChainId: string) => Promise<void>;
 }
