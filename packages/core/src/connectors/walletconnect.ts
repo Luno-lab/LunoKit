@@ -326,7 +326,6 @@ export class WalletConnectConnector extends BaseConnector {
 
     try {
       const sessionDeleteHandler = async () => {
-        console.log(`Connector ${this.id}: Session deleted, disconnecting...`);
         await this.cleanup();
         this.emit('disconnect');
       };
@@ -344,7 +343,6 @@ export class WalletConnectConnector extends BaseConnector {
     if (this.unsubscribe) {
       this.unsubscribe();
       this.unsubscribe = null;
-      console.log(`Connector ${this.id}: Unsubscribed from events.`);
     }
   }
 

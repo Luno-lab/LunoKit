@@ -45,7 +45,6 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({
 
   useEffect(() => {
     if (configFromProps) {
-      console.log('[LunoProvider] Setting config to store:', configFromProps);
       _setConfig(configFromProps);
     }
   }, [configFromProps]);
@@ -74,10 +73,6 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({
     }
 
     if (currentApi && currentApi.status === 'connected') {
-      console.log(
-        '[LunoProvider]: Disconnecting API from previous render cycle:',
-        currentApi.runtimeVersion.specName
-      );
       currentApi
         .disconnect()
         .catch((e) => console.error('[LunoProvider] Error disconnecting previous API:', e));
@@ -101,7 +96,6 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({
     const performAutoConnect = async () => {
       await sleep(500);
       if (!configFromProps.autoConnect) {
-        console.log('[LunoProvider]: AutoConnect disabled or config not set.');
         return;
       }
 
@@ -117,12 +111,9 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({
         const lastChainId = await configFromProps.storage.getItem(PERSIST_KEY.LAST_CHAIN_ID);
 
         if (lastConnectorId) {
-          console.log(
-            `[LunoProvider]: AutoConnect Found persisted session: Connector ID "${lastConnectorId}", Chain ID "${lastChainId}"`
-          );
           await connect(lastConnectorId, lastChainId || undefined);
         } else {
-          console.log('[LunoProvider]: AutoConnect No persisted session found or missing data.');
+          console.warn('[LunoProvider]: AutoConnect No persisted session found or missing data.');
         }
       } catch (error) {
         console.error('[LunoProvider]: AutoConnect Error during auto-connect process:', error);

@@ -89,7 +89,5 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     subscan,
   };
 
-  console.log('[createConfig]: Luno Core Config created:', config);
-
   return config;
 }
