@@ -17,7 +17,7 @@ const popularConnectorIds = [
   'nova-mobile',
 ];
 
-const moreConnectorIds = ['polkagate', 'fearless-wallet', 'mimir', 'enkrypt'];
+const moreConnectorIds = ['polkagate', 'fearless-wallet', 'mimir', 'enkrypt', 'OneKey'];
 
 export const ConnectOptions = React.memo(({ onConnect }: Props) => {
   const connectors = useConnectors();
