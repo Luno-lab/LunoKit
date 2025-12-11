@@ -29,6 +29,7 @@ export interface TransactionReceipt {
   dispatchError?: DispatchError;
   errorMessage?: string;
   dispatchInfo?: DispatchInfo;
+  rawReceipt: ISubmittableResult;
 }
 
 export interface SendTransactionVariables {
@@ -113,7 +114,7 @@ export function useSendTransaction(
           .signAndSend(
             account.address,
             { signer },
-            ({ status, dispatchError, events, dispatchInfo, txHash }: ISubmittableResult) => {
+            ({ status, dispatchError, events, dispatchInfo, txHash, ...rest }: ISubmittableResult) => {
               const resolveAndUnsubscribe = (receipt: TransactionReceipt) => {
                 if (unsubscribe) unsubscribe();
                 resolve(receipt);
@@ -142,6 +143,7 @@ export function useSendTransaction(
                     ? getReadableDispatchError(currentApi, error)
                     : undefined,
                   dispatchInfo,
+                  rawReceipt: { status, dispatchError, events, dispatchInfo, txHash, ...rest }
                 };
               };
 
