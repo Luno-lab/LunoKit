@@ -12,7 +12,10 @@ export type UseConnectOptions = LunoMutationOptions<void, Error, ConnectVariable
 
 export interface UseConnectResult {
   connect: (variables: ConnectVariables, options?: Optional<UseConnectOptions>) => void;
-  connectAsync: (variables: ConnectVariables, options?: Optional<UseConnectOptions>) => Promise<void>;
+  connectAsync: (
+    variables: ConnectVariables,
+    options?: Optional<UseConnectOptions>
+  ) => Promise<void>;
   connectors: Connector[];
   activeConnector?: Connector;
   status: ConnectionStatus;

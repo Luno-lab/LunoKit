@@ -322,9 +322,7 @@ export const useLunoStore = create<LunoState>((set, get) => ({
         accounts: [],
       });
 
-      throw new Error(
-        `${connector.name}: ${err?.message || err}`
-      );
+      throw new Error(`${connector.name}: ${err?.message || err}`);
     }
   },
 

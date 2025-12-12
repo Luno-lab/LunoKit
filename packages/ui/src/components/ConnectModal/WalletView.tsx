@@ -1,7 +1,7 @@
 import type { Connector } from '@luno-kit/react/types';
 import React, { useMemo } from 'react';
 import { Close } from '../../assets/icons';
-import { type AppInfo } from '../../providers';
+import type { AppInfo } from '../../providers';
 import { useLunoTheme } from '../../theme';
 import { cs } from '../../utils';
 import { renderAppInfoText } from '../../utils/renderAppInfo';
@@ -114,7 +114,9 @@ export const WalletView = React.memo(
                     'luno:pb-[10px] luno:text-base luno:text-modalTextSecondary luno:leading-base luno:font-medium luno:text-center'
                   }
                 >
-                  {selectedConnector.id === 'ledger' ? connectState.error?.message : 'Confirm connection in the extension'}
+                  {selectedConnector.id === 'ledger'
+                    ? connectState.error?.message
+                    : 'Confirm connection in the extension'}
                 </p>
                 {connectState.isConnecting && (
                   <div className="luno-loading luno:text-modalText luno:w-[24px]"></div>
@@ -188,34 +190,32 @@ export const WalletView = React.memo(
                 </p>
               )}
 
-              {isWide &&
-                appInfo?.policyLinks?.terms &&
-                appInfo?.policyLinks?.privacy && (
-                  <div
-                    className={
-                      'luno:absolute luno:bottom-0 luno:left-0 luno:right-0 luno:text-modalTextSecondary luno:text-xs luno:leading-xs luno:font-regular luno:text-center'
-                    }
+              {isWide && appInfo?.policyLinks?.terms && appInfo?.policyLinks?.privacy && (
+                <div
+                  className={
+                    'luno:absolute luno:bottom-0 luno:left-0 luno:right-0 luno:text-modalTextSecondary luno:text-xs luno:leading-xs luno:font-regular luno:text-center'
+                  }
+                >
+                  <span>By connecting your wallet, you agree to our </span>
+                  <a
+                    href={appInfo.policyLinks.terms}
+                    target={appInfo.policyLinks.target || '_blank'}
+                    rel="noreferrer noopener"
+                    className={'luno:text-accentColor luno:font-regular luno:hover:text-modalText'}
                   >
-                    <span>By connecting your wallet, you agree to our </span>
-                    <a
-                      href={appInfo.policyLinks.terms}
-                      target={appInfo.policyLinks.target || '_blank'}
-                      rel="noreferrer noopener"
-                      className={'luno:text-accentColor luno:font-regular luno:hover:text-modalText'}
-                    >
-                      Terms of Service
-                    </a>
-                    <span> &amp; </span>
-                    <a
-                      href={appInfo.policyLinks.privacy}
-                      target={appInfo.policyLinks.target || '_blank'}
-                      rel="noreferrer noopener"
-                      className={'luno:text-accentColor luno:font-medium luno:hover:text-modalText'}
-                    >
-                      Privacy Policy
-                    </a>
-                  </div>
-                )}
+                    Terms of Service
+                  </a>
+                  <span> &amp; </span>
+                  <a
+                    href={appInfo.policyLinks.privacy}
+                    target={appInfo.policyLinks.target || '_blank'}
+                    rel="noreferrer noopener"
+                    className={'luno:text-accentColor luno:font-medium luno:hover:text-modalText'}
+                  >
+                    Privacy Policy
+                  </a>
+                </div>
+              )}
             </div>
           )}
         </div>

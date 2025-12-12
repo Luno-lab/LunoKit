@@ -6,7 +6,7 @@ import type {
   ISubmittableResult,
 } from 'dedot/types';
 import { useCallback, useState } from 'react';
-import type { TxStatus, Optional } from '../types';
+import type { Optional, TxStatus } from '../types';
 import { getReadableDispatchError } from '../utils';
 import { useAccount } from './useAccount';
 import { useLuno } from './useLuno';
@@ -45,7 +45,8 @@ export type UseSendTransactionOptions = LunoMutationOptions<
   Error,
   SendTransactionVariables,
   unknown
-> & UseSendTransactionConfig;
+> &
+  UseSendTransactionConfig;
 
 export interface UseSendTransactionResult {
   sendTransaction: (
@@ -114,7 +115,14 @@ export function useSendTransaction(
           .signAndSend(
             account.address,
             { signer },
-            ({ status, dispatchError, events, dispatchInfo, txHash, ...rest }: ISubmittableResult) => {
+            ({
+              status,
+              dispatchError,
+              events,
+              dispatchInfo,
+              txHash,
+              ...rest
+            }: ISubmittableResult) => {
               const resolveAndUnsubscribe = (receipt: TransactionReceipt) => {
                 if (unsubscribe) unsubscribe();
                 resolve(receipt);
@@ -129,7 +137,7 @@ export function useSendTransaction(
               const createReceipt = (
                 blockHash: HexString,
                 blockNumber: number | undefined,
-                error: DispatchError | undefined,
+                error: DispatchError | undefined
               ): TransactionReceipt => {
                 const hasError = Boolean(error);
                 return {
@@ -139,11 +147,9 @@ export function useSendTransaction(
                   events,
                   status: hasError ? 'failed' : 'success',
                   dispatchError: error || undefined,
-                  errorMessage: error
-                    ? getReadableDispatchError(currentApi, error)
-                    : undefined,
+                  errorMessage: error ? getReadableDispatchError(currentApi, error) : undefined,
                   dispatchInfo,
-                  rawReceipt: { status, dispatchError, events, dispatchInfo, txHash, ...rest }
+                  rawReceipt: { status, dispatchError, events, dispatchInfo, txHash, ...rest },
                 };
               };
 
@@ -158,7 +164,11 @@ export function useSendTransaction(
                   if (waitFor === 'inBlock') {
                     setTxStatus(dispatchError ? 'failed' : 'success');
                     resolveAndUnsubscribe(
-                      createReceipt(status.value?.blockHash, status.value?.blockNumber, dispatchError)
+                      createReceipt(
+                        status.value?.blockHash,
+                        status.value?.blockNumber,
+                        dispatchError
+                      )
                     );
                   }
                   break;
@@ -167,7 +177,11 @@ export function useSendTransaction(
                   if (waitFor === 'finalized') {
                     setTxStatus(dispatchError ? 'failed' : 'success');
                     resolveAndUnsubscribe(
-                      createReceipt(status.value?.blockHash, status.value?.blockNumber, dispatchError)
+                      createReceipt(
+                        status.value?.blockHash,
+                        status.value?.blockNumber,
+                        dispatchError
+                      )
                     );
                   }
                   break;

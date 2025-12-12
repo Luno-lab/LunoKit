@@ -33,7 +33,11 @@ export function formatBalance(
 /**
  * format address display
  */
-export function formatAddress(address?: Optional<string>, prefixLength = 4, suffixLength = 4): string {
+export function formatAddress(
+  address?: Optional<string>,
+  prefixLength = 4,
+  suffixLength = 4
+): string {
   if (!address) return '';
   if (address.length <= prefixLength + suffixLength) return address;
 

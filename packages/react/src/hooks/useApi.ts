@@ -1,6 +1,6 @@
 import type { LegacyClient } from 'dedot';
-import { useLuno } from './useLuno';
 import type { Optional } from '../types';
+import { useLuno } from './useLuno';
 
 export interface UseApiResult<T extends LegacyClient = LegacyClient> {
   api?: Optional<T>;

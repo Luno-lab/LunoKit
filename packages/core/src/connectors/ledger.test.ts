@@ -1,12 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ledgerConnector } from './ledger';
-import type { Chain, Signer } from '../types';
 import { ledgerWallet } from '../config/logos/generated';
+import type { Chain } from '../types';
+import { ledgerConnector } from './ledger';
 
 const TEST_ADDRESS = '1FRMM8PEiWXYax7rpS6X4XZX1aAAxSWx1CrKTyrVYhV24fg';
-const TEST_PUBLIC_KEY = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]);
-const TEST_PUBLIC_KEY_HEX =
-  'a711da72565f9cc37e65d2b8bb97a939f8d95730e39648f764e210a8fef22bf3';
+const TEST_PUBLIC_KEY = new Uint8Array([
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
+  28, 29, 30, 31, 32,
+]);
+const TEST_PUBLIC_KEY_HEX = 'a711da72565f9cc37e65d2b8bb97a939f8d95730e39648f764e210a8fef22bf3';
 const TEST_CHAIN: Chain = {
   genesisHash: '0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3',
   name: 'Polkadot',
@@ -62,7 +64,11 @@ const mockApp = {
     pubKey: TEST_PUBLIC_KEY_HEX,
   }),
   signWithMetadataEd25519: vi.fn().mockResolvedValue({
-    signature: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64]),
+    signature: new Uint8Array([
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+      27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
+      50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64,
+    ]),
   }),
 };
 
@@ -135,8 +141,12 @@ describe('LedgerConnector', () => {
     vi.mocked(PolkadotGenericApp).mockImplementation(() => mockApp);
     vi.mocked(wsProvider).mockReturnValue(mockProvider);
     vi.mocked((dedotModule as any).LegacyClient).mockImplementation(() => mockClient);
-    vi.mocked((dedotModule as any).ExtraSignedExtension).mockImplementation(() => mockExtraSignedExtension);
-    vi.mocked((merkleizedModule as any).MerkleizedMetadata).mockImplementation(() => mockMerkleizer);
+    vi.mocked((dedotModule as any).ExtraSignedExtension).mockImplementation(
+      () => mockExtraSignedExtension
+    );
+    vi.mocked((merkleizedModule as any).MerkleizedMetadata).mockImplementation(
+      () => mockMerkleizer
+    );
     vi.mocked((codecsModule as any).Extrinsic).mockImplementation(() => mockExtrinsic);
 
     // Reset mock app to default state
@@ -360,9 +370,9 @@ describe('LedgerConnector', () => {
     });
 
     it('should throw for signRaw (not supported)', async () => {
-      await expect(
-        connector.signMessage('hello world', TEST_ADDRESS)
-      ).rejects.toThrow('Ledger not supported signRaw!');
+      await expect(connector.signMessage('hello world', TEST_ADDRESS)).rejects.toThrow(
+        'Ledger not supported signRaw!'
+      );
     });
   });
 

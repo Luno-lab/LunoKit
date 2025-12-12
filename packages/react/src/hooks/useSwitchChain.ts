@@ -27,7 +27,9 @@ export interface UseSwitchChainResult {
   variables: SwitchChainVariables | undefined;
 }
 
-export const useSwitchChain = (hookLevelConfig?: Optional<UseSwitchChainOptions>): UseSwitchChainResult => {
+export const useSwitchChain = (
+  hookLevelConfig?: Optional<UseSwitchChainOptions>
+): UseSwitchChainResult => {
   const { switchChain: storeSwitchChain, config, currentChain, currentChainId } = useLuno();
 
   const switchChainFn = async (variables: SwitchChainVariables): Promise<void> => {

@@ -1,5 +1,5 @@
-import { formatAddress } from '@luno-kit/react/utils';
 import type { Optional } from '@luno-kit/react/types';
+import { formatAddress } from '@luno-kit/react/utils';
 import type React from 'react';
 import { useConnectButton, useWindowSize } from '../../hooks';
 import { cs } from '../../utils';
