@@ -1,3 +1,4 @@
+import type { Optional } from '@luno-kit/react/types';
 import type React from 'react';
 import {
   createContext,
@@ -10,7 +11,6 @@ import {
 } from 'react';
 import { useCSSVariableInjection } from '../hooks/useCSSVariableInjection';
 import type { LunokitTheme, LunokitThemeOverrides, PartialLunokitTheme, ThemeMode } from './types';
-import type { Optional } from '@luno-kit/react/types';
 
 // Theme preference storage
 interface ThemePreference {

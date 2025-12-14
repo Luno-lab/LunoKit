@@ -16,4 +16,3 @@ declare global {
 
   type Optional<T> = T | undefined;
 }
-

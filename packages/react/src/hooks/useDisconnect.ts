@@ -17,7 +17,9 @@ export interface UseDisconnectResult {
   reset: () => void;
 }
 
-export const useDisconnect = (hookLevelConfig?: Optional<UseDisconnectOptions>): UseDisconnectResult => {
+export const useDisconnect = (
+  hookLevelConfig?: Optional<UseDisconnectOptions>
+): UseDisconnectResult => {
   const { disconnect, status } = useLuno();
 
   const disconnectFn = async (): Promise<void> => {

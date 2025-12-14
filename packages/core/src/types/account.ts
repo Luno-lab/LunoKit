@@ -65,12 +65,14 @@ export interface AccountBalance {
   formattedTotal: string;
 
   /** lock details (if any) */
-  locks?: Optional<Array<{
-    id: string;
-    amount: bigint;
-    reason: string;
-    lockHuman: string;
-  }>>;
+  locks?: Optional<
+    Array<{
+      id: string;
+      amount: bigint;
+      reason: string;
+      lockHuman: string;
+    }>
+  >;
 }
 
 /**

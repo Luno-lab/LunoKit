@@ -49,7 +49,7 @@ export const ConnectOptions = React.memo(({ onConnect }: Props) => {
 
   if (isMobileDevice()) {
     const filteredConnectors = connectors
-      .filter(i => i.id !== 'polkadot-js')
+      .filter((i) => i.id !== 'polkadot-js')
       .filter((i) => i.links.deepLink || i.isInstalled());
 
     return (

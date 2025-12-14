@@ -1,16 +1,16 @@
+import type { PolkadotGenericApp } from '@zondax/ledger-substrate';
+import { ExtraSignedExtension, LegacyClient } from 'dedot';
+import { Extrinsic } from 'dedot/codecs';
+import { MerkleizedMetadata } from 'dedot/merkleized-metadata';
 import type { SignerPayloadJSON, SignerPayloadRaw, SignerResult } from 'dedot/types';
+import { hexToU8a, stringToHex, u8aToHex } from 'dedot/utils';
+import { wsProvider } from '../config';
+import { ledgerWallet } from '../config/logos/generated';
 import type { Account, Chain, ConnectorLinks, HexString, Signer } from '../types';
 import { BaseConnector } from './base';
-import { hexToU8a, stringToHex, u8aToHex } from 'dedot/utils';
-import { ledgerWallet } from '../config/logos/generated'
-import type { PolkadotGenericApp } from '@zondax/ledger-substrate'
-import { wsProvider } from '../config'
-import { LegacyClient, ExtraSignedExtension } from 'dedot';
-import { MerkleizedMetadata } from 'dedot/merkleized-metadata';
-import { Extrinsic } from 'dedot/codecs';
 
 export interface LedgerConnectorOptions {
-  chains: Chain[]
+  chains: Chain[];
 }
 
 function getBip44Path(accountIndex: number, coinType = 354): string {
@@ -30,7 +30,7 @@ export class LedgerConnector extends BaseConnector {
 
   constructor(options: LedgerConnectorOptions) {
     super();
-    this.chains = options.chains
+    this.chains = options.chains;
   }
 
   public isInstalled(): boolean {
@@ -98,7 +98,7 @@ export class LedgerConnector extends BaseConnector {
         throw new Error('Failed to retrieve address from Ledger.');
       }
 
-      const publicKeyHex: Optional<HexString> = addressResult.pubKey as string
+      const publicKeyHex: Optional<HexString> = (addressResult.pubKey as string)
         ? `0x${addressResult.pubKey}`
         : undefined;
 
@@ -155,7 +155,7 @@ export class LedgerConnector extends BaseConnector {
           throw new Error('Ledger not connected');
         }
 
-        const chain = this.chains.find(c => c.genesisHash === payload.genesisHash)
+        const chain = this.chains.find((c) => c.genesisHash === payload.genesisHash);
 
         if (!chain) {
           throw new Error('Chain not found in your configuration chains');
@@ -164,7 +164,7 @@ export class LedgerConnector extends BaseConnector {
         try {
           await this.ensureTransportOpen();
 
-          const bip44Path = getBip44Path(this.accountIndex)
+          const bip44Path = getBip44Path(this.accountIndex);
 
           const provider = wsProvider(chain.rpcUrls.webSocket);
           const client = new LegacyClient(provider);
@@ -193,7 +193,11 @@ export class LedgerConnector extends BaseConnector {
           const payloadBuffer = Buffer.from(hexToU8a(txRawPayload));
           const metadataBuffer = Buffer.from(proof);
 
-          const { signature } = await this.app.signWithMetadataEd25519(bip44Path, payloadBuffer, metadataBuffer);
+          const { signature } = await this.app.signWithMetadataEd25519(
+            bip44Path,
+            payloadBuffer,
+            metadataBuffer
+          );
 
           const { signatureTypeId, callTypeId } = client.registry.metadata!.extrinsic;
           const $Signature = client.registry.findCodec(signatureTypeId);
@@ -213,10 +217,8 @@ export class LedgerConnector extends BaseConnector {
           return {
             id: 0,
             signature: u8aToHex(signature),
-            signedTransaction: extrinsic.toHex()
+            signedTransaction: extrinsic.toHex(),
           };
-        } catch (error) {
-          throw error;
         } finally {
           await this.ensureTransportClosed();
         }
@@ -239,5 +241,4 @@ export class LedgerConnector extends BaseConnector {
   }
 }
 
-export const ledgerConnector = (options: LedgerConnectorOptions) =>
-  new LedgerConnector(options);
+export const ledgerConnector = (options: LedgerConnectorOptions) => new LedgerConnector(options);
