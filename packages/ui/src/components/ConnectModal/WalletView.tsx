@@ -36,6 +36,7 @@ export const WalletView = React.memo(
     }, [appInfo?.decorativeImage, themeMode]);
 
     const showQRCode = selectedConnector?.hasConnectionUri();
+    
 
     return (
       <div
@@ -131,7 +132,7 @@ export const WalletView = React.memo(
                 )}
                 {!connectState.isConnecting &&
                   connectState.isError &&
-                  selectedConnector.isInstalled() && (
+                   (selectedConnector?.isInstalled() || selectedConnector?.id === 'ledger') && (
                     <button
                       className={cs(
                         'luno:rounded-connectButton luno:focus:outline-none luno:py-[4px] luno:px-[12px] luno:cursor-pointer luno:font-semibold luno:text-sm luno:text-modalText luno:bg-connectButtonBackground luno:shadow-connectButton luno:active:scale-[0.95]',
