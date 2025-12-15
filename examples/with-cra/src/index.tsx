@@ -15,6 +15,7 @@ import { LunoKitProvider } from '@luno-kit/ui';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import '@luno-kit/ui/styles.css';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 
 const connectors = [
   polkadotjsConnector(),
@@ -32,12 +33,16 @@ const lunoConfig = createConfig({
   autoConnect: true,
 });
 
+const queryClient = new QueryClient();
+
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
-    <LunoKitProvider config={lunoConfig}>
-      <App />
-    </LunoKitProvider>
+    <QueryClientProvider client={queryClient}>
+      <LunoKitProvider config={lunoConfig}>
+        <App />
+      </LunoKitProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );
 

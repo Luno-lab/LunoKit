@@ -7,7 +7,7 @@ import {
   useChains,
   useStatus,
 } from '@luno-kit/react';
-import type { Account, AccountBalance, Chain, Connector } from '@luno-kit/react/types';
+import type { Account, AccountBalance, Chain, Connector, Optional } from '@luno-kit/react/types';
 import { useAccountModal, useChainModal, useConnectModal } from '../providers';
 
 export interface UseConnectButtonReturn {
@@ -16,22 +16,22 @@ export interface UseConnectButtonReturn {
   isDisconnected: boolean;
   isConnecting: boolean;
 
-  account?: Account;
-  address?: string;
+  account?: Optional<Account>;
+  address?: Optional<string>;
 
-  currentChain?: Chain;
+  currentChain?: Optional<Chain>;
   configuredChains: Chain[];
   isChainSupported: boolean;
   chainIconUrl: string;
-  chainName?: string;
+  chainName?: Optional<string>;
 
-  balance?: AccountBalance;
+  balance?: Optional<AccountBalance>;
 
-  activeConnector?: Connector;
+  activeConnector?: Optional<Connector>;
 
-  openConnectModal?: () => void;
-  openAccountModal?: () => void;
-  openChainModal?: () => void;
+  openConnectModal?: Optional<() => void>;
+  openAccountModal?: Optional<() => void>;
+  openChainModal?: Optional<() => void>;
 
   isConnectModalOpen: boolean;
   isAccountModalOpen: boolean;

@@ -26,6 +26,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 20
+          registry-url: https://registry.npmjs.org
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -45,5 +46,4 @@ jobs:
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 

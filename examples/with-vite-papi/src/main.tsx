@@ -16,6 +16,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import '@luno-kit/ui/styles.css';
 import { CHAINS } from './constants';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 
 const supportedChains = Object.values(CHAINS).map((c) => c.genesisHash);
 
@@ -43,10 +44,14 @@ const lunoConfig = createConfig({
   autoConnect: true,
 });
 
+const queryClient = new QueryClient();
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <LunoKitProvider config={lunoConfig}>
-      <App />
-    </LunoKitProvider>
+    <QueryClientProvider client={queryClient}>
+      <LunoKitProvider config={lunoConfig}>
+        <App />
+      </LunoKitProvider>
+    </QueryClientProvider>
   </StrictMode>
 );

@@ -2,7 +2,7 @@
  * format balance
  */
 export function formatBalance(
-  value: string | number | bigint | undefined,
+  value: Optional<string | number | bigint>,
   decimals: number = 0,
   fixedDecimals: number = 4
 ): string {
@@ -33,7 +33,11 @@ export function formatBalance(
 /**
  * format address display
  */
-export function formatAddress(address?: string, prefixLength = 4, suffixLength = 4): string {
+export function formatAddress(
+  address?: Optional<string>,
+  prefixLength = 4,
+  suffixLength = 4
+): string {
   if (!address) return '';
   if (address.length <= prefixLength + suffixLength) return address;
 

@@ -5,8 +5,8 @@ import type { Chain } from './chain';
 import type { Signer } from './signer';
 
 export interface ConnectorLinks {
-  browserExtension?: string;
-  deepLink?: string;
+  browserExtension?: Optional<string>;
+  deepLink?: Optional<string>;
 }
 
 export interface Connector extends EventEmitter {
@@ -18,8 +18,8 @@ export interface Connector extends EventEmitter {
   isInstalled: () => boolean;
   connect(
     appName: string,
-    chains?: Chain[],
-    targetChainId?: string
+    chains?: Optional<Chain[]>,
+    targetChainId?: Optional<string>
   ): Promise<Account[] | undefined>;
   disconnect(): Promise<void>;
   getAccounts(): Promise<Array<Account>>;
@@ -38,12 +38,12 @@ export interface Connector extends EventEmitter {
 }
 
 export interface WalletConnectConnectorOptions {
-  id?: string;
-  name?: string;
-  icon?: string;
+  id?: Optional<string>;
+  name?: Optional<string>;
+  icon?: Optional<string>;
   projectId: string;
-  relayUrl?: string;
-  metadata?: Metadata;
-  links?: ConnectorLinks;
-  supportedChains?: HexString[];
+  relayUrl?: Optional<string>;
+  metadata?: Optional<Metadata>;
+  links?: Optional<ConnectorLinks>;
+  supportedChains?: Optional<HexString[]>;
 }
