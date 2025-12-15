@@ -339,7 +339,6 @@ describe('LunoProvider', () => {
         );
       });
     });
-
   });
 
   describe('SS58 Format Validation Effect', () => {
