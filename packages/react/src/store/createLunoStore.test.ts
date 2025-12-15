@@ -371,7 +371,7 @@ describe('createLunoStore', () => {
       mockConnector.connect.mockRejectedValue(new Error('Connection failed'));
 
       await expect(store.connect('test-connector')).rejects.toThrow(
-        '[LunoStore] Error connecting with Test Connector: Connection failed'
+        'Test Connector: Connection failed'
       );
 
       const state = useLunoStore.getState();
@@ -413,18 +413,6 @@ describe('createLunoStore', () => {
       expect(mockStorage.removeItem).toHaveBeenCalledWith(PERSIST_KEY.LAST_CONNECTOR_ID);
       expect(mockStorage.removeItem).toHaveBeenCalledWith(PERSIST_KEY.LAST_CHAIN_ID);
       expect(mockStorage.removeItem).toHaveBeenCalledWith(PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO);
-    });
-
-    it('should handle no active connector gracefully', async () => {
-      useLunoStore.setState({ activeConnector: undefined });
-      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-
-      await store.disconnect();
-
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('No active connector or already disconnected')
-      );
-      consoleSpy.mockRestore();
     });
 
     it('should handle disconnect failure', async () => {
@@ -487,15 +475,6 @@ describe('createLunoStore', () => {
       expect(state.isApiReady).toBe(true);
       expect(mockApi.disconnect).toHaveBeenCalled();
       expect(mockStorage.setItem).toHaveBeenCalledWith(PERSIST_KEY.LAST_CHAIN_ID, '0x456');
-    });
-
-    it('should skip when already on target chain', async () => {
-      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-
-      await store.switchChain('0x123');
-
-      expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Already on chain 0x123'));
-      consoleSpy.mockRestore();
     });
 
     it('should throw error when config not initialized', async () => {

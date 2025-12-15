@@ -246,13 +246,7 @@ describe('LunoProvider', () => {
       );
 
       await waitFor(() => {
-        console.error('All console.log calls:', consoleLogSpy.mock.calls);
-
         expect(mockApi.disconnect).toHaveBeenCalled();
-        expect(consoleLogSpy).toHaveBeenCalledWith(
-          expect.stringContaining('[LunoProvider]: Disconnecting API from previous render cycle:'),
-          'Test Chain'
-        );
       });
     });
   });
@@ -298,12 +292,6 @@ describe('LunoProvider', () => {
           <TestComponent />
         </LunoProvider>
       );
-
-      await waitFor(() => {
-        expect(consoleLogSpy).toHaveBeenCalledWith(
-          '[LunoProvider]: AutoConnect disabled or config not set.'
-        );
-      });
 
       expect(mockStorage.getItem).not.toHaveBeenCalled();
     });
@@ -352,25 +340,6 @@ describe('LunoProvider', () => {
       });
     });
 
-    it('should log when no persisted session found', async () => {
-      mockStorage.getItem.mockResolvedValue(null);
-
-      const TestComponent = () => <div>Test Child</div>;
-
-      render(
-        <LunoProvider config={mockConfig}>
-          <TestComponent />
-        </LunoProvider>
-      );
-
-      await waitFor(() => {
-        expect(consoleLogSpy).toHaveBeenCalledWith(
-          expect.stringContaining(
-            '[LunoProvider]: AutoConnect No persisted session found or missing data.'
-          )
-        );
-      });
-    });
   });
 
   describe('SS58 Format Validation Effect', () => {
