@@ -1,3 +1,4 @@
+import type { Optional } from '@luno-kit/react/types';
 import { formatAddress } from '@luno-kit/react/utils';
 import type React from 'react';
 import { useConnectButton, useWindowSize } from '../../hooks';
@@ -8,12 +9,12 @@ export const transitionClassName =
   'luno:transition-transform luno:transition-[125] luno:hover:scale-[1.03] luno:transition-ease';
 
 export interface ConnectButtonProps {
-  className?: string;
-  label?: string;
-  accountStatus?: 'full' | 'address';
-  chainStatus?: 'full' | 'icon' | 'name' | 'none';
-  showBalance?: boolean;
-  displayPreference?: 'address' | 'name';
+  className?: Optional<string>;
+  label?: Optional<string>;
+  accountStatus?: Optional<'full' | 'address'>;
+  chainStatus?: Optional<'full' | 'icon' | 'name' | 'none'>;
+  showBalance?: Optional<boolean>;
+  displayPreference?: Optional<'address' | 'name'>;
 }
 
 export const ConnectButton: React.FC<ConnectButtonProps> = ({

@@ -34,12 +34,27 @@ const App: React.FC = () => {
     isPending: isSendingTransaction,
     detailedStatus,
   } = useSendTransaction();
+  const {
+    sendTransactionAsync: sendTransactionInBlockAsync,
+    data: sendTransactionInBlockData,
+    isPending: isSendingTransactionInBlock,
+    detailedStatus: detailedStatusInBlock,
+  } = useSendTransaction({ waitFor: 'inBlock' });
   const { api, isApiReady, apiError } = useApi();
   const { data: paymentInfo, estimate, isLoading: isEstimating } = useEstimatePaymentInfo();
+  const {
+    data: paymentInfoInBlock,
+    estimate: estimateInBlock,
+    isLoading: isEstimatingInBlock,
+  } = useEstimatePaymentInfo();
 
   const { themeMode, setThemeChoice } = useLunoTheme();
 
   const [transferForm, setTransferForm] = useState({
+    to: '',
+    amount: '',
+  });
+  const [transferFormInBlock, setTransferFormInBlock] = useState({
     to: '',
     amount: '',
   });
@@ -104,6 +119,49 @@ const App: React.FC = () => {
     } catch (error) {
       showNotification(
         'Transfer failed',
+        error instanceof Error ? error.message : 'An error occurred during the transfer process.'
+      );
+    }
+  };
+
+  const handleSendTransactionInBlock = async () => {
+    if (!transferFormInBlock.to || !transferFormInBlock.amount) {
+      showNotification('Not available args', 'Please provide complete transfer details.');
+      return;
+    }
+
+    if (!currentChain) {
+      showNotification('Chain not available', 'Please select available chain');
+      return;
+    }
+
+    if (!api || !isApiReady) {
+      showNotification('API error', 'Polkadot API is not yet ready.');
+      return;
+    }
+
+    try {
+      const decimals = currentChain.nativeCurrency.decimals || 12;
+      const amountInPlanck = BigInt(parseFloat(transferFormInBlock.amount) * 10 ** decimals);
+
+      await estimateInBlock(api.tx.balances.transferKeepAlive(transferFormInBlock.to, amountInPlanck));
+
+      const result = await sendTransactionInBlockAsync({
+        extrinsic: api.tx.balances.transferKeepAlive(transferFormInBlock.to, amountInPlanck),
+      });
+
+      if (result.status === 'success') {
+        showNotification(
+          'Transfer (inBlock) successful',
+          `TxHash: ${result.transactionHash.slice(0, 10)}...`
+        );
+        setTransferFormInBlock({ to: '', amount: '' });
+      } else {
+        showNotification('Transfer (inBlock) failed', result.errorMessage);
+      }
+    } catch (error) {
+      showNotification(
+        'Transfer (inBlock) failed',
         error instanceof Error ? error.message : 'An error occurred during the transfer process.'
       );
     }
@@ -313,7 +371,7 @@ const App: React.FC = () => {
               <div className="feature-card">
                 <div className="card-header">
                   <span className="card-icon">💸</span>
-                  <h3>Send Transaction</h3>
+                  <h3>Send Transaction (finalized)</h3>
                 </div>
                 <div className="card-content">
                   {status === ConnectionStatus.Connected ? (
@@ -384,6 +442,97 @@ const App: React.FC = () => {
                           <div className="result-item">
                             <span className="label">DetailedStatus:</span>
                             <span className="value">{detailedStatus}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <span className="no-data">Connect wallet first</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Send Transaction (inBlock) Card */}
+              <div className="feature-card">
+                <div className="card-header">
+                  <span className="card-icon">⛓️</span>
+                  <h3>Send Transaction (wait for inBlock)</h3>
+                </div>
+                <div className="card-content">
+                  {status === ConnectionStatus.Connected ? (
+                    <div className="transaction-section">
+                      <div className="transfer-form">
+                        <div className="form-group">
+                          <label className="form-label">To Address:</label>
+                          <input
+                            type="text"
+                            className="form-input"
+                            placeholder="..."
+                            value={transferFormInBlock.to}
+                            onChange={(e) =>
+                              setTransferFormInBlock((prev) => ({
+                                ...prev,
+                                to: e.target.value,
+                              }))
+                            }
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-label">
+                            Amount ({currentChain?.nativeCurrency.symbol}):
+                          </label>
+                          <input
+                            type="text"
+                            className="form-input"
+                            placeholder="1.0"
+                            value={transferFormInBlock.amount}
+                            onChange={(e) =>
+                              setTransferFormInBlock((prev) => ({
+                                ...prev,
+                                amount: e.target.value,
+                              }))
+                            }
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-label">
+                            Estimate Gas: {paymentInfoInBlock?.partialFeeFormatted || 0}{' '}
+                            {currentChain?.nativeCurrency.symbol}
+                          </label>
+                        </div>
+                        <button
+                          className="transfer-btn"
+                          onClick={handleSendTransactionInBlock}
+                          disabled={
+                            !transferFormInBlock.to ||
+                            !transferFormInBlock.amount ||
+                            !isApiReady ||
+                            isSendingTransactionInBlock ||
+                            isEstimatingInBlock
+                          }
+                        >
+                          {isSendingTransactionInBlock ? 'Sending...' : 'Send Transaction'}
+                        </button>
+                      </div>
+                      {sendTransactionInBlockData && (
+                        <div className="transaction-result">
+                          <div className="result-item">
+                            <span className="label">Status:</span>
+                            <span className="value">{sendTransactionInBlockData.status}</span>
+                          </div>
+                          <div className="result-item">
+                            <span className="label">Hash:</span>
+                            <span className="value">
+                              {sendTransactionInBlockData.transactionHash.slice(0, 20)}...
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                      {detailedStatusInBlock && (
+                        <div className="transaction-result">
+                          <div className="result-item">
+                            <span className="label">DetailedStatus:</span>
+                            <span className="value">{detailedStatusInBlock}</span>
                           </div>
                         </div>
                       )}

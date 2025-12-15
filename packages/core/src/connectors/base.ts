@@ -22,7 +22,7 @@ export abstract class BaseConnector extends EventEmitter {
    * connector icon URL (optional)
    * subclasses can implement.
    */
-  abstract readonly icon?: string;
+  abstract readonly icon?: Optional<string>;
 
   readonly links: ConnectorLinks = {};
   /**
@@ -58,8 +58,8 @@ export abstract class BaseConnector extends EventEmitter {
    */
   abstract connect(
     appName: string,
-    chains?: Chain[],
-    targetChainId?: string
+    chains?: Optional<Chain[]>,
+    targetChainId?: Optional<string>
   ): Promise<Account[] | undefined>;
   /**
    * disconnect from the wallet.
