@@ -1,12 +1,12 @@
-import type { ConnectionStatus } from '../types';
+import type { ConnectionStatus, Optional } from '../types';
 import { useLuno } from './useLuno';
 import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
 
 export type UseDisconnectOptions = LunoMutationOptions<void, Error, void, unknown>;
 
 export interface UseDisconnectResult {
-  disconnect: (options?: UseDisconnectOptions) => void;
-  disconnectAsync: (options?: UseDisconnectOptions) => Promise<void>;
+  disconnect: (options?: Optional<UseDisconnectOptions>) => void;
+  disconnectAsync: (options?: Optional<UseDisconnectOptions>) => Promise<void>;
   status: ConnectionStatus;
   data: undefined;
   error: Error | null;
@@ -17,7 +17,9 @@ export interface UseDisconnectResult {
   reset: () => void;
 }
 
-export const useDisconnect = (hookLevelConfig?: UseDisconnectOptions): UseDisconnectResult => {
+export const useDisconnect = (
+  hookLevelConfig?: Optional<UseDisconnectOptions>
+): UseDisconnectResult => {
   const { disconnect, status } = useLuno();
 
   const disconnectFn = async (): Promise<void> => {

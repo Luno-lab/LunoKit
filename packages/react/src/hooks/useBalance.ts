@@ -1,6 +1,6 @@
 import { formatBalance } from '@luno-kit/core/utils';
 import type { LegacyClient } from 'dedot';
-import type { AccountBalance } from '../types';
+import type { AccountBalance, Optional } from '../types';
 import { useLuno } from './useLuno';
 import {
   type QueryMultiItem,
@@ -19,7 +19,7 @@ interface AccountData {
 interface BalanceLock {
   id: string | number;
   amount: bigint | string | number;
-  reasons?: string | number;
+  reasons?: Optional<string | number>;
 }
 
 export interface ChainProperties {
@@ -58,7 +58,7 @@ const transformBalance = (results: any[], chainProperties: ChainProperties) => {
 };
 
 export interface UseBalanceProps {
-  address?: string;
+  address?: Optional<string>;
 }
 
 export type UseBalanceResult = UseSubscriptionResult<AccountBalance>;

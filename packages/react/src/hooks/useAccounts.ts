@@ -1,12 +1,12 @@
 import type { HexString } from '@luno-kit/core/types';
 import { convertAddress } from '@luno-kit/core/utils';
 import { useMemo } from 'react';
-import type { Account } from '../types';
+import type { Account, Optional } from '../types';
 import { useLuno } from './useLuno';
 
 export interface UseAccountsResult {
   accounts: Account[];
-  selectAccount: (accountOrPublicKey?: Account | HexString) => void;
+  selectAccount: (accountOrPublicKey?: Optional<Account | HexString>) => void;
 }
 
 export const useAccounts = (): UseAccountsResult => {

@@ -28,7 +28,6 @@ describe('useGenesisHash', () => {
       expect(result.current.useLuno.currentApi).toBeDefined();
       expect(result.current.useLuno.isApiReady).toBe(true);
     });
-    console.log('result.current.useGenesisHash', result.current.useGenesisHash);
 
     await waitFor(() => {
       expect(result.current.useGenesisHash.isLoading).toBe(false);

@@ -9,7 +9,7 @@ export interface InjectConnectorOptions {
   name: string;
   icon: string;
   links: ConnectorLinks;
-  injectorId?: string;
+  injectorId?: Optional<string>;
 }
 
 export class InjectConnector extends BaseConnector {
@@ -21,7 +21,7 @@ export class InjectConnector extends BaseConnector {
 
   private unsubscribe: (() => void) | null = null;
 
-  private specificInjector?: Injected = undefined;
+  private specificInjector?: Optional<Injected> = undefined;
 
   constructor(options: InjectConnectorOptions) {
     super();
@@ -43,9 +43,7 @@ export class InjectConnector extends BaseConnector {
   }
 
   public async connect(appName: string): Promise<Account[] | undefined> {
-    console.log(`Connector ${this.id}: Attempting to connect...`);
     if (this.signer) {
-      console.log(`Connector ${this.id}: Already connected.`);
       return [...this.accounts];
     }
     if (!(await this.isAvailable())) {
@@ -74,7 +72,6 @@ export class InjectConnector extends BaseConnector {
         );
       }
       this.accounts = mapInjectedAccounts(rawAccounts, this.id);
-      console.log(`Connector ${this.id}: Initial accounts loaded`, this.accounts);
 
       await this.startSubscription();
 
@@ -89,7 +86,6 @@ export class InjectConnector extends BaseConnector {
   }
 
   public async disconnect(): Promise<void> {
-    console.log(`Connector ${this.id}: Disconnecting...`);
     await this.cleanup();
     this.emit('disconnect');
   }
@@ -110,7 +106,6 @@ export class InjectConnector extends BaseConnector {
       const result = await signer.signRaw({ address, data: dataHex, type: 'bytes' });
       return result.signature;
     } catch (error: any) {
-      console.log('error', error);
       throw new Error(`Connector ${this.id}: Failed to sign message: ${error.message}`);
     }
   }
@@ -131,7 +126,6 @@ export class InjectConnector extends BaseConnector {
           }
         }
       );
-      console.log(`Connector ${this.id}: Subscribed to account changes.`);
     } catch (error) {
       console.error(`Connector ${this.id}: Failed to subscribe to accounts:`, error);
       this.unsubscribe = null;
@@ -142,7 +136,6 @@ export class InjectConnector extends BaseConnector {
     if (this.unsubscribe) {
       this.unsubscribe();
       this.unsubscribe = null;
-      console.log(`Connector ${this.id}: Unsubscribed from account changes.`);
     }
   }
 

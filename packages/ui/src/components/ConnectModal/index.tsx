@@ -1,13 +1,14 @@
 import { useConnect } from '@luno-kit/react';
-import type { Connector } from '@luno-kit/react/types';
+import type { Connector, Optional } from '@luno-kit/react/types';
 import { isMobileDevice } from '@luno-kit/react/utils';
 import type React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { Back, Close } from '../../assets/icons';
 import { useWindowSize } from '../../hooks';
 import { useAnimatedViews } from '../../hooks/useAnimatedViews';
-import { useConnectModal } from '../../providers';
+import { type AppInfo, useConnectModal } from '../../providers';
 import { cs } from '../../utils';
+import { renderAppInfoText } from '../../utils/renderAppInfo';
 import { Dialog, DialogClose, DialogTitle, type ModalSize } from '../Dialog';
 import { ConnectOptions } from './ConnectOptions';
 import { WalletView } from './WalletView';
@@ -18,16 +19,18 @@ export enum ConnectModalView {
 }
 
 export interface ConnectModalProps {
-  size?: ModalSize;
+  size?: Optional<ModalSize>;
+  appInfo?: Optional<Partial<AppInfo>>;
 }
 
-export const ConnectModal: React.FC<ConnectModalProps> = ({ size = 'wide' }) => {
+export const ConnectModal: React.FC<ConnectModalProps> = ({ appInfo, size = 'wide' }) => {
   const { isOpen, close } = useConnectModal();
   const {
     connectAsync,
     reset: resetConnect,
     isPending: isConnecting,
     isError: connectError,
+    error: connectErrorMsg,
   } = useConnect();
   const [selectedConnector, setSelectedConnector] = useState<Connector | null>(null);
   const [qrCode, setQrCode] = useState<string | undefined>();
@@ -81,15 +84,25 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ size = 'wide' }) => 
       [ConnectModalView.connectOptions]: <ConnectOptions onConnect={handleConnect} />,
       [ConnectModalView.walletView]: (
         <WalletView
-          connectState={{ isConnecting, isError: connectError }}
+          connectState={{ isConnecting, isError: connectError, error: connectErrorMsg }}
           isWide={isWide}
           selectedConnector={selectedConnector}
           qrCode={qrCode}
           onConnect={handleConnect}
+          appInfo={appInfo}
         />
       ),
     };
-  }, [isWide, selectedConnector, qrCode, handleConnect, isConnecting, connectError]);
+  }, [
+    isWide,
+    selectedConnector,
+    qrCode,
+    handleConnect,
+    isConnecting,
+    connectError,
+    connectErrorMsg,
+    appInfo,
+  ]);
 
   useEffect(() => {
     if (isWide && currentView === ConnectModalView.walletView) {
@@ -161,32 +174,86 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ size = 'wide' }) => 
               </DialogClose>
             )}
           </div>
-          <div ref={containerRef} className={cs('luno:relative luno:overflow-hidden luno:w-full')}>
+          <div
+            ref={containerRef}
+            className={cs(
+              'luno:relative luno:overflow-hidden luno:w-full',
+              !isWide && 'luno:flex-1 luno:overflow-auto'
+            )}
+          >
             <div ref={currentViewRef}>{viewComponents[currentView]}</div>
           </div>
 
-          {!isWide && currentView === ConnectModalView.connectOptions && (
-            <p
-              className={
-                'luno:cursor-pointer luno:w-full luno:pt-4 luno:text-sm luno:leading-sm luno:text-accentColor luno:font-medium luno:text-center luno:hover:text-modalText'
-              }
-              onClick={() => window.open('https://polkadot.com/get-started/wallets/')}
-            >
-              New to wallets?
-            </p>
-          )}
+          {!isWide &&
+            currentView === ConnectModalView.connectOptions &&
+            renderAppInfoText(
+              appInfo?.guideText,
+              <p
+                className={
+                  'luno:cursor-pointer luno:w-full luno:pt-4 luno:text-sm luno:leading-sm luno:text-accentColor luno:font-medium luno:text-center luno:hover:text-modalText'
+                }
+                onClick={() =>
+                  window.open(appInfo?.guideLink || 'https://polkadot.com/get-started/wallets/')
+                }
+              >
+                New to wallets?
+              </p>
+            )}
         </div>
 
         {isWide && (
           <WalletView
-            connectState={{ isConnecting, isError: connectError }}
+            connectState={{ isConnecting, isError: connectError, error: connectErrorMsg }}
             isWide={isWide}
             selectedConnector={selectedConnector}
             qrCode={qrCode}
             onConnect={handleConnect}
+            appInfo={appInfo}
           />
         )}
       </div>
+
+      {!isWide &&
+        currentView === ConnectModalView.connectOptions &&
+        appInfo?.policyLinks?.terms &&
+        appInfo?.policyLinks?.privacy && (
+          <div
+            className={
+              'luno:w-full luno:border-t luno:border-t-separatorLine luno:flex luno:flex-col luno:items-center luno:gap-1 luno:p-3'
+            }
+          >
+            <div
+              className={
+                'luno:text-modalTextSecondary luno:text-xs luno:leading-xs luno:font-regular luno:text-center'
+              }
+            >
+              By connecting your wallet, you agree to our
+            </div>
+            <div
+              className={
+                'luno:text-xs luno:leading-xs luno:font-regular luno:text-center luno:text-modalTextSecondary'
+              }
+            >
+              <a
+                href={appInfo.policyLinks.terms}
+                target={appInfo.policyLinks.target || '_blank'}
+                rel="noreferrer noopener"
+                className={'luno:text-accentColor luno:font-medium luno:hover:text-modalText'}
+              >
+                Terms of Service
+              </a>
+              <span className={'luno:px-1'}>&amp;</span>
+              <a
+                href={appInfo.policyLinks.privacy}
+                target={appInfo.policyLinks.target || '_blank'}
+                rel="noreferrer noopener"
+                className={'luno:text-accentColor luno:font-medium luno:hover:text-modalText'}
+              >
+                Privacy Policy
+              </a>
+            </div>
+          </div>
+        )}
     </Dialog>
   );
 };

@@ -84,7 +84,7 @@ describe('createConfig', () => {
         autoConnect: true,
         customRpc: undefined,
         customTypes: undefined,
-        cacheMetadata: undefined,
+        cacheMetadata: true,
         metadata: undefined,
         scaledResponses: undefined,
       });
@@ -310,7 +310,7 @@ describe('createConfig', () => {
 
       expect(config.customTypes).toBeUndefined();
       expect(config.customRpc).toBeUndefined();
-      expect(config.cacheMetadata).toBeUndefined();
+      expect(config.cacheMetadata).toBe(true);
       expect(config.metadata).toBeUndefined();
       expect(config.scaledResponses).toBeUndefined();
     });

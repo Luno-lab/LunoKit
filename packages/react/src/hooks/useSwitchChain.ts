@@ -1,4 +1,4 @@
-import type { Chain } from '../types';
+import type { Chain, Optional } from '../types';
 import { useLuno } from './useLuno';
 import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
 
@@ -9,10 +9,10 @@ export interface SwitchChainVariables {
 export type UseSwitchChainOptions = LunoMutationOptions<void, Error, SwitchChainVariables, unknown>;
 
 export interface UseSwitchChainResult {
-  switchChain: (variables: SwitchChainVariables, options?: UseSwitchChainOptions) => void;
+  switchChain: (variables: SwitchChainVariables, options?: Optional<UseSwitchChainOptions>) => void;
   switchChainAsync: (
     variables: SwitchChainVariables,
-    options?: UseSwitchChainOptions
+    options?: Optional<UseSwitchChainOptions>
   ) => Promise<void>;
   chains: Chain[];
   currentChain?: Chain;
@@ -27,7 +27,9 @@ export interface UseSwitchChainResult {
   variables: SwitchChainVariables | undefined;
 }
 
-export const useSwitchChain = (hookLevelConfig?: UseSwitchChainOptions): UseSwitchChainResult => {
+export const useSwitchChain = (
+  hookLevelConfig?: Optional<UseSwitchChainOptions>
+): UseSwitchChainResult => {
   const { switchChain: storeSwitchChain, config, currentChain, currentChainId } = useLuno();
 
   const switchChainFn = async (variables: SwitchChainVariables): Promise<void> => {
