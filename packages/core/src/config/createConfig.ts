@@ -44,7 +44,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     transports = {},
     storage = defaultLunoStorage,
     autoConnect = true,
-    cacheMetadata,
+    cacheMetadata = true,
     metadata,
     scaledResponses,
     customTypes,
@@ -88,8 +88,6 @@ export function createConfig(parameters: CreateConfigParameters): Config {
 
     subscan,
   };
-
-  console.log('[createConfig]: Luno Core Config created:', config);
 
   return config;
 }

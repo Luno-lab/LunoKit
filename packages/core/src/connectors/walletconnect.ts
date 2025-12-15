@@ -19,14 +19,14 @@ export class WalletConnectConnector extends BaseConnector {
   readonly icon: string;
   readonly links: ConnectorLinks;
 
-  private provider?: IUniversalProvider;
+  private provider?: Optional<IUniversalProvider>;
   private projectId: string;
   private relayUrl: string;
-  private metadata?: Metadata;
+  private metadata?: Optional<Metadata>;
   private supportedChains: HexString[] = [];
 
-  private session?: SessionTypes.Struct;
-  private connectedChains?: Chain[] | HexString[];
+  private session?: Optional<SessionTypes.Struct>;
+  private connectedChains?: Optional<Chain[] | HexString[]>;
 
   private unsubscribe: (() => void) | null = null;
 
@@ -59,7 +59,7 @@ export class WalletConnectConnector extends BaseConnector {
     });
   }
 
-  public async connect(appName: string, chains?: Chain[]): Promise<Array<Account>> {
+  public async connect(appName: string, chains?: Optional<Chain[]>): Promise<Array<Account>> {
     if (!this.projectId) {
       throw new Error(
         `${this.name} requires a projectId. Please visit https://cloud.walletconnect.com to get one.`
@@ -326,7 +326,6 @@ export class WalletConnectConnector extends BaseConnector {
 
     try {
       const sessionDeleteHandler = async () => {
-        console.log(`Connector ${this.id}: Session deleted, disconnecting...`);
         await this.cleanup();
         this.emit('disconnect');
       };
@@ -344,7 +343,6 @@ export class WalletConnectConnector extends BaseConnector {
     if (this.unsubscribe) {
       this.unsubscribe();
       this.unsubscribe = null;
-      console.log(`Connector ${this.id}: Unsubscribed from events.`);
     }
   }
 

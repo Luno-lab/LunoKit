@@ -12,6 +12,7 @@ import {
 import { LunoKitProvider } from '@luno-kit/ui';
 import type { AppProps } from 'next/app';
 import '@luno-kit/ui/styles.css';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 
 const connectors = [
   polkadotjsConnector(),
@@ -29,10 +30,14 @@ const lunoConfig = createConfig({
   autoConnect: true,
 });
 
+const queryClient = new QueryClient();
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <LunoKitProvider config={lunoConfig}>
-      <Component {...pageProps} />
-    </LunoKitProvider>
+    <QueryClientProvider client={queryClient}>
+      <LunoKitProvider config={lunoConfig}>
+        <Component {...pageProps} />
+      </LunoKitProvider>
+    </QueryClientProvider>
   );
 }

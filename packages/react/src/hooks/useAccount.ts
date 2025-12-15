@@ -1,11 +1,11 @@
 import { convertAddress } from '@luno-kit/core/utils';
 import { useMemo } from 'react';
-import type { Account } from '../types';
+import type { Account, Optional } from '../types';
 import { useLuno } from './useLuno';
 
 export interface UseAccountResult {
-  account?: Account;
-  address?: string;
+  account?: Optional<Account>;
+  address?: Optional<string>;
 }
 
 export const useAccount = (): UseAccountResult => {

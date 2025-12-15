@@ -17,7 +17,7 @@ const popularConnectorIds = [
   'nova-mobile',
 ];
 
-const moreConnectorIds = ['polkagate', 'fearless-wallet', 'mimir', 'enkrypt'];
+const moreConnectorIds = ['ledger', 'polkagate', 'fearless-wallet', 'mimir', 'enkrypt', 'OneKey'];
 
 export const ConnectOptions = React.memo(({ onConnect }: Props) => {
   const connectors = useConnectors();
@@ -48,7 +48,9 @@ export const ConnectOptions = React.memo(({ onConnect }: Props) => {
   }, [installedConnectors, popularConnectors, moreConnectors]);
 
   if (isMobileDevice()) {
-    const filteredConnectors = connectors.filter((i) => i.links.deepLink);
+    const filteredConnectors = connectors
+      .filter((i) => i.id !== 'polkadot-js')
+      .filter((i) => i.links.deepLink || i.isInstalled());
 
     return (
       <div className={'luno:flex luno:flex-col luno:items-start luno:gap-1 luno:w-full'}>

@@ -11,6 +11,7 @@ import {
   walletConnectConnector,
 } from '@luno-kit/react/connectors';
 import { LunoKitProvider } from '@luno-kit/ui';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 
 const connectors = [
   polkadotjsConnector(),
@@ -28,6 +29,12 @@ const lunoConfig = createConfig({
   autoConnect: true,
 });
 
+const queryClient = new QueryClient();
+
 export default function Providers({ children }: { children: React.ReactNode }) {
-  return <LunoKitProvider config={lunoConfig}>{children}</LunoKitProvider>;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <LunoKitProvider config={lunoConfig}>{children}</LunoKitProvider>
+    </QueryClientProvider>
+  );
 }
