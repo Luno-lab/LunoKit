@@ -1,3 +1,4 @@
+import type { Optional } from '@luno-kit/react/types';
 import type React from 'react';
 import {
   createContext,
@@ -14,7 +15,7 @@ import type { LunokitTheme, LunokitThemeOverrides, PartialLunokitTheme, ThemeMod
 // Theme preference storage
 interface ThemePreference {
   isAuto: boolean;
-  preferredTheme?: ThemeMode;
+  preferredTheme?: Optional<ThemeMode>;
 }
 
 const THEME_STORAGE_KEY = 'luno.lastThemePreference';
@@ -35,7 +36,7 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 interface ThemeProviderProps {
   children: ReactNode;
-  theme?: PartialLunokitTheme | LunokitThemeOverrides;
+  theme?: Optional<PartialLunokitTheme | LunokitThemeOverrides>;
 }
 
 // Helper function to check if theme is complete or partial

@@ -14,29 +14,29 @@ export interface Account {
   address: string;
 
   /** account name (if any) */
-  name?: string;
+  name?: Optional<string>;
 
   /**
    * account public key (hex format, without 0x prefix)
    * used for cross-chain address conversion and verification
    */
-  publicKey?: HexString;
+  publicKey?: Optional<HexString>;
 
   /**
    * other metadata
    * including account source, control method, etc.
    */
-  meta?: {
+  meta?: Optional<{
     /** account source (e.g. 'polkadot-js', 'subwallet-js', 'talisman' etc.) */
-    source?: string;
+    source?: Optional<string>;
 
     /** genesis hash (if the wallet provides a specific chain account) */
-    genesisHash?: string | null;
+    genesisHash?: Optional<string | null>;
 
     /** other custom metadata */
     [key: string]: any;
-  };
-  type?: KeypairType;
+  }>;
+  type?: Optional<KeypairType>;
 }
 
 /**
@@ -65,12 +65,14 @@ export interface AccountBalance {
   formattedTotal: string;
 
   /** lock details (if any) */
-  locks?: Array<{
-    id: string;
-    amount: bigint;
-    reason: string;
-    lockHuman: string;
-  }>;
+  locks?: Optional<
+    Array<{
+      id: string;
+      amount: bigint;
+      reason: string;
+      lockHuman: string;
+    }>
+  >;
 }
 
 /**

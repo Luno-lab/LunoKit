@@ -13,4 +13,6 @@ declare global {
       isNovaWallet: boolean;
     };
   }
+
+  type Optional<T> = T | undefined;
 }

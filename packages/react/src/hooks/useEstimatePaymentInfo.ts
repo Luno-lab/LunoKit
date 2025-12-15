@@ -1,6 +1,7 @@
 import { formatBalance } from '@luno-kit/core/utils';
 import type { ISubmittableExtrinsic, TxPaymentInfo } from 'dedot/types';
 import { useCallback, useState } from 'react';
+import type { Optional } from '../types';
 import { useLuno } from './useLuno';
 
 interface PaymentInfo extends TxPaymentInfo {
@@ -16,7 +17,7 @@ export function useEstimatePaymentInfo() {
   const estimate = useCallback(
     async (
       extrinsic: ISubmittableExtrinsic,
-      senderAddress?: string
+      senderAddress?: Optional<string>
     ): Promise<PaymentInfo | undefined> => {
       const sender = senderAddress || account?.address;
       if (!extrinsic || !sender || !currentChain) return;

@@ -19,23 +19,23 @@ export interface LunoStorage {
 export type Transport = Readonly<string[]>;
 
 type LunoApiOptions = Partial<Omit<ApiOptions, 'provider' | 'signer'>> & {
-  customTypes?: Record<string, AnyShape>;
-  customRpc?: Record<string, any>;
+  customTypes?: Optional<Record<string, AnyShape>>;
+  customRpc?: Optional<Record<string, any>>;
 };
 
 export interface CreateConfigParameters extends LunoApiOptions {
-  appName?: string;
-  chains?: readonly Chain[];
+  appName?: Optional<string>;
+  chains?: Optional<readonly Chain[]>;
   connectors: Connector[];
-  transports?: Record<string, Transport>;
+  transports?: Optional<Record<string, Transport>>;
 
-  storage?: LunoStorage;
-  autoConnect?: boolean;
-  subscan?: {
+  storage?: Optional<LunoStorage>;
+  autoConnect?: Optional<boolean>;
+  subscan?: Optional<{
     apiKey: string;
-    cacheTime?: number;
-    retryCount?: number;
-  };
+    cacheTime?: Optional<number>;
+    retryCount?: Optional<number>;
+  }>;
 }
 
 export interface Config extends LunoApiOptions {
@@ -45,9 +45,9 @@ export interface Config extends LunoApiOptions {
   readonly transports: Readonly<Record<string, Transport>>;
   readonly storage: LunoStorage;
   readonly autoConnect: boolean;
-  readonly subscan?: {
+  readonly subscan?: Optional<{
     apiKey: string;
-    cacheTime?: number;
-    retryCount?: number;
-  };
+    cacheTime?: Optional<number>;
+    retryCount?: Optional<number>;
+  }>;
 }
