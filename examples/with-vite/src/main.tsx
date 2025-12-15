@@ -118,6 +118,8 @@ const chains = [
 ];
 
 const connectors = [
+  ledgerConnector({ chains }),
+  onekeyConnector(),
   polkadotjsConnector(),
   subwalletConnector(),
   talismanConnector(),
@@ -125,8 +127,6 @@ const connectors = [
   fearlessConnector(),
   mimirConnector(),
   enkryptConnector(),
-  onekeyConnector(),
-  ledgerConnector({ chains }),
   walletConnectConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID }),
   novaConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID }),
 ];
