@@ -106,7 +106,7 @@ export class LedgerConnector extends BaseConnector {
         {
           address: addressResult.address,
           publicKey: publicKeyHex,
-          name: `Ledger 0`,
+          name: 'Ledger Wallet',
           type: 'sr25519',
           meta: {
             source: 'ledger',
