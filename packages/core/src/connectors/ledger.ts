@@ -161,67 +161,63 @@ export class LedgerConnector extends BaseConnector {
           throw new Error('Chain not found in your configuration chains');
         }
 
-        try {
-          await this.ensureTransportOpen();
+        await this.ensureTransportOpen();
 
-          const bip44Path = getBip44Path(this.accountIndex);
+        const bip44Path = getBip44Path(this.accountIndex);
 
-          const provider = wsProvider(chain.rpcUrls.webSocket);
-          const client = new LegacyClient(provider);
+        const provider = wsProvider(chain.rpcUrls.webSocket);
+        const client = new LegacyClient(provider);
 
-          await client.connect();
+        await client.connect();
 
-          const metadataHex = await provider.send('state_getMetadata', []);
-          const chainInfo = {
-            tokenSymbol: chain.nativeCurrency?.symbol || 'DOT',
-            decimals: chain.nativeCurrency?.decimals || 10,
-          };
+        const metadataHex = await provider.send('state_getMetadata', []);
+        const chainInfo = {
+          tokenSymbol: chain.nativeCurrency?.symbol || 'DOT',
+          decimals: chain.nativeCurrency?.decimals || 10,
+        };
 
-          const merkleizer = new MerkleizedMetadata(metadataHex, chainInfo);
+        const merkleizer = new MerkleizedMetadata(metadataHex, chainInfo);
 
-          const extra = new ExtraSignedExtension(client, {
-            signerAddress: payload.address,
-            payloadOptions: {
-              metadataHash: u8aToHex(merkleizer.digest()),
-            },
-          });
-          await extra.init();
-          const txRawPayload = extra.toRawPayload(payload.method as HexString).data as HexString;
+        const extra = new ExtraSignedExtension(client, {
+          signerAddress: payload.address,
+          payloadOptions: {
+            metadataHash: u8aToHex(merkleizer.digest()),
+          },
+        });
+        await extra.init();
+        const txRawPayload = extra.toRawPayload(payload.method as HexString).data as HexString;
 
-          const proof = merkleizer.proofForExtrinsicPayload(txRawPayload);
+        const proof = merkleizer.proofForExtrinsicPayload(txRawPayload);
 
-          const payloadBuffer = Buffer.from(hexToU8a(txRawPayload));
-          const metadataBuffer = Buffer.from(proof);
+        const payloadBuffer = Buffer.from(hexToU8a(txRawPayload));
+        const metadataBuffer = Buffer.from(proof);
 
-          const { signature } = await this.app.signWithMetadataEd25519(
-            bip44Path,
-            payloadBuffer,
-            metadataBuffer
-          );
+        const { signature } = await this.app.signWithMetadataEd25519(
+          bip44Path,
+          payloadBuffer,
+          metadataBuffer
+        );
 
-          const { signatureTypeId, callTypeId } = client.registry.metadata!.extrinsic;
-          const $Signature = client.registry.findCodec(signatureTypeId);
-          const $Call = client.registry.findCodec(callTypeId);
+        const { signatureTypeId, callTypeId } = client.registry.metadata!.extrinsic;
+        const $Signature = client.registry.findCodec(signatureTypeId);
+        const $Call = client.registry.findCodec(callTypeId);
 
-          const decodedSignature = $Signature.tryDecode(u8aToHex(signature));
-          const decodedCall = $Call.tryDecode(payload.method);
+        const decodedSignature = $Signature.tryDecode(u8aToHex(signature));
+        const decodedCall = $Call.tryDecode(payload.method);
 
-          const extrinsic = new Extrinsic(client.registry, decodedCall);
+        const extrinsic = new Extrinsic(client.registry, decodedCall);
 
-          extrinsic.attachSignature({
-            address: payload.address,
-            signature: decodedSignature,
-            extra: extra.data,
-          });
+        extrinsic.attachSignature({
+          address: payload.address,
+          signature: decodedSignature,
+          extra: extra.data,
+        });
 
-          return {
-            id: 0,
-            signature: u8aToHex(signature),
-            signedTransaction: extrinsic.toHex(),
-          };
-        } finally {
-          await this.ensureTransportClosed();
-        }
+        return {
+          id: 0,
+          signature: u8aToHex(signature),
+          signedTransaction: extrinsic.toHex(),
+        };
       },
     };
   }
