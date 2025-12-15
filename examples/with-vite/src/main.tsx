@@ -147,21 +147,15 @@ createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
     <LunoKitProvider
       appInfo={{
-        // decorativeImage: {
-        //   light: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/LEGO_logo.svg/1024px-LEGO_logo.svg.png',
-         
-        // },
         guideText: 'New to wallets?',
-        guideLink: 'https://polkadot.com/get-started/wallets/',
+        guideLink: 'https://www.lunolab.xyz/',
         description: 'Connect your wallet to start exploring and interacting with DApps.',
         policyLinks: {
-          terms: 'https://termsofservice.xyz',
-          privacy: 'https://disclaimer.xyz',
+          terms: 'https://x.com/lunolab_xyz',
+          privacy: 'https://t.me/+sPFPCbmbG0gyYzE1',
         },
       }}
-      config={{ ...lunoConfig, 
-        // modalSize: 'compact' 
-      }}
+      config={{ ...lunoConfig }}
       // ============ THEME USAGE EXAMPLES ============
 
       // 1. No theme prop - uses built-in light/dark themes
