@@ -37,7 +37,7 @@ const DialogRoot: React.FC<DialogProps> = ({
       <DialogPrimitive.Portal>
         {React.createElement(DialogPrimitive.Overlay as any, {
           className: cs(
-            'luno:fixed luno:inset-0 luno:z-[100] luno:bg-modalBackdrop luno-kit',
+            'luno:fixed luno:inset-0 luno:backdrop-blur-modalOverlay luno:z-[100] luno:bg-modalBackdrop luno-kit',
             'luno:data-[state=open]:[animation:overlay-in_150ms_ease-out]',
             overlayClassName
           ),
