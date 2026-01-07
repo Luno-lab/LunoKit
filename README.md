@@ -34,6 +34,7 @@ pnpm add @luno-kit/ui @luno-kit/react @tanstack/react-query
 import { createConfig } from '@luno-kit/react'
 import { kusama, polkadot } from '@luno-kit/react/chains'
 import { polkadotjsConnector, subwalletConnector } from '@luno-kit/react/connectors'
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 import '@luno-kit/ui/styles.css'
 
 const config = createConfig({
@@ -42,11 +43,15 @@ const config = createConfig({
   connectors: [polkadotjsConnector(), subwalletConnector()],
 })
 
+const queryClient = new QueryClient();
+
 function App() {
   return (
-    <LunoKitProvider config={config}>
-      <ConnectButton />
-    </LunoKitProvider>
+    <QueryClientProvider client={queryClient}>
+      <LunoKitProvider config={config}>
+        <ConnectButton />
+      </LunoKitProvider>
+    </QueryClientProvider>
   )
 }
 ```
