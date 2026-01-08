@@ -1,7 +1,7 @@
 {
   "name": "@luno-kit/react",
   "description": "React Hooks and Provider for Luno, enabling easy Polkadot wallet interactions in React applications.",
-  "version": "0.0.11",
+  "version": "0.0.12-beta.0",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
