@@ -1,4 +1,5 @@
 import { useAccount, useActiveConnector } from '@luno-kit/react';
+import type { Optional } from '@luno-kit/react/types';
 import { formatAddress } from '@luno-kit/react/utils';
 import type React from 'react';
 import { useCallback, useMemo } from 'react';
@@ -12,7 +13,6 @@ import { AssetListView } from './AssetListView';
 import { MainView } from './MainView';
 import { SwitchAccountView } from './SwitchAccountView';
 import { SwitchChainView } from './SwitchChainView';
-import type { Optional } from '@luno-kit/react/types';
 
 export enum AccountModalView {
   main = 'main',

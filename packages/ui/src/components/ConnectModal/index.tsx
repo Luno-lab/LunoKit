@@ -24,7 +24,11 @@ export interface ConnectModalProps {
   container?: Optional<ModalContainer>;
 }
 
-export const ConnectModal: React.FC<ConnectModalProps> = ({ appInfo, container, size = 'wide' }) => {
+export const ConnectModal: React.FC<ConnectModalProps> = ({
+  appInfo,
+  container,
+  size = 'wide',
+}) => {
   const { isOpen, close } = useConnectModal();
   const {
     connectAsync,

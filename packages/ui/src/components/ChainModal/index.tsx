@@ -1,9 +1,9 @@
+import type { Optional } from '@luno-kit/react/types';
 import type React from 'react';
 import { Close } from '../../assets/icons';
 import { useChainModal } from '../../providers';
 import { ChainList } from '../ChainList';
 import { Dialog, DialogClose, DialogTitle, type ModalContainer } from '../Dialog';
-import type { Optional } from '@luno-kit/react/types';
 
 interface ChainModalProps {
   container?: Optional<ModalContainer>;

@@ -48,7 +48,11 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
       <ThemeProvider theme={theme}>
         <ModalProvider>
           <div>{children}</div>
-          <RenderModals appInfo={appInfo} modalSize={config.modalSize} modalContainer={config.modalContainer} />
+          <RenderModals
+            appInfo={appInfo}
+            modalSize={config.modalSize}
+            modalContainer={config.modalContainer}
+          />
         </ModalProvider>
       </ThemeProvider>
     </LunoProvider>
@@ -61,7 +65,11 @@ interface RenderModalsProps {
   modalContainer?: Optional<ModalContainer>;
 }
 
-const RenderModals: React.FC<RenderModalsProps> = ({ modalSize, appInfo, modalContainer }: RenderModalsProps) => {
+const RenderModals: React.FC<RenderModalsProps> = ({
+  modalSize,
+  appInfo,
+  modalContainer,
+}: RenderModalsProps) => {
   return (
     <>
       <ConnectModal size={modalSize} appInfo={appInfo} container={modalContainer} />
