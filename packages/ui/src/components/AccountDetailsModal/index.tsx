@@ -7,11 +7,12 @@ import { useAnimatedViews } from '../../hooks/useAnimatedViews';
 import { useAccountModal } from '../../providers';
 import { cs } from '../../utils';
 import { Copy } from '../Copy';
-import { Dialog, DialogClose, DialogTitle } from '../Dialog';
+import { Dialog, DialogClose, DialogTitle, type ModalContainer } from '../Dialog';
 import { AssetListView } from './AssetListView';
 import { MainView } from './MainView';
 import { SwitchAccountView } from './SwitchAccountView';
 import { SwitchChainView } from './SwitchChainView';
+import type { Optional } from '@luno-kit/react/types';
 
 export enum AccountModalView {
   main = 'main',
@@ -20,7 +21,11 @@ export enum AccountModalView {
   assetList = 'assetList',
 }
 
-export const AccountDetailsModal: React.FC = () => {
+interface AccountDetailsModalProps {
+  container?: Optional<ModalContainer>;
+}
+
+export const AccountDetailsModal: React.FC<AccountDetailsModalProps> = ({ container }) => {
   const { isOpen, close } = useAccountModal();
   const { address, account } = useAccount();
   const activeConnector = useActiveConnector();
@@ -57,7 +62,7 @@ export const AccountDetailsModal: React.FC = () => {
   );
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleModalClose}>
+    <Dialog open={isOpen} onOpenChange={handleModalClose} container={container}>
       <div
         className={cs(
           'luno:flex luno:flex-col luno:w-full luno:md:w-[360px] luno:max-h-[512px] luno:text-modalText',

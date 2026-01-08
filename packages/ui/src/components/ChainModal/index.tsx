@@ -2,13 +2,18 @@ import type React from 'react';
 import { Close } from '../../assets/icons';
 import { useChainModal } from '../../providers';
 import { ChainList } from '../ChainList';
-import { Dialog, DialogClose, DialogTitle } from '../Dialog';
+import { Dialog, DialogClose, DialogTitle, type ModalContainer } from '../Dialog';
+import type { Optional } from '@luno-kit/react/types';
 
-export const ChainModal: React.FC = () => {
+interface ChainModalProps {
+  container?: Optional<ModalContainer>;
+}
+
+export const ChainModal: React.FC<ChainModalProps> = ({ container }) => {
   const { isOpen, close } = useChainModal();
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
+    <Dialog container={container} open={isOpen} onOpenChange={(open) => !open && close()}>
       <div className="luno:flex luno:flex-col luno:w-full luno:md:w-[360px] luno:max-h-[512px] luno:p-4 luno:gap-3.5 luno:text-modalText">
         <div className="luno:flex luno:items-center luno:justify-between luno:w-full">
           <div className="luno:w-[30px]" /> {/* Placeholder to keep title centered */}
