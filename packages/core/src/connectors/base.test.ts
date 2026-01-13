@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Account, Signer } from '../types';
+import type { Account, SubstrateSigner } from '../types';
 import { BaseConnector } from './base';
 
 class TestConnector extends BaseConnector {
@@ -20,7 +20,7 @@ class TestConnector extends BaseConnector {
       { address: '1FRMM8PEiWXYax7rpS6X4XZX1aAAxSWx1CrKTyrVYhV24fg', name: 'Test Account' },
     ];
     this.accounts = testAccounts;
-    this.signer = {} as Signer;
+    this.signer = {} as SubstrateSigner;
     this.emit('connect', [...testAccounts]);
     return testAccounts;
   }

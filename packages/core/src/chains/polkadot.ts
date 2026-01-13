@@ -5,10 +5,12 @@ import {
   peopleChain,
   polkadotChain,
 } from '../config/logos/generated';
-import type { Chain } from '../types';
+import { ChainType, type SubstrateChain } from '../types';
 
-export const polkadot: Chain = {
+export const polkadot: SubstrateChain = {
+  id: '0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3',
   genesisHash: '0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3',
+  chainType: ChainType.SUBSTRATE,
   name: 'Polkadot',
   nativeCurrency: { name: 'Polkadot', symbol: 'DOT', decimals: 10 },
   rpcUrls: {
@@ -25,8 +27,10 @@ export const polkadot: Chain = {
   },
 };
 
-export const polkadotAssetHub: Chain = {
+export const polkadotAssetHub: SubstrateChain = {
+  id: '0x68d56f15f85d3136970ec16946040bc1752654e906147f7e43e9d539d7c3de2f',
   genesisHash: '0x68d56f15f85d3136970ec16946040bc1752654e906147f7e43e9d539d7c3de2f',
+  chainType: ChainType.SUBSTRATE,
   name: 'AssetHub',
   nativeCurrency: { name: 'AssetHub Polkadot', symbol: 'DOT', decimals: 10 },
   rpcUrls: {
@@ -46,8 +50,10 @@ export const polkadotAssetHub: Chain = {
   },
 };
 
-export const polkadotPeople: Chain = {
+export const polkadotPeople: SubstrateChain = {
+  id: '0x67fa177a097bfa18f77ea95ab56e9bcdfeb0e5b8a40e46298bb93e16b6fc5008',
   genesisHash: '0x67fa177a097bfa18f77ea95ab56e9bcdfeb0e5b8a40e46298bb93e16b6fc5008',
+  chainType: ChainType.SUBSTRATE,
   name: 'People',
   nativeCurrency: { name: 'People Polkadot', symbol: 'DOT', decimals: 10 },
   rpcUrls: {
@@ -64,8 +70,10 @@ export const polkadotPeople: Chain = {
   },
 };
 
-export const polkadotCoretime: Chain = {
+export const polkadotCoretime: SubstrateChain = {
+  id: '0xefb56e30d9b4a24099f88820987d0f45fb645992416535d87650d98e00f46fc4',
   genesisHash: '0xefb56e30d9b4a24099f88820987d0f45fb645992416535d87650d98e00f46fc4',
+  chainType: ChainType.SUBSTRATE,
   name: 'Coretime',
   nativeCurrency: { name: 'Coretime Polkadot', symbol: 'DOT', decimals: 10 },
   rpcUrls: {
@@ -85,8 +93,10 @@ export const polkadotCoretime: Chain = {
   },
 };
 
-export const polkadotCollectives: Chain = {
+export const polkadotCollectives: SubstrateChain = {
+  id: '0x46ee89aa2eedd13e988962630ec9fb7565964cf5023bb351f2b6b25c1b68b0b2',
   genesisHash: '0x46ee89aa2eedd13e988962630ec9fb7565964cf5023bb351f2b6b25c1b68b0b2',
+  chainType: ChainType.SUBSTRATE,
   name: 'Collectives',
   nativeCurrency: { name: 'Collectives Polkadot', symbol: 'DOT', decimals: 10 },
   rpcUrls: {

@@ -1,29 +1,42 @@
 import type { Metadata } from '@walletconnect/universal-provider';
 import type { EventEmitter } from 'eventemitter3';
-import type { Account, HexString } from './account';
-import type { Chain } from './chain';
-import type { Signer } from './signer';
+import type { AccountType, HexString } from './account';
+import type { SubstrateChain } from './chain';
+import type { WalletSigner } from './signer';
+
+export interface SubstrateConnectOptions {
+  appName: string;
+  chains?: SubstrateChain[];
+  targetChainId?: string;
+}
+
+export interface EvmConnectOptions {
+  chainId?: number;
+  withCapabilities?: boolean;
+}
+
+export type ConnectOptions = SubstrateConnectOptions | EvmConnectOptions;
 
 export interface ConnectorLinks {
   browserExtension?: Optional<string>;
   deepLink?: Optional<string>;
 }
 
-export interface Connector extends EventEmitter {
+export interface Connector<
+  SignerType = WalletSigner,
+  OptionsType = ConnectOptions,
+  Account = AccountType,
+> extends EventEmitter {
   readonly id: string;
   readonly name: string;
   readonly icon: string;
   readonly links: ConnectorLinks;
   isAvailable(): Promise<boolean>;
   isInstalled: () => boolean;
-  connect(
-    appName: string,
-    chains?: Optional<Chain[]>,
-    targetChainId?: Optional<string>
-  ): Promise<Account[] | undefined>;
+  connect(options: OptionsType): Promise<Account[] | undefined>;
   disconnect(): Promise<void>;
   getAccounts(): Promise<Array<Account>>;
-  getSigner(): Promise<Signer | undefined>;
+  getSigner(): Promise<SignerType | undefined>;
   signMessage(message: string, address: string): Promise<string | undefined>;
   hasConnectionUri(): boolean;
   getConnectionUri(): Promise<string | undefined>;

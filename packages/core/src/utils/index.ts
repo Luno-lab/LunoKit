@@ -1,6 +1,5 @@
-export * from './address';
-export * from './chain';
-export * from './device';
-export * from './format';
+import * as SubstrateUtils from './substrate';
 
-export * from './papi';
+export * from './common';
+
+export const Substrate = SubstrateUtils;

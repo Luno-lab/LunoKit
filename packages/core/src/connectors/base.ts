@@ -1,11 +1,15 @@
 import { EventEmitter } from 'eventemitter3';
-import type { Account, Chain, ConnectorLinks, Signer } from '../types';
+import type { AccountType, ConnectOptions, ConnectorLinks, WalletSigner } from '../types';
 
 /**
  * base connector abstract class
  * defines the basic properties and methods that all wallet connectors should have.
  */
-export abstract class BaseConnector extends EventEmitter {
+export abstract class BaseConnector<
+  SignerType = WalletSigner,
+  OptionsType = ConnectOptions,
+  Account = AccountType,
+> extends EventEmitter {
   /**
    * the unique identifier of the connector (e.g., 'polkadot-js', 'subwallet-js')
    * subclasses must implement.
@@ -34,7 +38,7 @@ export abstract class BaseConnector extends EventEmitter {
    * store the signer.
    * subclasses are responsible for getting and storing it when connecting.
    */
-  protected signer: Signer | undefined = undefined;
+  protected signer: SignerType | undefined = undefined;
 
   protected connectionUri: string | undefined = undefined;
 
@@ -49,18 +53,12 @@ export abstract class BaseConnector extends EventEmitter {
   /**
    * connect to the wallet, get the initial accounts and signer, and set the necessary event listeners.
    * subclasses must implement:
-   * 1. get the signer and assign it to this.signer.
-   * 2. get the initial accounts list and assign it to this.accounts.
-   * 3. set the account update mechanism of itself (e.g., use web3AccountsSubscribe or WalletConnect events).
-   * 4. update this.accounts when the account list changes and trigger the 'accountsChanged' event.
-   * 5. (optional) trigger the 'connect' event.
+   * 1. get the initial accounts list and assign it to this.accounts.
+   * 2. set the account update mechanism of itself (e.g., use web3AccountsSubscribe or WalletConnect events).
+   * 3. trigger the 'connect' event.
    * @returns the initial available accounts list
    */
-  abstract connect(
-    appName: string,
-    chains?: Optional<Chain[]>,
-    targetChainId?: Optional<string>
-  ): Promise<Account[] | undefined>;
+  abstract connect(options: OptionsType): Promise<Account[] | undefined>;
   /**
    * disconnect from the wallet.
    * subclasses must implement this method to perform specific cleanup logic
@@ -78,10 +76,10 @@ export abstract class BaseConnector extends EventEmitter {
   }
 
   /**
-   * get the cached signer object.
+   * get the signer object.
    * @returns the signer object, or undefined if the connection is not successful or cannot be obtained.
    */
-  public async getSigner(): Promise<Signer | undefined> {
+  public async getSigner(): Promise<SignerType | undefined> {
     if (!this.signer) {
       console.warn(
         `Connector ${this.id}: Signer not available. Connection might be incomplete or failed.`

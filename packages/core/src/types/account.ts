@@ -1,48 +1,37 @@
 import type { KeypairType } from 'dedot/types';
+import type { ChainType } from './chain';
 
 export type HexString = `0x${string}`;
 
-/**
- * Polkadot account interface
- * Represents a chain account
- */
-export interface Account {
-  /**
-   * account address (original format from wallet)
-   * specific SS58 formatting should be done in the React layer based on the chain.
-   */
+interface BaseAccount {
   address: string;
 
-  /** account name (if any) */
   name?: Optional<string>;
 
-  /**
-   * account public key (hex format, without 0x prefix)
-   * used for cross-chain address conversion and verification
-   */
-  publicKey?: Optional<HexString>;
-
-  /**
-   * other metadata
-   * including account source, control method, etc.
-   */
-  meta?: Optional<{
-    /** account source (e.g. 'polkadot-js', 'subwallet-js', 'talisman' etc.) */
-    source?: Optional<string>;
-
-    /** genesis hash (if the wallet provides a specific chain account) */
-    genesisHash?: Optional<string | null>;
-
-    /** other custom metadata */
-    [key: string]: any;
-  }>;
-  type?: Optional<KeypairType>;
+  source?: Optional<string>;
 }
 
-/**
- * account balance information
- */
-export interface AccountBalance {
+export interface SubstrateAccount extends BaseAccount {
+  chainType: ChainType.SUBSTRATE;
+
+  publicKey?: Optional<HexString>;
+
+  type?: Optional<KeypairType>;
+
+  meta?: Optional<{
+    source?: Optional<string>;
+    genesisHash?: Optional<string | null>;
+    [key: string]: any;
+  }>;
+}
+
+export interface EvmAccount extends BaseAccount {
+  chainType: ChainType.EVM;
+}
+
+export interface SubstrateBalance {
+  chainType: ChainType.SUBSTRATE;
+
   /** available balance (in smallest unit) */
   free: bigint;
 
@@ -75,19 +64,16 @@ export interface AccountBalance {
   >;
 }
 
-/**
- * account type enum
- */
-export enum ACCOUNT_TYPE {
-  /** normal account */
-  NORMAL = 'normal',
+export type AccountType = SubstrateAccount | EvmAccount;
 
-  /** multisig account */
-  MULTISIG = 'multisig',
+export interface EvmBalance {
+  chainType: ChainType.EVM;
 
-  /** proxy account */
-  PROXY = 'proxy',
+  value: bigint;
 
-  /** smart contract account */
-  CONTRACT = 'contract',
+  formatted: string;
+
+  symbol: string;
+
+  decimals: number;
 }

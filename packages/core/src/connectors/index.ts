@@ -1,14 +1,7 @@
-export { BaseConnector } from './base';
-export { enkryptConnector } from './enkrypt';
-export { fearlessConnector } from './fearless';
-export { InjectConnector } from './inject';
-export { ledgerConnector } from './ledger';
-export { mimirConnector } from './mimir';
-export { novaConnector } from './nova';
-export { novaMobileConnector } from './novaMobile';
-export { onekeyConnector } from './onekey';
-export { polkadotjsConnector } from './polkadot-js';
-export { polkagateConnector } from './polkagate';
-export { subwalletConnector } from './subwallet';
-export { talismanConnector } from './talisman';
-export { walletConnectConnector } from './walletconnect';
+import * as EvmConnectors from './evm';
+import * as SubstrateConnectors from './substrate';
+
+export const Evm = EvmConnectors;
+export const Substrate = SubstrateConnectors;
+
+export * from './base';

@@ -1,8 +1,10 @@
 import { assethubPaseoChain, paseoChain } from '../config/logos/generated';
-import type { Chain } from '../types';
+import { ChainType, type SubstrateChain } from '../types';
 
-export const paseo: Chain = {
+export const paseo: SubstrateChain = {
+  id: '0x77afd6190f1554ad45fd0d31aee62aacc33c6db0ea801129acb813f913e0764f',
   genesisHash: '0x77afd6190f1554ad45fd0d31aee62aacc33c6db0ea801129acb813f913e0764f',
+  chainType: ChainType.SUBSTRATE,
   name: 'Paseo',
   nativeCurrency: { name: 'Paseo', symbol: 'PAS', decimals: 10 },
   rpcUrls: { webSocket: ['wss://rpc.ibp.network/paseo', 'wss://paseo.rpc.amforc.com'] },
@@ -16,8 +18,10 @@ export const paseo: Chain = {
   },
 };
 
-export const paseoAssetHub: Chain = {
+export const paseoAssetHub: SubstrateChain = {
+  id: '0xd6eec26135305a8ad257a20d003357284c8aa03d0bdb2b357ab0a22371e11ef2',
   genesisHash: '0xd6eec26135305a8ad257a20d003357284c8aa03d0bdb2b357ab0a22371e11ef2',
+  chainType: ChainType.SUBSTRATE,
   name: 'AssetHub Paseo',
   nativeCurrency: { name: 'AssetHub Paseo', symbol: 'PAS', decimals: 10 },
   rpcUrls: {
@@ -33,8 +37,10 @@ export const paseoAssetHub: Chain = {
   },
 };
 
-export const paseoPassetHub: Chain = {
+export const paseoPassetHub: SubstrateChain = {
+  id: '0xfd974cf9eaf028f5e44b9fdd1949ab039c6cf9cc54449b0b60d71b042e79aeb6',
   genesisHash: '0xfd974cf9eaf028f5e44b9fdd1949ab039c6cf9cc54449b0b60d71b042e79aeb6',
+  chainType: ChainType.SUBSTRATE,
   name: 'PAassetHub',
   nativeCurrency: { name: 'PassetHub', symbol: 'PAS', decimals: 10 },
   rpcUrls: {

@@ -12,6 +12,8 @@ declare global {
     walletExtension: {
       isNovaWallet: boolean;
     };
+
+    ethereum: unknown;
   }
 
   type Optional<T> = T | undefined;

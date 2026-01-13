@@ -12,3 +12,6 @@ catalog:
   "dedot": "0.16.0"
   "@dedot/chaintypes": "0.152.0"
   "tsup": "8.5.0"
+  "viem": "2.43.3"
+  "@wagmi/core": "3.0.1"
+  "@wagmi/connectors": "7.0.5"

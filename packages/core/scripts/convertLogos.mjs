@@ -1,6 +1,3 @@
-// Copyright 2024 Luno contributors
-// SPDX-License-Identifier: Apache-2.0
-
 import fs from 'node:fs';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -13,11 +10,6 @@ const MAX_SIZE = 48 * 1024;
 const HEADER =
   '// Copyright 2025 Luno contributors\n// SPDX-License-Identifier: MIT\n\n// Do not edit. Auto-generated via node scripts/convertLogos.mjs\n\n';
 
-/**
- * Convert string to camelCase
- * @param {string} str
- * @returns {string}
- */
 function stringCamelCase(str) {
   return str
     .split(/[-\s]+/)
@@ -29,12 +21,6 @@ function stringCamelCase(str) {
     .join('');
 }
 
-/**
- * Generate file contents
- * @param {string} exportName
- * @param {string} base64Data
- * @returns {string}
- */
 function makeContents(exportName, base64Data) {
   return `${HEADER}export const ${exportName} = '${base64Data}';\n`;
 }
@@ -42,68 +28,72 @@ function makeContents(exportName, base64Data) {
 const logosDir = path.join(__dirname, '../src/config/logos');
 const generatedDir = path.join(logosDir, 'generated');
 
-// Clean and recreate generated directory
 if (fs.existsSync(generatedDir)) {
   fs.rmSync(generatedDir, { force: true, recursive: true });
 }
 fs.mkdirSync(generatedDir);
 
-/** @type {Record<string, string>} */
 const result = {};
-/** @type {Record<string, string>} */
 const allLogos = {};
-/** @type {Record<string, number>} */
 const oversized = {};
 
-const LOGO_TYPES = ['chains', 'wallets'];
+const SOURCE_DIRS = [
+  { path: 'chains/substrate', suffix: 'Chain' },
+  { path: 'chains/evm', suffix: 'Chain', prefix: 'Evm' },
 
-// Process SVG files
-LOGO_TYPES.forEach((type) => {
-  const typeDir = path.join(logosDir, type);
+  { path: 'wallets/evm', suffix: 'Wallet', prefix: 'Evm' },
+  { path: 'wallets/substrate', suffix: 'Wallet', prefix: 'Substrate' },
+
+  { path: 'wallets', suffix: 'Wallet', excludeSubdirs: true }
+];
+
+SOURCE_DIRS.forEach(({ path: subPath, suffix, prefix, excludeSubdirs }) => {
+  const typeDir = path.join(logosDir, subPath);
+
+  if (!fs.existsSync(typeDir)) {
+    console.warn(`⚠️  Directory not found: ${subPath}, skipping...`);
+    return;
+  }
+
   fs.readdirSync(typeDir)
-    .filter((file) => (file.endsWith('.svg') || file.endsWith('.webp')) && !file.startsWith('.'))
+    .filter((file) => {
+      const fullPath = path.join(typeDir, file);
+      if (excludeSubdirs && fs.statSync(fullPath).isDirectory()) return false;
+
+      return (file.endsWith('.svg') || file.endsWith('.webp')) && !file.startsWith('.');
+    })
     .forEach((file) => {
       const fullPath = path.join(typeDir, file);
-      const fileName = path.basename(file, path.extname(file)); // 获取不带扩展名的文件名
+      const fileName = path.basename(file, path.extname(file));
       const fileExt = path.extname(file).toLowerCase();
 
-      const suffix = type.slice(0, -1);
-      const resultSuffix = suffix.charAt(0).toUpperCase() + suffix.slice(1);
+      const camelName = stringCamelCase(fileName);
+      const prefixStr = prefix || '';
+      const suffixStr = suffix;
 
-      const exportName = `${stringCamelCase(fileName)}${resultSuffix}`;
-      const outputFileName = `${stringCamelCase(fileName)}${resultSuffix}`;
+      const exportName = `${camelName}${prefixStr}${suffixStr}`;
+      const outputFileName = exportName;
+
+      let base64Data = '';
+      const buffer = fs.readFileSync(fullPath);
 
       if (fileExt === '.svg') {
-        const buffer = fs.readFileSync(fullPath);
-        const base64Data = `data:image/svg+xml;base64,${buffer.toString('base64')}`;
-
-        const outputPath = path.join(generatedDir, `${outputFileName}.ts`);
-        fs.writeFileSync(outputPath, makeContents(exportName, base64Data));
-
-        result[exportName] = outputFileName;
-        allLogos[exportName] = base64Data;
-
-        if (buffer.length > MAX_SIZE) {
-          oversized[exportName] = buffer.length;
-        }
-
-        console.log(`✅ Generated: ${exportName} (${Math.round(buffer.length / 1024)}KB)`);
+        base64Data = `data:image/svg+xml;base64,${buffer.toString('base64')}`;
       } else if (fileExt === '.webp') {
-        const buffer = fs.readFileSync(fullPath);
-        const base64Data = `data:image/webp;base64,${buffer.toString('base64')}`;
-
-        const outputPath = path.join(generatedDir, `${outputFileName}.ts`);
-        fs.writeFileSync(outputPath, makeContents(exportName, base64Data));
-
-        result[exportName] = outputFileName;
-        allLogos[exportName] = base64Data;
-
-        if (buffer.length > MAX_SIZE) {
-          oversized[exportName] = buffer.length;
-        }
-
-        console.log(`✅ Generated: ${exportName} (${Math.round(buffer.length / 1024)}KB)`);
+        base64Data = `data:image/webp;base64,${buffer.toString('base64')}`;
       }
+
+      const outputPath = path.join(generatedDir, `${outputFileName}.ts`);
+      fs.writeFileSync(outputPath, makeContents(exportName, base64Data));
+
+      result[exportName] = outputFileName;
+      allLogos[exportName] = base64Data;
+
+      if (buffer.length > MAX_SIZE) {
+        oversized[exportName] = buffer.length;
+      }
+
+      console.log(`✅ Generated: ${exportName} (${Math.round(buffer.length / 1024)}KB)`);
     });
 });
 
@@ -135,7 +125,6 @@ if (Object.keys(dupes).length > 0) {
   });
 }
 
-// Check oversized files
 if (Object.keys(oversized).length > 0) {
   console.error('\n❌ Files exceeding 48KB limit:');
   Object.entries(oversized).forEach(([key, size]) => {
