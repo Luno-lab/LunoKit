@@ -12,7 +12,7 @@ import {
   type SubstrateSigner,
   type WalletConnectConnectorOptions,
 } from '../../types';
-import { isSameAddress } from '../../utils';
+import { Substrate } from '../../utils';
 import { SubstrateConnector } from './connector';
 
 export class WalletConnectConnector extends SubstrateConnector {
@@ -262,7 +262,7 @@ export class WalletConnectConnector extends SubstrateConnector {
         const chainAccount = sessionAccounts.find((acc) => {
           const address = acc.replace(`${chainCaipId}:`, '');
 
-          return acc.includes(chainCaipId) && isSameAddress(payload.address, address);
+          return acc.includes(chainCaipId) && Substrate.isSameAddress(payload.address, address);
         });
 
         if (!chainAccount) {
@@ -294,7 +294,7 @@ export class WalletConnectConnector extends SubstrateConnector {
         const chainAccount = sessionAccounts.find((acc) => {
           const address = acc.replace(`${chainCaipId}:`, '');
 
-          return acc.includes(chainCaipId) && isSameAddress(payload.address, address);
+          return acc.includes(chainCaipId) && Substrate.isSameAddress(payload.address, address);
         });
 
         if (!chainAccount) {

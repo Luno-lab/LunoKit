@@ -18,6 +18,7 @@ import {
   type EvmAccount,
   type EvmConnectOptions,
   type EvmSigner,
+  type HexString,
 } from '../../types';
 import { BaseConnector } from '../base';
 
@@ -150,11 +151,11 @@ export abstract class EvmConnector extends BaseConnector<EvmSigner, EvmConnectOp
       onChange: (data) => {
         console.log('datadatadatadatadatadata', data);
         if (data.connector?.uid === this.wagmiConnector?.uid) {
-          const newAccounts =
+          const newAccounts: EvmAccount[] =
             data.addresses?.map((addr) => ({
-              address: addr,
+              address: addr as HexString,
               name: this.name,
-              meta: { source: this.id },
+              source: this.id,
               chainType: ChainType.EVM,
             })) || [];
 

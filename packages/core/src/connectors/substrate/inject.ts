@@ -6,7 +6,7 @@ import type {
   SubstrateConnectOptions,
   SubstrateSigner,
 } from '../../types';
-import { mapInjectedAccounts } from '../../utils';
+import { Substrate } from '../../utils';
 import { SubstrateConnector } from './connector';
 
 export interface InjectConnectorOptions {
@@ -78,7 +78,7 @@ export class InjectConnector extends SubstrateConnector {
           `No accounts found in ${this.name}. Make sure accounts are visible and access is granted.`
         );
       }
-      this.accounts = mapInjectedAccounts(rawAccounts, this.id);
+      this.accounts = Substrate.mapInjectedAccounts(rawAccounts, this.id);
 
       await this.startSubscription();
 
@@ -126,7 +126,7 @@ export class InjectConnector extends SubstrateConnector {
     try {
       this.unsubscribe = this.specificInjector.accounts.subscribe(
         (updatedRawAccounts: InjectedAccount[]) => {
-          const newAccounts = mapInjectedAccounts(updatedRawAccounts, this.id);
+          const newAccounts = Substrate.mapInjectedAccounts(updatedRawAccounts, this.id);
           if (JSON.stringify(this.accounts) !== JSON.stringify(newAccounts)) {
             this.accounts = newAccounts;
             this.emit('accountsChanged', [...this.accounts]);

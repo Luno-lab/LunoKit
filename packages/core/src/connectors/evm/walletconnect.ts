@@ -1,5 +1,5 @@
 import { type WalletConnectParameters, walletConnect } from '@wagmi/connectors';
-import { walletconnectEvmWallet } from '../../config/logos/generated/walletconnectEvmWallet';
+import { walletconnectEvmWallet } from '../../config/logos/generated';
 import { EvmConnector, type EvmConnectorOptions } from './connector';
 
 export class WalletConnectConnector extends EvmConnector {

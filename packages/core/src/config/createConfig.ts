@@ -100,6 +100,7 @@ function createEvmConfigState(evmParams: EvmConfigParams): Config['evm'] {
     connectors: wagmiConnectorsFactoryList,
     transports: { ...defaultTransports, ...wagmiParams.transports },
     storage: wagmiStorage,
+    multiInjectedProviderDiscovery: false,
     ...wagmiParams,
   });
 
