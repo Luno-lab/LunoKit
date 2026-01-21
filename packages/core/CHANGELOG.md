@@ -1,5 +1,11 @@
 # @luno-kit/core
 
+## 0.0.12-beta.2
+
+### Patch Changes
+
+- dc65d4a: handle EVM addresses and out-of-range SS58 formats
+
 ## 0.0.12-beta.1
 
 ### Patch Changes
