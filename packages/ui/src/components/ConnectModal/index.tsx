@@ -9,7 +9,7 @@ import { useAnimatedViews } from '../../hooks/useAnimatedViews';
 import { type AppInfo, useConnectModal } from '../../providers';
 import { cs } from '../../utils';
 import { renderAppInfoText } from '../../utils/renderAppInfo';
-import { Dialog, DialogClose, DialogTitle, type ModalSize } from '../Dialog';
+import { Dialog, DialogClose, DialogTitle, type ModalContainer, type ModalSize } from '../Dialog';
 import { ConnectOptions } from './ConnectOptions';
 import { WalletView } from './WalletView';
 
@@ -21,9 +21,14 @@ export enum ConnectModalView {
 export interface ConnectModalProps {
   size?: Optional<ModalSize>;
   appInfo?: Optional<Partial<AppInfo>>;
+  container?: Optional<ModalContainer>;
 }
 
-export const ConnectModal: React.FC<ConnectModalProps> = ({ appInfo, size = 'wide' }) => {
+export const ConnectModal: React.FC<ConnectModalProps> = ({
+  appInfo,
+  container,
+  size = 'wide',
+}) => {
   const { isOpen, close } = useConnectModal();
   const {
     connectAsync,
@@ -111,7 +116,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({ appInfo, size = 'wid
   }, [isWide, currentView]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={_onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={_onOpenChange} container={container}>
       <div
         className={cs(
           'luno:flex luno:items-stretch luno:justify-between luno:w-full luno:md:max-h-[504px] luno:md:max-w-[724px]'

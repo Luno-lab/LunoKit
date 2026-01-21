@@ -6,12 +6,15 @@ import { cs } from '../../utils';
 
 export type ModalSize = 'compact' | 'wide';
 
+export type ModalContainer = HTMLElement | (() => HTMLElement | null) | null;
+
 interface DialogProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   children: ReactNode;
   contentClassName?: string;
   overlayClassName?: string;
+  container?: ModalContainer;
 }
 
 interface DialogTitleProps {
@@ -31,13 +34,19 @@ const DialogRoot: React.FC<DialogProps> = ({
   children,
   contentClassName,
   overlayClassName,
+  container,
 }) => {
+  const portalContainer = React.useMemo(() => {
+    if (!container) return undefined;
+    return typeof container === 'function' ? container() : container;
+  }, [container]);
+
   return (
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
-      <DialogPrimitive.Portal>
+      <DialogPrimitive.Portal container={portalContainer}>
         {React.createElement(DialogPrimitive.Overlay as any, {
           className: cs(
-            'luno:fixed luno:inset-0 luno:z-[100] luno:bg-modalBackdrop luno-kit',
+            'luno:fixed luno:inset-0 luno:backdrop-blur-modalOverlay luno:z-[100] luno:bg-modalBackdrop luno-kit',
             'luno:data-[state=open]:[animation:overlay-in_150ms_ease-out]',
             overlayClassName
           ),

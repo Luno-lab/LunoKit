@@ -3,7 +3,7 @@ import type { Config as LunoCoreConfig, Optional } from '@luno-kit/react/types';
 import type React from 'react';
 import type { ReactNode } from 'react';
 import { AccountDetailsModal, ChainModal, ConnectModal } from '../components';
-import type { ModalSize } from '../components/Dialog';
+import type { ModalContainer, ModalSize } from '../components/Dialog';
 import type { LunokitThemeOverrides, PartialLunokitTheme } from '../theme';
 import { ThemeProvider } from '../theme';
 import { ModalProvider } from './ModalContext';
@@ -29,7 +29,10 @@ export interface AppInfo {
 
 export interface LunoKitProviderProps {
   children: ReactNode;
-  config: LunoCoreConfig & { modalSize?: Optional<ModalSize> };
+  config: LunoCoreConfig & {
+    modalSize?: Optional<ModalSize>;
+    modalContainer?: Optional<ModalContainer>;
+  };
   theme?: Optional<PartialLunokitTheme | LunokitThemeOverrides>;
   appInfo?: Optional<Partial<AppInfo>>;
 }
@@ -45,7 +48,11 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
       <ThemeProvider theme={theme}>
         <ModalProvider>
           <div>{children}</div>
-          <RenderModals appInfo={appInfo} modalSize={config.modalSize} />
+          <RenderModals
+            appInfo={appInfo}
+            modalSize={config.modalSize}
+            modalContainer={config.modalContainer}
+          />
         </ModalProvider>
       </ThemeProvider>
     </LunoProvider>
@@ -55,14 +62,19 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
 interface RenderModalsProps {
   modalSize?: Optional<ModalSize>;
   appInfo?: Optional<Partial<AppInfo>>;
+  modalContainer?: Optional<ModalContainer>;
 }
 
-const RenderModals: React.FC<RenderModalsProps> = ({ modalSize, appInfo }: RenderModalsProps) => {
+const RenderModals: React.FC<RenderModalsProps> = ({
+  modalSize,
+  appInfo,
+  modalContainer,
+}: RenderModalsProps) => {
   return (
     <>
-      <ConnectModal size={modalSize} appInfo={appInfo} />
-      <AccountDetailsModal />
-      <ChainModal />
+      <ConnectModal size={modalSize} appInfo={appInfo} container={modalContainer} />
+      <AccountDetailsModal container={modalContainer} />
+      <ChainModal container={modalContainer} />
     </>
   );
 };

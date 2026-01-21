@@ -1,5 +1,13 @@
 # @luno-kit/react
 
+## 0.0.12-beta.0
+
+### Patch Changes
+
+- 64375c6: fix backdrop-blur in Dialog component
+- Updated dependencies [64375c6]
+  - @luno-kit/core@0.0.12-beta.0
+
 ## 0.0.11
 
 ### Patch Changes
