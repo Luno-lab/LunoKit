@@ -1,5 +1,5 @@
 import type { InjectedAccount } from 'dedot/types';
-import { decodeAddress, encodeAddress, u8aEq, u8aToHex } from 'dedot/utils';
+import { decodeAddress, encodeAddress, isEvmAddress, u8aEq, u8aToHex } from 'dedot/utils';
 import type { Account, HexString } from '../types';
 
 /**
@@ -20,7 +20,12 @@ export function isValidAddress(address: string): boolean {
  */
 export function convertAddress(address: string, ss58Format: number): string {
   try {
+    if (isEvmAddress(address)) return address;
+
     const publicKey = decodeAddress(address);
+    if (ss58Format > 16383) {
+      return encodeAddress(publicKey, 42);
+    }
     return encodeAddress(publicKey, ss58Format);
   } catch (error: any) {
     throw new Error(`Failed to convert address: ${error.message}`);
