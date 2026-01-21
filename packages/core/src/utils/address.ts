@@ -1,5 +1,5 @@
 import type { InjectedAccount } from 'dedot/types';
-import { decodeAddress, encodeAddress, u8aEq, u8aToHex, isEvmAddress } from 'dedot/utils';
+import { decodeAddress, encodeAddress, isEvmAddress, u8aEq, u8aToHex } from 'dedot/utils';
 import type { Account, HexString } from '../types';
 
 /**

@@ -34,40 +34,37 @@ describe('address utils', () => {
 
   describe('convertAddress', () => {
     it('should convert address between different SS58 formats', () => {
-      const polkadotAddress = '1FRMM8PEiWXYax7rpS6X4XZX1aAAxSWx1CrKTyrVYhV24fg'
-      const kusamaFormat = convertAddress(polkadotAddress, 2)
+      const polkadotAddress = '1FRMM8PEiWXYax7rpS6X4XZX1aAAxSWx1CrKTyrVYhV24fg';
+      const kusamaFormat = convertAddress(polkadotAddress, 2);
 
-      expect(kusamaFormat).toBeDefined()
-      expect(kusamaFormat).not.toBe(polkadotAddress)
-      expect(isValidAddress(kusamaFormat)).toBe(true)
-    })
+      expect(kusamaFormat).toBeDefined();
+      expect(kusamaFormat).not.toBe(polkadotAddress);
+      expect(isValidAddress(kusamaFormat)).toBe(true);
+    });
 
     it('should return EVM address as-is without error', () => {
-      const evmAddress = '0x4838b106fce9647bdf1e7877bf73ce8b0bad5f97'
-      expect(convertAddress(evmAddress, 0)).toBe(evmAddress)
-    })
+      const evmAddress = '0x4838b106fce9647bdf1e7877bf73ce8b0bad5f97';
+      expect(convertAddress(evmAddress, 0)).toBe(evmAddress);
+    });
 
     it('should throw error for invalid address (non-EVM)', () => {
-      expect(() => convertAddress('invalid', 0))
-        .toThrow('Failed to convert address')
-      expect(() => convertAddress('', 0))
-        .toThrow('Failed to convert address')
-    })
+      expect(() => convertAddress('invalid', 0)).toThrow('Failed to convert address');
+      expect(() => convertAddress('', 0)).toThrow('Failed to convert address');
+    });
 
     it('should throw error for negative SS58 format', () => {
-      const validAddress = '1FRMM8PEiWXYax7rpS6X4XZX1aAAxSWx1CrKTyrVYhV24fg'
-      expect(() => convertAddress(validAddress, -1))
-        .toThrow('Failed to convert address')
-    })
+      const validAddress = '1FRMM8PEiWXYax7rpS6X4XZX1aAAxSWx1CrKTyrVYhV24fg';
+      expect(() => convertAddress(validAddress, -1)).toThrow('Failed to convert address');
+    });
 
     it('should fallback to default (42) for out-of-range SS58 format', () => {
-      const validAddress = '1FRMM8PEiWXYax7rpS6X4XZX1aAAxSWx1CrKTyrVYhV24fg'
+      const validAddress = '1FRMM8PEiWXYax7rpS6X4XZX1aAAxSWx1CrKTyrVYhV24fg';
 
-      const result = convertAddress(validAddress, 99999)
-      const expectedFallback = convertAddress(validAddress, 42)
+      const result = convertAddress(validAddress, 99999);
+      const expectedFallback = convertAddress(validAddress, 42);
 
-      expect(result).toBe(expectedFallback)
-    })
+      expect(result).toBe(expectedFallback);
+    });
   });
 
   describe('isSameAddress', () => {
