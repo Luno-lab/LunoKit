@@ -1,5 +1,11 @@
 # @luno-kit/core
 
+## 0.0.12-beta.3
+
+### Patch Changes
+
+- 5e24ced: handle balance queries for EVM and Substrate chains
+
 ## 0.0.12-beta.2
 
 ### Patch Changes

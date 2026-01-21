@@ -1,5 +1,13 @@
 # @luno-kit/react
 
+## 0.0.12-beta.3
+
+### Patch Changes
+
+- 5e24ced: handle balance queries for EVM and Substrate chains
+- Updated dependencies [5e24ced]
+  - @luno-kit/core@0.0.12-beta.3
+
 ## 0.0.12-beta.2
 
 ### Patch Changes
