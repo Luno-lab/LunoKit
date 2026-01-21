@@ -12,6 +12,7 @@
     "@luno-kit/ui": "0.0.11"
   },
   "changesets": [
-    "bumpy-birds-thank"
+    "bumpy-birds-thank",
+    "fifty-pandas-shout"
   ]
 }
