@@ -9,6 +9,10 @@ export enum ConnectionStatus {
   Connected = 'connected',
 }
 
+export type LunoClient = LegacyClient & {
+  isEthereum: boolean;
+};
+
 export interface LunoState {
   config?: Config;
 
@@ -22,7 +26,7 @@ export interface LunoState {
 
   currentChainId?: string;
   currentChain?: Chain;
-  currentApi?: LegacyClient;
+  currentApi?: LunoClient;
   isApiReady: boolean;
   apiError: Error | null;
 

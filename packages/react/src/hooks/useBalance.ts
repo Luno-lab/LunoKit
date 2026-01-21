@@ -1,5 +1,7 @@
 import { formatBalance } from '@luno-kit/core/utils';
 import type { LegacyClient } from 'dedot';
+import { isEvmAddress } from 'dedot/utils';
+import { useMemo } from 'react';
 import type { AccountBalance, Optional } from '../types';
 import { useLuno } from './useLuno';
 import {
@@ -66,7 +68,19 @@ export type UseBalanceResult = UseSubscriptionResult<AccountBalance>;
 export const useBalance = ({ address }: UseBalanceProps): UseBalanceResult => {
   const { currentApi, isApiReady, currentChain } = useLuno();
 
-  return useSubscription<QueryMultiItem[], [AccountData, BalanceLock[]], AccountBalance>({
+  const shouldQuery = useMemo(() => {
+    if (!currentApi || !isApiReady || !address) return false;
+
+    const isEthereumChain = currentApi.isEthereum;
+
+    return isEthereumChain ? isEvmAddress(address) : !isEvmAddress(address);
+  }, [currentApi, isApiReady, address]);
+
+  const subscription = useSubscription<
+    QueryMultiItem[],
+    [AccountData, BalanceLock[]],
+    AccountBalance
+  >({
     queryKey: '/native-balance',
     factory: (api: LegacyClient) => api.queryMulti,
     params: (api: LegacyClient) => [
@@ -74,7 +88,7 @@ export const useBalance = ({ address }: UseBalanceProps): UseBalanceResult => {
       { fn: api.query.balances.locks, args: [address] },
     ],
     options: {
-      enabled: !!currentApi && isApiReady && !!address,
+      enabled: shouldQuery,
       transform: (results) => {
         const chainProperties: ChainProperties = {
           tokenDecimals: currentChain?.nativeCurrency?.decimals ?? DEFAULT_TOKEN_DECIMALS,
@@ -85,4 +99,22 @@ export const useBalance = ({ address }: UseBalanceProps): UseBalanceResult => {
       },
     },
   });
+
+  if (currentApi && isApiReady && address && !shouldQuery) {
+    return {
+      isLoading: false,
+      data: {
+        free: 0n,
+        reserved: 0n,
+        total: 0n,
+        transferable: 0n,
+        formattedTransferable: '0',
+        formattedTotal: '0',
+        locks: [],
+      },
+      error: undefined,
+    };
+  }
+
+  return subscription;
 };
