@@ -1,5 +1,13 @@
 # @luno-kit/ui
 
+## 0.0.12-beta.2
+
+### Patch Changes
+
+- dc65d4a: handle EVM addresses and out-of-range SS58 formats
+- Updated dependencies [dc65d4a]
+  - @luno-kit/react@0.0.12-beta.2
+
 ## 0.0.12-beta.1
 
 ### Patch Changes
