@@ -1,7 +1,7 @@
 {
   "name": "@luno-kit/core",
   "description": "Core module for Luno, providing foundational utilities, types, configuration, and connectors for Polkadot wallet interactions.",
-  "version": "0.0.12-beta.0",
+  "version": "0.0.12-beta.1",
   "type": "module",
   "keywords": [
     "polkadot",
