@@ -1,3 +1,4 @@
+export { SubstrateConnector } from './connector';
 export { enkryptConnector } from './enkrypt';
 export { fearlessConnector } from './fearless';
 export { InjectConnector } from './inject';

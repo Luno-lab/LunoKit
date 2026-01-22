@@ -1,3 +1,4 @@
+export { EvmConnector } from './connector';
 export { InjectConnector } from './inject';
 export { injectedConnector } from './injected';
 export { metamaskConnector } from './metamask';

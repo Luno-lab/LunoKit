@@ -58,7 +58,7 @@ export interface CreateConfigParameters {
   appName?: Optional<string>;
   storage?: Optional<LunoStorage>;
   autoConnect?: Optional<boolean>;
-  substrate: SubstrateConfigParams;
+  substrate?: Optional<SubstrateConfigParams>;
   evm?: Optional<EvmConfigParams>;
 }
 
@@ -67,14 +67,14 @@ export interface Config {
   readonly storage: LunoStorage;
   readonly autoConnect: boolean;
 
-  readonly substrate: {
+  readonly substrate?: Optional<{
     readonly chains: readonly SubstrateChain[];
     readonly connectors: readonly SubstrateConnector[];
     readonly transports: Readonly<Record<string, Transport>>;
     readonly subscan?: SubstrateConfigParams['subscan'];
     readonly customTypes?: LunoApiOptions['customTypes'];
     readonly customRpc?: LunoApiOptions['customRpc'];
-  };
+  }>;
 
   readonly evm?: Optional<{
     readonly chains: readonly EvmChain[];

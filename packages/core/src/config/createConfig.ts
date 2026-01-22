@@ -8,6 +8,7 @@ import {
   ChainType,
   type Config,
   type CreateConfigParameters,
+  type SubstrateConfigParams,
   type EvmChain,
   type EvmConfigParams,
   type EvmInputChain,
@@ -54,6 +55,36 @@ function generateSubstrateTransports(chains: readonly SubstrateChain[]): Record<
   }
 
   return transports;
+}
+
+function createSubstrateConfigState(params: SubstrateConfigParams): Config['substrate'] {
+  const chains = params.chains || [];
+  const connectors = params.connectors || [];
+
+  const transportsFromChains = chains.length > 0 ? generateSubstrateTransports(chains) : {};
+
+  const finalTransports = params.transports
+    ? { ...transportsFromChains, ...params.transports }
+    : transportsFromChains;
+
+  if (chains.length > 0) {
+    for (const chain of chains) {
+      if (!finalTransports[chain.genesisHash]) {
+        console.warn(
+          `Missing transport for chain "${chain.name}" (genesisHash: ${chain.genesisHash})...`
+        );
+      }
+    }
+  }
+
+  return {
+    chains: Object.freeze([...chains]),
+    connectors: Object.freeze([...connectors]),
+    transports: Object.freeze(finalTransports),
+    subscan: params.subscan,
+    customTypes: params.customTypes,
+    customRpc: params.customRpc,
+  };
 }
 
 const CHAIN_ICONS: Record<number, string> = {
@@ -133,29 +164,11 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     evm,
   } = parameters;
 
-  const substrateChains = substrate.chains || [];
-  const substrateConnectors = substrate.connectors || [];
-
-  if (!substrateConnectors || substrateConnectors.length === 0) {
-    throw new Error('No connectors provided. Wallet connection features will be unavailable.');
+  if (!substrate && !evm) {
+    throw new Error('[LunoKit] You must provide either "substrate" or "evm" configuration.');
   }
 
-  const transportsFromChains =
-    substrateChains.length > 0 ? generateSubstrateTransports(substrateChains) : {};
-
-  const finalSubstrateTransports = substrate.transports
-    ? { ...transportsFromChains, ...substrate.transports }
-    : transportsFromChains;
-
-  if (substrateChains.length > 0) {
-    for (const chain of substrateChains) {
-      if (!finalSubstrateTransports[chain.genesisHash]) {
-        console.warn(
-          `Missing transport for chain "${chain.name}" (genesisHash: ${chain.genesisHash}). Chain functionality may be limited.`
-        );
-      }
-    }
-  }
+  const substrateConfigState = substrate ? createSubstrateConfigState(substrate) : undefined;
 
   const evmConfigState = evm ? createEvmConfigState(evm) : undefined;
 
@@ -164,13 +177,6 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     storage,
     autoConnect,
     evm: evmConfigState,
-    substrate: {
-      chains: Object.freeze([...substrateChains]),
-      connectors: Object.freeze([...substrateConnectors]),
-      transports: Object.freeze(finalSubstrateTransports),
-      subscan: substrate.subscan,
-      customTypes: substrate.customTypes,
-      customRpc: substrate.customRpc,
-    },
+    substrate: substrateConfigState,
   };
 }
