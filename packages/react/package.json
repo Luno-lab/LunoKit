@@ -58,6 +58,7 @@
     "@dedot/chaintypes": "catalog:",
     "@luno-kit/core": "workspace:*",
     "dedot": "catalog:",
+    "immer": "11.1.3",
     "zustand": "5.0.4"
   },
   "devDependencies": {
@@ -75,14 +76,18 @@
     "react-dom": "catalog:",
     "tsup": "catalog:",
     "typescript": "^5.3.3",
-    "vitest": "^3.2.4"
+    "viem": "catalog:",
+    "vitest": "^3.2.4",
+    "wagmi": "catalog:"
   },
   "peerDependencies": {
     "@dedot/chaintypes": "^0.152.0",
     "@tanstack/react-query": ">=5.0.0",
     "dedot": "^0.16.0",
     "react": ">=18.0.0",
-    "react-dom": ">=18.0.0"
+    "react-dom": ">=18.0.0",
+    "viem": ">=2.0.0",
+    "wagmi": ">=3.0.0"
   },
   "repository": {
     "type": "git",

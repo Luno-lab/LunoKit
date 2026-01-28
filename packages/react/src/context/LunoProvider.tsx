@@ -1,42 +1,66 @@
+import { ChainType, type EvmAccount, type HexString, type EvmConnectorType, type SubstrateChain, type Transport, type Config } from '@luno-kit/core/types';
 import type React from 'react';
 import { type ReactNode, useCallback, useEffect, useMemo } from 'react';
+import { WagmiProvider, useConnection } from 'wagmi';
 import { PERSIST_KEY } from '../constants';
 import { useIsInitialized } from '../hooks/useIsInitialized';
 import { useLunoStore } from '../store';
-import type { Chain, Config, Transport } from '../types';
 import { createApi, sleep } from '../utils';
 import { LunoContext, type LunoContextState } from './LunoContext';
+import { useConnect } from '../hooks'
+import { useSubstrateEvents } from '../hooks/useSubstrateEvents'
 
 interface LunoProviderProps {
   config: Config;
   children: ReactNode;
 }
 
-export const LunoProvider: React.FC<LunoProviderProps> = ({
-  config: configFromProps,
-  children,
-}: LunoProviderProps) => {
-  const {
-    _setConfig,
-    _setApi,
-    _setIsApiReady,
-    _setApiError,
-    setAccount,
-    currentChainId,
-    config: configInStore,
-    currentApi,
-    connect,
-    status,
-    activeConnector,
-    accounts,
-    account,
-    currentChain,
-    isApiReady,
-    apiError,
-    disconnect,
-    switchChain,
-  } = useLunoStore();
-  const { markAsInitialized, isInitialized } = useIsInitialized();
+const EvmStateSync = () => {
+  const setEvmState = useLunoStore((state) => state.setEvmState);
+  const evmConnectors = useLunoStore((state) => state.config?.evm?.connectors);
+
+  const connection = useConnection();
+
+  useEffect(() => {
+    const activeLunoConnector = evmConnectors?.find(
+      (c: EvmConnectorType) => c.id === connection?.connector?.id
+    );
+    const accounts: EvmAccount[] = (connection.addresses || []).map((addr: HexString) => ({
+      address: addr,
+      source: activeLunoConnector?.id || 'unknown',
+      name: activeLunoConnector?.name || activeLunoConnector?.id,
+      chainType: ChainType.EVM,
+    }))
+
+    setEvmState({
+      status: connection.status,
+      chainId: connection.chainId,
+      account: connection.address,
+      allAccounts: accounts,
+      connector: activeLunoConnector,
+    });
+  }, [connection, evmConnectors]);
+
+  return null;
+};
+
+const SubstrateStateSync = () => {
+  const config = useLunoStore((state) => state.config);
+  const substrateChainId = useLunoStore((state) => state.substrate.chainId);
+  const substrateApi = useLunoStore((state) => state.substrate.currentApi);
+  const isApiReady = useLunoStore((state) => state.substrate.isApiReady);
+  const substrateChain = useLunoStore((state) => state.substrate.chain);
+
+  const _setApi = useLunoStore((state) => state._setApi);
+  const _setIsApiReady = useLunoStore((state) => state._setIsApiReady);
+  const _setApiError = useLunoStore((state) => state._setApiError);
+
+  const { connectAsync } = useConnect({ namespace: ChainType.SUBSTRATE });
+
+  const { isInitialized: isApiInitialized, markAsInitialized: markApiInitialized } = useIsInitialized();
+  const { isInitialized: isAutoConnectInitialized, markAsInitialized: markAutoConnectInitialized } = useIsInitialized();
+
+  useSubstrateEvents()
 
   const clearApiState = useCallback(() => {
     _setApi(undefined);
@@ -44,43 +68,39 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({
   }, [_setApi, _setIsApiReady]);
 
   useEffect(() => {
-    if (configFromProps) {
-      _setConfig(configFromProps);
-    }
-  }, [configFromProps]);
+    if (!config?.substrate || isApiInitialized) return;
 
-  useEffect(() => {
-    if (isInitialized) return;
-    if (!configFromProps || !currentChainId) {
-      if (currentApi && currentApi.status === 'connected') {
-        currentApi.disconnect().catch(console.error);
+    if (!substrateChainId) {
+      if (substrateApi && substrateApi.status === 'connected') {
+        substrateApi.disconnect().catch(console.error);
       }
       clearApiState();
+      markApiInitialized();
       return;
     }
 
-    const chainConfig: Chain | undefined = configFromProps.chains.find(
-      (c: Chain) => c.genesisHash === currentChainId
+    const chainConfig = config.substrate.chains.find(
+      (c: SubstrateChain) => c.genesisHash === substrateChainId
     );
-    const transportConfig: Transport | undefined = configFromProps.transports[currentChainId];
+    const transportConfig: Transport | undefined = config.substrate.transports[substrateChainId];
 
     if (!chainConfig || !transportConfig) {
-      if (currentApi && currentApi.status === 'connected') {
-        currentApi.disconnect().catch(console.error);
+      if (substrateApi?.status === 'connected') {
+        substrateApi.disconnect().catch(console.error);
       }
       clearApiState();
+      markApiInitialized();
       return;
     }
 
-    if (currentApi && currentApi.status === 'connected') {
-      currentApi
-        .disconnect()
-        .catch((e) => console.error('[LunoProvider] Error disconnecting previous API:', e));
+    if (substrateApi && substrateApi.status === 'connected') {
+      substrateApi.disconnect().catch(console.error);
     }
 
     clearApiState();
+    markApiInitialized();
 
-    createApi({ config: configFromProps, chainId: currentChainId })
+    createApi({ config, chainId: substrateChainId })
       .then((api) => {
         _setApi(api);
         _setIsApiReady(true);
@@ -88,110 +108,98 @@ export const LunoProvider: React.FC<LunoProviderProps> = ({
       .catch((e) => {
         clearApiState();
         _setApiError(e);
-      })
-      .finally(() => markAsInitialized());
-  }, [configFromProps, currentChainId]);
+      });
+  }, [config, substrateChainId]);
 
   useEffect(() => {
     const performAutoConnect = async () => {
-      await sleep(500);
-      if (!configFromProps.autoConnect) {
-        return;
-      }
+      if (!config?.autoConnect) return;
 
-      if (!configFromProps.storage) {
-        console.warn('[LunoProvider]: AutoConnect Storage not available, cannot auto-connect.');
+      markAutoConnectInitialized();
+
+      await sleep(500);
+
+      if (!config.storage) {
+        console.warn('[LunoProvider]: AutoConnect Storage not available.');
         return;
       }
 
       try {
-        const lastConnectorId = await configFromProps.storage.getItem(
+        const lastConnectorId = await config.storage.getItem(
           PERSIST_KEY.LAST_CONNECTOR_ID
         );
-        const lastChainId = await configFromProps.storage.getItem(PERSIST_KEY.LAST_CHAIN_ID);
+        const lastChainId = await config.storage.getItem(PERSIST_KEY.LAST_CHAIN_ID);
 
         if (lastConnectorId) {
-          await connect(lastConnectorId, lastChainId || undefined);
-        } else {
-          console.warn('[LunoProvider]: AutoConnect No persisted session found or missing data.');
+          await connectAsync({
+            connectorId: lastConnectorId,
+            chainId: lastChainId as HexString || undefined,
+          });
         }
       } catch (error) {
-        console.error('[LunoProvider]: AutoConnect Error during auto-connect process:', error);
+        console.error('[LunoProvider]: AutoConnect Error:', error);
       }
     };
 
-    if (configFromProps) {
+    if (config?.substrate && !isAutoConnectInitialized) {
       performAutoConnect();
     }
-  }, [configFromProps]);
+  }, [config]);
 
   useEffect(() => {
+    if (!config?.substrate || !isApiReady || !substrateApi || !substrateChain) return;
+
     if (
-      isApiReady &&
-      currentApi &&
-      currentChain &&
-      currentChain.ss58Format !== undefined &&
-      currentChain.ss58Format !== null
+      substrateChain.ss58Format !== undefined &&
+      substrateChain.ss58Format !== null
     ) {
       try {
-        const apiSs58 = currentApi.consts.system.ss58Prefix;
+        const apiSs58 = substrateApi.consts.system.ss58Prefix;
 
-        if (apiSs58 !== null && apiSs58 !== undefined && apiSs58 !== currentChain.ss58Format) {
+        if (apiSs58 !== null && apiSs58 !== undefined && apiSs58 !== substrateChain.ss58Format) {
           console.error(
-            `[LunoProvider]: SS58 Format Mismatch for chain "${currentChain.name}" (genesisHash: ${currentChain.genesisHash}):\n` +
-              `  - Configured SS58Format: ${currentChain.ss58Format}\n` +
-              `  - Node Runtime SS58Format: ${apiSs58}\n` +
-              `Please verify your Luno configuration for this chain to ensure correct address display and interaction.`
-          );
-        } else if (apiSs58 === null || apiSs58 === undefined) {
-          console.warn(
-            `[LunoProvider]: Could not determine SS58 format from the API for chain "${currentChain.name}". ` +
-              `Cannot validate configured SS58Format (${currentChain.ss58Format}). The application will use the configured value.`
+            `[LunoProvider]: SS58 Format Mismatch for chain "${substrateChain.name}" (genesisHash: ${substrateChain.genesisHash}):\n` +
+            `  - Configured SS58Format: ${substrateChain.ss58Format}\n` +
+            `  - Node Runtime SS58Format: ${apiSs58}\n` +
+            `Please verify your Luno configuration.`
           );
         }
       } catch (e) {
-        console.error(
-          `[LunoProvider]: Error retrieving SS58 format from API for chain "${currentChain.name}" while attempting validation:`,
-          e
-        );
+        console.error(`[LunoProvider]: Error retrieving SS58 format from API`, e);
       }
     }
-  }, [isApiReady, currentApi, currentChain]);
+  }, [isApiReady, substrateApi, substrateChain, config]);
 
-  const contextValue = useMemo<LunoContextState>(
-    () => ({
-      config: configInStore,
-      status,
-      activeConnector,
-      accounts,
-      account,
-      setAccount,
-      currentChainId,
-      currentChain,
-      currentApi,
-      isApiReady,
-      connect,
-      disconnect,
-      switchChain,
-      apiError,
-    }),
-    [
-      configInStore,
-      status,
-      activeConnector,
-      accounts,
-      account,
-      currentChainId,
-      currentChain,
-      currentApi,
-      isApiReady,
-      apiError,
-      connect,
-      disconnect,
-      switchChain,
-      setAccount,
-    ]
+  return null;
+};
+
+export const LunoProvider: React.FC<LunoProviderProps> = ({
+  config: configFromProps,
+  children,
+}: LunoProviderProps) => {
+  const store = useLunoStore();
+
+  useEffect(() => {
+    if (configFromProps) {
+      store._setConfig(configFromProps);
+    }
+  }, [configFromProps]);
+
+  const contextValue = useMemo<LunoContextState>(() => store, [store]);
+
+  const content = (
+    <LunoContext.Provider value={contextValue}>
+      {configFromProps.substrate && <SubstrateStateSync />}
+      {configFromProps.evm?.wagmiConfig && <EvmStateSync />}
+      {children}
+    </LunoContext.Provider>
   );
 
-  return <LunoContext.Provider value={contextValue}>{children}</LunoContext.Provider>;
+  if (configFromProps.evm?.wagmiConfig) {
+    return (
+      <WagmiProvider config={configFromProps.evm.wagmiConfig}>{content}</WagmiProvider>
+    );
+  }
+
+  return content;
 };

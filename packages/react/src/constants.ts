@@ -4,4 +4,5 @@ export const PERSIST_KEY = {
   LAST_SELECTED_ACCOUNT_INFO: 'lastSelectedAccountInfo',
   RECENT_SELECTED_ACCOUNT_INFO: 'recentSelectedAccountInfo',
   RECENT_CONNECTOR_ID: 'recentConnectorId',
+  LAST_ACTIVE_NAMESPACE: 'lastActiveNamespace',
 } as const;

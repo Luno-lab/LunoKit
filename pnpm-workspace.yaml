@@ -15,3 +15,4 @@ catalog:
   "viem": "2.43.3"
   "@wagmi/core": "3.0.1"
   "@wagmi/connectors": "7.0.5"
+  "wagmi": "3.3.2"
