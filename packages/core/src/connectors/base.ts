@@ -26,7 +26,7 @@ export abstract class BaseConnector<
    * connector icon URL (optional)
    * subclasses can implement.
    */
-  abstract readonly icon?: Optional<string>;
+  abstract readonly icon: string;
 
   readonly links: ConnectorLinks = {};
   /**

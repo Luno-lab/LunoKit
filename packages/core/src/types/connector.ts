@@ -3,11 +3,11 @@ import type { EventEmitter } from 'eventemitter3';
 import type { AccountType, HexString } from './account';
 import type { SubstrateChain } from './chain';
 import type { WalletSigner } from './signer';
+import type { Evm, Substrate } from '../connectors'
 
 export interface SubstrateConnectOptions {
   appName: string;
   chains?: SubstrateChain[];
-  targetChainId?: string;
 }
 
 export interface EvmConnectOptions {
@@ -60,3 +60,6 @@ export interface WalletConnectConnectorOptions {
   links?: Optional<ConnectorLinks>;
   supportedChains?: Optional<HexString[]>;
 }
+
+export type SubstrateConnectorType = InstanceType<typeof Substrate.SubstrateConnector>;
+export type EvmConnectorType = InstanceType<typeof Evm.EvmConnector>;
