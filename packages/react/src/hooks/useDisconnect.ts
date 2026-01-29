@@ -3,7 +3,7 @@ import { PERSIST_KEY } from '../constants';
 import { useLunoStore } from '../store';
 import { ConnectionStatus, type Optional } from '../types';
 import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 export type UseDisconnectOptions = LunoMutationOptions<void, Error, void, unknown>;
 
@@ -38,56 +38,69 @@ export const useDisconnect = (
 
   const targetNamespace = namespace || activeNamespace;
 
-  const disconnectFn = async (): Promise<void> => {
-    if (targetNamespace === ChainType.SUBSTRATE) {
-      if (!substrateConnector || substrateStatus === ConnectionStatus.Disconnected) {
-        return;
-      }
+  const disconnectSubstrate = async (): Promise<void> => {
+    if (!substrateConnector || substrateStatus === ConnectionStatus.Disconnected) {
+      return;
+    }
 
-      setSubstrateState({ status: ConnectionStatus.Disconnecting });
+    setSubstrateState({ status: ConnectionStatus.Disconnecting });
 
-      try {
-        await substrateConnector.disconnect();
+    try {
+      await substrateConnector.disconnect();
 
-        if (config?.storage) {
-          try {
-            await config.storage.removeItem(PERSIST_KEY.LAST_CONNECTOR_ID);
-            await config.storage.removeItem(PERSIST_KEY.LAST_CHAIN_ID);
-            await config.storage.removeItem(PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO);
-          } catch (e) {
-            console.error(
-              '[LunoStore] Failed to remove connection info from storage during disconnect action:',
-              e
-            );
-          }
+      if (config?.storage) {
+        try {
+          await config.storage.removeItem(PERSIST_KEY.LAST_CONNECTOR_ID);
+          await config.storage.removeItem(PERSIST_KEY.LAST_CHAIN_ID);
+          await config.storage.removeItem(PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO);
+        } catch (e) {
+          console.error(
+            '[LunoStore] Failed to remove connection info from storage during disconnect action:',
+            e
+          );
         }
-
-        setSubstrateState({
-          status: ConnectionStatus.Disconnected,
-          connector: undefined,
-          allAccounts: [],
-          account: undefined,
-        });
-
-      } catch (err: any) {
-        setSubstrateState({ status: ConnectionStatus.Connected });
-        throw new Error(
-          `[LunoStore] Error disconnecting from ${substrateConnector.name}: ${err?.message || err}`
-        );
-      }
-    } else if (targetNamespace === ChainType.EVM) {
-      if (!evmConnector || evmStatus === ConnectionStatus.Disconnected) {
-        return;
       }
 
-      try {
-        await evmConnector.disconnect();
-      } catch (err: any) {
-        console.error('[LunoKit] EVM Disconnect Error:', err);
-        throw err;
-      }
+      setSubstrateState({
+        status: ConnectionStatus.Disconnected,
+        connector: undefined,
+        allAccounts: [],
+        account: undefined,
+      });
+    } catch (err: any) {
+      setSubstrateState({ status: ConnectionStatus.Connected });
+      throw new Error(
+        `[LunoStore] Error disconnecting from ${substrateConnector.name}: ${err?.message || err}`
+      );
     }
   };
+
+  const disconnectEvm = async (): Promise<void> => {
+    if (!evmConnector || evmStatus === ConnectionStatus.Disconnected) {
+      return;
+    }
+
+    try {
+      await evmConnector.disconnect();
+    } catch (err: any) {
+      console.error('[useDisconnect] EVM Disconnect Error:', err);
+      throw err;
+    }
+  };
+
+  const disconnectFn = useCallback(async (): Promise<void> => {
+    switch (targetNamespace) {
+      case ChainType.SUBSTRATE:
+        await disconnectSubstrate();
+        break;
+      case ChainType.EVM:
+        await disconnectEvm();
+        break;
+      default:
+        console.warn(`[useDisconnect]: Invalid namespace "${targetNamespace}".`);
+        break;
+    }
+  }, [targetNamespace, substrateConnector, substrateStatus, config, evmConnector, evmStatus]);
 
   const mutationResult = useLunoMutation<void, Error, void, unknown>(
     disconnectFn,
@@ -95,10 +108,15 @@ export const useDisconnect = (
   );
 
   const status = useMemo(() => {
-    if (targetNamespace === ChainType.SUBSTRATE) return substrateStatus;
-    if (targetNamespace === ChainType.EVM) return evmStatus;
-    return ConnectionStatus.Disconnected;
-  }, [targetNamespace]);
+    switch (targetNamespace) {
+      case ChainType.SUBSTRATE:
+        return substrateStatus;
+      case ChainType.EVM:
+        return evmStatus;
+      default:
+        return ConnectionStatus.Disconnected;
+    }
+  }, [targetNamespace, substrateStatus, evmStatus]);
 
   return {
     disconnect: (options?: UseDisconnectOptions) => mutationResult.mutate(undefined, options),

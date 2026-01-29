@@ -9,7 +9,7 @@ import {
   type EvmConnectorType,
 } from '@luno-kit/core/types';
 import { Substrate as SubstrateUtils } from '@luno-kit/core/utils';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { PERSIST_KEY } from '../constants';
 import { type StoredAccountInfo, useLunoStore } from '../store';
 import { ConnectionStatus, type Connector, type Optional } from '../types';
@@ -91,130 +91,162 @@ export function useConnect(
 
   const targetNamespace = namespace || activeNamespace;
 
-  const connectFn = async (variables: ConnectVariables): Promise<undefined> => {
-    const { connectorId } = variables;
-
+  const connectSubstrate = async (
+    connectorId: string,
+    chainId?: Optional<HexString>
+  ): Promise<void> => {
     if (!config) {
       setSubstrateState({ status: ConnectionStatus.Disconnected });
-      throw new Error('[LunoKit] Config not found');
+      throw new Error('[useConnect] Config not found');
     }
 
-    if (targetNamespace === ChainType.SUBSTRATE) {
-      const substrateVariables = variables as SubstrateConnectVariables;
-      const { chainId } = substrateVariables;
+    const connector: SubstrateConnectorType | undefined = config.substrate?.connectors.find(
+      (c: SubstrateConnectorType) => c.id === connectorId
+    );
+    if (!connector) {
+      setSubstrateState({ status: ConnectionStatus.Disconnected });
+      throw new Error(`[useConnect] Substrate connector "${connectorId}" not found.`);
+    }
 
-      const connector: SubstrateConnectorType | undefined = config.substrate?.connectors.find((c: SubstrateConnectorType) => c.id === connectorId);
-      if (!connector) {
-        setSubstrateState({ status: ConnectionStatus.Disconnected });
-        throw new Error(`[LunoKit] Substrate connector "${connectorId}" not found.`)
+    setSubstrateState({ status: ConnectionStatus.Connecting });
+
+    try {
+      const options: SubstrateConnectOptions = {
+        chains: config.substrate?.chains ? [...config.substrate.chains] : [],
+        appName: config.appName,
+      };
+
+      const accounts: SubstrateAccount[] | undefined = await connector.connect(options);
+
+      if (!accounts || accounts.length === 0) {
+        throw new Error('[useConnect] No accounts found');
       }
 
-      setSubstrateState({ status: ConnectionStatus.Connecting });
+      let selectedAccount = accounts[0];
+      if (config.storage) {
+        const lastStoredAccountJson = await config.storage.getItem(
+          PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO
+        );
+        const recentStoredAccountJson = await config.storage.getItem(
+          PERSIST_KEY.RECENT_SELECTED_ACCOUNT_INFO
+        );
+        const storedAccountJson = lastStoredAccountJson || recentStoredAccountJson;
 
-      try {
-        const options: SubstrateConnectOptions = {
-          chains: config.substrate?.chains ? [...config.substrate.chains] : [],
-          appName: config.appName,
-        };
-
-        const accounts: SubstrateAccount[] | undefined = await connector.connect(options);
-
-        if (!accounts || accounts.length === 0) {
-          throw new Error('[LunoKit] No accounts found');
-        }
-
-        let selectedAccount = accounts[0];
-        if (config.storage) {
-          const lastStoredAccountJson = await config.storage.getItem(
-            PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO
+        if (storedAccountJson) {
+          const storedAccount: StoredAccountInfo = JSON.parse(storedAccountJson);
+          const found = accounts.find((a) =>
+            SubstrateUtils.isSameAddress(a.address, storedAccount.address)
           );
-          const recentStoredAccountJson = await config.storage.getItem(
-            PERSIST_KEY.RECENT_SELECTED_ACCOUNT_INFO
-          );
-          const storedAccountJson = lastStoredAccountJson || recentStoredAccountJson;
-
-          if (storedAccountJson) {
-            const storedAccount: StoredAccountInfo = JSON.parse(storedAccountJson);
-            const found = accounts.find((a) => SubstrateUtils.isSameAddress(a.address, storedAccount.address));
-            if (found) selectedAccount = found;
-          }
+          if (found) selectedAccount = found;
         }
-
-        setSubstrateState({
-          status: ConnectionStatus.Connected,
-          connector,
-          allAccounts: accounts,
-          account: selectedAccount,
-        });
-        setActiveNamespace(ChainType.SUBSTRATE);
-        if (config.storage) {
-          await config.storage.setItem(PERSIST_KEY.LAST_CONNECTOR_ID, connectorId);
-          await config.storage.setItem(PERSIST_KEY.RECENT_CONNECTOR_ID, connectorId);
-
-          const storedAccountInfo = {
-            publicKey: selectedAccount.publicKey,
-            address: selectedAccount.address,
-            name: selectedAccount.name,
-            source: selectedAccount.meta?.source,
-          };
-          const accountInfoStr = JSON.stringify(storedAccountInfo);
-          await config.storage.setItem(PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO, accountInfoStr);
-          await config.storage.setItem(PERSIST_KEY.RECENT_SELECTED_ACCOUNT_INFO, accountInfoStr);
-        }
-
-        const chainIdToSet = chainId || substrateChainId || config.substrate?.chains[0]?.genesisHash;
-
-        if (chainIdToSet) {
-          const newChain = config.substrate?.chains.find((c: SubstrateChain) => c.genesisHash === chainIdToSet);
-          if (newChain) {
-            if (chainIdToSet !== substrateChainId) {
-              setSubstrateState({
-                chainId: chainIdToSet,
-                chain: newChain,
-                currentApi: undefined,
-                isApiReady: false
-              });
-            }
-            if (config.storage) {
-              await config.storage.setItem(PERSIST_KEY.LAST_CHAIN_ID, chainIdToSet);
-            }
-          } else {
-            console.warn(`[LunoKit] After connection, target chain ID "${chainIdToSet}" was not found in config.`);
-          }
-        }
-
-      } catch (err) {
-        setSubstrateState({
-          status: ConnectionStatus.Disconnected,
-          connector: undefined,
-          allAccounts: undefined,
-        });
-        throw err;
       }
-    } else if (targetNamespace === ChainType.EVM) {
-      const { chainId, withCapabilities } = variables as EvmConnectVariables;
 
-      const connector: EvmConnectorType | undefined  = config.evm?.connectors.find((c: EvmConnectorType) => c.id === connectorId);
-      if (!connector) throw new Error(`[LunoKit] EVM connector "${connectorId}" not found.`);
+      setSubstrateState({
+        status: ConnectionStatus.Connected,
+        connector,
+        allAccounts: accounts,
+        account: selectedAccount,
+      });
+      setActiveNamespace(ChainType.SUBSTRATE);
 
-      try {
-        const options: EvmConnectOptions = {
-          chainId,
-          withCapabilities,
+      if (config.storage) {
+        await config.storage.setItem(PERSIST_KEY.LAST_CONNECTOR_ID, connectorId);
+        await config.storage.setItem(PERSIST_KEY.RECENT_CONNECTOR_ID, connectorId);
+
+        const storedAccountInfo = {
+          publicKey: selectedAccount.publicKey,
+          address: selectedAccount.address,
+          name: selectedAccount.name,
+          source: selectedAccount.meta?.source,
         };
-        await connector.connect(options);
-
-        setActiveNamespace(ChainType.EVM);
-      } catch (err) {
-        console.error('[LunoKit] EVM Connect Error:', err);
-        throw err;
+        const accountInfoStr = JSON.stringify(storedAccountInfo);
+        await config.storage.setItem(PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO, accountInfoStr);
+        await config.storage.setItem(PERSIST_KEY.RECENT_SELECTED_ACCOUNT_INFO, accountInfoStr);
       }
-    } else {
-      throw new Error(`[LunoKit] Unknown or unspecified namespace.`);
+
+      const chainIdToSet = chainId || substrateChainId || config.substrate?.chains[0]?.genesisHash;
+
+      if (chainIdToSet) {
+        const newChain = config.substrate?.chains.find(
+          (c: SubstrateChain) => c.genesisHash === chainIdToSet
+        );
+        if (newChain) {
+          if (chainIdToSet !== substrateChainId) {
+            setSubstrateState({
+              chainId: chainIdToSet,
+              chain: newChain,
+              currentApi: undefined,
+              isApiReady: false,
+            });
+          }
+          if (config.storage) {
+            await config.storage.setItem(PERSIST_KEY.LAST_CHAIN_ID, chainIdToSet);
+          }
+        } else {
+          console.warn(
+            `[useConnect] After connection, target chain ID "${chainIdToSet}" was not found in config.`
+          );
+        }
+      }
+    } catch (err) {
+      setSubstrateState({
+        status: ConnectionStatus.Disconnected,
+        connector: undefined,
+        allAccounts: undefined,
+      });
+      throw err;
+    }
+  };
+
+  const connectEvm = async (
+    connectorId: string,
+    chainId?: Optional<number>,
+    withCapabilities?: Optional<boolean>
+  ): Promise<void> => {
+    if (!config) {
+      throw new Error('[useConnect] Config not found');
+    }
+
+    const connector: EvmConnectorType | undefined = config.evm?.connectors.find(
+      (c: EvmConnectorType) => c.id === connectorId
+    );
+    if (!connector) {
+      throw new Error(`[useConnect] EVM connector "${connectorId}" not found.`);
+    }
+
+    try {
+      const options: EvmConnectOptions = {
+        chainId,
+        withCapabilities,
+      };
+      await connector.connect(options);
+      setActiveNamespace(ChainType.EVM);
+    } catch (err) {
+      console.error('[useConnect] EVM Connect Error:', err);
+      throw err;
+    }
+  };
+
+  const connectFn = useCallback(async (variables: ConnectVariables): Promise<undefined> => {
+    switch (targetNamespace) {
+      case ChainType.SUBSTRATE: {
+        const { chainId, connectorId } = variables as SubstrateConnectVariables;
+        await connectSubstrate(connectorId, chainId);
+        break;
+      }
+
+      case ChainType.EVM: {
+        const { connectorId, chainId, withCapabilities } = variables as EvmConnectVariables;
+        await connectEvm(connectorId, chainId, withCapabilities);
+        break;
+      }
+
+      default:
+        throw new Error(`[useConnect] Invalid namespace "${targetNamespace}".`);
     }
 
     await sleep();
-  };
+  }, [targetNamespace, config, substrateChainId]);
 
   const mutationResult = useLunoMutation<undefined, Error, ConnectVariables, unknown>(
     connectFn,
@@ -222,21 +254,36 @@ export function useConnect(
   );
 
   const currentConnectors: Connector[] = useMemo(() => {
-    if (targetNamespace === ChainType.SUBSTRATE) return substrateConnectors || [];
-    if (targetNamespace === ChainType.EVM) return evmConnectors || [];
-    return [];
+    switch (targetNamespace) {
+      case ChainType.SUBSTRATE:
+        return substrateConnectors || [];
+      case ChainType.EVM:
+        return evmConnectors || [];
+      default:
+        return [];
+    }
   }, [targetNamespace, substrateConnectors, evmConnectors]);
 
   const activeConnector = useMemo(() => {
-    if (targetNamespace === ChainType.SUBSTRATE) return substrateActiveConnector;
-    if (targetNamespace === ChainType.EVM) return evmActiveConnector;
-    return undefined;
+    switch (targetNamespace) {
+      case ChainType.SUBSTRATE:
+        return substrateActiveConnector;
+      case ChainType.EVM:
+        return evmActiveConnector;
+      default:
+        return undefined;
+    }
   }, [targetNamespace, substrateActiveConnector, evmActiveConnector]);
 
   const status = useMemo(() => {
-    if (targetNamespace === ChainType.SUBSTRATE) return substrateStatus;
-    if (targetNamespace === ChainType.EVM) return evmStatus;
-    return ConnectionStatus.Disconnected;
+    switch (targetNamespace) {
+      case ChainType.SUBSTRATE:
+        return substrateStatus;
+      case ChainType.EVM:
+        return evmStatus;
+      default:
+        return ConnectionStatus.Disconnected;
+    }
   }, [targetNamespace, substrateStatus, evmStatus]);
 
   return {
