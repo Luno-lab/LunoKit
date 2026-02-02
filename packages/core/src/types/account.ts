@@ -1,5 +1,4 @@
 import type { KeypairType } from 'dedot/types';
-import type { ChainType } from './chain';
 
 export type HexString = `0x${string}`;
 
@@ -12,7 +11,7 @@ interface BaseAccount {
 }
 
 export interface SubstrateAccount extends BaseAccount {
-  chainType: ChainType.SUBSTRATE;
+  chainType: 'substrate';
 
   publicKey?: Optional<HexString>;
 
@@ -26,11 +25,11 @@ export interface SubstrateAccount extends BaseAccount {
 }
 
 export interface EvmAccount extends BaseAccount {
-  chainType: ChainType.EVM;
+  chainType: 'evm';
 }
 
 export interface SubstrateBalance {
-  chainType: ChainType.SUBSTRATE;
+  chainType: 'substrate';
 
   /** available balance (in smallest unit) */
   free: bigint;
@@ -67,7 +66,7 @@ export interface SubstrateBalance {
 export type AccountType = SubstrateAccount | EvmAccount;
 
 export interface EvmBalance {
-  chainType: ChainType.EVM;
+  chainType: 'evm';
 
   value: bigint;
 
