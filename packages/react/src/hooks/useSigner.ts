@@ -1,16 +1,16 @@
-import { ChainType, type EvmSigner, type SubstrateSigner } from '@luno-kit/core/types';
-import { useEffect, useMemo, useState } from 'react';
+import { ChainType, type EvmSigner, type SubstrateSigner, type WalletSigner } from '@luno-kit/core/types';
+import { useMemo } from 'react';
 import { useLunoStore } from '../store';
-import type { Optional } from '../types';
-import type { WalletSigner } from '@luno-kit/core/types';
+import { useQuery } from '@tanstack/react-query';
 
-export interface UseSignerParameters {
-  namespace?: Optional<ChainType>;
-}
-
-export interface UseSignerResult<TSigner = WalletSigner> {
-  data?: TSigner;
+export interface UseSignerResult<TSigner extends WalletSigner = WalletSigner> {
+  data: TSigner | undefined;
+  error: Error | null;
+  isPending: boolean;
   isLoading: boolean;
+  isSuccess: boolean;
+  reset: () => void;
+  refetch: () => Promise<TSigner>;
 }
 
 export function useSigner(
@@ -22,54 +22,45 @@ export function useSigner(
 ): UseSignerResult<EvmSigner>;
 
 export function useSigner<TSigner extends WalletSigner = WalletSigner>(
-  parameters?: Optional<UseSignerParameters>
+  parameters?: { namespace?: ChainType }
 ): UseSignerResult<TSigner>;
 
-export function useSigner(
-  parameters: UseSignerParameters = {}
-): UseSignerResult {
+export function useSigner(parameters: { namespace?: ChainType } = {}): UseSignerResult {
   const { namespace } = parameters;
 
   const activeNamespace = useLunoStore((state) => state.activeNamespace);
   const substrateConnector = useLunoStore((state) => state.substrate.connector);
   const evmConnector = useLunoStore((state) => state.evm.connector);
 
-  const [signer, setSigner] = useState<WalletSigner | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const targetNamespace = namespace || activeNamespace;
 
-  const { connector } = useMemo(() => {
+  const connector = useMemo(() => {
     switch (targetNamespace) {
       case ChainType.SUBSTRATE:
-        return { connector: substrateConnector };
-
+        return substrateConnector;
       case ChainType.EVM:
-        return { connector: evmConnector };
-
+        return evmConnector;
       default:
-        return { connector: undefined };
+        return undefined;
     }
   }, [targetNamespace, substrateConnector, evmConnector]);
 
-  useEffect(() => {
-    if (!connector) {
-      setSigner(undefined);
-      setIsLoading(false);
-      return;
-    }
+  const queryResult = useQuery({
+    queryKey: ['signer', targetNamespace, connector?.id],
+    queryFn: async (): Promise<WalletSigner | undefined> => {
+      return await connector!.getSigner();
+    },
+    enabled: !!connector,
+    retry: false,
+  });
 
-    setIsLoading(true);
-
-    connector
-      .getSigner()
-      .then((signer) => setSigner(signer))
-      .catch((error) => {
-        console.error('[useSigner] Failed to get signer:', error);
-        setSigner(undefined);
-      })
-      .finally(() => setIsLoading(false));
-  }, [connector]);
-
-  return useMemo(() => ({ data: signer, isLoading }), [signer, isLoading]);
+  return {
+    data: queryResult.data as WalletSigner | undefined,
+    error: queryResult.error,
+    isPending: queryResult.isPending,
+    isLoading: queryResult.isLoading,
+    isSuccess: queryResult.isSuccess,
+    reset: queryResult.reset,
+    refetch: queryResult.refetch,
+  }
 }

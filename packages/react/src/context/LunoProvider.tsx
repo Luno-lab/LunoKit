@@ -1,4 +1,4 @@
-import { ChainType, type EvmAccount, type HexString, type SubstrateConnectorType, type EvmChain, type EvmConnectorType, type SubstrateChain, type Transport, type Config } from '@luno-kit/core/types';
+import { ChainType, type EvmAccount, type HexString, type SubstrateSigner, type SubstrateConnectorType, type EvmChain, type EvmConnectorType, type SubstrateChain, type Transport, type Config } from '@luno-kit/core/types';
 import type React from 'react';
 import { type ReactNode, useCallback, useEffect, useMemo } from 'react';
 import { WagmiProvider, useConnection } from 'wagmi';
@@ -7,7 +7,7 @@ import { useIsInitialized } from '../hooks/useIsInitialized';
 import { useLunoStore } from '../store';
 import { createApi, sleep } from '../utils';
 import { LunoContext, type LunoContextState } from './LunoContext';
-import { useConnect } from '../hooks'
+import {useChains, useConnect, useConnectors, useSigner} from '../hooks'
 import { useSubstrateEvents } from '../hooks/useSubstrateEvents'
 
 interface LunoProviderProps {
@@ -61,6 +61,8 @@ const SubstrateStateSync = () => {
   const { isInitialized: isAutoConnectInitialized, markAsInitialized: markAutoConnectInitialized } = useIsInitialized();
 
   useSubstrateEvents()
+
+  const result = useSigner<SubstrateSigner>();
 
   const clearApiState = useCallback(() => {
     _setApi(undefined);
