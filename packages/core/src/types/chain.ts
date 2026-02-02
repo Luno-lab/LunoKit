@@ -2,10 +2,14 @@ import type { Chain as WagmiChain } from '@wagmi/core/chains';
 import type { HexString } from './account';
 import type { Transport } from './config';
 
-export enum ChainType {
-  SUBSTRATE = 'substrate',
-  EVM = 'evm',
+export namespace ChainType {
+  export const SUBSTRATE = 'substrate' as const;
+  export const EVM = 'evm' as const;
+
+  export type Value = 'substrate' | 'evm';
 }
+
+export type ChainType = ChainType.Value;
 
 export interface BaseChain {
   id: HexString | number;
@@ -25,7 +29,7 @@ export interface BaseChain {
 }
 
 export interface SubstrateChain extends BaseChain {
-  chainType: ChainType.SUBSTRATE;
+  chainType: typeof ChainType.SUBSTRATE;
   id: HexString;
   genesisHash: HexString;
   ss58Format: number;
@@ -40,6 +44,8 @@ export interface SubstrateChain extends BaseChain {
 }
 
 export type EvmChain = WagmiChain & {
-  chainType: ChainType.EVM;
+  chainType: typeof ChainType.EVM;
   chainIconUrl?: string;
 };
+
+export type AnyChain = SubstrateChain | EvmChain;

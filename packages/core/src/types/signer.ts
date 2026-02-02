@@ -2,9 +2,9 @@ import type { PolkadotSigner as PapiSigner } from '@polkadot-api/pjs-signer';
 import type { InjectedSigner } from 'dedot/types';
 import type { WalletClient } from 'viem';
 
-type SubstrateSigner = InjectedSigner;
+interface SubstrateSigner extends InjectedSigner {}
 
-type EvmSigner = WalletClient;
+interface EvmSigner extends WalletClient {}
 
 type WalletSigner = SubstrateSigner | EvmSigner;
 
