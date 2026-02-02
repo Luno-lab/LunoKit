@@ -20,11 +20,11 @@ export interface UseAccountResult<TAccount = AccountType> {
 }
 
 export function useAccount(
-  parameters: { namespace: ChainType.SUBSTRATE }
+  parameters: { namespace: 'substrate' }
 ): UseAccountResult<SubstrateAccount>;
 
 export function useAccount(
-  parameters: { namespace: ChainType.EVM }
+  parameters: { namespace: 'evm' }
 ): UseAccountResult<EvmAccount>;
 
 export function useAccount<TAccount extends AccountType = AccountType>(

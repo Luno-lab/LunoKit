@@ -1,5 +1,6 @@
 import {
   ChainType,
+  type AnyConnector,
   type SubstrateAccount,
   type SubstrateConnectOptions,
   type EvmConnectOptions,
@@ -12,7 +13,7 @@ import { Substrate as SubstrateUtils } from '@luno-kit/core/utils';
 import { useCallback, useMemo } from 'react';
 import { PERSIST_KEY } from '../constants';
 import { type StoredAccountInfo, useLunoStore } from '../store';
-import { ConnectionStatus, type Connector, type Optional } from '../types';
+import { ConnectionStatus, type Optional } from '../types';
 import { sleep } from '../utils';
 import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
 
@@ -47,20 +48,18 @@ interface UseConnectResultBase<TVariables = ConnectVariables> {
   variables: TVariables | undefined;
 }
 
-type AnyConnector = Connector<any, any, any>;
-
 export interface UseConnectResult<TConnector extends AnyConnector, TVariables = ConnectVariables> extends UseConnectResultBase<TVariables> {
   connectors: TConnector[];
   activeConnector?: Optional<TConnector>;
 }
 
 export function useConnect(
-  parameters: { namespace: ChainType.SUBSTRATE },
+  parameters: { namespace: 'substrate' },
   mutationOptions?: Optional<UseConnectOptions<SubstrateConnectVariables>>
 ): UseConnectResult<SubstrateConnectorType, SubstrateConnectVariables>;
 
 export function useConnect(
-  parameters: { namespace: ChainType.EVM },
+  parameters: { namespace: 'evm' },
   mutationOptions?: Optional<UseConnectOptions<EvmConnectVariables>>
 ): UseConnectResult<EvmConnectorType, EvmConnectVariables>;
 
@@ -253,7 +252,7 @@ export function useConnect(
     mutationOptions
   );
 
-  const currentConnectors: Connector[] = useMemo(() => {
+  const currentConnectors: AnyConnector[] = useMemo(() => {
     switch (targetNamespace) {
       case ChainType.SUBSTRATE:
         return substrateConnectors || [];

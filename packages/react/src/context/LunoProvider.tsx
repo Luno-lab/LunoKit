@@ -1,4 +1,4 @@
-import { ChainType, type EvmAccount, type HexString, type EvmConnectorType, type SubstrateChain, type Transport, type Config } from '@luno-kit/core/types';
+import { ChainType, type EvmAccount, type HexString, type SubstrateConnectorType, type EvmChain, type EvmConnectorType, type SubstrateChain, type Transport, type Config } from '@luno-kit/core/types';
 import type React from 'react';
 import { type ReactNode, useCallback, useEffect, useMemo } from 'react';
 import { WagmiProvider, useConnection } from 'wagmi';

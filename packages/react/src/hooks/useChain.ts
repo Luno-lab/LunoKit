@@ -1,5 +1,6 @@
 import {
   ChainType,
+  type AnyChain,
   type SubstrateChain,
   type EvmChain,
   type HexString,
@@ -8,23 +9,21 @@ import { useLunoStore } from '../store';
 import type { Optional } from '../types';
 import { useMemo } from 'react'
 
-type ChainTypes = SubstrateChain | EvmChain;
-
-export interface UseChainResult<TChain = ChainTypes> {
+export interface UseChainResult<TChain = AnyChain> {
   chain?: Optional<TChain>;
   chainId?: TChain extends SubstrateChain ? HexString : number;
   chainType: ChainType;
 }
 
 export function useChain(
-  parameters: { namespace: ChainType.SUBSTRATE }
+  parameters: { namespace: 'substrate' }
 ): UseChainResult<SubstrateChain>;
 
 export function useChain(
-  parameters: { namespace: ChainType.EVM }
+  parameters: { namespace: 'evm' }
 ): UseChainResult<EvmChain>;
 
-export function useChain<TChain extends ChainTypes = ChainTypes>(
+export function useChain<TChain extends AnyChain = AnyChain>(
   parameters?: Optional<{ namespace?: Optional<ChainType> }>
 ): UseChainResult<TChain>;
 
