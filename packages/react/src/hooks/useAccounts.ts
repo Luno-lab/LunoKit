@@ -1,35 +1,38 @@
-import type { HexString } from '@luno-kit/core/types';
-import { convertAddress } from '@luno-kit/core/utils';
+import type { SubstrateAccount, EvmAccount } from '@luno-kit/core/types';
+import { Substrate } from '@luno-kit/core/utils';
 import { useMemo } from 'react';
-import type { Account, Optional } from '../types';
-import { useLuno } from './useLuno';
+import { useLunoStore } from '../store';
 
 export interface UseAccountsResult {
-  accounts: Account[];
-  selectAccount: (accountOrPublicKey?: Optional<Account | HexString>) => void;
+  substrateAccounts: SubstrateAccount[];
+  evmAccounts: EvmAccount[];
 }
 
-export const useAccounts = (): UseAccountsResult => {
-  const { accounts, setAccount, currentChain } = useLuno();
+export function useAccounts(): UseAccountsResult {
+  const allSubstrateAccounts = useLunoStore((state) => state.substrate.allAccounts);
+  const substrateChain = useLunoStore((state) => state.substrate.chain);
+  const allEvmAccounts = useLunoStore((state) => state.evm.allAccounts);
 
-  const formattedAccounts = useMemo(() => {
-    if (!currentChain || currentChain?.ss58Format === undefined) return accounts ?? [];
-    return (accounts || []).map((acc) => {
+  const formattedSubstrateAccounts = useMemo(() => {
+    if (!allSubstrateAccounts?.length) return [];
+    if (!substrateChain || substrateChain.ss58Format === undefined) return allSubstrateAccounts;
+
+    return allSubstrateAccounts.map((acc) => {
       try {
-        const newAddress = convertAddress(acc.address, currentChain.ss58Format);
         return {
           ...acc,
-          address: newAddress,
+          address: Substrate.convertAddress(acc.address, substrateChain.ss58Format),
         };
       } catch (error) {
-        console.error(
-          `[useAccounts]: Failed to re-format address for account ${acc.address}:`,
-          error
-        );
-        return { ...acc };
+        console.error(`[useAccounts] Failed to re-format address for account ${acc.address}:`,
+          error);
+        return acc;
       }
     });
-  }, [accounts, currentChain, currentChain?.ss58Format]);
+  }, [allSubstrateAccounts, substrateChain?.ss58Format]);
 
-  return { accounts: formattedAccounts, selectAccount: setAccount };
-};
+  return {
+    substrateAccounts: formattedSubstrateAccounts,
+    evmAccounts: allEvmAccounts || [],
+  };
+}

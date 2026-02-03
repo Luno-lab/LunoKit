@@ -1,17 +1,17 @@
 import { waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { mockClient, mockConfig, renderHook } from '../test-utils';
-import { useApi } from './useApi';
+import { useClient } from './useClient';
 
 vi.mock('../utils/createApi', () => ({
   createApi: () => Promise.resolve(mockClient.polkadot),
 }));
 
-describe('useApi', () => {
+describe('useClient', () => {
   it('should handle API initialization', async () => {
     const { result } = renderHook(
       () => ({
-        useApi: useApi(),
+        useApi: useClient(),
       }),
       {
         config: mockConfig,

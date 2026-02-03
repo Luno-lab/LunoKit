@@ -1,7 +1,7 @@
 import { waitFor } from '@testing-library/react';
 import { afterEach, expect, test, vi } from 'vitest';
 import { type MockConnector, mockClient, mockConfig, renderHook } from '../test-utils';
-import { useApi } from './useApi';
+import { useClient } from './useClient';
 import { useRuntimeVersion } from './useRuntimeVersion';
 
 const connector = mockConfig.connectors[0] as MockConnector;
@@ -19,7 +19,7 @@ afterEach(async () => {
 test('useRuntimeVersion', async () => {
   const { result } = renderHook(
     () => ({
-      useApi: useApi(),
+      useApi: useClient(),
       useRuntimeVersion: useRuntimeVersion(),
     }),
     {

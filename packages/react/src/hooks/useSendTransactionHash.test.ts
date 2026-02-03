@@ -1,7 +1,7 @@
 import { act, waitFor } from '@testing-library/react';
 import { afterEach, expect, test, vi } from 'vitest';
 import { type MockConnector, mockConfig, renderHook } from '../test-utils';
-import { useApi } from './useApi';
+import { useClient } from './useClient';
 import { useConnect } from './useConnect';
 import { useSendTransactionHash } from './useSendTransactionHash';
 
@@ -36,7 +36,7 @@ test('useSendTransactionHash', async () => {
   const { result } = renderHook(
     () => ({
       useConnect: useConnect(),
-      useApi: useApi(),
+      useApi: useClient(),
       useSendTransactionHash: useSendTransactionHash(),
     }),
     {

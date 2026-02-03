@@ -6,17 +6,18 @@ import {
   type AccountType,
 } from '@luno-kit/core/types';
 import { Substrate } from '@luno-kit/core/utils';
-import { useMemo } from 'react';
+import {useCallback, useMemo} from 'react';
 import { useLunoStore } from '../store';
 import { ConnectionStatus, type Optional } from '../types';
 
-export interface UseAccountResult<TAccount = AccountType> {
+export interface UseAccountResult<TAccount extends AccountType = AccountType> {
   account?: Optional<TAccount>;
-  allAccounts?: Optional<TAccount[]>;
+  allAccounts: TAccount[];
   address?: TAccount extends SubstrateAccount ? string : HexString;
   isConnected: boolean;
   status: ConnectionStatus;
   chainType: ChainType;
+  selectAccount?: Optional<(account: AccountType) => void>;
 }
 
 export function useAccount(
@@ -47,6 +48,9 @@ export function useAccount(
   const allEvmAccounts = useLunoStore((state) => state.evm.allAccounts);
   const evmStatus = useLunoStore((state) => state.evm.status);
 
+  const setSubstrateState = useLunoStore((state) => state.setSubstrateState);
+  const setEvmState = useLunoStore((state) => state.setEvmState);
+
   const targetNamespace = namespace || activeNamespace;
 
   const formattedSubstrateAccount = useMemo(() => {
@@ -68,32 +72,45 @@ export function useAccount(
     }
   }, [substrateAccount, substrateChain?.ss58Format]);
 
+  const selectAccount = useCallback((account: AccountType) => {
+    switch (targetNamespace) {
+      case ChainType.SUBSTRATE:
+        setSubstrateState({ account: account as SubstrateAccount });
+        break;
+      case ChainType.EVM:
+        setEvmState({ account: account as EvmAccount });
+        break;
+    }
+  }, [targetNamespace, setSubstrateState, setEvmState]);
+
   return useMemo(() => {
     switch (targetNamespace) {
       case ChainType.SUBSTRATE:
         return {
           account: formattedSubstrateAccount,
-          allAccounts: allSubstrateAccounts,
+          allAccounts: allSubstrateAccounts || [],
           address: formattedSubstrateAccount?.address,
           isConnected: substrateStatus === ConnectionStatus.Connected,
           status: substrateStatus,
           chainType: ChainType.SUBSTRATE,
+          selectAccount,
         };
 
       case ChainType.EVM:
         return {
           account: evmAccount,
-          allAccounts: allEvmAccounts,
+          allAccounts: allEvmAccounts || [],
           address: evmAccount?.address as HexString,
           isConnected: evmStatus === ConnectionStatus.Connected,
           status: evmStatus,
           chainType: ChainType.EVM,
+          selectAccount,
         };
 
       default:
         return {
           account: undefined,
-          allAccounts: undefined,
+          allAccounts: [],
           address: undefined,
           isConnected: false,
           status: ConnectionStatus.Disconnected,
@@ -108,5 +125,6 @@ export function useAccount(
     evmAccount,
     allEvmAccounts,
     evmStatus,
+    selectAccount,
   ]);
 }

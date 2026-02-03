@@ -1,7 +1,7 @@
 import { act, waitFor } from '@testing-library/react';
 import { afterEach, expect, test, vi } from 'vitest';
 import { type MockConnector, mockConfig, renderHook } from '../test-utils';
-import { useApi } from './useApi';
+import { useClient } from './useClient';
 import { useConnect } from './useConnect';
 import { useSendTransaction } from './useSendTransaction';
 
@@ -47,7 +47,7 @@ test('useSendTransaction', async () => {
   const { result } = renderHook(
     () => ({
       useConnect: useConnect(),
-      useApi: useApi(),
+      useApi: useClient(),
       useSendTransaction: useSendTransaction(),
     }),
     {
@@ -132,7 +132,7 @@ test('should handle transaction error states', async () => {
   const { result } = renderHook(
     () => ({
       useConnect: useConnect(),
-      useApi: useApi(),
+      useApi: useClient(),
       useSendTransaction: useSendTransaction(),
     }),
     {
@@ -194,7 +194,7 @@ test('should resolve at inBlock when waitFor is inBlock', async () => {
   const { result } = renderHook(
     () => ({
       useConnect: useConnect(),
-      useApi: useApi(),
+      useApi: useClient(),
       useSendTransaction: useSendTransaction({ waitFor: 'inBlock' }),
     }),
     {

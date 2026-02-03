@@ -1,7 +1,7 @@
 export * from './useAccount';
 export * from './useAccounts';
 export * from './useActiveConnector';
-export * from './useApi';
+export * from './useClient';
 export * from './useBalance';
 export * from './useBlockNumber';
 export * from './useChain';
@@ -11,7 +11,7 @@ export * from './useConnect';
 export * from './useConnectors';
 export * from './useDisconnect';
 export * from './useEstimatePaymentInfo';
-export * from './useGenesisHash';
+export * from './useChainId';
 export * from './usePapiSigner';
 export * from './useRuntimeVersion';
 export * from './useSendTransaction';

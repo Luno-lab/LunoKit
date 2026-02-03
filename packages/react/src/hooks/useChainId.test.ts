@@ -2,18 +2,18 @@ import { polkadot } from '@luno-kit/core/chains';
 import { waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { mockClient, mockConfig, renderHook } from '../test-utils';
-import { useGenesisHash } from './useGenesisHash';
+import { useChainId } from './useChainId';
 import { useLuno } from './useLuno';
 
 vi.mock('../utils/createApi', () => ({
   createApi: () => Promise.resolve(mockClient.polkadot),
 }));
 
-describe('useGenesisHash', () => {
+describe('useChainId', () => {
   it('should return genesis hash when API is ready', async () => {
     const { result } = renderHook(
       () => ({
-        useGenesisHash: useGenesisHash(),
+        useGenesisHash: useChainId(),
         useLuno: useLuno(),
       }),
       {
@@ -41,7 +41,7 @@ describe('useGenesisHash', () => {
   });
 
   it('should return undefined and loading when API is not ready', () => {
-    const { result } = renderHook(() => useGenesisHash(), {
+    const { result } = renderHook(() => useChainId(), {
       config: mockConfig,
     });
 
