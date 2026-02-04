@@ -1,7 +1,7 @@
 import type { Account, Chain, Config, Connector, HexString } from '@luno-kit/core/types';
-import type { LegacyClient } from 'dedot';
 import React from 'react';
 import type { ConnectionStatus, Optional } from '../types';
+import type { LunoClient } from '../types/state';
 
 export interface LunoContextState {
   config?: Optional<Config>;
@@ -12,7 +12,7 @@ export interface LunoContextState {
   setAccount: (accountOrPublicKey?: Optional<Account | HexString>) => void;
   currentChainId?: Optional<string>;
   currentChain?: Optional<Chain>;
-  currentApi?: Optional<LegacyClient>;
+  currentApi?: Optional<LunoClient>;
   isApiReady: boolean;
   apiError: Error | null;
 

@@ -1,5 +1,29 @@
 # @luno-kit/react
 
+## 0.0.12-beta.3
+
+### Patch Changes
+
+- 5e24ced: handle balance queries for EVM and Substrate chains
+- Updated dependencies [5e24ced]
+  - @luno-kit/core@0.0.12-beta.3
+
+## 0.0.12-beta.2
+
+### Patch Changes
+
+- dc65d4a: handle EVM addresses and out-of-range SS58 formats
+- Updated dependencies [dc65d4a]
+  - @luno-kit/core@0.0.12-beta.2
+
+## 0.0.12-beta.1
+
+### Patch Changes
+
+- f0e9c7b: handle EVM addresses and out-of-range SS58 formats
+- Updated dependencies [f0e9c7b]
+  - @luno-kit/core@0.0.12-beta.1
+
 ## 0.0.12-beta.0
 
 ### Patch Changes

@@ -1,5 +1,23 @@
 # @luno-kit/core
 
+## 0.0.12-beta.3
+
+### Patch Changes
+
+- 5e24ced: handle balance queries for EVM and Substrate chains
+
+## 0.0.12-beta.2
+
+### Patch Changes
+
+- dc65d4a: handle EVM addresses and out-of-range SS58 formats
+
+## 0.0.12-beta.1
+
+### Patch Changes
+
+- f0e9c7b: handle EVM addresses and out-of-range SS58 formats
+
 ## 0.0.12-beta.0
 
 ### Patch Changes
