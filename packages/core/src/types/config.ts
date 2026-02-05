@@ -1,7 +1,7 @@
 import type { ApiOptions } from 'dedot';
 import type { AnyShape } from 'dedot/shape';
 import type { Chain } from './chain';
-import type { Connector } from './connector';
+import type { Connector, ConnectorGroup } from './connector';
 
 export interface RawStorage {
   getItem(key: string): string | null | Promise<string | null>;
@@ -26,7 +26,7 @@ type LunoApiOptions = Partial<Omit<ApiOptions, 'provider' | 'signer'>> & {
 export interface CreateConfigParameters extends LunoApiOptions {
   appName?: Optional<string>;
   chains?: Optional<readonly Chain[]>;
-  connectors: Connector[];
+  connectors: Connector[] | ConnectorGroup[];
   transports?: Optional<Record<string, Transport>>;
 
   storage?: Optional<LunoStorage>;
@@ -42,6 +42,7 @@ export interface Config extends LunoApiOptions {
   readonly appName: string;
   readonly chains: readonly Chain[];
   readonly connectors: readonly Connector[];
+  readonly connectorGroups?: readonly ConnectorGroup[];
   readonly transports: Readonly<Record<string, Transport>>;
   readonly storage: LunoStorage;
   readonly autoConnect: boolean;

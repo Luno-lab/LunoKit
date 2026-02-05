@@ -47,3 +47,8 @@ export interface WalletConnectConnectorOptions {
   links?: Optional<ConnectorLinks>;
   supportedChains?: Optional<HexString[]>;
 }
+
+export interface ConnectorGroup {
+  groupName: string;
+  wallets: Connector[];
+}
