@@ -1,5 +1,13 @@
 # @luno-kit/ui
 
+## 0.0.13
+
+### Patch Changes
+
+- 5e32422: Add the function of customizing wallet grouping
+- Updated dependencies [5e32422]
+  - @luno-kit/react@0.0.13
+
 ## 0.0.12
 
 ### Patch Changes
