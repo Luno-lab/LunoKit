@@ -2,6 +2,7 @@ import type {
   Chain,
   Config,
   Connector,
+  ConnectorGroup,
   CreateConfigParameters,
   RawStorage,
   Transport,
@@ -36,11 +37,15 @@ function generateTransportsFromChains(chains: readonly Chain[]): Record<string, 
   return transports;
 }
 
+function isConnectorGroupArray(input: Connector[] | ConnectorGroup[]): input is ConnectorGroup[] {
+  return input.length > 0 && 'groupName' in input[0] && 'wallets' in input[0];
+}
+
 export function createConfig(parameters: CreateConfigParameters): Config {
   const {
     appName = 'My Luno App',
     chains = [],
-    connectors,
+    connectors: connectorsInput,
     transports = {},
     storage = defaultLunoStorage,
     autoConnect = true,
@@ -51,6 +56,14 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     customRpc,
     subscan,
   } = parameters;
+
+  const connectorGroups = isConnectorGroupArray(connectorsInput)
+    ? connectorsInput.filter((g) => g.wallets.length > 0)
+    : undefined;
+
+  const connectors = isConnectorGroupArray(connectorsInput)
+    ? connectorsInput.flatMap((g) => g.wallets)
+    : connectorsInput;
 
   if (!connectors || connectors.length === 0) {
     throw new Error('No connectors provided. Wallet connection features will be unavailable.');
@@ -82,6 +95,9 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     appName,
     chains: Object.freeze([...chains]) as readonly Chain[],
     connectors: Object.freeze([...connectors]) as readonly Connector[],
+    connectorGroups: connectorGroups
+      ? (Object.freeze([...connectorGroups]) as readonly ConnectorGroup[])
+      : undefined,
     transports: Object.freeze({ ...finalTransports }) as Readonly<Record<string, Transport>>,
     storage,
     autoConnect,

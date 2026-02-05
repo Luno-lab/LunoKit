@@ -32,6 +32,7 @@ export interface LunoKitProviderProps {
   config: LunoCoreConfig & {
     modalSize?: Optional<ModalSize>;
     modalContainer?: Optional<ModalContainer>;
+    showInstalledGroup?: boolean;
   };
   theme?: Optional<PartialLunokitTheme | LunokitThemeOverrides>;
   appInfo?: Optional<Partial<AppInfo>>;
@@ -52,6 +53,7 @@ export const LunoKitProvider: React.FC<LunoKitProviderProps> = ({
             appInfo={appInfo}
             modalSize={config.modalSize}
             modalContainer={config.modalContainer}
+            showInstalledGroup={config.showInstalledGroup}
           />
         </ModalProvider>
       </ThemeProvider>
@@ -63,16 +65,23 @@ interface RenderModalsProps {
   modalSize?: Optional<ModalSize>;
   appInfo?: Optional<Partial<AppInfo>>;
   modalContainer?: Optional<ModalContainer>;
+  showInstalledGroup?: Optional<boolean>;
 }
 
 const RenderModals: React.FC<RenderModalsProps> = ({
   modalSize,
   appInfo,
   modalContainer,
+  showInstalledGroup,
 }: RenderModalsProps) => {
   return (
     <>
-      <ConnectModal size={modalSize} appInfo={appInfo} container={modalContainer} />
+      <ConnectModal
+        showInstalledGroup={showInstalledGroup}
+        size={modalSize}
+        appInfo={appInfo}
+        container={modalContainer}
+      />
       <AccountDetailsModal container={modalContainer} />
       <ChainModal container={modalContainer} />
     </>
