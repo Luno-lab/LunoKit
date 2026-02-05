@@ -58,11 +58,11 @@ export function createConfig(parameters: CreateConfigParameters): Config {
   } = parameters;
 
   const connectorGroups = isConnectorGroupArray(connectorsInput)
-    ? connectorsInput.filter(g => g.wallets.length > 0)
+    ? connectorsInput.filter((g) => g.wallets.length > 0)
     : undefined;
 
   const connectors = isConnectorGroupArray(connectorsInput)
-    ? connectorsInput.flatMap(g => g.wallets)
+    ? connectorsInput.flatMap((g) => g.wallets)
     : connectorsInput;
 
   if (!connectors || connectors.length === 0) {
@@ -95,7 +95,9 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     appName,
     chains: Object.freeze([...chains]) as readonly Chain[],
     connectors: Object.freeze([...connectors]) as readonly Connector[],
-    connectorGroups: connectorGroups ? Object.freeze([...connectorGroups]) as readonly ConnectorGroup[] : undefined,
+    connectorGroups: connectorGroups
+      ? (Object.freeze([...connectorGroups]) as readonly ConnectorGroup[])
+      : undefined,
     transports: Object.freeze({ ...finalTransports }) as Readonly<Record<string, Transport>>,
     storage,
     autoConnect,

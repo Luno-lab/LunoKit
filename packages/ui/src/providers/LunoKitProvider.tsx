@@ -76,7 +76,12 @@ const RenderModals: React.FC<RenderModalsProps> = ({
 }: RenderModalsProps) => {
   return (
     <>
-      <ConnectModal showInstalledGroup={showInstalledGroup} size={modalSize} appInfo={appInfo} container={modalContainer} />
+      <ConnectModal
+        showInstalledGroup={showInstalledGroup}
+        size={modalSize}
+        appInfo={appInfo}
+        container={modalContainer}
+      />
       <AccountDetailsModal container={modalContainer} />
       <ChainModal container={modalContainer} />
     </>

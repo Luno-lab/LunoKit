@@ -1,4 +1,4 @@
-import { useConnectors, useConfig } from '@luno-kit/react';
+import { useConfig, useConnectors } from '@luno-kit/react';
 import type { Connector } from '@luno-kit/react/types';
 import { isMobileDevice } from '@luno-kit/react/utils';
 import React, { useMemo } from 'react';
@@ -41,34 +41,36 @@ export const ConnectOptions = React.memo(({ onConnect, showInstalledGroup }: Pro
       ];
     }
 
-    const hasUserDefinedInstalled = config.connectorGroups.some(
-      g => g.groupName === 'Installed'
-    );
+    const hasUserDefinedInstalled = config.connectorGroups.some((g) => g.groupName === 'Installed');
 
     if (hasUserDefinedInstalled || !showInstalledGroup) {
       return config.connectorGroups
-        .filter(g => g.wallets.length > 0)
-        .map(g => ({ title: g.groupName, group: g.wallets }))
-        .sort((a, b) => (a.title === 'Installed' ? -1 : b.title === 'Installed'
-          ? 1 : 0));
+        .filter((g) => g.wallets.length > 0)
+        .map((g) => ({ title: g.groupName, group: g.wallets }))
+        .sort((a, b) => (a.title === 'Installed' ? -1 : b.title === 'Installed' ? 1 : 0));
     }
 
-    const allWallets = config.connectorGroups.flatMap(g => g.wallets);
-    const installed = allWallets.filter(c => c.isInstalled());
+    const allWallets = config.connectorGroups.flatMap((g) => g.wallets);
+    const installed = allWallets.filter((c) => c.isInstalled());
 
     const customGroups = config.connectorGroups
-      .map(g => ({
+      .map((g) => ({
         title: g.groupName,
-        group: g.wallets.filter(c => !c.isInstalled())
+        group: g.wallets.filter((c) => !c.isInstalled()),
       }))
-      .filter(g => g.group.length > 0);
+      .filter((g) => g.group.length > 0);
 
     return [
-      ...(installed.length > 0 ? [{ title: 'Installed', group: installed }] :
-        []),
+      ...(installed.length > 0 ? [{ title: 'Installed', group: installed }] : []),
       ...customGroups,
     ];
-  }, [installedConnectors, popularConnectors, moreConnectors, config?.connectorGroups, showInstalledGroup]);
+  }, [
+    installedConnectors,
+    popularConnectors,
+    moreConnectors,
+    config?.connectorGroups,
+    showInstalledGroup,
+  ]);
 
   if (isMobileDevice()) {
     const filteredConnectors = connectors

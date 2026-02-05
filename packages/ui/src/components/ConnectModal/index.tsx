@@ -88,7 +88,9 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
   const viewComponents = useMemo(() => {
     return {
-      [ConnectModalView.connectOptions]: <ConnectOptions onConnect={handleConnect} showInstalledGroup={showInstalledGroup} />,
+      [ConnectModalView.connectOptions]: (
+        <ConnectOptions onConnect={handleConnect} showInstalledGroup={showInstalledGroup} />
+      ),
       [ConnectModalView.walletView]: (
         <WalletView
           connectState={{ isConnecting, isError: connectError, error: connectErrorMsg }}
