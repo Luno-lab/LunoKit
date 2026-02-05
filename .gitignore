@@ -47,9 +47,11 @@ dist-ssr
 
 PROJECT_CONTEXT.md
 /.cursor
+/.claude
 
 /scripts/*
 
 .envrc
 
 .biome/
+/CLAUDE.md
