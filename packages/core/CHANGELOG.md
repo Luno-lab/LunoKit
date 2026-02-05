@@ -1,5 +1,11 @@
 # @luno-kit/core
 
+## 0.0.13
+
+### Patch Changes
+
+- 5e32422: Add the function of customizing wallet grouping
+
 ## 0.0.12
 
 ### Patch Changes
