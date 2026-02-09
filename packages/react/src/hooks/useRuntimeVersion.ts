@@ -1,13 +1,22 @@
-import { type UseQueryResult, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import type { SubstrateRuntimeVersion } from 'dedot';
-import { useLuno } from './useLuno';
+import { useLunoStore } from '../store';
 
-export type UseRuntimeVersionResult = UseQueryResult<SubstrateRuntimeVersion, Error>;
+export interface UseRuntimeVersionResult {
+  data: SubstrateRuntimeVersion | undefined;
+  error: Error | null;
+  isPending: boolean;
+  isLoading: boolean;
+  isSuccess: boolean;
+  refetch: () => void;
+}
 
 export const useRuntimeVersion = (): UseRuntimeVersionResult => {
-  const { currentApi, isApiReady, currentChainId } = useLuno();
+  const currentApi = useLunoStore((state) => state.substrate.currentApi);
+  const isApiReady = useLunoStore((state) => state.substrate.isApiReady);
+  const currentChainId = useLunoStore((state) => state.substrate.chainId);
 
-  return useQuery<
+  const queryResult = useQuery<
     SubstrateRuntimeVersion,
     Error,
     SubstrateRuntimeVersion,
@@ -19,4 +28,13 @@ export const useRuntimeVersion = (): UseRuntimeVersionResult => {
     },
     enabled: !!currentApi && isApiReady && !!currentChainId,
   });
+
+  return {
+    data: queryResult.data,
+    error: queryResult.error,
+    isPending: queryResult.isPending,
+    isLoading: queryResult.isLoading,
+    isSuccess: queryResult.isSuccess,
+    refetch: queryResult.refetch,
+  };
 };

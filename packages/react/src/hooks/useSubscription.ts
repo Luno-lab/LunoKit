@@ -3,7 +3,7 @@ import type { LegacyClient } from 'dedot';
 import type { Callback, GenericStorageQuery, Unsub } from 'dedot/types';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Optional } from '../types';
-import { useLuno } from './useLuno';
+import { useLunoStore } from '../store';
 
 type SubscriptionFn<TArgs extends any[], TData> = (
   ...params: [...TArgs, Callback<TData>]
@@ -46,7 +46,8 @@ export const useSubscription = <TArgs extends any[], TData, TTransformed = TData
   options = {},
 }: UseSubscriptionProps<TArgs, TData, TTransformed>): UseSubscriptionResult<TTransformed> => {
   const [error, setError] = useState<Error | undefined>(undefined);
-  const { currentApi, isApiReady } = useLuno();
+  const currentApi = useLunoStore((state) => state.substrate.currentApi);
+  const isApiReady = useLunoStore((state) => state.substrate.isApiReady);
   const queryClient = useQueryClient();
   const {
     enabled = true,

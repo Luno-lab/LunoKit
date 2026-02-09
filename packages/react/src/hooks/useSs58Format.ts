@@ -1,6 +1,6 @@
 import { isNumber } from 'dedot/utils';
 import { useMemo } from 'react';
-import { useLuno } from './useLuno';
+import { useLunoStore } from '../store';
 
 const DEFAULT_SS58_FORMAT = 42;
 
@@ -10,7 +10,9 @@ export interface UseSs58FormatResult {
 }
 
 export const useSs58Format = (): UseSs58FormatResult => {
-  const { currentApi, isApiReady, currentChain } = useLuno();
+  const currentApi = useLunoStore((state) => state.substrate.currentApi);
+  const isApiReady = useLunoStore((state) => state.substrate.isApiReady);
+  const currentChain = useLunoStore((state) => state.substrate.chain);
 
   const configuredSs58Fallback =
     currentChain?.ss58Format !== undefined ? currentChain.ss58Format : DEFAULT_SS58_FORMAT;

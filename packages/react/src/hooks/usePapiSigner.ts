@@ -1,34 +1,34 @@
 import type { PapiSigner } from '@luno-kit/core/types';
-import { createPapiSigner } from '@luno-kit/core/utils';
-import { useEffect, useState } from 'react';
+import { Substrate } from '@luno-kit/core/utils';
+import { useQuery } from '@tanstack/react-query';
 import { useAccount } from './useAccount';
 import { useSigner } from './useSigner';
 
 export interface UsePapiSignerResult {
-  data?: PapiSigner;
+  data: PapiSigner | undefined;
+  error: Error | null;
+  isPending: boolean;
   isLoading: boolean;
+  isSuccess: boolean;
 }
 
 export function usePapiSigner(): UsePapiSignerResult {
-  const { data: signer } = useSigner();
-  const { address } = useAccount();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [papiSigner, setPapiSigner] = useState<PapiSigner | undefined>(undefined);
+  const { data: signer } = useSigner({ namespace: 'substrate' });
+  const { address } = useAccount({ namespace: 'substrate' });
 
-  useEffect(() => {
-    if (!signer || !address) {
-      setPapiSigner(undefined);
-      setIsLoading(false);
-      return;
-    }
+  const queryResult = useQuery({
+    queryKey: ['luno', 'papiSigner', address],
+    queryFn: async () => {
+      return await Substrate.createPapiSigner(address!, signer!);
+    },
+    enabled: !!signer && !!address,
+  });
 
-    setIsLoading(true);
-
-    createPapiSigner(address, signer)
-      .then((papiSigner: PapiSigner | undefined) => setPapiSigner(papiSigner))
-      .catch(() => setPapiSigner(undefined))
-      .finally(() => setIsLoading(false));
-  }, [signer, address]);
-
-  return { data: papiSigner, isLoading };
+  return {
+    data: queryResult.data,
+    error: queryResult.error,
+    isPending: queryResult.isPending,
+    isLoading: queryResult.isLoading,
+    isSuccess: queryResult.isSuccess,
+  };
 }

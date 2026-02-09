@@ -3,7 +3,7 @@ import { afterEach, expect, test, vi } from 'vitest';
 import { type MockConnector, mockConfig, renderHook } from '../test-utils';
 import { ConnectionStatus } from '../types';
 import { useConnect } from './useConnect';
-import { useEstimatePaymentInfo } from './useEstimatePaymentInfo';
+import { useExtrinsicPaymentInfo } from './useExtrinsicPaymentInfo';
 
 const connector = mockConfig.connectors[0] as MockConnector;
 
@@ -19,10 +19,10 @@ afterEach(async () => {
   }
 });
 
-test('useEstimatePaymentInfo - should estimate payment info successfully', async () => {
+test('useExtrinsicPaymentInfo - should estimate payment info successfully', async () => {
   const { result } = renderHook(
     () => ({
-      useEstimatePaymentInfo: useEstimatePaymentInfo(),
+      useEstimatePaymentInfo: useExtrinsicPaymentInfo(),
       useConnect: useConnect(),
     }),
     { config: mockConfig }
@@ -70,10 +70,10 @@ test('useEstimatePaymentInfo - should estimate payment info successfully', async
   expect(result.current.useEstimatePaymentInfo.error).toBeNull();
 });
 
-test('useEstimatePaymentInfo - should return undefined when no extrinsic or sender', async () => {
+test('useExtrinsicPaymentInfo - should return undefined when no extrinsic or sender', async () => {
   const { result } = renderHook(
     () => ({
-      useEstimatePaymentInfo: useEstimatePaymentInfo(),
+      useEstimatePaymentInfo: useExtrinsicPaymentInfo(),
       useConnect: useConnect(),
     }),
     {
@@ -104,10 +104,10 @@ test('useEstimatePaymentInfo - should return undefined when no extrinsic or send
   expect(result2).toBeUndefined();
 });
 
-test('useEstimatePaymentInfo - should use custom sender address', async () => {
+test('useExtrinsicPaymentInfo - should use custom sender address', async () => {
   const { result } = renderHook(
     () => ({
-      useEstimatePaymentInfo: useEstimatePaymentInfo(),
+      useEstimatePaymentInfo: useExtrinsicPaymentInfo(),
       useConnect: useConnect(),
     }),
     {

@@ -1,7 +1,7 @@
 import type { Config } from '../types';
-import { useLuno } from './useLuno';
+import { useLunoStore } from '../store'
 
 export const useConfig = (): Config | undefined => {
-  const { config } = useLuno();
+  const { config } = useLunoStore();
   return config;
 };

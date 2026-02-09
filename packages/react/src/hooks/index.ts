@@ -10,7 +10,7 @@ export * from './useConfig';
 export * from './useConnect';
 export * from './useConnectors';
 export * from './useDisconnect';
-export * from './useEstimatePaymentInfo';
+export * from './useExtrinsicPaymentInfo';
 export * from './useChainId';
 export * from './usePapiSigner';
 export * from './useRuntimeVersion';

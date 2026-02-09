@@ -6,7 +6,7 @@ import { useLunoStore } from '../store';
 import type { Optional } from '../types';
 import { useMemo } from 'react';
 
-export type AnyChainId = HexString | number;
+type AnyChainId = HexString | number;
 
 export interface UseChainIdResult<TChainId extends AnyChainId = AnyChainId> {
   chainId?: Optional<TChainId>;

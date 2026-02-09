@@ -13,7 +13,7 @@ import { useLunoStore } from '../store';
 import { createApi } from '../utils';
 import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
 
-export type AnyChainId = HexString | number;
+type AnyChainId = HexString | number;
 
 export interface SwitchChainVariables<TChainId extends AnyChainId = AnyChainId> {
   chainId: TChainId;
