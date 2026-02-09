@@ -1,10 +1,13 @@
-import { formatBalance } from '@luno-kit/core/utils';
+import { ChainType, type NativeBalance, type Optional, type HexString } from '@luno-kit/core/types';
+import { Substrate } from '@luno-kit/core/utils';
 import type { LegacyClient } from 'dedot';
-import type { AccountBalance, Optional } from '../types';
-import { useLuno } from './useLuno';
+import { isEvmAddress } from 'dedot/utils';
+import { useMemo } from 'react';
+import { formatUnits } from 'viem';
+import { useBalance as useWagmiBalance } from 'wagmi';
+import { useLunoStore } from '../store';
 import {
   type QueryMultiItem,
-  type UseSubscriptionResult,
   useSubscription,
 } from './useSubscription';
 
@@ -22,51 +25,63 @@ interface BalanceLock {
   reasons?: Optional<string | number>;
 }
 
-export interface ChainProperties {
-  ss58Format?: number;
-  tokenDecimals?: number;
-  tokenSymbol?: string;
-}
-
 const DEFAULT_TOKEN_DECIMALS = 10;
 
-const transformBalance = (results: any[], chainProperties: ChainProperties) => {
-  const accountInfo: AccountData = results[0];
-  const locks: BalanceLock[] = results[1];
-
-  const free = accountInfo.data.free;
-  const reserved = accountInfo.data.reserved;
-  const frozen = accountInfo.data.frozen;
-  const total = BigInt(free) + BigInt(reserved);
-
-  const transferable = free > frozen ? BigInt(free) - BigInt(frozen) : 0n;
-
-  return {
-    free,
-    total,
-    reserved,
-    transferable,
-    formattedTransferable: formatBalance(transferable, chainProperties.tokenDecimals),
-    formattedTotal: formatBalance(total, chainProperties.tokenDecimals),
-    locks: locks.map((lock) => ({
-      id: lock.id,
-      amount: lock.amount,
-      reason: lock.reasons,
-      lockHuman: formatBalance(lock.amount, chainProperties.tokenDecimals),
-    })),
-  } as AccountBalance;
+const ZERO_BALANCE: NativeBalance = {
+  value: 0n,
+  formatted: '0',
+  symbol: '',
+  decimals: 0,
 };
 
-export interface UseBalanceProps {
+export interface UseBalanceParameters {
   address?: Optional<string>;
+  namespace?: Optional<ChainType>;
 }
 
-export type UseBalanceResult = UseSubscriptionResult<AccountBalance>;
+export interface UseBalanceResult {
+  data?: Optional<NativeBalance>;
+  isLoading: boolean;
+  error?: Optional<Error>;
+}
 
-export const useBalance = ({ address }: UseBalanceProps): UseBalanceResult => {
-  const { currentApi, isApiReady, currentChain } = useLuno();
+export function useBalance(
+  parameters: { namespace: 'substrate'; address?: Optional<string> }
+): UseBalanceResult;
 
-  return useSubscription<QueryMultiItem[], [AccountData, BalanceLock[]], AccountBalance>({
+export function useBalance(
+  parameters: { namespace: 'evm'; address?: Optional<HexString> }
+): UseBalanceResult;
+
+export function useBalance(
+  parameters?: UseBalanceParameters
+): UseBalanceResult;
+
+export function useBalance(
+  parameters: UseBalanceParameters = {}
+): UseBalanceResult {
+  const { address, namespace } = parameters;
+
+  const activeNamespace = useLunoStore((state) => state.activeNamespace);
+  const substrateChain = useLunoStore((state) => state.substrate.chain);
+  const substrateApi = useLunoStore((state) => state.substrate.currentApi);
+  const isApiReady = useLunoStore((state) => state.substrate.isApiReady);
+
+  const targetNamespace = namespace || activeNamespace;
+
+  const shouldQuerySubstrate = useMemo(() => {
+    if (targetNamespace !== ChainType.SUBSTRATE) return false;
+    if (!substrateApi || !isApiReady || !address) return false;
+
+    const isEthereumChain = substrateApi.isEthereum;
+    return isEthereumChain ? isEvmAddress(address) : !isEvmAddress(address);
+  }, [targetNamespace, substrateApi, isApiReady, address]);
+
+  const substrateResult = useSubscription<
+    QueryMultiItem[],
+    [AccountData, BalanceLock[]],
+    NativeBalance
+  >({
     queryKey: '/native-balance',
     factory: (api: LegacyClient) => api.queryMulti,
     params: (api: LegacyClient) => [
@@ -74,15 +89,92 @@ export const useBalance = ({ address }: UseBalanceProps): UseBalanceResult => {
       { fn: api.query.balances.locks, args: [address] },
     ],
     options: {
-      enabled: !!currentApi && isApiReady && !!address,
-      transform: (results) => {
-        const chainProperties: ChainProperties = {
-          tokenDecimals: currentChain?.nativeCurrency?.decimals ?? DEFAULT_TOKEN_DECIMALS,
-          tokenSymbol: currentChain?.nativeCurrency?.symbol,
-          ss58Format: currentChain?.ss58Format,
+      enabled: shouldQuerySubstrate,
+      transform: (results): NativeBalance => {
+        const accountInfo: AccountData = results[0];
+
+        const free = accountInfo.data.free;
+        const frozen = accountInfo.data.frozen;
+        const transferable =
+          free > frozen ? BigInt(free) - BigInt(frozen) : 0n;
+
+        const decimals =
+          substrateChain?.nativeCurrency?.decimals ?? DEFAULT_TOKEN_DECIMALS;
+        const symbol = substrateChain?.nativeCurrency?.symbol ?? '';
+
+        return {
+          value: transferable,
+          formatted: Substrate.formatBalance(transferable, decimals),
+          symbol,
+          decimals,
         };
-        return transformBalance(results, chainProperties);
       },
     },
   });
-};
+
+  const evmResult = useWagmiBalance({
+    address: address as `0x${string}` | undefined,
+    query: {
+      enabled: targetNamespace === ChainType.EVM && !!address && isEvmAddress(address),
+    },
+  });
+
+  const evmBalance: NativeBalance | undefined = useMemo(() => {
+    if (!evmResult.data) return undefined;
+
+    const { value, symbol, decimals } = evmResult.data;
+
+    return {
+      value,
+      formatted: formatUnits(value, decimals),
+      symbol,
+      decimals,
+    };
+  }, [evmResult.data]);
+
+  return useMemo(() => {
+    switch (targetNamespace) {
+      case ChainType.SUBSTRATE: {
+        if (substrateApi && isApiReady && address && !shouldQuerySubstrate) {
+          return {
+            data: ZERO_BALANCE,
+            isLoading: false,
+            error: undefined,
+          };
+        }
+
+        return {
+          data: substrateResult.data,
+          isLoading: substrateResult.isLoading,
+          error: substrateResult.error,
+        };
+      }
+
+      case ChainType.EVM:
+        return {
+          data: evmBalance,
+          isLoading: evmResult.isLoading,
+          error: evmResult.error ?? undefined,
+        };
+
+      default:
+        return {
+          data: undefined,
+          isLoading: false,
+          error: undefined,
+        };
+    }
+  }, [
+    targetNamespace,
+    substrateApi,
+    isApiReady,
+    address,
+    shouldQuerySubstrate,
+    substrateResult.data,
+    substrateResult.isLoading,
+    substrateResult.error,
+    evmBalance,
+    evmResult.isLoading,
+    evmResult.error,
+  ]);
+}

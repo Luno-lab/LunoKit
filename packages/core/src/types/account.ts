@@ -65,6 +65,20 @@ export interface SubstrateBalance {
 
 export type AccountType = SubstrateAccount | EvmAccount;
 
+export interface NativeBalance {
+  /** balance in smallest unit (Substrate: transferable, EVM: value) */
+  value: bigint;
+
+  /** human-readable formatted balance */
+  formatted: string;
+
+  /** token symbol, e.g. "DOT", "ETH" */
+  symbol: string;
+
+  /** token decimals */
+  decimals: number;
+}
+
 export interface EvmBalance {
   chainType: 'evm';
 
