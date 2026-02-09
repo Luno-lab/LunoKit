@@ -15,7 +15,7 @@ import {
   useClient,
   useConnect,
   useConnectors,
-  useSigner
+  useSigner, useSwitchChain
 } from '../hooks'
 import { useSubstrateEvents } from '../hooks/useSubstrateEvents'
 
@@ -71,7 +71,7 @@ const SubstrateStateSync = () => {
 
   useSubstrateEvents()
 
-  const { client, isReady } = useClient({ namespace: 'substrate'});
+  const { switchChainAsync, chainId, chain, chains } = useSwitchChain({ namespace: 'evm'});
 
   const clearApiState = useCallback(() => {
     _setApi(undefined);

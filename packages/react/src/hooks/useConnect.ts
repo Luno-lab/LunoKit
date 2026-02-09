@@ -35,8 +35,8 @@ export type ConnectVariables = SubstrateConnectVariables | EvmConnectVariables;
 export type UseConnectOptions<TVariables = ConnectVariables> = LunoMutationOptions<void, Error, TVariables, unknown>;
 
 interface UseConnectResultBase<TVariables = ConnectVariables> {
-  connect: (variables: TVariables, options?: Optional<UseConnectOptions<TVariables>>) => void;
-  connectAsync: (variables: TVariables, options?: Optional<UseConnectOptions<TVariables>>) => Promise<void>;
+  connect: (variables: ConnectVariables, options?: Optional<UseConnectOptions<ConnectVariables>>) => void;
+  connectAsync: (variables: ConnectVariables, options?: Optional<UseConnectOptions<ConnectVariables>>) => Promise<void>;
   status: ConnectionStatus;
   data: undefined;
   error: Error | null;
@@ -71,7 +71,7 @@ export function useConnect<TConnector extends AnyConnector = AnyConnector>(
 export function useConnect(
   parameters: { namespace?: Optional<ChainType> } = {},
   mutationOptions?: Optional<UseConnectOptions<any>>
-): UseConnectResult<AnyConnector, any> {
+): UseConnectResult<AnyConnector, ConnectVariables> {
   const { namespace } = parameters;
 
   const config = useLunoStore((state) => state.config);
