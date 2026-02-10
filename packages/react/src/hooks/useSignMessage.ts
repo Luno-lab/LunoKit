@@ -1,6 +1,7 @@
-import { isSameAddress } from '@luno-kit/core/utils';
-import type { Optional } from '../types';
-import { useLuno } from './useLuno';
+import { ChainType, type Optional } from '@luno-kit/core/types';
+import { Substrate } from '@luno-kit/core/utils';
+import { useCallback } from 'react';
+import { useLunoStore } from '../store';
 import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
 
 export interface SignMessageVariables {
@@ -38,54 +39,101 @@ export interface UseSignMessageResult {
 }
 
 export function useSignMessage(
-  hookLevelConfig?: Optional<UseSignMessageOptions>
+  parameters?: { namespace?: Optional<ChainType>; mutation?: Optional<UseSignMessageOptions> }
 ): UseSignMessageResult {
-  const { activeConnector, account, accounts } = useLuno();
+  const { namespace, mutation: mutationOptions } = parameters ?? {};
 
-  const mutationFn = async (variables: SignMessageVariables): Promise<SignMessageData> => {
-    if (!activeConnector) {
-      throw new Error('[useSignMessage]: No active connector found to sign the message.');
+  const activeNamespace = useLunoStore((state) => state.activeNamespace);
+
+  const substrateConnector = useLunoStore((state) => state.substrate.connector);
+  const substrateAccount = useLunoStore((state) => state.substrate.account);
+  const substrateAllAccounts = useLunoStore((state) => state.substrate.allAccounts);
+
+  const evmConnector = useLunoStore((state) => state.evm.connector);
+  const evmAccount = useLunoStore((state) => state.evm.account);
+
+  const targetNamespace = namespace || activeNamespace;
+
+  const signSubstrate = async (message: string): Promise<SignMessageData> => {
+    if (!substrateConnector) {
+      throw new Error('[useSignMessage]: No Substrate connector found.');
     }
-    if (!account || !account.address || !account.meta?.source) {
-      throw new Error('[useSignMessage]: No address provided for signing.');
-    }
-
-    if (!accounts.some((acc) => acc.address === account.address)) {
-      throw new Error(
-        `[useSignMessage]: Address ${account.address} is not managed by ${activeConnector.id}.`
-      );
-    }
-
-    if (!variables.message) {
-      throw new Error('[useSignMessage]: No message provided for signing.');
-    }
-
-    const validAccount = accounts.find((acc) => isSameAddress(acc.address, account.address));
-
-    if (!validAccount) {
-      throw new Error('[useSignMessage]: Invalid account address.');
+    if (!substrateAccount?.address) {
+      throw new Error('[useSignMessage]: No Substrate account available.');
     }
 
-    const signatureString = await activeConnector.signMessage(
-      variables.message,
-      validAccount.address
+    const validAccount = substrateAllAccounts?.find((acc) =>
+      Substrate.isSameAddress(acc.address, substrateAccount.address)
     );
 
-    if (!signatureString) {
+    if (!validAccount) {
       throw new Error(
-        '[useSignMessage]: Signature was not obtained. The user may have cancelled the request or the connector failed.'
+        `[useSignMessage]: Address ${substrateAccount.address} is not managed by ${substrateConnector.id}.`
       );
     }
+
+    const signature = await substrateConnector.signMessage(message, validAccount.address);
+
+    if (!signature) {
+      throw new Error('[useSignMessage]: Signature was not obtained.');
+    }
+
     return {
-      signature: signatureString,
-      rawMessage: variables.message,
-      addressUsed: account.address,
+      signature,
+      rawMessage: message,
+      addressUsed: validAccount.address,
     };
   };
 
+  const signEvm = async (message: string): Promise<SignMessageData> => {
+    if (!evmConnector) {
+      throw new Error('[useSignMessage]: No EVM connector found.');
+    }
+    if (!evmAccount?.address) {
+      throw new Error('[useSignMessage]: No EVM account available.');
+    }
+
+    const signature = await evmConnector.signMessage(message);
+
+    if (!signature) {
+      throw new Error('[useSignMessage]: Signature was not obtained.');
+    }
+
+    return {
+      signature,
+      rawMessage: message,
+      addressUsed: evmAccount.address,
+    };
+  };
+
+  const mutationFn = useCallback(
+    async (variables: SignMessageVariables): Promise<SignMessageData> => {
+      if (!variables.message) {
+        throw new Error('[useSignMessage]: No message provided for signing.');
+      }
+
+      switch (targetNamespace) {
+        case ChainType.SUBSTRATE:
+          return signSubstrate(variables.message);
+        case ChainType.EVM:
+          return signEvm(variables.message);
+        default:
+          throw new Error(`[useSignMessage]: Unsupported namespace: ${targetNamespace}`);
+      }
+    },
+    [
+      targetNamespace,
+      substrateConnector,
+      substrateAccount,
+      substrateAllAccounts,
+      evmConnector,
+      evmAccount,
+    ]
+  );
+
   const mutationResult = useLunoMutation<SignMessageData, Error, SignMessageVariables, unknown>(
     mutationFn,
-    hookLevelConfig
+    mutationOptions
   );
 
   return {
