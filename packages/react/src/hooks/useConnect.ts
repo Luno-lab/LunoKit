@@ -54,25 +54,21 @@ export interface UseConnectResult<TConnector extends AnyConnector, TVariables = 
 }
 
 export function useConnect(
-  parameters: { namespace: 'substrate' },
-  mutationOptions?: Optional<UseConnectOptions<SubstrateConnectVariables>>
+  parameters: { namespace: 'substrate'; mutation?: Optional<UseConnectOptions<SubstrateConnectVariables>> }
 ): UseConnectResult<SubstrateConnectorType, SubstrateConnectVariables>;
 
 export function useConnect(
-  parameters: { namespace: 'evm' },
-  mutationOptions?: Optional<UseConnectOptions<EvmConnectVariables>>
+  parameters: { namespace: 'evm'; mutation?: Optional<UseConnectOptions<EvmConnectVariables>> }
 ): UseConnectResult<EvmConnectorType, EvmConnectVariables>;
 
 export function useConnect<TConnector extends AnyConnector = AnyConnector>(
-  parameters?: Optional<{ namespace?: Optional<ChainType> }>,
-  mutationOptions?: Optional<UseConnectOptions<ConnectVariables>>
+  parameters?: Optional<{ namespace?: Optional<ChainType>; mutation?: Optional<UseConnectOptions<ConnectVariables>> }>
 ): UseConnectResult<TConnector, ConnectVariables>;
 
 export function useConnect(
-  parameters: { namespace?: Optional<ChainType> } = {},
-  mutationOptions?: Optional<UseConnectOptions<any>>
+  parameters: { namespace?: Optional<ChainType>; mutation?: Optional<UseConnectOptions<any>> } = {}
 ): UseConnectResult<AnyConnector, ConnectVariables> {
-  const { namespace } = parameters;
+  const { namespace, mutation: mutationOptions } = parameters;
 
   const config = useLunoStore((state) => state.config);
   const activeNamespace = useLunoStore((state) => state.activeNamespace);

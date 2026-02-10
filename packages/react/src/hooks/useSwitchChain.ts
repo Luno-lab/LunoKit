@@ -53,28 +53,24 @@ export interface UseSwitchChainResult<
 }
 
 export function useSwitchChain(
-  parameters: { namespace: 'substrate' },
-  mutationOptions?: Optional<UseSwitchChainOptions<HexString>>
+  parameters: { namespace: 'substrate'; mutation?: Optional<UseSwitchChainOptions<HexString>> }
 ): UseSwitchChainResult<SubstrateChain, HexString>;
 
 export function useSwitchChain(
-  parameters: { namespace: 'evm' },
-  mutationOptions?: Optional<UseSwitchChainOptions<number>>
+  parameters: { namespace: 'evm'; mutation?: Optional<UseSwitchChainOptions<number>> }
 ): UseSwitchChainResult<EvmChain, number>;
 
 export function useSwitchChain<
   TChain extends AnyChain = AnyChain,
   TChainId extends AnyChainId = AnyChainId,
 >(
-  parameters?: { namespace?: ChainType },
-  mutationOptions?: Optional<UseSwitchChainOptions>
+  parameters?: { namespace?: ChainType; mutation?: Optional<UseSwitchChainOptions> }
 ): UseSwitchChainResult<TChain, TChainId>;
 
 export function useSwitchChain(
-  parameters: { namespace?: ChainType } = {},
-  mutationOptions?: Optional<UseSwitchChainOptions<any>>
+  parameters: { namespace?: ChainType; mutation?: Optional<UseSwitchChainOptions<AnyChainId>> } = {}
 ): UseSwitchChainResult<AnyChain, AnyChainId> {
-  const { namespace } = parameters;
+  const { namespace, mutation: mutationOptions } = parameters;
 
   const config = useLunoStore((state) => state.config);
   const activeNamespace = useLunoStore((state) => state.activeNamespace);

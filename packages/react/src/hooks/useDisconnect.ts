@@ -21,10 +21,9 @@ export interface UseDisconnectResult {
 }
 
 export const useDisconnect = (
-  parameters: { namespace?: Optional<ChainType> } = {},
-  hookLevelConfig?: Optional<UseDisconnectOptions>
+  parameters: { namespace?: Optional<ChainType>; mutation?: Optional<UseDisconnectOptions> } = {}
 ): UseDisconnectResult => {
-  const { namespace } = parameters;
+  const { namespace, mutation: mutationOptions } = parameters;
 
   const config = useLunoStore((state) => state.config);
   const activeNamespace = useLunoStore((state) => state.activeNamespace);
@@ -104,7 +103,7 @@ export const useDisconnect = (
 
   const mutationResult = useLunoMutation<void, Error, void, unknown>(
     disconnectFn,
-    hookLevelConfig
+    mutationOptions
   );
 
   const status = useMemo(() => {

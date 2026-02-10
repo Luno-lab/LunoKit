@@ -34,8 +34,9 @@ export interface UseExtrinsicPaymentInfoResult {
 }
 
 export function useExtrinsicPaymentInfo(
-  hookLevelConfig?: Optional<UseExtrinsicPaymentInfoOptions>
+  parameters: { mutation?: Optional<UseExtrinsicPaymentInfoOptions> } = {}
 ): UseExtrinsicPaymentInfoResult {
+  const { mutation: mutationOptions } = parameters;
   const account = useLunoStore((state) => state.substrate.account);
   const currentChain = useLunoStore((state) => state.substrate.chain);
 
@@ -67,7 +68,7 @@ export function useExtrinsicPaymentInfo(
 
   const mutationResult = useLunoMutation<PaymentInfo, Error, EstimatePaymentInfoVariables, unknown>(
     estimateFn,
-    hookLevelConfig
+    mutationOptions
   );
 
   return {
