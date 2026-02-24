@@ -1,12 +1,23 @@
-import type { HexString } from '@luno-kit/core/types';
+import { ChainType, type HexString, type Optional } from '@luno-kit/core/types';
 import type { ISubmittableExtrinsic } from 'dedot/types';
-import { useCallback, useState } from 'react';
-import { useLuno } from './useLuno';
+import { useCallback } from 'react';
+import { useSendTransaction as useWagmiSendTransaction } from 'wagmi';
+import { useLunoStore } from '../store';
 import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
 
-export interface SendTransactionHashVariables {
+export interface SubstrateSendTransactionHashVariables {
   extrinsic: ISubmittableExtrinsic;
 }
+
+export interface EvmSendTransactionHashVariables {
+  to: HexString;
+  value?: bigint;
+  data?: HexString;
+}
+
+export type SendTransactionHashVariables =
+  | SubstrateSendTransactionHashVariables
+  | EvmSendTransactionHashVariables;
 
 export type UseSendTransactionHashOptions = LunoMutationOptions<
   HexString,
@@ -18,11 +29,11 @@ export type UseSendTransactionHashOptions = LunoMutationOptions<
 export interface UseSendTransactionHashResult {
   sendTransaction: (
     variables: SendTransactionHashVariables,
-    options?: UseSendTransactionHashOptions
+    options?: Optional<UseSendTransactionHashOptions>
   ) => void;
   sendTransactionAsync: (
     variables: SendTransactionHashVariables,
-    options?: UseSendTransactionHashOptions
+    options?: Optional<UseSendTransactionHashOptions>
   ) => Promise<HexString>;
   data: HexString | undefined;
   error: Error | null;
@@ -36,59 +47,106 @@ export interface UseSendTransactionHashResult {
 }
 
 export function useSendTransactionHash(
-  hookLevelConfig?: UseSendTransactionHashOptions
+  parameters: { mutation?: Optional<UseSendTransactionHashOptions> } = {}
 ): UseSendTransactionHashResult {
-  const { account, activeConnector, currentApi, isApiReady } = useLuno();
-  const [txError, setTxError] = useState<Error | null>(null);
+  const { mutation: mutationOptions } = parameters;
 
-  const sendTransactionFn = useCallback(
+  const activeNamespace = useLunoStore((state) => state.activeNamespace);
+
+  const substrateConnector = useLunoStore((state) => state.substrate.connector);
+  const substrateAccount = useLunoStore((state) => state.substrate.account);
+  const substrateApi = useLunoStore((state) => state.substrate.currentApi);
+  const isApiReady = useLunoStore((state) => state.substrate.isApiReady);
+
+  const wagmiSendTx = useWagmiSendTransaction();
+
+  const sendSubstrate = async (
+    variables: SubstrateSendTransactionHashVariables
+  ): Promise<HexString> => {
+    if (!substrateApi || !isApiReady) {
+      throw new Error('[useSendTransactionHash]: Polkadot API is not ready.');
+    }
+    if (!substrateConnector) {
+      throw new Error('[useSendTransactionHash]: No active Substrate connector found.');
+    }
+    if (!substrateAccount?.address || !substrateAccount?.meta?.source) {
+      throw new Error('[useSendTransactionHash]: No active Substrate account found.');
+    }
+    if (!variables.extrinsic) {
+      throw new Error('[useSendTransactionHash]: No extrinsic provided.');
+    }
+
+    const signer = await substrateConnector.getSigner();
+    if (!signer) {
+      throw new Error('[useSendTransactionHash]: Could not retrieve signer.');
+    }
+
+    const txHash = await variables.extrinsic.signAndSend(
+      substrateAccount.address,
+      { signer }
+    );
+
+    return txHash as HexString;
+  };
+
+  const sendEvm = async (
+    variables: EvmSendTransactionHashVariables
+  ): Promise<HexString> => {
+    const hash: HexString = await wagmiSendTx.mutateAsync({
+      to: variables.to,
+      value: variables.value,
+      data: variables.data as HexString | undefined,
+    });
+
+    return hash;
+  };
+
+  const mutationFn = useCallback(
     async (variables: SendTransactionHashVariables): Promise<HexString> => {
-      if (!currentApi || !isApiReady) {
-        throw new Error('[useSendTransactionHash]: Polkadot API is not ready.');
-      }
-      if (!activeConnector) {
-        throw new Error('[useSendTransactionHash]: No active connector found.');
-      }
-      if (!account || !account.address || !account.meta?.source) {
-        throw new Error(
-          '[useSendTransactionHash]: No active account, address, or account metadata (source) found.'
-        );
-      }
-      if (!variables.extrinsic) {
-        throw new Error('[useSendTransactionHash]: No extrinsic provided to send.');
-      }
-
-      const signer = await activeConnector.getSigner();
-      if (!signer) {
-        throw new Error('[useSendTransactionHash]: Could not retrieve signer from the injector.');
-      }
-
-      try {
-        const txHash = await variables.extrinsic
-          .signAndSend(account.address, { signer: signer })
-          .catch((e) => {
-            throw e;
-          });
-        return txHash as HexString;
-      } catch (error) {
-        setTxError(error as Error);
-        throw error;
+      switch (activeNamespace) {
+        case ChainType.SUBSTRATE: {
+          if (!('extrinsic' in variables)) {
+            throw new Error(
+              '[useSendTransactionHash]: Expected Substrate variables (extrinsic) for current namespace.'
+            );
+          }
+          return sendSubstrate(variables as SubstrateSendTransactionHashVariables);
+        }
+        case ChainType.EVM: {
+          if ('extrinsic' in variables) {
+            throw new Error(
+              '[useSendTransactionHash]: Expected EVM variables (to, value, data) for current namespace.'
+            );
+          }
+          return sendEvm(variables as EvmSendTransactionHashVariables);
+        }
+        default:
+          throw new Error(`[useSendTransactionHash]: Unsupported namespace: ${activeNamespace}`);
       }
     },
-    [currentApi, isApiReady, activeConnector, account]
+    [
+      activeNamespace,
+      substrateConnector,
+      substrateAccount,
+      substrateApi,
+      isApiReady,
+      wagmiSendTx.mutateAsync,
+    ]
   );
 
-  const mutationResult = useLunoMutation<HexString, Error, SendTransactionHashVariables, unknown>(
-    sendTransactionFn,
-    hookLevelConfig
-  );
+  const mutationResult = useLunoMutation<
+    HexString,
+    Error,
+    SendTransactionHashVariables,
+    unknown
+  >(mutationFn, mutationOptions);
 
   return {
     sendTransaction: mutationResult.mutate,
     sendTransactionAsync: mutationResult.mutateAsync,
     data: mutationResult.data,
-    error: txError || mutationResult.error,
-    isError: Boolean(txError) || mutationResult.isError,
+    error: mutationResult.error,
+    isError: mutationResult.isError,
     isIdle: mutationResult.isIdle,
     isPending: mutationResult.isPending,
     isSuccess: mutationResult.isSuccess,
