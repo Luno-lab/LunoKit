@@ -3,10 +3,10 @@ import {
   type AnyConnector,
   type SubstrateConnectorType,
   type EvmConnectorType,
+  type Optional,
 } from '@luno-kit/core/types';
 import { useMemo } from 'react';
 import { useLunoStore } from '../store';
-import type { Optional } from '../types';
 
 export interface UseConnectorsParameters {
   namespace?: Optional<ChainType>;

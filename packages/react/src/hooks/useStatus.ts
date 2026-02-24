@@ -1,7 +1,7 @@
-import { ChainType } from '@luno-kit/core/types';
+import { ChainType, type Optional } from '@luno-kit/core/types';
 import { useMemo } from 'react';
 import { useLunoStore } from '../store';
-import { ConnectionStatus, type Optional } from '../types';
+import { ConnectionStatus } from '../types';
 
 export interface UseStatusParameters {
   namespace?: Optional<ChainType>;

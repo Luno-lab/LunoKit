@@ -1,9 +1,8 @@
-import { ChainType } from '@luno-kit/core/types';
+import { ChainType, type Optional } from '@luno-kit/core/types';
 import type { BlockNumber } from 'dedot/codecs';
 import { useBlockNumber as useWagmiBlockNumber } from 'wagmi';
 import { useMemo } from 'react';
 import { useLunoStore } from '../store';
-import type { Optional } from '../types';
 import { useSubscription } from './useSubscription';
 
 export interface UseBlockNumberResult {

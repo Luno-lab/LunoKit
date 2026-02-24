@@ -4,9 +4,9 @@ import {
   type SubstrateChain,
   type EvmChain,
   type HexString,
+  type Optional,
 } from '@luno-kit/core/types';
 import { useLunoStore } from '../store';
-import type { Optional } from '../types';
 import { useMemo } from 'react'
 
 export interface UseChainResult<TChain = AnyChain> {

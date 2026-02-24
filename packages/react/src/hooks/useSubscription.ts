@@ -1,8 +1,8 @@
+import type { Optional } from '@luno-kit/core/types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { LegacyClient } from 'dedot';
 import type { Callback, GenericStorageQuery, Unsub } from 'dedot/types';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { Optional } from '../types';
 import { useLunoStore } from '../store';
 
 type SubscriptionFn<TArgs extends any[], TData> = (

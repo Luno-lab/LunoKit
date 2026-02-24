@@ -1,7 +1,7 @@
-import { ChainType } from '@luno-kit/core/types';
+import { ChainType, type Optional } from '@luno-kit/core/types';
 import { PERSIST_KEY } from '../constants';
 import { useLunoStore } from '../store';
-import { ConnectionStatus, type Optional } from '../types';
+import { ConnectionStatus } from '../types';
 import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
 import { useCallback, useMemo } from 'react';
 

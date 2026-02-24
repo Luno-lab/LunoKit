@@ -1,8 +1,8 @@
+import type { Optional } from '@luno-kit/core/types';
 import { Substrate } from '@luno-kit/core/utils';
 import type { ISubmittableExtrinsic, TxPaymentInfo } from 'dedot/types';
 import { useCallback } from 'react';
 import { useLunoStore } from '../store';
-import type { Optional } from '../types';
 import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
 
 interface PaymentInfo extends TxPaymentInfo {

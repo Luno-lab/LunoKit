@@ -1,9 +1,9 @@
 import {
   ChainType,
   type HexString,
+  type Optional,
 } from '@luno-kit/core/types';
 import { useLunoStore } from '../store';
-import type { Optional } from '../types';
 import { useMemo } from 'react';
 
 type AnyChainId = HexString | number;

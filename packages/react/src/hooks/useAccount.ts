@@ -4,11 +4,12 @@ import {
   type EvmAccount,
   type HexString,
   type AccountType,
+  type Optional,
 } from '@luno-kit/core/types';
 import { Substrate } from '@luno-kit/core/utils';
 import {useCallback, useMemo} from 'react';
 import { useLunoStore } from '../store';
-import { ConnectionStatus, type Optional } from '../types';
+import { ConnectionStatus } from '../types';
 
 export interface UseAccountResult<TAccount extends AccountType = AccountType> {
   account?: Optional<TAccount>;

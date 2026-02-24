@@ -8,12 +8,13 @@ import {
   type HexString,
   type SubstrateConnectorType,
   type EvmConnectorType,
+  type Optional,
 } from '@luno-kit/core/types';
 import { Substrate as SubstrateUtils } from '@luno-kit/core/utils';
 import { useCallback, useMemo } from 'react';
 import { PERSIST_KEY } from '../constants';
 import { type StoredAccountInfo, useLunoStore } from '../store';
-import { ConnectionStatus, type Optional } from '../types';
+import { ConnectionStatus } from '../types';
 import { sleep } from '../utils';
 import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
 
