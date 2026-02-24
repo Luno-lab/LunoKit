@@ -86,6 +86,8 @@ export function useSwitchChain(
 
   const setSubstrateState = useLunoStore((state) => state.setSubstrateState);
 
+  const setActiveNamespace = useLunoStore((state) => state.setActiveNamespace);
+
   const targetNamespace = namespace || activeNamespace;
 
   const wagmiSwitchChain = useWagmiSwitchChain();
@@ -167,11 +169,13 @@ export function useSwitchChain(
       switch (targetNamespace) {
         case ChainType.SUBSTRATE: {
           await switchSubstrate(variables.chainId as HexString);
+          setActiveNamespace(ChainType.SUBSTRATE);
           break;
         }
 
         case ChainType.EVM: {
           await switchEvm(variables.chainId as number);
+          setActiveNamespace(ChainType.EVM);
           break;
         }
 
@@ -179,7 +183,7 @@ export function useSwitchChain(
           throw new Error(`[useSwitchChain] Invalid namespace "${targetNamespace}".`);
       }
     },
-    [targetNamespace, config, substrateChainId, substrateApi, evmChainId, wagmiSwitchChain]
+    [targetNamespace, config, substrateChainId, substrateApi, evmChainId, wagmiSwitchChain, setActiveNamespace]
   );
 
   const mutationResult = useLunoMutation<void, Error, SwitchChainVariables, unknown>(

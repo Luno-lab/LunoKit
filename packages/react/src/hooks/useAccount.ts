@@ -49,6 +49,8 @@ export function useAccount(
   const allEvmAccounts = useLunoStore((state) => state.evm.allAccounts);
   const evmStatus = useLunoStore((state) => state.evm.status);
 
+  const setActiveNamespace = useLunoStore((state) => state.setActiveNamespace);
+
   const setSubstrateState = useLunoStore((state) => state.setSubstrateState);
   const setEvmState = useLunoStore((state) => state.setEvmState);
 
@@ -77,12 +79,14 @@ export function useAccount(
     switch (targetNamespace) {
       case ChainType.SUBSTRATE:
         setSubstrateState({ account: account as SubstrateAccount });
+        setActiveNamespace(ChainType.SUBSTRATE);
         break;
       case ChainType.EVM:
         setEvmState({ account: account as EvmAccount });
+        setActiveNamespace(ChainType.EVM);
         break;
     }
-  }, [targetNamespace, setSubstrateState, setEvmState]);
+  }, [targetNamespace, setSubstrateState, setEvmState, setActiveNamespace]);
 
   return useMemo(() => {
     switch (targetNamespace) {

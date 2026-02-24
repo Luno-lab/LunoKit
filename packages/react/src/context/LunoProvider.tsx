@@ -7,16 +7,7 @@ import { useIsInitialized } from '../hooks/useIsInitialized';
 import { useLunoStore } from '../store';
 import { createApi, sleep } from '../utils';
 import { LunoContext, type LunoContextState } from './LunoContext';
-import {
-  useAccount,
-  useBlockNumber,
-  useChainId,
-  useChains,
-  useClient,
-  useConnect,
-  useConnectors,
-  useSigner, useSwitchChain
-} from '../hooks'
+import { useConnect } from '../hooks'
 import { useSubstrateEvents } from '../hooks/useSubstrateEvents'
 
 interface LunoProviderProps {
@@ -70,8 +61,6 @@ const SubstrateStateSync = () => {
   const { isInitialized: isAutoConnectInitialized, markAsInitialized: markAutoConnectInitialized } = useIsInitialized();
 
   useSubstrateEvents()
-
-  const { switchChainAsync, chainId, chain, chains } = useSwitchChain({ namespace: 'evm'});
 
   const clearApiState = useCallback(() => {
     _setApi(undefined);

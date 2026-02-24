@@ -143,8 +143,6 @@ export function useConnect(
         allAccounts: accounts,
         account: selectedAccount,
       });
-      setActiveNamespace(ChainType.SUBSTRATE);
-
       if (config.storage) {
         await config.storage.setItem(PERSIST_KEY.LAST_CONNECTOR_ID, connectorId);
         await config.storage.setItem(PERSIST_KEY.RECENT_CONNECTOR_ID, connectorId);
@@ -216,7 +214,6 @@ export function useConnect(
         withCapabilities,
       };
       await connector.connect(options);
-      setActiveNamespace(ChainType.EVM);
     } catch (err) {
       console.error('[useConnect] EVM Connect Error:', err);
       throw err;
@@ -228,12 +225,14 @@ export function useConnect(
       case ChainType.SUBSTRATE: {
         const { chainId, connectorId } = variables as SubstrateConnectVariables;
         await connectSubstrate(connectorId, chainId);
+        setActiveNamespace(ChainType.SUBSTRATE);
         break;
       }
 
       case ChainType.EVM: {
         const { connectorId, chainId, withCapabilities } = variables as EvmConnectVariables;
         await connectEvm(connectorId, chainId, withCapabilities);
+        setActiveNamespace(ChainType.EVM);
         break;
       }
 
@@ -242,7 +241,7 @@ export function useConnect(
     }
 
     await sleep();
-  }, [targetNamespace, config, substrateChainId]);
+  }, [targetNamespace, config, substrateChainId, setActiveNamespace]);
 
   const mutationResult = useLunoMutation<undefined, Error, ConnectVariables, unknown>(
     connectFn,
