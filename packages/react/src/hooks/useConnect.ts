@@ -55,21 +55,21 @@ export interface UseConnectResult<TConnector extends AnyConnector, TVariables = 
 }
 
 export function useConnect(
-  parameters: { namespace: 'substrate'; mutation?: Optional<UseConnectOptions<SubstrateConnectVariables>> }
+  parameters: { namespace: 'substrate'; setActiveNamespace?: Optional<boolean>; mutation?: Optional<UseConnectOptions<SubstrateConnectVariables>> }
 ): UseConnectResult<SubstrateConnectorType, SubstrateConnectVariables>;
 
 export function useConnect(
-  parameters: { namespace: 'evm'; mutation?: Optional<UseConnectOptions<EvmConnectVariables>> }
+  parameters: { namespace: 'evm'; setActiveNamespace?: Optional<boolean>; mutation?: Optional<UseConnectOptions<EvmConnectVariables>> }
 ): UseConnectResult<EvmConnectorType, EvmConnectVariables>;
 
 export function useConnect<TConnector extends AnyConnector = AnyConnector>(
-  parameters?: Optional<{ namespace?: Optional<ChainType>; mutation?: Optional<UseConnectOptions<ConnectVariables>> }>
+  parameters?: Optional<{ namespace?: Optional<ChainType>; setActiveNamespace?: Optional<boolean>; mutation?: Optional<UseConnectOptions<ConnectVariables>> }>
 ): UseConnectResult<TConnector, ConnectVariables>;
 
 export function useConnect(
-  parameters: { namespace?: Optional<ChainType>; mutation?: Optional<UseConnectOptions<any>> } = {}
+  parameters: { namespace?: Optional<ChainType>; setActiveNamespace?: Optional<boolean>; mutation?: Optional<UseConnectOptions<any>> } = {}
 ): UseConnectResult<AnyConnector, ConnectVariables> {
-  const { namespace, mutation: mutationOptions } = parameters;
+  const { namespace, setActiveNamespace: shouldSetActiveNamespace = true, mutation: mutationOptions } = parameters;
 
   const config = useLunoStore((state) => state.config);
   const activeNamespace = useLunoStore((state) => state.activeNamespace);
@@ -225,14 +225,14 @@ export function useConnect(
       case ChainType.SUBSTRATE: {
         const { chainId, connectorId } = variables as SubstrateConnectVariables;
         await connectSubstrate(connectorId, chainId);
-        setActiveNamespace(ChainType.SUBSTRATE);
+        shouldSetActiveNamespace && setActiveNamespace(ChainType.SUBSTRATE);
         break;
       }
 
       case ChainType.EVM: {
         const { connectorId, chainId, withCapabilities } = variables as EvmConnectVariables;
         await connectEvm(connectorId, chainId, withCapabilities);
-        setActiveNamespace(ChainType.EVM);
+        shouldSetActiveNamespace && setActiveNamespace(ChainType.EVM);
         break;
       }
 
@@ -241,7 +241,7 @@ export function useConnect(
     }
 
     await sleep();
-  }, [targetNamespace, config, substrateChainId, setActiveNamespace]);
+  }, [targetNamespace, config, substrateChainId, shouldSetActiveNamespace, setActiveNamespace]);
 
   const mutationResult = useLunoMutation<undefined, Error, ConnectVariables, unknown>(
     connectFn,

@@ -35,8 +35,6 @@ export const useDisconnect = (
   const evmConnector = useLunoStore((state) => state.evm.connector);
   const evmStatus = useLunoStore((state) => state.evm.status);
 
-  const setActiveNamespace = useLunoStore((state) => state.setActiveNamespace);
-
   const targetNamespace = namespace || activeNamespace;
 
   const disconnectSubstrate = async (): Promise<void> => {
@@ -93,21 +91,15 @@ export const useDisconnect = (
     switch (targetNamespace) {
       case ChainType.SUBSTRATE:
         await disconnectSubstrate();
-        if (activeNamespace === ChainType.SUBSTRATE && evmStatus === ConnectionStatus.Connected) {
-          setActiveNamespace(ChainType.EVM);
-        }
         break;
       case ChainType.EVM:
         await disconnectEvm();
-        if (activeNamespace === ChainType.EVM && substrateStatus === ConnectionStatus.Connected) {
-          setActiveNamespace(ChainType.SUBSTRATE);
-        }
         break;
       default:
         console.warn(`[useDisconnect]: Invalid namespace "${targetNamespace}".`);
         break;
     }
-  }, [targetNamespace, activeNamespace, substrateConnector, substrateStatus, config, evmConnector, evmStatus, setActiveNamespace]);
+  }, [targetNamespace, substrateConnector, substrateStatus, config, evmConnector, evmStatus]);
 
   const mutationResult = useLunoMutation<void, Error, void, unknown>(
     disconnectFn,

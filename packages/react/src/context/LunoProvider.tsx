@@ -55,7 +55,7 @@ const SubstrateStateSync = () => {
   const _setIsApiReady = useLunoStore((state) => state._setIsApiReady);
   const _setApiError = useLunoStore((state) => state._setApiError);
 
-  const { connectAsync } = useConnect({ namespace: ChainType.SUBSTRATE });
+  const { connectAsync } = useConnect({ namespace: ChainType.SUBSTRATE, setActiveNamespace: false });
 
   const { isInitialized: isApiInitialized, markAsInitialized: markApiInitialized } = useIsInitialized();
   const { isInitialized: isAutoConnectInitialized, markAsInitialized: markAutoConnectInitialized } = useIsInitialized();

@@ -69,7 +69,6 @@ const storeLogic: LunoStoreCreator = (set, get) => ({
       state.config = castDraft(newConfig);
 
       state.status = ConnectionStatus.Disconnected;
-      state.activeNamespace = ChainType.SUBSTRATE;
       state.substrate = getInitialSubstrateState();
       state.evm = getInitialEvmState();
 
@@ -146,6 +145,13 @@ const storeLogic: LunoStoreCreator = (set, get) => ({
       }
     });
 
+    if (partialState.status === ConnectionStatus.Disconnected) {
+      const current = get();
+      if (current.activeNamespace === ChainType.SUBSTRATE && current.evm.status === ConnectionStatus.Connected) {
+        current.setActiveNamespace(ChainType.EVM);
+      }
+    }
+
     if (accountToSet && config?.storage) {
       const accountInfo = {
         publicKey: accountToSet.publicKey,
@@ -176,6 +182,13 @@ const storeLogic: LunoStoreCreator = (set, get) => ({
         }
       }
     });
+
+    if (partialState.status === ConnectionStatus.Disconnected) {
+      const current = get();
+      if (current.activeNamespace === ChainType.EVM && current.substrate.status === ConnectionStatus.Connected) {
+        current.setActiveNamespace(ChainType.SUBSTRATE);
+      }
+    }
   },
 
   _setApi: (api) => {
