@@ -15,6 +15,10 @@ import {
   type RawStorage,
   type SubstrateChain,
   type Transport,
+  type AnyConnector,
+  type ConnectorGroup,
+  type EvmConnectorType,
+  type SubstrateConnectorType,
 } from '../types';
 import { createStorage } from './createStorage';
 import {
@@ -57,9 +61,28 @@ function generateSubstrateTransports(chains: readonly SubstrateChain[]): Record<
   return transports;
 }
 
+function isConnectorGroupArray<T extends AnyConnector>(
+  input: T[] | ConnectorGroup<T>[]
+): input is ConnectorGroup<T>[] {
+  return input.length > 0 && 'groupName' in input[0] && 'wallets' in input[0];
+}
+
 function createSubstrateConfigState(params: SubstrateConfigParams): Config['substrate'] {
   const chains = params.chains || [];
-  const connectors = params.connectors || [];
+
+  const connectorsInput = params.connectors || [];
+
+  const connectorGroups = isConnectorGroupArray(connectorsInput)
+    ? connectorsInput.filter((g) => g.wallets.length > 0)
+    : undefined;
+
+  const connectors = isConnectorGroupArray(connectorsInput)
+    ? connectorsInput.flatMap((g) => g.wallets)
+    : connectorsInput;
+
+  if (!connectors || connectors.length === 0) {
+    throw new Error('No connectors provided. Wallet connection features will be unavailable.');
+  }
 
   const transportsFromChains = chains.length > 0 ? generateSubstrateTransports(chains) : {};
 
@@ -80,6 +103,9 @@ function createSubstrateConfigState(params: SubstrateConfigParams): Config['subs
   return {
     chains: Object.freeze([...chains]),
     connectors: Object.freeze([...connectors]),
+    connectorGroups: connectorGroups
+      ? (Object.freeze([...connectorGroups]) as readonly ConnectorGroup<SubstrateConnectorType>[])
+      : undefined,
     transports: Object.freeze(finalTransports),
     subscan: params.subscan,
     customTypes: params.customTypes,
@@ -108,7 +134,15 @@ function normalizeEvmChains(chains: readonly EvmInputChain[]): EvmChain[] {
 }
 
 function createEvmConfigState(evmParams: EvmConfigParams): Config['evm'] {
-  const { connectors: lunoEvmConnectors, chains: evmInputChains, ...wagmiParams } = evmParams;
+  const { connectors: connectorsInput, chains: evmInputChains, ...wagmiParams } = evmParams;
+
+  const connectorGroups = isConnectorGroupArray(connectorsInput)
+    ? connectorsInput.filter((g) => g.wallets.length > 0)
+    : undefined;
+
+  const lunoEvmConnectors = isConnectorGroupArray(connectorsInput)
+    ? connectorsInput.flatMap((g) => g.wallets)
+    : connectorsInput;
 
   const normalizedEvmChains = normalizeEvmChains(evmInputChains);
   const wagmiConnectorsFactoryList = lunoEvmConnectors.map((c) => c.wagmiFactory);
@@ -151,6 +185,9 @@ function createEvmConfigState(evmParams: EvmConfigParams): Config['evm'] {
   return {
     chains: Object.freeze(normalizedEvmChains),
     connectors: Object.freeze(lunoEvmConnectors),
+    connectorGroups: connectorGroups
+      ? (Object.freeze([...connectorGroups]) as readonly ConnectorGroup<EvmConnectorType>[])
+      : undefined,
     wagmiConfig,
   };
 }

@@ -8,7 +8,11 @@ import { useConnect } from './useConnect';
 import { useLuno } from './useLuno';
 
 vi.mock('../utils/createApi', () => ({
-  createApi: () => Promise.resolve(mockClient.polkadot),
+  createApi: () => {
+    const api = mockClient.polkadot;
+    (api as any).isEthereum = false;
+    return Promise.resolve(api);
+  },
 }));
 
 const connector = mockConfig.connectors[0] as MockConnector;
@@ -88,6 +92,33 @@ describe('useBalance', () => {
         "isLoading": false,
       }
     `);
+  });
+
+  it('should return zero balance for EVM address on Substrate chain', async () => {
+    const { result } = renderHook(
+      () => ({
+        useLuno: useLuno(),
+        useBalance: useBalance({ address: '0xd200b69B88855eB5342a14993B84acfcA6829D6e' }), // EVM address
+      }),
+      {
+        config: mockConfig,
+      }
+    );
+
+    await waitFor(() => {
+      expect(result.current.useLuno.isApiReady).toBe(true);
+    });
+
+    expect(result.current.useBalance.isLoading).toBe(false);
+    expect(result.current.useBalance.data).toEqual({
+      free: 0n,
+      reserved: 0n,
+      total: 0n,
+      transferable: 0n,
+      formattedTransferable: '0',
+      formattedTotal: '0',
+      locks: [],
+    });
   });
 
   it('should be disabled when API is not ready', async () => {

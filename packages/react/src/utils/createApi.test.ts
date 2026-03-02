@@ -57,6 +57,15 @@ describe('createApi', () => {
     };
 
     mockWsProvider.mockReturnValue(mockProvider);
+
+    mockPolkadotClient.connect.mockResolvedValue(undefined);
+    mockPolkadotClient.disconnect.mockResolvedValue(undefined);
+
+    (mockPolkadotClient.rpc.system_properties as any) = vi
+      .fn()
+      .mockResolvedValue({ isEthereum: false });
+    (mockPolkadotClient.rpc.chain_getBlockHash as any) = vi.fn().mockResolvedValue(validChainId);
+
     MockClient.mockReturnValue(mockPolkadotClient);
   });
 
@@ -86,7 +95,19 @@ describe('createApi', () => {
         cacheStorage: config.cacheStorage,
       });
       expect(result.connect).toHaveBeenCalledOnce();
+      expect(mockPolkadotClient.rpc.system_properties).toHaveBeenCalled();
+      expect(mockPolkadotClient.rpc.chain_getBlockHash).toHaveBeenCalledWith(0);
       expect(result).toBe(mockPolkadotClient);
+      expect(result.isEthereum).toBe(false);
+    });
+
+    it('should correctly set isEthereum property when true', async () => {
+      const config = createMockConfig();
+      (mockPolkadotClient.rpc.system_properties as any).mockResolvedValue({ isEthereum: true });
+
+      const result = await createApi({ config, chainId: validChainId });
+
+      expect(result.isEthereum).toBe(true);
     });
   });
 
@@ -110,6 +131,18 @@ describe('createApi', () => {
       await expect(createApi({ config, chainId: validChainId })).rejects.toThrow(
         'Failed to connect to Polkadot: Network timeout'
       );
+    });
+
+    it('should throw error and disconnect when genesis hash mismatches', async () => {
+      const config = createMockConfig();
+      const wrongGenesisHash = '0xwronghash';
+      (mockPolkadotClient.rpc.chain_getBlockHash as any).mockResolvedValue(wrongGenesisHash);
+
+      await expect(createApi({ config, chainId: validChainId })).rejects.toThrow(
+        `Chain genesis hash mismatch. Expected: ${validChainId}, Got: ${wrongGenesisHash}`
+      );
+
+      expect(mockPolkadotClient.disconnect).toHaveBeenCalled();
     });
   });
 });

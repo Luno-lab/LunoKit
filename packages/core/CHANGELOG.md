@@ -1,5 +1,44 @@
 # @luno-kit/core
 
+## 0.0.13
+
+### Patch Changes
+
+- 5e32422: Add the function of customizing wallet grouping
+
+## 0.0.12
+
+### Patch Changes
+
+- 64375c6: fix backdrop-blur in Dialog component
+- f0e9c7b: handle EVM addresses and out-of-range SS58 formats
+- 5e24ced: handle balance queries for EVM and Substrate chains
+- dc65d4a: handle EVM addresses and out-of-range SS58 formats
+
+## 0.0.12-beta.3
+
+### Patch Changes
+
+- 5e24ced: handle balance queries for EVM and Substrate chains
+
+## 0.0.12-beta.2
+
+### Patch Changes
+
+- dc65d4a: handle EVM addresses and out-of-range SS58 formats
+
+## 0.0.12-beta.1
+
+### Patch Changes
+
+- f0e9c7b: handle EVM addresses and out-of-range SS58 formats
+
+## 0.0.12-beta.0
+
+### Patch Changes
+
+- 64375c6: fix backdrop-blur in Dialog component
+
 ## 0.0.11
 
 ### Patch Changes

@@ -1,4 +1,4 @@
-import { useConnectors } from '@luno-kit/react';
+import { useConfig, useConnectors } from '@luno-kit/react';
 import type { Connector } from '@luno-kit/react/types';
 import { isMobileDevice } from '@luno-kit/react/utils';
 import React, { useMemo } from 'react';
@@ -6,6 +6,7 @@ import { cs } from '../../utils';
 
 interface Props {
   onConnect: (connector: Connector) => Promise<void>;
+  showInstalledGroup: boolean;
 }
 
 const popularConnectorIds = [
@@ -19,33 +20,57 @@ const popularConnectorIds = [
 
 const moreConnectorIds = ['ledger', 'polkagate', 'fearless-wallet', 'mimir', 'enkrypt', 'OneKey'];
 
-export const ConnectOptions = React.memo(({ onConnect }: Props) => {
+export const ConnectOptions = React.memo(({ onConnect, showInstalledGroup }: Props) => {
   const connectors = useConnectors();
+  const config = useConfig();
 
   const installedConnectors = connectors.filter((c) => c.isInstalled());
   const popularConnectors = connectors.filter(
-    (c) => popularConnectorIds.includes(c.id) && !c.isInstalled()
+    (c: Connector) => popularConnectorIds.includes(c.id) && !c.isInstalled()
   );
   const moreConnectors = connectors.filter(
-    (c) => moreConnectorIds.includes(c.id) && !c.isInstalled()
+    (c: Connector) => !popularConnectorIds.includes(c.id) && !c.isInstalled()
   );
 
   const connectorGroup: { title: string; group: Connector[] }[] = useMemo(() => {
+    if (!config?.connectorGroups) {
+      return [
+        { title: 'Installed', group: installedConnectors },
+        { title: 'Popular', group: popularConnectors },
+        { title: 'More', group: moreConnectors },
+      ];
+    }
+
+    const hasUserDefinedInstalled = config.connectorGroups.some((g) => g.groupName === 'Installed');
+
+    if (hasUserDefinedInstalled || !showInstalledGroup) {
+      return config.connectorGroups
+        .filter((g) => g.wallets.length > 0)
+        .map((g) => ({ title: g.groupName, group: g.wallets }))
+        .sort((a, b) => (a.title === 'Installed' ? -1 : b.title === 'Installed' ? 1 : 0));
+    }
+
+    const allWallets = config.connectorGroups.flatMap((g) => g.wallets);
+    const installed = allWallets.filter((c) => c.isInstalled());
+
+    const customGroups = config.connectorGroups
+      .map((g) => ({
+        title: g.groupName,
+        group: g.wallets.filter((c) => !c.isInstalled()),
+      }))
+      .filter((g) => g.group.length > 0);
+
     return [
-      {
-        title: 'Installed',
-        group: installedConnectors,
-      },
-      {
-        title: 'Popular',
-        group: popularConnectors,
-      },
-      {
-        title: 'More',
-        group: moreConnectors,
-      },
+      ...(installed.length > 0 ? [{ title: 'Installed', group: installed }] : []),
+      ...customGroups,
     ];
-  }, [installedConnectors, popularConnectors, moreConnectors]);
+  }, [
+    installedConnectors,
+    popularConnectors,
+    moreConnectors,
+    config?.connectorGroups,
+    showInstalledGroup,
+  ]);
 
   if (isMobileDevice()) {
     const filteredConnectors = connectors

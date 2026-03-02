@@ -22,6 +22,10 @@ export enum ConnectionStatus {
   Reconnecting = 'reconnecting'
 }
 
+export type LunoClient = LegacyClient & {
+  isEthereum: boolean;
+};
+
 type Chain = EvmChain | SubstrateChain;
 
 export interface NamespaceState<
@@ -39,7 +43,7 @@ export interface NamespaceState<
 }
 
 type SubstrateNamespace = NamespaceState<SubstrateConnectorType, SubstrateAccount, SubstrateChain, HexString> & {
-  currentApi?: Optional<LegacyClient>;
+  currentApi?: Optional<LunoClient>;
   isApiReady: boolean;
   apiError: Error | null;
 };
@@ -64,7 +68,7 @@ export interface LunoState {
 
   _setConfig: (config: Config) => Promise<void>;
 
-  _setApi: (api?: Optional<LegacyClient>) => void;
+  _setApi: (api?: Optional<LunoClient>) => void;
   _setIsApiReady: (isApiReady: boolean) => void;
   _setApiError: (error: Error | null) => void;
 }

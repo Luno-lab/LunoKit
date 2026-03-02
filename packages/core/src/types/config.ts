@@ -5,10 +5,9 @@ import type {
 import type { Chain as WagmiChain } from '@wagmi/core/chains';
 import type { ApiOptions } from 'dedot';
 import type { AnyShape } from 'dedot/shape';
-import type { EvmConnector } from '../connectors/evm/connector';
-import type { SubstrateConnector } from '../connectors/substrate/connector';
 import type { HexString } from './account';
 import type { EvmChain, SubstrateChain } from './chain';
+import type { ConnectorGroup, SubstrateConnectorType, EvmConnectorType } from './connector';
 
 export interface RawStorage {
   getItem(key: string): string | null | Promise<string | null>;
@@ -33,7 +32,7 @@ type LunoApiOptions = Partial<Omit<ApiOptions, 'provider' | 'signer'>> & {
 export interface SubstrateConfigParams extends LunoApiOptions {
   chains?: Optional<readonly SubstrateChain[]>;
   transports?: Optional<Record<HexString, Transport>>;
-  connectors: SubstrateConnector[];
+  connectors: SubstrateConnectorType[] | ConnectorGroup<SubstrateConnectorType>[];
   subscan?: Optional<{
     apiKey: string;
     cacheTime?: Optional<number>;
@@ -50,7 +49,7 @@ export interface EvmConfigParams
     WagmiCreateConfigParameters,
     'connectors' | 'storage' | 'client' | 'multiInjectedProviderDiscovery' | 'chains'
   > {
-  connectors: EvmConnector[];
+  connectors: EvmConnectorType[] | ConnectorGroup<EvmConnectorType>[];
   chains: readonly EvmInputChain[];
 }
 
@@ -69,7 +68,8 @@ export interface Config {
 
   readonly substrate?: Optional<{
     readonly chains: readonly SubstrateChain[];
-    readonly connectors: readonly SubstrateConnector[];
+    readonly connectors: readonly SubstrateConnectorType[];
+    readonly connectorGroups?: readonly ConnectorGroup<SubstrateConnectorType>[];
     readonly transports: Readonly<Record<string, Transport>>;
     readonly subscan?: SubstrateConfigParams['subscan'];
     readonly customTypes?: LunoApiOptions['customTypes'];
@@ -78,7 +78,8 @@ export interface Config {
 
   readonly evm?: Optional<{
     readonly chains: readonly EvmChain[];
-    readonly connectors: readonly EvmConnector[];
+    readonly connectors: readonly EvmConnectorType[];
+    readonly connectorGroups?: readonly ConnectorGroup<EvmConnectorType>[];
     readonly wagmiConfig: WagmiConfig;
   }>;
 }

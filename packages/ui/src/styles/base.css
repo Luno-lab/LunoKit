@@ -125,7 +125,7 @@
   --shadow-modal: 0px 4px 16px rgba(0, 0, 0, 0.3);
 
   /* Blurs */
-  --blur-modalOverlay: blur(8px);
+  --blur-modalOverlay: 8px;
 }
 
 [data-theme="light"] {
@@ -229,7 +229,7 @@
   --shadow-modal: 0px 4px 16px rgba(0, 0, 0, 0.3);
 
   /* Blurs */
-  --blur-modalOverlay: blur(8px);
+  --blur-modalOverlay: 8px;
 }
 
 /* Loading Animation */

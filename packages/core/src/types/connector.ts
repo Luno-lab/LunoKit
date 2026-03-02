@@ -67,3 +67,8 @@ export type EvmConnectorType = InstanceType<typeof Evm.EvmConnector>;
 export type ConnectorType = SubstrateConnectorType | EvmConnectorType;
 
 export type AnyConnector = ConnectorType;
+
+export interface ConnectorGroup<T extends ConnectorType = ConnectorType> {
+  groupName: string;
+  wallets: T[];
+}

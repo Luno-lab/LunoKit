@@ -1,5 +1,59 @@
 # @luno-kit/react
 
+## 0.0.13
+
+### Patch Changes
+
+- 5e32422: Add the function of customizing wallet grouping
+- Updated dependencies [5e32422]
+  - @luno-kit/core@0.0.13
+
+## 0.0.12
+
+### Patch Changes
+
+- 64375c6: fix backdrop-blur in Dialog component
+- f0e9c7b: handle EVM addresses and out-of-range SS58 formats
+- 5e24ced: handle balance queries for EVM and Substrate chains
+- dc65d4a: handle EVM addresses and out-of-range SS58 formats
+- Updated dependencies [64375c6]
+- Updated dependencies [f0e9c7b]
+- Updated dependencies [5e24ced]
+- Updated dependencies [dc65d4a]
+  - @luno-kit/core@0.0.12
+
+## 0.0.12-beta.3
+
+### Patch Changes
+
+- 5e24ced: handle balance queries for EVM and Substrate chains
+- Updated dependencies [5e24ced]
+  - @luno-kit/core@0.0.12-beta.3
+
+## 0.0.12-beta.2
+
+### Patch Changes
+
+- dc65d4a: handle EVM addresses and out-of-range SS58 formats
+- Updated dependencies [dc65d4a]
+  - @luno-kit/core@0.0.12-beta.2
+
+## 0.0.12-beta.1
+
+### Patch Changes
+
+- f0e9c7b: handle EVM addresses and out-of-range SS58 formats
+- Updated dependencies [f0e9c7b]
+  - @luno-kit/core@0.0.12-beta.1
+
+## 0.0.12-beta.0
+
+### Patch Changes
+
+- 64375c6: fix backdrop-blur in Dialog component
+- Updated dependencies [64375c6]
+  - @luno-kit/core@0.0.12-beta.0
+
 ## 0.0.11
 
 ### Patch Changes

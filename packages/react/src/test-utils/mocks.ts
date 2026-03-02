@@ -178,6 +178,7 @@ export function createMockApi(options: { chain: Chain }) {
     disconnect: vi.fn().mockResolvedValue(undefined),
     rpc: {
       chain_getBlockHash: vi.fn().mockResolvedValue(options.chain.genesisHash),
+      system_properties: vi.fn().mockResolvedValue({}),
     },
   };
 }

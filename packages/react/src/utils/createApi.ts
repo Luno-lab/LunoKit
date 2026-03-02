@@ -1,13 +1,14 @@
 import { wsProvider } from '@luno-kit/core';
 import { type ApiOptions, LegacyClient } from 'dedot';
 import type { Config, SubstrateChain, HexString } from '../types';
+import type { LunoClient } from '../types/state';
 
 interface CreateApiOptions {
   config: Config;
   chainId: string;
 }
 
-export const createApi = async ({ config, chainId }: CreateApiOptions): Promise<LegacyClient> => {
+export const createApi = async ({ config, chainId }: CreateApiOptions): Promise<LunoClient> => {
   const substrate = config.substrate;
 
   if (!substrate) {
@@ -27,7 +28,7 @@ export const createApi = async ({ config, chainId }: CreateApiOptions): Promise<
     provider,
     scaledResponses: {
       ...substrate.customTypes,
-      ...substrate.customTypes,
+      ...substrate.customRpc,
     },
   };
 
@@ -46,7 +47,11 @@ export const createApi = async ({ config, chainId }: CreateApiOptions): Promise<
       );
     }
 
-    return newApi;
+    const properties = await newApi.rpc.system_properties();
+
+    (newApi as LunoClient).isEthereum = !!properties.isEthereum;
+
+    return newApi as LunoClient;
   } catch (error: any) {
     throw new Error(`Failed to connect to ${chainConfig.name}: ${error?.message || error}`);
   }
