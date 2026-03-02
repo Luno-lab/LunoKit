@@ -42,8 +42,6 @@ export const useDisconnect = (
       return;
     }
 
-    setSubstrateState({ status: ConnectionStatus.Disconnecting });
-
     try {
       await substrateConnector.disconnect();
 

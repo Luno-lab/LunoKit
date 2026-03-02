@@ -17,7 +17,6 @@ import type { LegacyClient } from 'dedot';
 export enum ConnectionStatus {
   Disconnected = 'disconnected',
   Connecting = 'connecting',
-  Disconnecting = 'reconnecting',
   Connected = 'connected',
   Reconnecting = 'reconnecting'
 }

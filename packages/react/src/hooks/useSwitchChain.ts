@@ -27,10 +27,10 @@ export type UseSwitchChainOptions<TChainId extends AnyChainId = AnyChainId> = Lu
 >;
 
 interface UseSwitchChainResultBase<TChainId extends AnyChainId = AnyChainId> {
-  switchChain: (variables: SwitchChainVariables<AnyChainId>, options?: Optional<UseSwitchChainOptions<AnyChainId>>) => void;
+  switchChain: (variables: SwitchChainVariables<TChainId>, options?: Optional<UseSwitchChainOptions<TChainId>>) => void;
   switchChainAsync: (
-    variables: SwitchChainVariables<AnyChainId>,
-    options?: Optional<UseSwitchChainOptions<AnyChainId>>
+    variables: SwitchChainVariables<TChainId>,
+    options?: Optional<UseSwitchChainOptions<TChainId>>
   ) => Promise<void>;
   data: undefined;
   error: Error | null;
@@ -52,6 +52,7 @@ export interface UseSwitchChainResult<
   chainType: ChainType;
 }
 
+// @ts-expect-error
 export function useSwitchChain(
   parameters: { namespace: 'substrate'; mutation?: Optional<UseSwitchChainOptions<HexString>> }
 ): UseSwitchChainResult<SubstrateChain, HexString>;

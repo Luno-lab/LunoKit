@@ -1,4 +1,4 @@
-import type { ChainType, Optional } from '@luno-kit/core/types';
+import { ChainType, type Optional } from '@luno-kit/core/types';
 import type { LegacyClient } from 'dedot';
 import type { Client } from 'viem';
 import { useClient as useWagmiClient } from 'wagmi';

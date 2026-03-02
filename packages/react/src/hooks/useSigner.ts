@@ -9,8 +9,7 @@ export interface UseSignerResult<TSigner extends WalletSigner = WalletSigner> {
   isPending: boolean;
   isLoading: boolean;
   isSuccess: boolean;
-  reset: () => void;
-  refetch: () => Promise<TSigner>;
+  refetch: () => Promise<TSigner | undefined>;
 }
 
 export function useSigner(
@@ -60,7 +59,9 @@ export function useSigner(parameters: { namespace?: ChainType } = {}): UseSigner
     isPending: queryResult.isPending,
     isLoading: queryResult.isLoading,
     isSuccess: queryResult.isSuccess,
-    reset: queryResult.reset,
-    refetch: queryResult.refetch,
+    refetch: async () => {
+      const result = await queryResult.refetch();
+      return result.data as WalletSigner | undefined;
+    },
   }
 }

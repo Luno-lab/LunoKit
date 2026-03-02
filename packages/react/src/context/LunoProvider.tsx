@@ -7,8 +7,9 @@ import { useIsInitialized } from '../hooks/useIsInitialized';
 import { useLunoStore } from '../store';
 import { createApi, sleep } from '../utils';
 import { LunoContext, type LunoContextState } from './LunoContext';
-import { useConnect } from '../hooks'
+import { useActiveConnector, useConnect } from '../hooks'
 import { useSubstrateEvents } from '../hooks/useSubstrateEvents'
+import { ConnectionStatus } from '../types'
 
 interface LunoProviderProps {
   config: Config;
@@ -17,29 +18,40 @@ interface LunoProviderProps {
 
 const EvmStateSync = () => {
   const setEvmState = useLunoStore((state) => state.setEvmState);
-  const evmConnectors = useLunoStore((state) => state.config?.evm?.connectors);
 
   const connection = useConnection();
 
-  useEffect(() => {
-    const activeLunoConnector = evmConnectors?.find(
-      (c: EvmConnectorType) => c.id === connection?.connector?.id
-    );
-    const accounts: EvmAccount[] = (connection.addresses || []).map((addr: HexString) => ({
-      address: addr,
-      source: activeLunoConnector?.id || 'unknown',
-      name: activeLunoConnector?.name || activeLunoConnector?.id,
-      chainType: ChainType.EVM,
-    }))
+  const activeConnector = useActiveConnector({ namespace: ChainType.EVM })
 
-    setEvmState({
-      status: connection.status,
-      chainId: connection.chainId,
-      account: connection.address,
-      allAccounts: accounts,
-      connector: activeLunoConnector,
-    });
-  }, [connection, evmConnectors]);
+  useEffect(() => {
+    if (activeConnector && connection) {
+      const accounts: EvmAccount[] = (connection.addresses || []).map((addr: HexString) => ({
+        address: addr,
+        source: activeConnector?.id || 'unknown',
+        name: activeConnector?.name || activeConnector?.id,
+        chainType: ChainType.EVM,
+      }))
+
+      const account = accounts.find(i => i.address.toLowerCase() === connection.address?.toLowerCase())
+
+      setEvmState({
+        status: connection.status as ConnectionStatus,
+        chainId: connection.chainId,
+        account,
+        allAccounts: accounts,
+        connector: activeConnector,
+      });
+    } else {
+      setEvmState({
+        status: ConnectionStatus.Disconnected,
+        chainId: undefined,
+        account: undefined,
+        allAccounts: [],
+        connector: undefined,
+      })
+    }
+
+  }, [connection, activeConnector]);
 
   return null;
 };
@@ -61,7 +73,6 @@ const SubstrateStateSync = () => {
   const { isInitialized: isAutoConnectInitialized, markAsInitialized: markAutoConnectInitialized } = useIsInitialized();
 
   useSubstrateEvents()
-
   const clearApiState = useCallback(() => {
     _setApi(undefined);
     _setIsApiReady(false);
