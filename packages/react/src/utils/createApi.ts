@@ -1,6 +1,6 @@
 import { wsProvider } from '@luno-kit/core';
 import { type ApiOptions, LegacyClient } from 'dedot';
-import type { Config } from '../types';
+import type { Config, SubstrateChain, HexString } from '../types';
 
 interface CreateApiOptions {
   config: Config;
@@ -8,8 +8,14 @@ interface CreateApiOptions {
 }
 
 export const createApi = async ({ config, chainId }: CreateApiOptions): Promise<LegacyClient> => {
-  const chainConfig = config.chains.find((c) => c.genesisHash === chainId);
-  const transportConfig = config.transports[chainId];
+  const substrate = config.substrate;
+
+  if (!substrate) {
+    throw new Error('Substrate configuration is not provided.');
+  }
+
+  const chainConfig = substrate.chains.find((c: SubstrateChain) => c.genesisHash === chainId);
+  const transportConfig = substrate.transports[chainId];
 
   if (!chainConfig || !transportConfig) {
     throw new Error(`Configuration missing for chainId: ${chainId}`);
@@ -19,14 +25,10 @@ export const createApi = async ({ config, chainId }: CreateApiOptions): Promise<
 
   const apiOptions: ApiOptions = {
     provider,
-    cacheMetadata: config.cacheMetadata,
-    metadata: config.metadata,
     scaledResponses: {
-      ...config.scaledResponses,
-      ...config.customTypes,
+      ...substrate.customTypes,
+      ...substrate.customTypes,
     },
-    runtimeApis: config.runtimeApis,
-    cacheStorage: config.cacheStorage,
   };
 
   const newApi = new LegacyClient(apiOptions);
@@ -34,7 +36,7 @@ export const createApi = async ({ config, chainId }: CreateApiOptions): Promise<
   try {
     await newApi.connect();
 
-    const actualGenesisHash = await newApi.rpc.chain_getBlockHash(0);
+    const actualGenesisHash: HexString | undefined = await newApi.rpc.chain_getBlockHash(0);
 
     if (actualGenesisHash !== chainId) {
       await newApi.disconnect();
