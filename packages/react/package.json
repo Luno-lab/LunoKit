@@ -78,7 +78,8 @@
     "typescript": "^5.3.3",
     "viem": "catalog:",
     "vitest": "^3.2.4",
-    "wagmi": "catalog:"
+    "wagmi": "catalog:",
+    "@wagmi/core": "catalog:"
   },
   "peerDependencies": {
     "@dedot/chaintypes": "^0.152.0",
@@ -87,7 +88,8 @@
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0",
     "viem": ">=2.0.0",
-    "wagmi": ">=3.0.0"
+    "wagmi": ">=3.0.0",
+    "@wagmi/core": ">=2.0.0"
   },
   "repository": {
     "type": "git",

@@ -1,10 +1,11 @@
 import { ChainType, type NativeBalance, type Optional, type HexString } from '@luno-kit/core/types';
 import { Substrate } from '@luno-kit/core/utils';
+import { getBalance as getEvmBalance } from 'wagmi/actions';
 import type { LegacyClient } from 'dedot';
 import { isEvmAddress } from 'dedot/utils';
 import { useMemo } from 'react';
 import { formatUnits } from 'viem';
-import { useBalance as useWagmiBalance } from 'wagmi';
+import { useQuery } from '@tanstack/react-query';
 import { useLunoStore } from '../store';
 import {
   type QueryMultiItem,
@@ -112,25 +113,27 @@ export function useBalance(
     },
   });
 
-  const evmResult = useWagmiBalance({
-    address: address as `0x${string}` | undefined,
-    query: {
-      enabled: targetNamespace === ChainType.EVM && !!address && isEvmAddress(address),
+  const wagmiConfig = useLunoStore((state) => state.config?.evm?.wagmiConfig);
+  const evmChainId = useLunoStore((state) => state.evm.chainId);
+
+  const shouldQueryEvm = targetNamespace === ChainType.EVM && !!address && isEvmAddress(address) && !!wagmiConfig;
+
+  const evmResult = useQuery({
+    queryKey: ['evm-balance', address],
+    queryFn: async () => {
+      const result = await getEvmBalance(wagmiConfig!, {
+        address: address as HexString,
+        chainId: evmChainId,
+      });
+      return {
+        value: result.value,
+        formatted: formatUnits(result.value, result.decimals),
+        symbol: result.symbol,
+        decimals: result.decimals,
+      } satisfies NativeBalance;
     },
+    enabled: shouldQueryEvm,
   });
-
-  const evmBalance: NativeBalance | undefined = useMemo(() => {
-    if (!evmResult.data) return undefined;
-
-    const { value, symbol, decimals } = evmResult.data;
-
-    return {
-      value,
-      formatted: formatUnits(value, decimals),
-      symbol,
-      decimals,
-    };
-  }, [evmResult.data]);
 
   return useMemo(() => {
     switch (targetNamespace) {
@@ -152,7 +155,7 @@ export function useBalance(
 
       case ChainType.EVM:
         return {
-          data: evmBalance,
+          data: evmResult.data,
           isLoading: evmResult.isLoading,
           error: evmResult.error ?? undefined,
         };
@@ -173,7 +176,7 @@ export function useBalance(
     substrateResult.data,
     substrateResult.isLoading,
     substrateResult.error,
-    evmBalance,
+    evmResult.data,
     evmResult.isLoading,
     evmResult.error,
   ]);

@@ -5,12 +5,13 @@ import type {
   ISubmittableResult,
 } from 'dedot/types';
 import { useCallback, useState } from 'react';
-import { useSendTransaction as useWagmiSendTransaction, usePublicClient } from 'wagmi';
+import { sendTransaction as sendEvmTransaction } from 'wagmi/actions';
 import type { TransactionReceipt as ViemTransactionReceipt } from 'viem';
 import { useLunoStore } from '../store';
 import type { DetailedTxStatus, TxStatus } from '../types';
 import { getReadableDispatchError } from '../utils';
 import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
+import { useClient } from './useClient';
 
 export interface SubstrateSendTransactionVariables {
   extrinsic: ISubmittableExtrinsic;
@@ -75,8 +76,9 @@ export function useSendTransaction(
   const substrateApi = useLunoStore((state) => state.substrate.currentApi);
   const isApiReady = useLunoStore((state) => state.substrate.isApiReady);
 
-  const wagmiSendTx = useWagmiSendTransaction();
-  const publicClient = usePublicClient();
+  const wagmiConfig = useLunoStore((state) => state.config?.evm?.wagmiConfig);
+  const evmChainId = useLunoStore((state) => state.evm.chainId);
+  const { client: evmClient } = useClient({ namespace: 'evm' });
 
   const [txStatus, setTxStatus] = useState<TxStatus>('idle');
   const [detailedTxStatus, setDetailedTxStatus] = useState<DetailedTxStatus>('idle');
@@ -195,13 +197,17 @@ export function useSendTransaction(
   const sendEvm = async (
     variables: EvmSendTransactionVariables
   ): Promise<TransactionResult> => {
-    if (!publicClient) {
+    if (!wagmiConfig) {
+      throw new Error('[useSendTransaction]: EVM config not available.');
+    }
+    if (!evmClient) {
       throw new Error('[useSendTransaction]: EVM public client not available.');
     }
 
     setTxStatus('signing');
 
-    const hash: HexString = await wagmiSendTx.mutateAsync({
+    const hash: HexString = await sendEvmTransaction(wagmiConfig, {
+      chainId: evmChainId,
       to: variables.to,
       value: variables.value,
       data: variables.data as HexString | undefined,
@@ -210,7 +216,7 @@ export function useSendTransaction(
     setTxStatus('pending');
     setDetailedTxStatus('submitted');
 
-    const receipt: ViemTransactionReceipt = await publicClient.waitForTransactionReceipt({ hash });
+    const receipt: ViemTransactionReceipt = await evmClient.waitForTransactionReceipt({ hash });
 
     const resultStatus = receipt.status === 'success' ? 'success' : 'failed';
     setTxStatus(resultStatus);
@@ -255,8 +261,9 @@ export function useSendTransaction(
       substrateAccount,
       substrateApi,
       isApiReady,
-      publicClient,
-      wagmiSendTx.mutateAsync,
+      wagmiConfig,
+      evmChainId,
+      evmClient,
     ]
   );
 

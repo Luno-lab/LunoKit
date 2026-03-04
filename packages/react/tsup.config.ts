@@ -23,7 +23,19 @@ export default defineConfig((options) => ({
   sourcemap: true,
   clean: true,
   treeshake: true,
-  external: ['react', 'react-dom', '@tanstack/react-query'],
+  external: [
+    'react',
+    'react-dom',
+    '@tanstack/react-query',
+    'zustand',
+    'immer',
+    'wagmi',
+    'viem',
+    '@wagmi/core',
+    'dedot',
+    '@dedot/chaintypes',
+    '@luno-kit/core',
+  ],
   tsconfig: './tsconfig.json',
   esbuildOptions() {
     if (!options.watch) {

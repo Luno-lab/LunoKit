@@ -7,7 +7,7 @@ import {
   type Optional,
 } from '@luno-kit/core/types';
 import { useCallback, useMemo } from 'react';
-import { useSwitchChain as useWagmiSwitchChain } from 'wagmi';
+import { switchChain as switchEvmChain } from 'wagmi/actions';
 import { PERSIST_KEY } from '../constants';
 import { useLunoStore } from '../store';
 import { createApi } from '../utils';
@@ -91,7 +91,7 @@ export function useSwitchChain(
 
   const targetNamespace = namespace || activeNamespace;
 
-  const wagmiSwitchChain = useWagmiSwitchChain();
+  const wagmiConfig = useLunoStore((state) => state.config?.evm?.wagmiConfig);
 
   const switchSubstrate = async (newChainId: HexString): Promise<void> => {
     if (!config) {
@@ -157,8 +157,12 @@ export function useSwitchChain(
       throw new Error(`[useSwitchChain] EVM chain with ID "${newChainId}" not found.`);
     }
 
+    if (!wagmiConfig) {
+      throw new Error('[useSwitchChain] EVM config not found');
+    }
+
     try {
-      await wagmiSwitchChain.mutateAsync({ chainId: newChainId });
+      await switchEvmChain(wagmiConfig, { chainId: newChainId });
     } catch (e) {
       console.error('[useSwitchChain] EVM Switch Chain Error:', e);
       throw e;
@@ -184,7 +188,7 @@ export function useSwitchChain(
           throw new Error(`[useSwitchChain] Invalid namespace "${targetNamespace}".`);
       }
     },
-    [targetNamespace, config, substrateChainId, substrateApi, evmChainId, wagmiSwitchChain, setActiveNamespace]
+    [targetNamespace, config, substrateChainId, substrateApi, evmChainId, wagmiConfig, setActiveNamespace]
   );
 
   const mutationResult = useLunoMutation<void, Error, SwitchChainVariables, unknown>(

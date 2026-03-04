@@ -1,12 +1,12 @@
 import { ChainType, type Optional } from '@luno-kit/core/types';
+import { getPublicClient as getEvmPublicClient } from 'wagmi/actions';
 import type { LegacyClient } from 'dedot';
-import type { Client } from 'viem';
-import { useClient as useWagmiClient } from 'wagmi';
+import type { PublicClient } from 'viem';
 import { useMemo } from 'react';
 import { useLunoStore } from '../store';
 
 export type SubstrateClient = LegacyClient;
-export type EvmClient = Client;
+export type EvmClient = PublicClient;
 
 export interface UseClientResult<TClient = LegacyClient | EvmClient> {
   client?: Optional<TClient>;
@@ -39,7 +39,16 @@ export function useClient(
   const apiError = useLunoStore((state) => state.substrate.apiError);
 
   const evmChainId = useLunoStore((state) => state.evm.chainId);
-  const evmClient = useWagmiClient({ chainId: evmChainId ?? undefined });
+  const wagmiConfig = useLunoStore((state) => state.config?.evm?.wagmiConfig);
+
+  const evmClient: EvmClient | undefined = useMemo(() => {
+    if (!wagmiConfig || !evmChainId) return undefined;
+    try {
+      return getEvmPublicClient(wagmiConfig, { chainId: evmChainId });
+    } catch {
+      return undefined;
+    }
+  }, [wagmiConfig, evmChainId]);
 
   const targetNamespace = namespace || activeNamespace;
 

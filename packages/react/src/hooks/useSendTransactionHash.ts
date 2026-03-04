@@ -1,7 +1,7 @@
 import { ChainType, type HexString, type Optional } from '@luno-kit/core/types';
 import type { ISubmittableExtrinsic } from 'dedot/types';
 import { useCallback } from 'react';
-import { useSendTransaction as useWagmiSendTransaction } from 'wagmi';
+import { sendTransaction as sendEvmTransaction } from 'wagmi/actions';
 import { useLunoStore } from '../store';
 import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
 
@@ -58,7 +58,8 @@ export function useSendTransactionHash(
   const substrateApi = useLunoStore((state) => state.substrate.currentApi);
   const isApiReady = useLunoStore((state) => state.substrate.isApiReady);
 
-  const wagmiSendTx = useWagmiSendTransaction();
+  const wagmiConfig = useLunoStore((state) => state.config?.evm?.wagmiConfig);
+  const evmChainId = useLunoStore((state) => state.evm.chainId);
 
   const sendSubstrate = async (
     variables: SubstrateSendTransactionHashVariables
@@ -92,7 +93,12 @@ export function useSendTransactionHash(
   const sendEvm = async (
     variables: EvmSendTransactionHashVariables
   ): Promise<HexString> => {
-    const hash: HexString = await wagmiSendTx.mutateAsync({
+    if (!wagmiConfig) {
+      throw new Error('[useSendTransactionHash]: EVM config not available.');
+    }
+
+    const hash: HexString = await sendEvmTransaction(wagmiConfig, {
+      chainId: evmChainId,
       to: variables.to,
       value: variables.value,
       data: variables.data as HexString | undefined,
@@ -130,7 +136,8 @@ export function useSendTransactionHash(
       substrateAccount,
       substrateApi,
       isApiReady,
-      wagmiSendTx.mutateAsync,
+      wagmiConfig,
+      evmChainId,
     ]
   );
 

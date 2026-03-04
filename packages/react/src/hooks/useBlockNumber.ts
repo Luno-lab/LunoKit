@@ -1,7 +1,7 @@
 import { ChainType, type Optional } from '@luno-kit/core/types';
+import {watchBlockNumber as watchEvmBlockNumber } from 'wagmi/actions';
 import type { BlockNumber } from 'dedot/codecs';
-import { useBlockNumber as useWagmiBlockNumber } from 'wagmi';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLunoStore } from '../store';
 import { useSubscription } from './useSubscription';
 
@@ -32,6 +32,8 @@ export function useBlockNumber(
   const activeNamespace = useLunoStore((state) => state.activeNamespace);
   const substrateApi = useLunoStore((state) => state.substrate.currentApi);
   const isApiReady = useLunoStore((state) => state.substrate.isApiReady);
+  const wagmiConfig = useLunoStore((state) => state.config?.evm?.wagmiConfig);
+  const evmChainId = useLunoStore((state) => state.evm.chainId);
 
   const targetNamespace = namespace || activeNamespace;
 
@@ -44,12 +46,35 @@ export function useBlockNumber(
     },
   });
 
-  const evmResult = useWagmiBlockNumber({
-    watch: true,
-    query: {
-      enabled: targetNamespace === ChainType.EVM,
-    },
-  });
+  const [evmBlockNumber, setEvmBlockNumber] = useState<bigint | undefined>();
+  const [evmError, setEvmError] = useState<Error | undefined>();
+  const [evmLoading, setEvmLoading] = useState(false);
+
+  const shouldWatchEvm = targetNamespace === ChainType.EVM && !!wagmiConfig;
+
+  useEffect(() => {
+    if (!shouldWatchEvm) {
+      setEvmBlockNumber(undefined);
+      setEvmLoading(false);
+      setEvmError(undefined);
+      return;
+    }
+
+    setEvmLoading(true);
+
+    return watchEvmBlockNumber(wagmiConfig!, {
+      chainId: evmChainId,
+      onBlockNumber: (blockNumber: bigint) => {
+        setEvmBlockNumber(blockNumber);
+        setEvmLoading(false);
+        setEvmError(undefined);
+      },
+      onError: (error: any) => {
+        setEvmError(error);
+        setEvmLoading(false);
+      },
+    });
+  }, [shouldWatchEvm, wagmiConfig, evmChainId]);
 
   return useMemo(() => {
     switch (targetNamespace) {
@@ -63,9 +88,9 @@ export function useBlockNumber(
 
       case ChainType.EVM:
         return {
-          data: evmResult.data,
-          isLoading: evmResult.isLoading,
-          error: evmResult.error ?? undefined,
+          data: evmBlockNumber,
+          isLoading: evmLoading,
+          error: evmError,
           chainType: ChainType.EVM,
         };
 
@@ -82,8 +107,8 @@ export function useBlockNumber(
     substrateResult.data,
     substrateResult.isLoading,
     substrateResult.error,
-    evmResult.data,
-    evmResult.isLoading,
-    evmResult.error,
+    evmBlockNumber,
+    evmLoading,
+    evmError,
   ]);
 }
