@@ -20,8 +20,7 @@ import './App.css';
 
 const App: React.FC = () => {
   const status = useStatus();
-  const { account, address } = useAccount();
-  const { accounts, selectAccount } = useAccounts();
+  const { account, address, allAccounts: accounts, selectAccount } = useAccount();
   const { disconnect } = useDisconnect();
   const { chain: currentChain } = useChain();
   const chains = useChains();

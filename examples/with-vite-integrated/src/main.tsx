@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import { createConfig } from '@luno-kit/react';
 import {
-  type Chain,
   kusama,
   kusamaAssetHub,
   kusamaCoretime,
@@ -19,14 +18,17 @@ import {
   westend,
   westendAssetHub,
 } from '@luno-kit/react/chains';
-import { Substrate } from '@luno-kit/react/connectors';
+import { Substrate, Evm } from '@luno-kit/react/connectors';
 import { LunoKitProvider } from '@luno-kit/ui';
+import { mainnet, sepolia } from 'wagmi/chains'
+import { http } from 'wagmi';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+
 import App from './App.tsx';
 import '@luno-kit/ui/styles.css';
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 
 // Custom chains
-const astar: Chain = {
+const astar = {
   genesisHash: '0x9eb76c5184c4ab8679d2d5d819fdf90b9c001403e9e17da2e14b6d8aec4029c6',
   name: 'Astar',
   nativeCurrency: { name: 'Astar', symbol: 'ASTR', decimals: 18 },
@@ -56,7 +58,7 @@ const astar: Chain = {
   },
 };
 
-const hydration: Chain = {
+const hydration = {
   genesisHash: '0xafdc188f45c71dacbaa0b62e16a91f726c7b8699a9748cdf715459de6b7f366d',
   name: 'Hydration',
   nativeCurrency: { name: 'Hydration', symbol: 'HDX', decimals: 12 },
@@ -130,10 +132,19 @@ const lunoConfig = createConfig({
     },
   },
   evm: {
-    chains: [main]
+    transports: {
+      [mainnet.id]: http(),
+      [sepolia.id]: http(),
+    },
+    chains: [mainnet, sepolia],
+    connectors: [
+      Evm.metamaskConnector(),
+      // Evm.walletConnectConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID, showQrModal: false,})
+    ]
   }
 });
 
+console.log('lunoConfig', lunoConfig)
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(

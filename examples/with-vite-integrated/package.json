@@ -1,5 +1,5 @@
 {
-  "name": "with-vite",
+  "name": "with-vite-integrated",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -12,9 +12,13 @@
   "dependencies": {
     "@luno-kit/react": "workspace:*",
     "@luno-kit/ui": "workspace:*",
+    "@metamask/sdk": "catalog:",
     "@tanstack/react-query": "catalog:",
+    "@walletconnect/ethereum-provider": "catalog:",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "viem": "~2.43.3",
+    "wagmi": "catalog:"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
