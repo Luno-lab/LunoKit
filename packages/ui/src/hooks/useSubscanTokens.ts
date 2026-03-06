@@ -1,5 +1,5 @@
 import { useAccount, useChain, useConfig } from '@luno-kit/react';
-import { formatBalance } from '@luno-kit/react/utils';
+import { Substrate } from '@luno-kit/react/utils';
 import { useQuery } from '@tanstack/react-query';
 
 export interface AssetItem {
@@ -61,7 +61,7 @@ const fetchAssets = async ({
       .map((i: AssetData) => ({
         balance: i.balance,
         decimals: i.decimals,
-        balanceFormatted: formatBalance(i.balance, i.decimals),
+        balanceFormatted: Substrate.formatBalance(i.balance, i.decimals),
         logoURI: i.token_image,
         symbol: i.symbol,
         assetId: i.asset_id,
@@ -73,7 +73,7 @@ const fetchAssets = async ({
       .map((i: AssetData) => ({
         balance: i.balance,
         decimals: i.decimals,
-        balanceFormatted: formatBalance(i.balance, i.decimals, 4),
+        balanceFormatted: Substrate.formatBalance(i.balance, i.decimals, 4),
         logoURI: i.token_image,
         symbol: i.symbol,
         assetId: i.asset_id,
@@ -83,7 +83,7 @@ const fetchAssets = async ({
     const nativeTokens = native.map((i: AssetData) => ({
       balance: i.balance,
       decimals: i.decimals,
-      balanceFormatted: formatBalance(i.balance, i.decimals, 4),
+      balanceFormatted: Substrate.formatBalance(i.balance, i.decimals, 4),
       logoURI: '',
       symbol: i.symbol,
       assetId: 0,
@@ -93,7 +93,7 @@ const fetchAssets = async ({
     const builtinTokens = builtin.map((i: AssetData) => ({
       balance: i.balance,
       decimals: i.decimals,
-      balanceFormatted: formatBalance(i.balance, i.decimals, 4),
+      balanceFormatted: Substrate.formatBalance(i.balance, i.decimals, 4),
       logoURI: '',
       symbol: i.symbol,
       assetId: i.unique_id,
@@ -113,15 +113,15 @@ const fetchAssets = async ({
 export function useSubscanTokens() {
   const { address } = useAccount();
   const config = useConfig();
-  const { chain } = useChain();
+  const { chain } = useChain({ namespace: 'substrate' });
 
-  const apiUrl = chain?.subscan?.api;
-  const apiKey = config?.subscan?.apiKey;
+  const apiUrl = chain?.subscan.api;
+  const apiKey = config?.substrate.subscan?.apiKey;
 
   return useQuery({
-    queryKey: ['subscan', 'asset-list', address, chain?.genesisHash, apiUrl, apiKey],
+    queryKey: ['subscan', 'asset-list', address, chain?.id, apiUrl, apiKey],
     queryFn: () => fetchAssets({ address: address!, apiKey: apiKey!, apiUrl: apiUrl! }),
     enabled: !!address && !!apiKey && !!apiUrl,
-    staleTime: config?.subscan?.cacheTime || 60000,
+    staleTime: config?.substrate.subscan?.cacheTime || 60000,
   });
 }

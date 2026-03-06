@@ -1,12 +1,13 @@
 import { useConfig, useConnectors } from '@luno-kit/react';
-import type { Connector } from '@luno-kit/react/types';
+import { type AnyConnector, ChainType, type ConnectorGroup } from '@luno-kit/react/types';
 import { isMobileDevice } from '@luno-kit/react/utils';
 import React, { useMemo } from 'react';
 import { cs } from '../../utils';
 
 interface Props {
-  onConnect: (connector: Connector) => Promise<void>;
+  onConnect: (connector: AnyConnector) => Promise<void>;
   showInstalledGroup: boolean;
+  namespace: ChainType;
 }
 
 const popularConnectorIds = [
@@ -18,22 +19,25 @@ const popularConnectorIds = [
   'nova-mobile',
 ];
 
-const moreConnectorIds = ['ledger', 'polkagate', 'fearless-wallet', 'mimir', 'enkrypt', 'OneKey'];
-
-export const ConnectOptions = React.memo(({ onConnect, showInstalledGroup }: Props) => {
-  const connectors = useConnectors();
+export const ConnectOptions = React.memo(({ onConnect, showInstalledGroup, namespace }: Props) => {
+  const connectors = useConnectors({ namespace });
   const config = useConfig();
 
   const installedConnectors = connectors.filter((c) => c.isInstalled());
   const popularConnectors = connectors.filter(
-    (c: Connector) => popularConnectorIds.includes(c.id) && !c.isInstalled()
+    (c: AnyConnector) => popularConnectorIds.includes(c.id) && !c.isInstalled()
   );
   const moreConnectors = connectors.filter(
-    (c: Connector) => !popularConnectorIds.includes(c.id) && !c.isInstalled()
+    (c: AnyConnector) => !popularConnectorIds.includes(c.id) && !c.isInstalled()
   );
 
-  const connectorGroup: { title: string; group: Connector[] }[] = useMemo(() => {
-    if (!config?.connectorGroups) {
+  const connectorGroup: { title: string; group: AnyConnector[] }[] = useMemo(() => {
+    const namespaceConnectorGroups: ConnectorGroup<AnyConnector>[] =
+      namespace === ChainType.EVM
+        ? config?.evm?.connectorGroups
+        : config?.substrate?.connectorGroups;
+
+    if (!namespaceConnectorGroups) {
       return [
         { title: 'Installed', group: installedConnectors },
         { title: 'Popular', group: popularConnectors },
@@ -41,35 +45,37 @@ export const ConnectOptions = React.memo(({ onConnect, showInstalledGroup }: Pro
       ];
     }
 
-    const hasUserDefinedInstalled = config.connectorGroups.some((g) => g.groupName === 'Installed');
+    const hasUserDefinedInstalled = namespaceConnectorGroups.some((g) => g.groupName === 'Installed');
 
     if (hasUserDefinedInstalled || !showInstalledGroup) {
-      return config.connectorGroups
+      return namespaceConnectorGroups
         .filter((g) => g.wallets.length > 0)
-        .map((g) => ({ title: g.groupName, group: g.wallets }))
+        .map((g) => ({ title: g.groupName, group: g.wallets as AnyConnector[] }))
         .sort((a, b) => (a.title === 'Installed' ? -1 : b.title === 'Installed' ? 1 : 0));
     }
 
-    const allWallets = config.connectorGroups.flatMap((g) => g.wallets);
+    const allWallets = namespaceConnectorGroups.flatMap((g) => g.wallets);
     const installed = allWallets.filter((c) => c.isInstalled());
 
-    const customGroups = config.connectorGroups
+    const customGroups = namespaceConnectorGroups
       .map((g) => ({
         title: g.groupName,
-        group: g.wallets.filter((c) => !c.isInstalled()),
+        group: g.wallets.filter((c) => !c.isInstalled()) as AnyConnector[],
       }))
       .filter((g) => g.group.length > 0);
 
     return [
-      ...(installed.length > 0 ? [{ title: 'Installed', group: installed }] : []),
+      ...(installed.length > 0 ? [{ title: 'Installed', group: installed as AnyConnector[] }] : []),
       ...customGroups,
     ];
   }, [
     installedConnectors,
     popularConnectors,
     moreConnectors,
-    config?.connectorGroups,
+    config?.substrate?.connectorGroups,
+    config?.evm?.connectorGroups,
     showInstalledGroup,
+    namespace,
   ]);
 
   if (isMobileDevice()) {
@@ -89,7 +95,7 @@ export const ConnectOptions = React.memo(({ onConnect, showInstalledGroup }: Pro
   return (
     <div
       className={
-        'luno:flex luno:flex-col luno:items-start luno:gap-4 luno:w-full luno:overflow-y-auto luno:max-h-[400px]'
+        'luno:flex luno:flex-col luno:items-start luno:gap-4 luno:w-full luno:min-h-[400px] luno:max-h-[400px]'
       }
     >
       {connectorGroup.map((g) => {
@@ -120,7 +126,7 @@ export const ConnectOptions = React.memo(({ onConnect, showInstalledGroup }: Pro
 });
 
 interface ConnectorItemProps {
-  connector: Connector;
+  connector: AnyConnector;
   onConnect: () => void;
 }
 

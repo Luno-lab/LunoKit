@@ -1,6 +1,6 @@
 import { useAccount, useActiveConnector } from '@luno-kit/react';
 import type { Optional } from '@luno-kit/react/types';
-import { formatAddress } from '@luno-kit/react/utils';
+import { Substrate } from '@luno-kit/react/utils';
 import type React from 'react';
 import { useCallback, useMemo } from 'react';
 import { Back, Close } from '../../assets/icons';
@@ -11,12 +11,12 @@ import { Copy } from '../Copy';
 import { Dialog, DialogClose, DialogTitle, type ModalContainer } from '../Dialog';
 import { AssetListView } from './AssetListView';
 import { MainView } from './MainView';
-import { SwitchAccountView } from './SwitchAccountView';
+import { ManageWalletsView } from './ManageWalletsView';
 import { SwitchChainView } from './SwitchChainView';
 
 export enum AccountModalView {
   main = 'main',
-  switchAccount = 'switchAccount',
+  manageWallets = 'manageWallets',
   switchChain = 'switchChain',
   assetList = 'assetList',
 }
@@ -39,7 +39,7 @@ export const AccountDetailsModal: React.FC<AccountDetailsModalProps> = ({ contai
   }, [close]);
 
   const viewTitle = useMemo(() => {
-    if (currentView === AccountModalView.switchAccount) return SwitchAccountView.title;
+    if (currentView === AccountModalView.manageWallets) return ManageWalletsView.title;
     if (currentView === AccountModalView.switchChain) return SwitchChainView.title;
     if (currentView === AccountModalView.assetList) return AssetListView.title;
     return null;
@@ -50,8 +50,8 @@ export const AccountDetailsModal: React.FC<AccountDetailsModalProps> = ({ contai
       [AccountModalView.main]: (
         <MainView onViewChange={handleViewChange} onModalClose={handleModalClose} />
       ),
-      [AccountModalView.switchAccount]: (
-        <SwitchAccountView onBack={() => handleViewChange(AccountModalView.main)} />
+      [AccountModalView.manageWallets]: (
+        <ManageWalletsView onBack={() => handleViewChange(AccountModalView.main)} onModalClose={handleModalClose} />
       ),
       [AccountModalView.switchChain]: (
         <SwitchChainView onBack={() => handleViewChange(AccountModalView.main)} />
@@ -98,7 +98,7 @@ export const AccountDetailsModal: React.FC<AccountDetailsModalProps> = ({ contai
                 <DialogTitle className={'luno:sr-only'}>Account Details</DialogTitle>
                 <div className={cs('luno:flex luno:items-center luno:gap-0.5 luno:w-full')}>
                   <span className={cs('luno:text-base luno:text-modalText luno:font-semibold')}>
-                    {formatAddress(address)}
+                    {Substrate.formatAddress(address)}
                   </span>
                   <Copy copyText={address} />
                 </div>

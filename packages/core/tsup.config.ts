@@ -13,7 +13,7 @@ export default defineConfig((options) => ({
   sourcemap: true,
   clean: true,
   treeshake: true,
-  external: ['dedot', '@dedot/chaintypes'],
+  external: ['dedot', '@dedot/chaintypes', 'wagmi', '@wagmi/core', '@wagmi/connectors', 'viem'],
   dts: {
     resolve: true,
     compilerOptions: {

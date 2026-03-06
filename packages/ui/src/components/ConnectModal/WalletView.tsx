@@ -1,4 +1,4 @@
-import type { Connector } from '@luno-kit/react/types';
+import type { AnyConnector } from '@luno-kit/react/types';
 import React, { useMemo } from 'react';
 import { Close } from '../../assets/icons';
 import type { AppInfo } from '../../providers';
@@ -12,8 +12,8 @@ import { QRCode } from '../QRCode';
 import { SpiralAnimation } from '../SpiralAnimation';
 
 interface Props {
-  selectedConnector: Connector | null;
-  onConnect: (connector: Connector) => Promise<void>;
+  selectedConnector: AnyConnector | null;
+  onConnect: (connector: AnyConnector) => Promise<void>;
   qrCode?: string;
   isWide: boolean;
   connectState: {

@@ -52,6 +52,11 @@
 
   --color-defaultIconBackground: var(--color-defaultIconBackground);
 
+  --color-segmentedControlBackground: var(--color-segmentedControlBackground);
+  --color-segmentedControlActiveBackground: var(--color-segmentedControlActiveBackground);
+  --color-segmentedControlText: var(--color-segmentedControlText);
+  --color-segmentedControlActiveText: var(--color-segmentedControlActiveText);
+
   /* Radius utilities */
   --radius-walletSelectItem: var(--radius-walletSelectItem);
   --radius-connectButton: var(--radius-connectButton);
@@ -168,6 +173,10 @@
   --color-infoForeground: #ffffff;
   --color-skeleton: rgba(0, 0, 0, 0.08);
   --color-defaultIconBackground: #e6007a;
+  --color-segmentedControlBackground: rgba(0, 0, 0, 0.06);
+  --color-segmentedControlActiveBackground: #ffffff;
+  --color-segmentedControlText: rgba(0, 0, 0, 0.5);
+  --color-segmentedControlActiveText: #25292e;
 }
 
 /* Dark Theme Variables */
@@ -211,6 +220,10 @@
   --color-infoForeground: #ffffff;
   --color-skeleton: rgba(255, 255, 255, 0.09);
   --color-defaultIconBackground: #e6007a;
+  --color-segmentedControlBackground: rgba(255, 255, 255, 0.15);
+  --color-segmentedControlActiveBackground: #4a4b51;
+  --color-segmentedControlText: rgba(255, 255, 255, 0.5);
+  --color-segmentedControlActiveText: #ffffff;
 
   /* Radii */
   --radius-walletSelectItem: 6px;

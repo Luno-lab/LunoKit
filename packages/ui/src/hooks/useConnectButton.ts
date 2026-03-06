@@ -7,7 +7,7 @@ import {
   useChains,
   useStatus,
 } from '@luno-kit/react';
-import type { Account, AccountBalance, Chain, Connector, Optional } from '@luno-kit/react/types';
+import type { AccountType, NativeBalance, AnyChain, AnyConnector, Optional } from '@luno-kit/react/types';
 import { useAccountModal, useChainModal, useConnectModal } from '../providers';
 
 export interface UseConnectButtonReturn {
@@ -16,18 +16,18 @@ export interface UseConnectButtonReturn {
   isDisconnected: boolean;
   isConnecting: boolean;
 
-  account?: Optional<Account>;
+  account?: Optional<AccountType>;
   address?: Optional<string>;
 
-  currentChain?: Optional<Chain>;
-  configuredChains: Chain[];
+  currentChain?: Optional<AnyChain>;
+  configuredChains: AnyChain[];
   isChainSupported: boolean;
   chainIconUrl: string;
   chainName?: Optional<string>;
 
-  balance?: Optional<AccountBalance>;
+  balance?: Optional<NativeBalance>;
 
-  activeConnector?: Optional<Connector>;
+  activeConnector?: Optional<AnyConnector>;
 
   openConnectModal?: Optional<() => void>;
   openAccountModal?: Optional<() => void>;
@@ -39,8 +39,8 @@ export interface UseConnectButtonReturn {
 }
 
 export function useConnectButton(): UseConnectButtonReturn {
-  const connectionStatus = useStatus();
   const { account, address } = useAccount();
+  const connectionStatus = useStatus()
   const { chain: currentChain } = useChain();
   const configuredChains = useChains();
   const { data: balance } = useBalance({
@@ -54,15 +54,11 @@ export function useConnectButton(): UseConnectButtonReturn {
 
   const isConnecting = connectionStatus === ConnectionStatus.Connecting;
   const isConnected = connectionStatus === ConnectionStatus.Connected;
-  const isDisconnected =
-    connectionStatus === ConnectionStatus.Disconnected ||
-    connectionStatus === ConnectionStatus.Disconnecting;
+  const isDisconnected = connectionStatus === ConnectionStatus.Disconnected;
 
   const isChainSupported: boolean =
     !!currentChain &&
-    configuredChains.some(
-      (c) => c.genesisHash.toLowerCase() === currentChain.genesisHash.toLowerCase()
-    );
+    configuredChains.some((c) => c.id === currentChain.id);
 
   return {
     activeConnector,

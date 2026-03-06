@@ -1,4 +1,5 @@
-import { ConnectionStatus, useStatus } from '@luno-kit/react';
+import { ConnectionStatus, useConfig, useStatus } from '@luno-kit/react';
+import { ChainType } from '@luno-kit/react/types';
 import React, {
   createContext,
   type ReactNode,
@@ -9,16 +10,27 @@ import React, {
   useState,
 } from 'react';
 
-function useModalVisibility() {
+function useModalVisibility<T = undefined>() {
   const [isOpen, setIsOpen] = useState(false);
-  const open = useCallback(() => setIsOpen(true), []);
-  const close = useCallback(() => setIsOpen(false), []);
-  return { isOpen, open, close };
+  const [data, setData] = useState<T | undefined>();
+
+  const open = useCallback((d?: T) => {
+    setData(d);
+    setIsOpen(true);
+  }, []);
+
+  const close = useCallback(() => {
+    setIsOpen(false);
+    setData(undefined);
+  }, []);
+
+  return { isOpen, data, open, close };
 }
 
 interface ModalContextValue {
   isConnectModalOpen: boolean;
-  openConnectModal?: () => void;
+  connectTargetNamespace?: ChainType;
+  openConnectModal?: (namespace?: ChainType) => void;
   closeConnectModal: () => void;
 
   isAccountModalOpen: boolean;
@@ -41,9 +53,10 @@ interface ModalProviderProps {
 export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
   const {
     isOpen: isConnectModalOpen,
+    data: connectTargetNamespace,
     open: openConnectModal,
     close: closeConnectModal,
-  } = useModalVisibility();
+  } = useModalVisibility<ChainType>();
   const {
     isOpen: isAccountModalOpen,
     open: openAccountModal,
@@ -56,6 +69,9 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
   } = useModalVisibility();
 
   const connectionStatus = useStatus();
+  const substrateStatus = useStatus({ namespace: ChainType.SUBSTRATE });
+  const evmStatus = useStatus({ namespace: ChainType.EVM });
+  const config = useConfig();
 
   const closeAllModals = useCallback(() => {
     closeConnectModal();
@@ -70,13 +86,19 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
     }
   }, [connectionStatus, closeAccountModal, closeChainModal]);
 
+  const allConfiguredConnected = useMemo(() =>
+    (!config?.substrate || substrateStatus === ConnectionStatus.Connected) &&
+    (!config?.evm || evmStatus === ConnectionStatus.Connected),
+    [config?.substrate, config?.evm, substrateStatus, evmStatus]
+  );
+
   const contextValue = useMemo(
     () => ({
       isConnectModalOpen,
+      connectTargetNamespace,
       isAccountModalOpen,
       isChainModalOpen,
-      openConnectModal:
-        connectionStatus !== ConnectionStatus.Connected ? openConnectModal : undefined,
+      openConnectModal: allConfiguredConnected ? undefined : openConnectModal,
       closeConnectModal,
       openAccountModal:
         connectionStatus === ConnectionStatus.Connected ? openAccountModal : undefined,
@@ -87,6 +109,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
     }),
     [
       isConnectModalOpen,
+      connectTargetNamespace,
       openConnectModal,
       closeConnectModal,
       isAccountModalOpen,
@@ -97,19 +120,26 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
       closeChainModal,
       closeAllModals,
       connectionStatus,
+      allConfiguredConnected,
     ]
   );
 
   return <ModalContext.Provider value={contextValue}>{children}</ModalContext.Provider>;
 };
 
-export const useConnectModal = (): { isOpen: boolean; open?: () => void; close: () => void } => {
+export const useConnectModal = (): {
+  isOpen: boolean;
+  targetNamespace?: ChainType;
+  open?: (namespace?: ChainType) => void;
+  close: () => void;
+} => {
   const context = useContext(ModalContext);
   if (!context)
     throw new Error('[ModalContext]: useConnectModal must be used within a ModalProvider');
 
   return {
     isOpen: context.isConnectModalOpen,
+    targetNamespace: context.connectTargetNamespace,
     open: context.openConnectModal,
     close: context.closeConnectModal,
   };

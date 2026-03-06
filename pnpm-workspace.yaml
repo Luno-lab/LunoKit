@@ -16,3 +16,6 @@ catalog:
   "@wagmi/core": "3.0.1"
   "@wagmi/connectors": "7.0.5"
   "wagmi": "3.3.2"
+  '@walletconnect/ethereum-provider': 2.21.1
+  '@metamask/sdk': 0.33.1
+

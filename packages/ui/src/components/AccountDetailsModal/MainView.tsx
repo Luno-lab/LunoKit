@@ -64,15 +64,15 @@ export const MainView: React.FC<MainViewProps> = ({ onViewChange, onModalClose }
       onClick: () => onViewChange(AccountModalView.switchChain),
     };
 
-    const switchAccountItem = {
-      key: 'Switch Account',
+    const manageWalletsItem = {
+      key: 'Manage Wallets',
       content: (
         <>
           <Switch className={'luno:w-[24px] luno:h-[24px]'} />
-          <span className="luno:text-base luno:text-accountActionItemText">Switch Account</span>
+          <span className="luno:text-base luno:text-accountActionItemText">Manage Wallets</span>
         </>
       ),
-      onClick: () => onViewChange(AccountModalView.switchAccount),
+      onClick: () => onViewChange(AccountModalView.manageWallets),
     };
 
     const assetListItem = {
@@ -103,11 +103,11 @@ export const MainView: React.FC<MainViewProps> = ({ onViewChange, onModalClose }
         window.open(getExplorerUrl(chain?.blockExplorers?.default?.url!, address, 'address')),
     };
 
-    if (chains.length === 0) return [switchAccountItem];
+    if (chains.length === 0) return [manageWalletsItem];
 
     return config?.subscan?.apiKey
-      ? [chainNameItem, explorerItem, assetListItem, switchAccountItem]
-      : [chainNameItem, explorerItem, switchAccountItem];
+      ? [chainNameItem, explorerItem, assetListItem, manageWalletsItem]
+      : [chainNameItem, explorerItem, manageWalletsItem];
   }, [onViewChange, chain, address, balance, chains, config]);
 
   const handleDisconnect = async () => {

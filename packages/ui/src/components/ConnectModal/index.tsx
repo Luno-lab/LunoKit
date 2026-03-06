@@ -1,16 +1,18 @@
-import { useConnect } from '@luno-kit/react';
-import type { Connector, Optional } from '@luno-kit/react/types';
+import { useConnect, useConfig } from '@luno-kit/react';
+import { type AnyConnector, ChainType, type Optional } from '@luno-kit/react/types';
 import { isMobileDevice } from '@luno-kit/react/utils';
 import type React from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { Back, Close } from '../../assets/icons';
 import { useWindowSize } from '../../hooks';
 import { useAnimatedViews } from '../../hooks/useAnimatedViews';
 import { type AppInfo, useConnectModal } from '../../providers';
 import { cs } from '../../utils';
 import { renderAppInfoText } from '../../utils/renderAppInfo';
-import { Dialog, DialogClose, DialogTitle, type ModalContainer, type ModalSize } from '../Dialog';
+import { Dialog, type ModalContainer, type ModalSize } from '../Dialog';
+import { SegmentedControl } from '../SegmentedControl';
 import { ConnectOptions } from './ConnectOptions';
+import { ModalHeader } from './ModalHeader';
+import { PolicyLinks } from './PolicyLinks';
 import { WalletView } from './WalletView';
 
 export enum ConnectModalView {
@@ -31,16 +33,24 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
   showInstalledGroup = true,
   size = 'wide',
 }) => {
-  const { isOpen, close } = useConnectModal();
+  const { isOpen, close, targetNamespace } = useConnectModal();
+  const config = useConfig();
+
+  const showNamespaceToggle = !targetNamespace && !!config?.substrate && !!config?.evm;
+
+  const [selectedNamespace, setSelectedNamespace] = useState<ChainType>(ChainType.SUBSTRATE);
+  const [selectedConnector, setSelectedConnector] = useState<AnyConnector | null>(null);
+  const [qrCode, setQrCode] = useState<string | undefined>();
+
+  const activeNamespace = targetNamespace ?? selectedNamespace;
+
   const {
     connectAsync,
     reset: resetConnect,
     isPending: isConnecting,
     isError: connectError,
     error: connectErrorMsg,
-  } = useConnect();
-  const [selectedConnector, setSelectedConnector] = useState<Connector | null>(null);
-  const [qrCode, setQrCode] = useState<string | undefined>();
+  } = useConnect({ namespace: activeNamespace });
 
   const { width: windowWidth } = useWindowSize();
 
@@ -50,13 +60,13 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
   const { containerRef, currentViewRef, resetView, handleViewChange, currentView } =
     useAnimatedViews({ initialView: ConnectModalView.connectOptions });
 
-  const onQrCode = async (connector: Connector) => {
+  const onQrCode = async (connector: AnyConnector) => {
     const uri = await connector.getConnectionUri();
 
     setQrCode(uri);
   };
 
-  const handleConnect = async (connector: Connector) => {
+  const handleConnect = async (connector: AnyConnector) => {
     if (isMobileDevice() && connector.links.deepLink) {
       try {
         await connectAsync({ connectorId: connector.id });
@@ -79,17 +89,20 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
   };
 
   const _onOpenChange = (open: boolean) => {
-    !open && close();
-    resetConnect();
-    resetView();
-    setSelectedConnector(null);
-    setQrCode(undefined);
+    if (!open) {
+      close();
+      resetConnect();
+      resetView();
+      setSelectedConnector(null);
+      setQrCode(undefined);
+      setSelectedNamespace(ChainType.SUBSTRATE);
+    }
   };
 
   const viewComponents = useMemo(() => {
     return {
       [ConnectModalView.connectOptions]: (
-        <ConnectOptions onConnect={handleConnect} showInstalledGroup={showInstalledGroup} />
+        <ConnectOptions onConnect={handleConnect} showInstalledGroup={showInstalledGroup} namespace={activeNamespace} />
       ),
       [ConnectModalView.walletView]: (
         <WalletView
@@ -112,6 +125,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
     connectErrorMsg,
     appInfo,
     showInstalledGroup,
+    activeNamespace,
   ]);
 
   useEffect(() => {
@@ -135,59 +149,28 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
               : 'luno:md:min-w-[360px]'
           )}
         >
-          <div
-            className={cs(
-              'luno:flex luno:items-center luno:justify-between luno:w-full',
-              !isWide && 'luno:pb-4'
-            )}
-          >
-            {currentView === ConnectModalView.connectOptions ? (
-              <>
-                {!isWide && <div className={cs('luno:w-[30px] luno:h-[30px]')} aria-hidden />}
-                <DialogTitle
-                  className={cs(
-                    'luno:text-lg luno:leading-lg luno:text-modalText luno:font-bold',
-                    isWide ? 'luno:pb-6' : 'luno:flex-1 luno:text-center'
-                  )}
-                >
-                  Connect Wallet
-                </DialogTitle>
-              </>
-            ) : (
-              <>
-                <button
-                  className={cs(
-                    'luno:flex luno:items-center luno:justify-center luno:w-[30px] luno:h-[30px] luno:cursor-pointer luno:rounded-modalControlButton luno:border-none luno:hover:bg-modalControlButtonBackgroundHover luno:transition-colors luno:duration-200'
-                  )}
-                  onClick={() => handleViewChange(ConnectModalView.connectOptions)}
-                  aria-label="Back"
-                >
-                  <Back />
-                </button>
-                <DialogTitle
-                  className={cs(
-                    'luno:text-lg luno:leading-lg luno:text-modalText luno:font-semibold luno:transition-opacity luno:duration-300'
-                  )}
-                >
-                  {selectedConnector?.name}
-                </DialogTitle>
-              </>
-            )}
+          <ModalHeader
+            isConnectOptions={currentView === ConnectModalView.connectOptions}
+            isWide={isWide}
+            selectedConnectorName={selectedConnector?.name}
+            onBack={() => handleViewChange(ConnectModalView.connectOptions)}
+          />
 
-            {!isWide && (
-              <DialogClose
-                className={
-                  'luno:z-10 luno:w-[30px] luno:h-[30px] luno:flex luno:items-center luno:justify-center luno:cursor-pointer luno:rounded-modalControlButton luno:border-none luno:hover:bg-modalControlButtonBackgroundHover luno:transition-colors luno:duration-200'
-                }
-              >
-                <Close />
-              </DialogClose>
-            )}
-          </div>
+          {showNamespaceToggle && (
+            <SegmentedControl
+              items={[
+                { value: ChainType.SUBSTRATE, label: 'Substrate' },
+                { value: ChainType.EVM, label: 'EVM' },
+              ]}
+              value={selectedNamespace}
+              onChange={(v) => setSelectedNamespace(v as ChainType)}
+              className={'luno:mb-3'}
+            />
+          )}
           <div
             ref={containerRef}
             className={cs(
-              'luno:relative luno:overflow-hidden luno:w-full',
+              'luno:relative luno:overflow-scroll luno:w-full',
               !isWide && 'luno:flex-1 luno:overflow-auto'
             )}
           >
@@ -227,42 +210,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
         currentView === ConnectModalView.connectOptions &&
         appInfo?.policyLinks?.terms &&
         appInfo?.policyLinks?.privacy && (
-          <div
-            className={
-              'luno:w-full luno:border-t luno:border-t-separatorLine luno:flex luno:flex-col luno:items-center luno:gap-1 luno:p-3'
-            }
-          >
-            <div
-              className={
-                'luno:text-modalTextSecondary luno:text-xs luno:leading-xs luno:font-regular luno:text-center'
-              }
-            >
-              By connecting your wallet, you agree to our
-            </div>
-            <div
-              className={
-                'luno:text-xs luno:leading-xs luno:font-regular luno:text-center luno:text-modalTextSecondary'
-              }
-            >
-              <a
-                href={appInfo.policyLinks.terms}
-                target={appInfo.policyLinks.target || '_blank'}
-                rel="noreferrer noopener"
-                className={'luno:text-accentColor luno:font-medium luno:hover:text-modalText'}
-              >
-                Terms of Service
-              </a>
-              <span className={'luno:px-1'}>&amp;</span>
-              <a
-                href={appInfo.policyLinks.privacy}
-                target={appInfo.policyLinks.target || '_blank'}
-                rel="noreferrer noopener"
-                className={'luno:text-accentColor luno:font-medium luno:hover:text-modalText'}
-              >
-                Privacy Policy
-              </a>
-            </div>
-          </div>
+          <PolicyLinks policyLinks={appInfo.policyLinks} />
         )}
     </Dialog>
   );

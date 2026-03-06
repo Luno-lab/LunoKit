@@ -1,12 +1,12 @@
-import { useApi, useChain, useChains, useSwitchChain } from '@luno-kit/react';
-import type { Chain } from '@luno-kit/react/types';
+import { useClient, useChain, useChains, useSwitchChain } from '@luno-kit/react';
+import type { AnyChain } from '@luno-kit/react/types';
 import React, { useMemo, useState } from 'react';
 import { Search } from '../../assets/icons';
 import { cs } from '../../utils';
 import { Icon } from '../Icon';
 
 interface ChainListProps {
-  onChainSwitched?: (chain: Chain) => void;
+  onChainSwitched?: (chain: AnyChain) => void;
   className?: string;
 }
 
@@ -17,7 +17,7 @@ export const ChainList: React.FC<ChainListProps> = ({
   const { chain: currentChain } = useChain();
   const chains = useChains();
   const { switchChainAsync } = useSwitchChain();
-  const { isApiReady, apiError } = useApi();
+  const { isReady: isClientReady, error: clientError } = useClient();
 
   const [switchingChain, setSwitchingChain] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -28,9 +28,9 @@ export const ChainList: React.FC<ChainListProps> = ({
     );
   }, [chains, searchQuery]);
 
-  const handleChainSelect = async (chain: Chain) => {
+  const handleChainSelect = async (chain: AnyChain) => {
     if (chain.genesisHash === currentChain?.genesisHash) return;
-    if (!isApiReady && !apiError) return;
+    if (!isClientReady && !clientError) return;
 
     setSwitchingChain(chain.genesisHash);
     try {
@@ -66,7 +66,7 @@ export const ChainList: React.FC<ChainListProps> = ({
               chain={chain}
               isSelected={chain.genesisHash === currentChain?.genesisHash}
               onSelect={handleChainSelect}
-              isLoading={(switchingChain === chain.genesisHash || !isApiReady) && !apiError}
+              isLoading={(switchingChain === chain.genesisHash || !isClientReady) && !clientError}
               isSwitching={switchingChain === chain.genesisHash}
             />
           ))}
@@ -83,10 +83,10 @@ export const ChainList: React.FC<ChainListProps> = ({
 };
 
 interface ChainItemProps {
-  chain: Chain;
+  chain: AnyChain;
   isSelected: boolean;
   isLoading: boolean;
-  onSelect: (chain: Chain) => void;
+  onSelect: (chain: AnyChain) => void;
   isSwitching: boolean;
 }
 

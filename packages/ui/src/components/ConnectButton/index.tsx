@@ -1,5 +1,5 @@
 import type { Optional } from '@luno-kit/react/types';
-import { formatAddress } from '@luno-kit/react/utils';
+import { Substrate } from '@luno-kit/react/utils';
 import type React from 'react';
 import { useConnectButton, useWindowSize } from '../../hooks';
 import { cs } from '../../utils';
@@ -107,7 +107,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
           <div className={cs('luno:p-2 luno:pl-3')}>
             {balance ? (
               <span>
-                {balance?.formattedTransferable || balance?.formattedTotal || 0}{' '}
+                {balance?.formatted || '0.00'}{' '}
                 {currentChain?.nativeCurrency?.symbol || ''}
               </span>
             ) : (
@@ -146,7 +146,7 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
           >
             {displayPreference === 'name' && account?.name
               ? account?.name
-              : formatAddress(account?.address)}
+              : Substrate.formatAddress(account?.address)}
           </span>
         </div>
       </button>

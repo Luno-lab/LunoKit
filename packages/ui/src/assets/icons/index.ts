@@ -1,3 +1,4 @@
+export { default as AddWallet } from './AddWallet';
 export { default as Arrow } from './Arrow';
 export { default as Back } from './Back';
 export { default as Close } from './Close';

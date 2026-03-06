@@ -1,64 +1,109 @@
 import {
   useAccount,
-  useAccounts,
   useActiveConnector,
   useBalance,
   useChain,
   useChains,
+  useConfig
 } from '@luno-kit/react';
-import type { AccountType } from '@luno-kit/react/types';
+import { type AccountType, ChainType } from '@luno-kit/react/types';
 import { Substrate } from '@luno-kit/react/utils';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { cs } from '../../utils';
+import { useConnectModal } from '../../providers';
+import { SegmentedControl } from '../SegmentedControl'
+import { AddWallet } from '../../assets/icons'
 
-interface ViewComponent extends React.FC<SwitchAccountViewProps> {
+interface ViewComponent extends React.FC<ManageWalletsViewProps> {
   title?: string;
 }
 
-interface SwitchAccountViewProps {
+interface ManageWalletsViewProps {
   onBack: () => void;
+  onModalClose: () => void;
 }
 
-export const ManageWalletsView: ViewComponent = ({ onBack }) => {
-  const { address: currentAddress, allAccounts, selectAccount } = useAccount();
+export const ManageWalletsView: ViewComponent = ({ onBack, onModalClose }) => {
+  const { chainType } = useChain();
+  const config = useConfig();
+  const [selectedNamespace, setSelectedNamespace] = useState<ChainType>(chainType)
+
+  const { address: currentAddress, allAccounts, selectAccount } = useAccount({ namespace: selectedNamespace });
+
+  const { open: openConnectModal } = useConnectModal();
 
   const _selectAccount = useCallback(
     (acc: AccountType) => {
-      selectAccount(acc);
+      selectAccount?.(acc);
       onBack();
     },
     [onBack]
   );
 
+  const handleAddWallet = useCallback(() => {
+    onModalClose();
+    openConnectModal?.(selectedNamespace);
+  }, [onModalClose, openConnectModal, selectedNamespace]);
+
   return (
     <div className="luno:flex luno:flex-col luno:gap-1.5 luno:overflow-auto luno:max-h-[400px] luno:no-scrollbar luno:p-4 luno:pt-0">
-      {allAccounts.map((acc) => (
-        <AccountItem
-          key={acc.address}
-          account={acc}
-          isSelected={acc.address === currentAddress}
-          selectAccount={_selectAccount}
+      {config?.evm && (
+        <SegmentedControl
+          items={[
+            { value: ChainType.SUBSTRATE, label: 'Substrate' },
+            { value: ChainType.EVM, label: 'EVM' },
+          ]}
+          value={selectedNamespace}
+          onChange={(v) => setSelectedNamespace(v as ChainType)}
+          className={'luno:mb-3'}
         />
-      ))}
+      )}
+      {allAccounts.length > 0 ? (
+        allAccounts.map((acc) => (
+          <AccountItem
+            key={acc.address}
+            account={acc}
+            isSelected={acc.address === currentAddress}
+            selectAccount={_selectAccount}
+            namespace={selectedNamespace}
+          />
+        ))
+      ) : (
+        <button
+          type="button"
+          onClick={handleAddWallet}
+          className={cs(
+            'luno:px-3 luno:py-4 luno:w-full luno:rounded-accountSelectItem luno:border-none',
+            'luno:bg-accountSelectItemBackground',
+            'luno:text-left luno:cursor-pointer luno:flex luno:items-center luno:gap-2',
+            'luno:font-medium luno:text-sm luno:leading-sm luno:text-accountSelectItemText',
+            'luno:hover:bg-accountSelectItemBackgroundHover luno:transition-colors luno:duration-200'
+          )}
+        >
+          <AddWallet width={'16px'} height={'16px'} />
+          {selectedNamespace === ChainType.SUBSTRATE ? 'Add Polkadot Wallet' : 'Add EVM Wallet'}
+        </button>
+      )}
     </div>
   );
 };
 
-ManageWalletsView.title = 'Switch Account';
+ManageWalletsView.title = 'Manage Wallets';
 
 interface AccountItemProps {
   isSelected: boolean;
   account: AccountType;
   selectAccount: (acc: AccountType) => void;
+  namespace: ChainType;
 }
 
 const AccountItem: React.FC<AccountItemProps> = React.memo(
-  ({ isSelected, account, selectAccount }) => {
-    const { chain } = useChain();
-    const chains = useChains();
+  ({ isSelected, account, selectAccount, namespace }) => {
+    const { chain } = useChain({ namespace });
+    const chains = useChains({ namespace });
     const address = account.address;
-    const { data: balance } = useBalance({ address: chains.length > 0 ? address : undefined });
-    const connector = useActiveConnector();
+    const { data: balance } = useBalance({ namespace, address: chains.length > 0 ? address : undefined });
+    const connector = useActiveConnector({ namespace });
 
     return (
       <button
@@ -87,7 +132,7 @@ const AccountItem: React.FC<AccountItemProps> = React.memo(
             {chains.length > 0 &&
               (balance ? (
                 <span className="luno:text-xs luno:text-modalTextSecondary luno:font-medium">
-                  {String(balance?.value || '0.00')}{' '}
+                  {balance?.formatted || '0.00'}{' '}
                   {chain?.nativeCurrency?.symbol || 'DOT'}
                 </span>
               ) : (
