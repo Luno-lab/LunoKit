@@ -6,6 +6,7 @@ import type { LunoState } from '../types';
 import { ConnectionStatus } from '../types';
 import { create, type StateCreator, type StoreApi, type UseBoundStore } from 'zustand';
 import { ChainType, type AccountType, type SubstrateAccount, type EvmAccount, type HexString, type SubstrateChain } from '@luno-kit/core/types'
+import { deepEqual } from 'wagmi'
 
 export interface StoredAccountInfo {
   publicKey?: string;
@@ -56,7 +57,7 @@ const storeLogic: LunoStoreCreator = (set, get) => ({
     if (newConfig.storage) {
       try {
         if (newConfig.substrate) {
-          storedSubstrateChainId = await newConfig.storage.getItem(PERSIST_KEY.LAST_CHAIN_ID);
+          storedSubstrateChainId = await newConfig.storage.getItem(PERSIST_KEY.SUBSTRATE_LAST_CHAIN_ID);
         }
 
         storedActiveNamespace = await newConfig.storage.getItem(PERSIST_KEY.LAST_ACTIVE_NAMESPACE);
@@ -162,31 +163,50 @@ const storeLogic: LunoStoreCreator = (set, get) => ({
       const str = JSON.stringify(accountInfo);
 
       Promise.all([
-        config.storage.setItem(PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO, str),
-        config.storage.setItem(PERSIST_KEY.RECENT_SELECTED_ACCOUNT_INFO, str),
+        config.storage.setItem(PERSIST_KEY.SUBSTRATE_LAST_SELECTED_ACCOUNT, str),
+        config.storage.setItem(PERSIST_KEY.SUBSTRATE_RECENT_SELECTED_ACCOUNT, str),
       ]).catch(console.error);
     }
   },
   setEvmState: (partialState) => {
-    set((state) => {
-      Object.assign(state.evm, partialState);
+    const current = get();
 
-      if (partialState.status) {
-        const isEvmConnected = partialState.status === ConnectionStatus.Connected;
+    const changedPatch: Partial<typeof current.evm> = {};
+    for (const key of Object.keys(partialState) as Array<keyof typeof current.evm>) {
+      const nextValue = partialState[key];
+      const prevValue = current.evm[key];
+      if (!deepEqual(prevValue, nextValue)) {
+        changedPatch[key] = nextValue as never;
+      }
+    }
+
+    if (Object.keys(changedPatch).length === 0) return;
+
+    set((state) => {
+
+      Object.assign(state.evm, changedPatch);
+
+      if (changedPatch.status) {
+        const isEvmConnected = changedPatch.status === ConnectionStatus.Connected;
         const isSubstrateConnected = state.substrate.status === ConnectionStatus.Connected;
 
         if (isSubstrateConnected || isEvmConnected) {
           state.status = ConnectionStatus.Connected;
-        } else if (state.substrate.status === ConnectionStatus.Disconnected && state.evm.status === ConnectionStatus.Disconnected) {
+        } else if (
+          state.substrate.status === ConnectionStatus.Disconnected &&
+          state.evm.status === ConnectionStatus.Disconnected
+        ) {
           state.status = ConnectionStatus.Disconnected;
         }
       }
     });
-
-    if (partialState.status === ConnectionStatus.Disconnected) {
-      const current = get();
-      if (current.activeNamespace === ChainType.EVM && current.substrate.status === ConnectionStatus.Connected) {
-        current.setActiveNamespace(ChainType.SUBSTRATE);
+    if (changedPatch.status === ConnectionStatus.Disconnected) {
+      const latest = get();
+      if (
+        latest.activeNamespace === ChainType.EVM &&
+        latest.substrate.status === ConnectionStatus.Connected
+      ) {
+        latest.setActiveNamespace(ChainType.SUBSTRATE);
       }
     }
   },

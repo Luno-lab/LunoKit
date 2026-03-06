@@ -100,7 +100,7 @@ describe('createLunoStore', () => {
 
       const state = useLunoStore.getState();
       expect(state.currentChainId).toBe('0x123');
-      expect(mockStorage.getItem).toHaveBeenCalledWith(PERSIST_KEY.LAST_CHAIN_ID);
+      expect(mockStorage.getItem).toHaveBeenCalledWith(PERSIST_KEY.SUBSTRATE_LAST_CHAIN_ID);
     });
 
     it('should fallback to default chain when stored chain not found', async () => {
@@ -151,7 +151,7 @@ describe('createLunoStore', () => {
       const state = useLunoStore.getState();
       expect(state.account?.publicKey).toBe('0xdef');
       expect(mockStorage.setItem).toHaveBeenCalledWith(
-        PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO,
+        PERSIST_KEY.SUBSTRATE_LAST_SELECTED_ACCOUNT,
         expect.stringContaining('0xdef')
       );
     });
@@ -288,7 +288,7 @@ describe('createLunoStore', () => {
       expect(state.account).toBe(mockAccounts[0]);
 
       expect(mockStorage.setItem).toHaveBeenCalledWith(
-        PERSIST_KEY.LAST_CONNECTOR_ID,
+        PERSIST_KEY.SUBSTRATE_LAST_CONNECTOR_ID,
         'test-connector'
       );
     });
@@ -299,7 +299,7 @@ describe('createLunoStore', () => {
         return addr1 === addr2;
       });
       mockStorage.getItem.mockImplementation((key) => {
-        if (key === PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO) {
+        if (key === PERSIST_KEY.SUBSTRATE_LAST_SELECTED_ACCOUNT) {
           return Promise.resolve(
             JSON.stringify({
               publicKey: '0xdef',
@@ -325,7 +325,7 @@ describe('createLunoStore', () => {
         return addr1 === addr2;
       });
       mockStorage.getItem.mockImplementation((key) => {
-        if (key === PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO) {
+        if (key === PERSIST_KEY.SUBSTRATE_LAST_SELECTED_ACCOUNT) {
           return Promise.resolve(
             JSON.stringify({
               address: 'addr2',
@@ -410,9 +410,9 @@ describe('createLunoStore', () => {
       expect(state.accounts).toEqual([]);
       expect(state.account).toBeUndefined();
 
-      expect(mockStorage.removeItem).toHaveBeenCalledWith(PERSIST_KEY.LAST_CONNECTOR_ID);
-      expect(mockStorage.removeItem).toHaveBeenCalledWith(PERSIST_KEY.LAST_CHAIN_ID);
-      expect(mockStorage.removeItem).toHaveBeenCalledWith(PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO);
+      expect(mockStorage.removeItem).toHaveBeenCalledWith(PERSIST_KEY.SUBSTRATE_LAST_CONNECTOR_ID);
+      expect(mockStorage.removeItem).toHaveBeenCalledWith(PERSIST_KEY.SUBSTRATE_LAST_CHAIN_ID);
+      expect(mockStorage.removeItem).toHaveBeenCalledWith(PERSIST_KEY.SUBSTRATE_LAST_SELECTED_ACCOUNT);
     });
 
     it('should handle disconnect failure', async () => {
@@ -474,7 +474,7 @@ describe('createLunoStore', () => {
       expect(state.currentChain).toBe(newChain);
       expect(state.isApiReady).toBe(true);
       expect(mockApi.disconnect).toHaveBeenCalled();
-      expect(mockStorage.setItem).toHaveBeenCalledWith(PERSIST_KEY.LAST_CHAIN_ID, '0x456');
+      expect(mockStorage.setItem).toHaveBeenCalledWith(PERSIST_KEY.SUBSTRATE_LAST_CHAIN_ID, '0x456');
     });
 
     it('should throw error when config not initialized', async () => {

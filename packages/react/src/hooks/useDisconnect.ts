@@ -45,25 +45,18 @@ export const useDisconnect = (
     try {
       await substrateConnector.disconnect();
 
-      if (config?.storage) {
-        try {
-          await config.storage.removeItem(PERSIST_KEY.LAST_CONNECTOR_ID);
-          await config.storage.removeItem(PERSIST_KEY.LAST_CHAIN_ID);
-          await config.storage.removeItem(PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO);
-        } catch (e) {
-          console.error(
-            '[LunoStore] Failed to remove connection info from storage during disconnect action:',
-            e
-          );
-        }
-      }
-
       setSubstrateState({
         status: ConnectionStatus.Disconnected,
         connector: undefined,
         allAccounts: [],
         account: undefined,
       });
+
+      if (config?.storage) {
+        await config.storage.removeItem(PERSIST_KEY.SUBSTRATE_LAST_CONNECTOR_ID);
+        await config.storage.removeItem(PERSIST_KEY.SUBSTRATE_LAST_CHAIN_ID);
+        await config.storage.removeItem(PERSIST_KEY.SUBSTRATE_LAST_SELECTED_ACCOUNT);
+      }
     } catch (err: any) {
       setSubstrateState({ status: ConnectionStatus.Connected });
       throw new Error(
@@ -79,6 +72,10 @@ export const useDisconnect = (
 
     try {
       await evmConnector.disconnect();
+
+      if (config?.storage) {
+        await config.storage.removeItem(PERSIST_KEY.EVM_LAST_CONNECTOR_ID);
+      }
     } catch (err: any) {
       console.error('[useDisconnect] EVM Disconnect Error:', err);
       throw err;

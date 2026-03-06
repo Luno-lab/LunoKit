@@ -121,10 +121,10 @@ export function useConnect(
       let selectedAccount = accounts[0];
       if (config.storage) {
         const lastStoredAccountJson = await config.storage.getItem(
-          PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO
+          PERSIST_KEY.SUBSTRATE_LAST_SELECTED_ACCOUNT
         );
         const recentStoredAccountJson = await config.storage.getItem(
-          PERSIST_KEY.RECENT_SELECTED_ACCOUNT_INFO
+          PERSIST_KEY.SUBSTRATE_RECENT_SELECTED_ACCOUNT
         );
         const storedAccountJson = lastStoredAccountJson || recentStoredAccountJson;
 
@@ -144,8 +144,8 @@ export function useConnect(
         account: selectedAccount,
       });
       if (config.storage) {
-        await config.storage.setItem(PERSIST_KEY.LAST_CONNECTOR_ID, connectorId);
-        await config.storage.setItem(PERSIST_KEY.RECENT_CONNECTOR_ID, connectorId);
+        await config.storage.setItem(PERSIST_KEY.SUBSTRATE_LAST_CONNECTOR_ID, connectorId);
+        await config.storage.setItem(PERSIST_KEY.SUBSTRATE_RECENT_CONNECTOR_ID, connectorId);
 
         const storedAccountInfo = {
           publicKey: selectedAccount.publicKey,
@@ -154,8 +154,8 @@ export function useConnect(
           source: selectedAccount.meta?.source,
         };
         const accountInfoStr = JSON.stringify(storedAccountInfo);
-        await config.storage.setItem(PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO, accountInfoStr);
-        await config.storage.setItem(PERSIST_KEY.RECENT_SELECTED_ACCOUNT_INFO, accountInfoStr);
+        await config.storage.setItem(PERSIST_KEY.SUBSTRATE_LAST_SELECTED_ACCOUNT, accountInfoStr);
+        await config.storage.setItem(PERSIST_KEY.SUBSTRATE_RECENT_SELECTED_ACCOUNT, accountInfoStr);
       }
 
       const chainIdToSet = chainId || substrateChainId || config.substrate?.chains[0]?.genesisHash;
@@ -174,7 +174,7 @@ export function useConnect(
             });
           }
           if (config.storage) {
-            await config.storage.setItem(PERSIST_KEY.LAST_CHAIN_ID, chainIdToSet);
+            await config.storage.setItem(PERSIST_KEY.SUBSTRATE_LAST_CHAIN_ID, chainIdToSet);
           }
         } else {
           console.warn(
@@ -214,6 +214,11 @@ export function useConnect(
         withCapabilities,
       };
       await connector.connect(options);
+
+      if (config.storage) {
+        await config.storage.setItem(PERSIST_KEY.EVM_LAST_CONNECTOR_ID, connectorId);
+        await config.storage.setItem(PERSIST_KEY.EVM_RECENT_CONNECTOR_ID, connectorId);
+      }
     } catch (err) {
       console.error('[useConnect] EVM Connect Error:', err);
       throw err;

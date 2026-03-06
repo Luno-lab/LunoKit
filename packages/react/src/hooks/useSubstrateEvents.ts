@@ -48,10 +48,10 @@ export const useSubstrateEvents = () => {
 
       try {
         const lastStoredAccountJson = await config.storage.getItem(
-          PERSIST_KEY.LAST_SELECTED_ACCOUNT_INFO
+          PERSIST_KEY.SUBSTRATE_LAST_SELECTED_ACCOUNT
         );
         const recentStoredAccountJson = await config.storage.getItem(
-          PERSIST_KEY.RECENT_SELECTED_ACCOUNT_INFO
+          PERSIST_KEY.SUBSTRATE_RECENT_SELECTED_ACCOUNT
         );
         const storedAccountJson = lastStoredAccountJson || recentStoredAccountJson;
 
@@ -75,8 +75,8 @@ export const useSubstrateEvents = () => {
 
     const handleDisconnect = async () => {
       try {
-        config.storage.removeItem(PERSIST_KEY.LAST_CONNECTOR_ID);
-        config.storage.removeItem(PERSIST_KEY.LAST_CHAIN_ID);
+        config.storage.removeItem(PERSIST_KEY.SUBSTRATE_LAST_CONNECTOR_ID);
+        config.storage.removeItem(PERSIST_KEY.SUBSTRATE_LAST_CHAIN_ID);
       } catch (e) {
         console.error('[LunoStore] Failed to remove connection info from storage:', e);
       }

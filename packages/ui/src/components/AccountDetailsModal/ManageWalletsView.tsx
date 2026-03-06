@@ -6,8 +6,8 @@ import {
   useChain,
   useChains,
 } from '@luno-kit/react';
-import type { Account } from '@luno-kit/react/types';
-import { formatAddress } from '@luno-kit/react/utils';
+import type { AccountType } from '@luno-kit/react/types';
+import { Substrate } from '@luno-kit/react/utils';
 import React, { useCallback } from 'react';
 import { cs } from '../../utils';
 
@@ -19,12 +19,11 @@ interface SwitchAccountViewProps {
   onBack: () => void;
 }
 
-export const SwitchAccountView: ViewComponent = ({ onBack }) => {
-  const { accounts, selectAccount } = useAccounts();
-  const { address: currentAddress } = useAccount();
+export const ManageWalletsView: ViewComponent = ({ onBack }) => {
+  const { address: currentAddress, allAccounts, selectAccount } = useAccount();
 
   const _selectAccount = useCallback(
-    (acc: Account) => {
+    (acc: AccountType) => {
       selectAccount(acc);
       onBack();
     },
@@ -33,7 +32,7 @@ export const SwitchAccountView: ViewComponent = ({ onBack }) => {
 
   return (
     <div className="luno:flex luno:flex-col luno:gap-1.5 luno:overflow-auto luno:max-h-[400px] luno:no-scrollbar luno:p-4 luno:pt-0">
-      {accounts.map((acc) => (
+      {allAccounts.map((acc) => (
         <AccountItem
           key={acc.address}
           account={acc}
@@ -45,12 +44,12 @@ export const SwitchAccountView: ViewComponent = ({ onBack }) => {
   );
 };
 
-SwitchAccountView.title = 'Switch Account';
+ManageWalletsView.title = 'Switch Account';
 
 interface AccountItemProps {
   isSelected: boolean;
-  account: Account;
-  selectAccount: (acc: Account) => void;
+  account: AccountType;
+  selectAccount: (acc: AccountType) => void;
 }
 
 const AccountItem: React.FC<AccountItemProps> = React.memo(
@@ -83,12 +82,12 @@ const AccountItem: React.FC<AccountItemProps> = React.memo(
           </div>
           <div className="luno:flex luno:flex-col luno:items-start luno:overflow-hidden">
             <span className="luno:whitespace-nowrap luno:max-w-full luno:text-ellipsis luno:overflow-hidden luno:font-medium luno:text-sm luno:leading-sm luno:text-accountSelectItemText">
-              {account.name || formatAddress(address)}
+              {account.name || Substrate.formatAddress(address)}
             </span>
             {chains.length > 0 &&
               (balance ? (
                 <span className="luno:text-xs luno:text-modalTextSecondary luno:font-medium">
-                  {balance?.formattedTransferable || '0.00'}{' '}
+                  {String(balance?.value || '0.00')}{' '}
                   {chain?.nativeCurrency?.symbol || 'DOT'}
                 </span>
               ) : (

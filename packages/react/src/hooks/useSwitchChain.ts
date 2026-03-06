@@ -132,7 +132,7 @@ export function useSwitchChain(
       });
 
       if (config.storage) {
-        await config.storage.setItem(PERSIST_KEY.LAST_CHAIN_ID, newChainId);
+        await config.storage.setItem(PERSIST_KEY.SUBSTRATE_LAST_CHAIN_ID, newChainId);
       }
     } catch (e: any) {
       setSubstrateState({
