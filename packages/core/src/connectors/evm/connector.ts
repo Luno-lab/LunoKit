@@ -149,7 +149,6 @@ export abstract class EvmConnector extends BaseConnector<EvmSigner, EvmConnectOp
 
     this.unwatch = watchConnection(this.wagmiConfig, {
       onChange: (data) => {
-        console.log('datadatadatadatadatadata', data);
         if (data.connector?.uid === this.wagmiConnector?.uid) {
           const newAccounts: EvmAccount[] =
             data.addresses?.map((addr) => ({

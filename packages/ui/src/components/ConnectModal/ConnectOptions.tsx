@@ -95,7 +95,7 @@ export const ConnectOptions = React.memo(({ onConnect, showInstalledGroup, names
   return (
     <div
       className={
-        'luno:flex luno:flex-col luno:items-start luno:gap-4 luno:w-full luno:min-h-[400px] luno:max-h-[400px]'
+        'luno:flex luno:flex-col luno:items-start luno:gap-4 luno:w-full'
       }
     >
       {connectorGroup.map((g) => {

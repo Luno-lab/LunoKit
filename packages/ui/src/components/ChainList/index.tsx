@@ -1,5 +1,5 @@
 import { useClient, useChain, useChains, useSwitchChain } from '@luno-kit/react';
-import type { AnyChain } from '@luno-kit/react/types';
+import type { AnyChain, HexString } from '@luno-kit/react/types';
 import React, { useMemo, useState } from 'react';
 import { Search } from '../../assets/icons';
 import { cs } from '../../utils';
@@ -19,7 +19,7 @@ export const ChainList: React.FC<ChainListProps> = ({
   const { switchChainAsync } = useSwitchChain();
   const { isReady: isClientReady, error: clientError } = useClient();
 
-  const [switchingChain, setSwitchingChain] = useState<string | null>(null);
+  const [switchingChain, setSwitchingChain] = useState<HexString | number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredChains = useMemo(() => {
@@ -29,12 +29,12 @@ export const ChainList: React.FC<ChainListProps> = ({
   }, [chains, searchQuery]);
 
   const handleChainSelect = async (chain: AnyChain) => {
-    if (chain.genesisHash === currentChain?.genesisHash) return;
+    if (chain.id === currentChain?.id) return;
     if (!isClientReady && !clientError) return;
 
-    setSwitchingChain(chain.genesisHash);
+    setSwitchingChain(chain.id);
     try {
-      await switchChainAsync({ chainId: chain.genesisHash });
+      await switchChainAsync({ chainId: chain.id });
       onChainSwitched?.(chain);
     } catch (error) {
       console.error('Failed to switch chain:', error);
@@ -62,12 +62,12 @@ export const ChainList: React.FC<ChainListProps> = ({
         <div className="luno:flex luno:flex-col luno:gap-1.5 luno:overflow-y-auto luno:max-h-[380px]">
           {filteredChains.map((chain) => (
             <ChainItem
-              key={chain.genesisHash}
+              key={chain.id}
               chain={chain}
-              isSelected={chain.genesisHash === currentChain?.genesisHash}
+              isSelected={chain.id === currentChain?.id}
               onSelect={handleChainSelect}
-              isLoading={(switchingChain === chain.genesisHash || !isClientReady) && !clientError}
-              isSwitching={switchingChain === chain.genesisHash}
+              isLoading={(switchingChain === chain.id || !isClientReady) && !clientError}
+              isSwitching={switchingChain === chain.id}
             />
           ))}
         </div>

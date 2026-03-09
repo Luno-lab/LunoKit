@@ -30,6 +30,7 @@ export const ManageWalletsView: ViewComponent = ({ onBack, onModalClose }) => {
 
   const { address: currentAddress, allAccounts, selectAccount } = useAccount({ namespace: selectedNamespace });
 
+  console.log('allAccounts', allAccounts)
   const { open: openConnectModal } = useConnectModal();
 
   const _selectAccount = useCallback(
@@ -37,7 +38,7 @@ export const ManageWalletsView: ViewComponent = ({ onBack, onModalClose }) => {
       selectAccount?.(acc);
       onBack();
     },
-    [onBack]
+    [onBack, selectAccount]
   );
 
   const handleAddWallet = useCallback(() => {
@@ -114,12 +115,9 @@ const AccountItem: React.FC<AccountItemProps> = React.memo(
           'luno:bg-accountSelectItemBackground',
           'luno:text-left luno:flex luno:items-center luno:justify-between luno:gap-2',
           'luno:transition-colors luno:duration-200',
-          isSelected
-            ? 'luno:cursor-auto'
-            : 'luno:cursor-pointer luno:hover:bg-accountSelectItemBackgroundHover'
+          'luno:cursor-pointer luno:hover:bg-accountSelectItemBackgroundHover'
         )}
         aria-label={account.name || address}
-        disabled={isSelected}
       >
         <div className="luno:flex luno:items-center luno:gap-2 luno:grow luno:overflow-hidden">
           <div className="luno:shrink-0 luno:w-[24px] luno:h-[24px] luno:rounded-full luno:flex luno:items-center luno:justify-center">

@@ -138,7 +138,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
     <Dialog open={isOpen} onOpenChange={_onOpenChange} container={container}>
       <div
         className={cs(
-          'luno:flex luno:items-stretch luno:justify-between luno:w-full luno:md:max-h-[504px] luno:md:max-w-[724px]'
+          'luno:flex luno:items-stretch luno:justify-between luno:w-full luno:md:h-[504px] luno:md:max-w-[724px]'
         )}
       >
         <div
@@ -170,8 +170,8 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
           <div
             ref={containerRef}
             className={cs(
-              'luno:relative luno:overflow-scroll luno:w-full',
-              !isWide && 'luno:flex-1 luno:overflow-auto'
+              'luno:relative luno:overflow-auto luno:w-full',
+              !isWide && 'luno:flex-1 luno:overflow-auto',
             )}
           >
             <div ref={currentViewRef}>{viewComponents[currentView]}</div>
