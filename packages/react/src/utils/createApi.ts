@@ -4,19 +4,17 @@ import type { Config, SubstrateChain, HexString } from '../types';
 import type { LunoClient } from '../types/state';
 
 interface CreateApiOptions {
-  config: Config;
+  config: Config['substrate'];
   chainId: string;
 }
 
 export const createApi = async ({ config, chainId }: CreateApiOptions): Promise<LunoClient> => {
-  const substrate = config.substrate;
-
-  if (!substrate) {
+  if (!config) {
     throw new Error('Substrate configuration is not provided.');
   }
 
-  const chainConfig = substrate.chains.find((c: SubstrateChain) => c.genesisHash === chainId);
-  const transportConfig = substrate.transports[chainId];
+  const chainConfig = config.chains.find((c: SubstrateChain) => c.genesisHash === chainId);
+  const transportConfig = config.transports[chainId];
 
   if (!chainConfig || !transportConfig) {
     throw new Error(`Configuration missing for chainId: ${chainId}`);
@@ -27,8 +25,8 @@ export const createApi = async ({ config, chainId }: CreateApiOptions): Promise<
   const apiOptions: ApiOptions = {
     provider,
     scaledResponses: {
-      ...substrate.customTypes,
-      ...substrate.customRpc,
+      ...config.customTypes,
+      ...config.customRpc,
     },
   };
 

@@ -17,6 +17,7 @@ import {
   polkadotPeople,
   westend,
   westendAssetHub,
+  type SubstrateChain
 } from '@luno-kit/react/chains';
 import { Substrate, Evm } from '@luno-kit/react/connectors';
 import { LunoKitProvider } from '@luno-kit/ui';
@@ -28,7 +29,9 @@ import App from './App.tsx';
 import '@luno-kit/ui/styles.css';
 
 // Custom chains
-const astar = {
+const astar: SubstrateChain = {
+  chainType: 'substrate',
+  id: '0x9eb76c5184c4ab8679d2d5d819fdf90b9c001403e9e17da2e14b6d8aec4029c6',
   genesisHash: '0x9eb76c5184c4ab8679d2d5d819fdf90b9c001403e9e17da2e14b6d8aec4029c6',
   name: 'Astar',
   nativeCurrency: { name: 'Astar', symbol: 'ASTR', decimals: 18 },
@@ -58,7 +61,9 @@ const astar = {
   },
 };
 
-const hydration = {
+const hydration: SubstrateChain = {
+  chainType: 'substrate',
+  id: '0xafdc188f45c71dacbaa0b62e16a91f726c7b8699a9748cdf715459de6b7f366d',
   genesisHash: '0xafdc188f45c71dacbaa0b62e16a91f726c7b8699a9748cdf715459de6b7f366d',
   name: 'Hydration',
   nativeCurrency: { name: 'Hydration', symbol: 'HDX', decimals: 12 },

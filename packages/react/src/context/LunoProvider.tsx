@@ -1,5 +1,5 @@
 import { ChainType, type EvmAccount, type HexString, type SubstrateAccount, type SubstrateSigner, type EvmSigner,type SubstrateConnectorType, type EvmChain, type EvmConnectorType, type SubstrateChain, type Transport, type Config } from '@luno-kit/core/types';
-import React, { useRef } from 'react';
+import React, { useRef, useSyncExternalStore } from 'react';
 import { type ReactNode, useCallback, useEffect, useMemo } from 'react';
 import { WagmiProvider} from 'wagmi';
 import { PERSIST_KEY } from '../constants';
@@ -10,7 +10,7 @@ import { LunoContext, type LunoContextState } from './LunoContext';
 import { useConnect } from '../hooks'
 import { useSubstrateEvents } from '../hooks/useSubstrateEvents'
 import { ConnectionStatus } from '../types'
-import { watchConnection, disconnect } from '@wagmi/core'
+import { watchConnection, watchChainId, getChainId, disconnect } from '@wagmi/core'
 
 interface LunoProviderProps {
   config: Config;
@@ -27,6 +27,42 @@ const EvmStateSync = () => {
   const unwatchRef = useRef<null | (() => void)>(null)
 
   const reconnectCheckedRef = useRef(false);
+
+  useSyncExternalStore(
+    (onChange) => {
+      if (!wagmiConfig) return () => {};
+
+      const initialChainId = getChainId(wagmiConfig);
+      const evmChains = config?.evm?.chains;
+      const initMatchedChain = evmChains?.find((c: EvmChain) => c.id === initialChainId);
+      setEvmState({
+        chainId: initMatchedChain ? initialChainId : evmChains?.[0]?.id,
+        chain: initMatchedChain || evmChains?.[0],
+      });
+
+      let timeoutId: ReturnType<typeof setTimeout>;
+      const unwatch = watchChainId(wagmiConfig, {
+        onChange(chainId) {
+          clearTimeout(timeoutId);
+          timeoutId = setTimeout(() => {
+            const evmChains = config?.evm?.chains;
+            const matchedChain = evmChains?.find((c: EvmChain) => c.id === chainId);
+            setEvmState({
+              chainId: matchedChain ? chainId : evmChains?.[0]?.id,
+              chain: matchedChain || evmChains?.[0],
+            });
+            onChange();
+          }, 300);
+        },
+      });
+      return () => {
+        clearTimeout(timeoutId);
+        unwatch();
+      };
+    },
+    () => wagmiConfig ? getChainId(wagmiConfig) : undefined,
+    () => wagmiConfig ? getChainId(wagmiConfig) : undefined,
+  );
 
   useEffect(() => {
     if (!wagmiConfig) return;
@@ -66,15 +102,8 @@ const EvmStateSync = () => {
             (i) => i.address.toLowerCase() === connection.address?.toLowerCase()
           );
 
-          const evmChains = config?.evm?.chains;
-          const matchedChain = evmChains?.find((c: EvmChain) => c.id === connection.chainId);
-          const chainId: number = matchedChain ? connection.chainId : evmChains?.[0]?.id;
-          const chain: EvmChain = matchedChain || evmChains?.[0];
-
           setEvmState({
             status: connection.status as ConnectionStatus,
-            chainId,
-            chain,
             account,
             allAccounts: accounts,
             connector: resolvedConnector,
@@ -83,6 +112,7 @@ const EvmStateSync = () => {
           setEvmState({
             status: ConnectionStatus.Disconnected,
             chainId: undefined,
+            chain: undefined,
             account: undefined,
             allAccounts: [],
             connector: undefined,

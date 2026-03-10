@@ -10,7 +10,8 @@ import { useCallback, useMemo } from 'react';
 import { switchChain as switchEvmChain } from 'wagmi/actions';
 import { PERSIST_KEY } from '../constants';
 import { useLunoStore } from '../store';
-import { createApi } from '../utils';
+import { createApi, sleep } from '../utils';
+
 import { type LunoMutationOptions, useLunoMutation } from './useLunoMutation';
 
 type AnyChainId = HexString | number;
@@ -162,7 +163,10 @@ export function useSwitchChain(
     }
 
     try {
-      await switchEvmChain(wagmiConfig, { chainId: newChainId });
+      await Promise.all([
+        switchEvmChain(wagmiConfig, { chainId: newChainId }),
+        sleep(),
+      ]);
     } catch (e) {
       console.error('[useSwitchChain] EVM Switch Chain Error:', e);
       throw e;
@@ -173,14 +177,14 @@ export function useSwitchChain(
     async (variables: SwitchChainVariables): Promise<void> => {
       switch (targetNamespace) {
         case ChainType.SUBSTRATE: {
-          await switchSubstrate(variables.chainId as HexString);
           setActiveNamespace(ChainType.SUBSTRATE);
+          await switchSubstrate(variables.chainId as HexString);
           break;
         }
 
         case ChainType.EVM: {
-          await switchEvm(variables.chainId as number);
           setActiveNamespace(ChainType.EVM);
+          await switchEvm(variables.chainId as number);
           break;
         }
 
