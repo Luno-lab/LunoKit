@@ -159,7 +159,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
           {showNamespaceToggle && (
             <SegmentedControl
               items={[
-                { value: ChainType.SUBSTRATE, label: 'Substrate' },
+                { value: ChainType.SUBSTRATE, label: 'Polkadot' },
                 { value: ChainType.EVM, label: 'EVM' },
               ]}
               value={selectedNamespace}

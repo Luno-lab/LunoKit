@@ -30,7 +30,6 @@ export const ManageWalletsView: ViewComponent = ({ onBack, onModalClose }) => {
 
   const { address: currentAddress, allAccounts, selectAccount } = useAccount({ namespace: selectedNamespace });
 
-  console.log('allAccounts', allAccounts)
   const { open: openConnectModal } = useConnectModal();
 
   const _selectAccount = useCallback(
@@ -51,7 +50,7 @@ export const ManageWalletsView: ViewComponent = ({ onBack, onModalClose }) => {
       {config?.evm && (
         <SegmentedControl
           items={[
-            { value: ChainType.SUBSTRATE, label: 'Substrate' },
+            { value: ChainType.SUBSTRATE, label: 'Polkadot' },
             { value: ChainType.EVM, label: 'EVM' },
           ]}
           value={selectedNamespace}
