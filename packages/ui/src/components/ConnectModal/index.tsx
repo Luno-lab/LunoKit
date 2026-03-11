@@ -9,6 +9,7 @@ import { type AppInfo, useConnectModal } from '../../providers';
 import { cs } from '../../utils';
 import { renderAppInfoText } from '../../utils/renderAppInfo';
 import { Dialog, type ModalContainer, type ModalSize } from '../Dialog';
+import { FadeSwitch } from '../FadeSwitch';
 import { SegmentedControl } from '../SegmentedControl';
 import { ConnectOptions } from './ConnectOptions';
 import { ModalHeader } from './ModalHeader';
@@ -99,10 +100,31 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
     }
   };
 
+  const connectOptionsItems = useMemo(() => {
+    const result = [];
+    if (config?.substrate) {
+      result.push({
+        value: ChainType.SUBSTRATE,
+        content: <ConnectOptions onConnect={handleConnect} showInstalledGroup={showInstalledGroup} namespace={ChainType.SUBSTRATE} />,
+      });
+    }
+    if (config?.evm) {
+      result.push({
+        value: ChainType.EVM,
+        content: <ConnectOptions onConnect={handleConnect} showInstalledGroup={showInstalledGroup} namespace={ChainType.EVM} />,
+      });
+    }
+    return result;
+  }, [config?.substrate, config?.evm, handleConnect, showInstalledGroup]);
+
   const viewComponents = useMemo(() => {
     return {
       [ConnectModalView.connectOptions]: (
-        <ConnectOptions onConnect={handleConnect} showInstalledGroup={showInstalledGroup} namespace={activeNamespace} />
+        <FadeSwitch
+          activeValue={activeNamespace}
+          items={connectOptionsItems}
+          animate={showNamespaceToggle}
+        />
       ),
       [ConnectModalView.walletView]: (
         <WalletView
@@ -124,8 +146,9 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
     connectError,
     connectErrorMsg,
     appInfo,
-    showInstalledGroup,
+    connectOptionsItems,
     activeNamespace,
+    showNamespaceToggle,
   ]);
 
   useEffect(() => {

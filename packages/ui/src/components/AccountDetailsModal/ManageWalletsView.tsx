@@ -8,9 +8,10 @@ import {
 } from '@luno-kit/react';
 import { type AccountType, ChainType } from '@luno-kit/react/types';
 import { Substrate } from '@luno-kit/react/utils';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { cs } from '../../utils';
 import { useConnectModal } from '../../providers';
+import { FadeSwitch } from '../FadeSwitch';
 import { SegmentedControl } from '../SegmentedControl'
 import { AddWallet } from '../../assets/icons'
 
@@ -28,26 +29,54 @@ export const ManageWalletsView: ViewComponent = ({ onBack, onModalClose }) => {
   const config = useConfig();
   const [selectedNamespace, setSelectedNamespace] = useState<ChainType>(chainType)
 
-  const { address: currentAddress, allAccounts, selectAccount } = useAccount({ namespace: selectedNamespace });
+  const showNamespaceToggle = !!config?.substrate && !!config?.evm;
 
   const { open: openConnectModal } = useConnectModal();
 
-  const _selectAccount = useCallback(
+  const handleSelectAccount = useCallback(
     (acc: AccountType) => {
-      selectAccount?.(acc);
       onBack();
     },
-    [onBack, selectAccount]
+    [onBack]
   );
 
-  const handleAddWallet = useCallback(() => {
+  const handleAddWallet = useCallback((namespace: ChainType) => {
     onModalClose();
-    openConnectModal?.(selectedNamespace);
-  }, [onModalClose, openConnectModal, selectedNamespace]);
+    openConnectModal?.(namespace);
+  }, [onModalClose, openConnectModal]);
+
+  const items = useMemo(() => {
+    const result = [];
+    if (config?.substrate) {
+      result.push({
+        value: ChainType.SUBSTRATE,
+        content: (
+          <NamespaceAccountList
+            namespace={ChainType.SUBSTRATE}
+            onSelectAccount={handleSelectAccount}
+            onAddWallet={() => handleAddWallet(ChainType.SUBSTRATE)}
+          />
+        ),
+      });
+    }
+    if (config?.evm) {
+      result.push({
+        value: ChainType.EVM,
+        content: (
+          <NamespaceAccountList
+            namespace={ChainType.EVM}
+            onSelectAccount={handleSelectAccount}
+            onAddWallet={() => handleAddWallet(ChainType.EVM)}
+          />
+        ),
+      });
+    }
+    return result;
+  }, [config?.substrate, config?.evm, handleSelectAccount, handleAddWallet]);
 
   return (
-    <div className="luno:flex luno:flex-col luno:gap-1.5 luno:overflow-auto luno:max-h-[400px] luno:no-scrollbar luno:p-4 luno:pt-0">
-      {config?.evm && (
+    <div className="luno:flex luno:flex-col luno:gap-3.5 luno:p-4 luno:pt-0">
+      {showNamespaceToggle && (
         <SegmentedControl
           items={[
             { value: ChainType.SUBSTRATE, label: 'Polkadot' },
@@ -55,40 +84,81 @@ export const ManageWalletsView: ViewComponent = ({ onBack, onModalClose }) => {
           ]}
           value={selectedNamespace}
           onChange={(v) => setSelectedNamespace(v as ChainType)}
-          className={'luno:mb-3'}
         />
       )}
-      {allAccounts.length > 0 ? (
-        allAccounts.map((acc) => (
-          <AccountItem
-            key={acc.address}
-            account={acc}
-            isSelected={acc.address === currentAddress}
-            selectAccount={_selectAccount}
-            namespace={selectedNamespace}
-          />
-        ))
-      ) : (
-        <button
-          type="button"
-          onClick={handleAddWallet}
-          className={cs(
-            'luno:px-3 luno:py-4 luno:w-full luno:rounded-accountSelectItem luno:border-none',
-            'luno:bg-accountSelectItemBackground',
-            'luno:text-left luno:cursor-pointer luno:flex luno:items-center luno:gap-2',
-            'luno:font-medium luno:text-sm luno:leading-sm luno:text-accountSelectItemText',
-            'luno:hover:bg-accountSelectItemBackgroundHover luno:transition-colors luno:duration-200'
-          )}
-        >
-          <AddWallet width={'16px'} height={'16px'} />
-          {selectedNamespace === ChainType.SUBSTRATE ? 'Add Polkadot Wallet' : 'Add EVM Wallet'}
-        </button>
-      )}
+
+      <FadeSwitch
+        activeValue={selectedNamespace}
+        items={items}
+        animate={showNamespaceToggle}
+        height="360px"
+      />
     </div>
   );
 };
 
 ManageWalletsView.title = 'Manage Wallets';
+
+interface NamespaceAccountListProps {
+  namespace: ChainType;
+  onSelectAccount: (acc: AccountType) => void;
+  onAddWallet: () => void;
+}
+
+const NamespaceAccountList: React.FC<NamespaceAccountListProps> = ({
+  namespace,
+  onSelectAccount,
+  onAddWallet,
+}) => {
+  const { address: currentAddress, allAccounts, selectAccount } = useAccount({ namespace });
+
+  const handleSelect = useCallback(
+    (acc: AccountType) => {
+      selectAccount?.(acc);
+      onSelectAccount(acc);
+    },
+    [selectAccount, onSelectAccount]
+  );
+
+  if (allAccounts.length > 0) {
+    return (
+      <div className="luno:flex luno:flex-col luno:gap-1.5 luno:overflow-y-auto luno:max-h-[360px]">
+        {allAccounts.map((acc) => {
+          const isSelected = namespace === ChainType.SUBSTRATE
+            ? Substrate.isSameAddress(acc.address, currentAddress!)
+            : acc.address.toLowerCase() === currentAddress?.toLowerCase();
+
+          return (
+            <AccountItem
+              key={acc.address}
+              account={acc}
+              isSelected={isSelected}
+              selectAccount={handleSelect}
+              namespace={namespace}
+            />
+          );
+        })}
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onAddWallet}
+      className={cs(
+        'luno:px-3 luno:py-4 luno:w-full luno:rounded-accountSelectItem luno:border-none',
+        'luno:bg-accountSelectItemBackground',
+        'luno:text-left luno:cursor-pointer luno:flex luno:items-center luno:gap-2',
+        'luno:font-medium luno:text-sm luno:leading-sm luno:text-accountSelectItemText',
+        'luno:hover:bg-accountSelectItemBackgroundHover luno:transition-colors luno:duration-200'
+      )}
+    >
+      <AddWallet width={'16px'} height={'16px'} />
+      {namespace === ChainType.SUBSTRATE ? 'Add Polkadot Wallet' : 'Add EVM Wallet'}
+    </button>
+  );
+};
 
 interface AccountItemProps {
   isSelected: boolean;

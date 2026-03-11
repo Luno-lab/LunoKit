@@ -59,7 +59,7 @@ export const NamespaceChainList: React.FC<NamespaceChainListProps> = ({
       </div>
 
       {filteredChains.length > 0 && (
-        <div className="luno:flex luno:flex-col luno:gap-1.5 luno:overflow-y-auto luno:max-h-[380px]">
+        <div className="luno:flex luno:flex-col luno:gap-1.5 luno:overflow-y-auto luno:max-h-[300px]">
           {filteredChains.map((chain) => {
             const isSwitchTarget = isPending && variables?.chainId === chain.id;
 
