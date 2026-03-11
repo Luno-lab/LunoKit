@@ -91,21 +91,19 @@ const EvmStateSync = () => {
         );
 
         if (resolvedConnector && connection && connection.status !== ConnectionStatus.Disconnected) {
-          const accounts: EvmAccount[] = (connection.addresses || []).map((addr: HexString) => ({
-            address: addr,
-            source: resolvedConnector.id,
-            name: resolvedConnector.name,
-            chainType: ChainType.EVM,
-          }));
-
-          const account = accounts.find(
-            (i) => i.address.toLowerCase() === connection.address?.toLowerCase()
-          );
+          const account: EvmAccount | undefined = connection.address
+            ? {
+                address: connection.address,
+                source: resolvedConnector.id,
+                name: resolvedConnector.name,
+                chainType: ChainType.EVM,
+              }
+            : undefined;
 
           setEvmState({
             status: connection.status as ConnectionStatus,
             account,
-            allAccounts: accounts,
+            allAccounts: account ? [account] : [],
             connector: resolvedConnector,
           });
         } else {

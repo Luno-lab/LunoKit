@@ -98,20 +98,20 @@ export abstract class EvmConnector extends BaseConnector<EvmSigner, EvmConnectOp
       });
 
       console.log('result', result);
-      const accounts: EvmAccount[] = result.accounts.map((address) => ({
-        address,
+      const account: EvmAccount = {
+        address: result.accounts[0],
         name: this.name,
         chainType: ChainType.EVM,
         source: this.id,
-      }));
+      };
 
-      this.accounts = accounts;
+      this.accounts = [account];
 
-      this.emit('connect', accounts);
+      this.emit('connect', [account]);
 
       this.startWatching();
 
-      return accounts;
+      return [account];
     } catch (error) {
       console.error(`Failed to connect to ${this.name}:`, error);
       throw error;
@@ -150,17 +150,18 @@ export abstract class EvmConnector extends BaseConnector<EvmSigner, EvmConnectOp
     this.unwatch = watchConnection(this.wagmiConfig, {
       onChange: (data) => {
         if (data.connector?.uid === this.wagmiConnector?.uid) {
-          const newAccounts: EvmAccount[] =
-            data.addresses?.map((addr) => ({
-              address: addr as HexString,
+          if (data.address) {
+            const newAccount: EvmAccount = {
+              address: data.address as HexString,
               name: this.name,
               source: this.id,
               chainType: ChainType.EVM,
-            })) || [];
+            };
 
-          if (JSON.stringify(this.accounts) !== JSON.stringify(newAccounts)) {
-            this.accounts = newAccounts;
-            this.emit('accountsChanged', newAccounts);
+            if (JSON.stringify(this.accounts) !== JSON.stringify([newAccount])) {
+              this.accounts = [newAccount];
+              this.emit('accountsChanged', [newAccount]);
+            }
           }
 
           if (data.status === 'disconnected') {

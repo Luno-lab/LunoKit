@@ -49,7 +49,7 @@ export const MainView: React.FC<MainViewProps> = ({ onViewChange, onModalClose }
               </span>
               {balance ? (
                 <span className={'luno:text-modalTextSecondary luno:text-xs luno:leading-xs'}>
-                  {balance.formattedTransferable || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
+                  {balance.formatted || '0.00'} {chain?.nativeCurrency?.symbol || 'DOT'}
                 </span>
               ) : (
                 <span className="luno:animate-pulse luno:rounded luno:w-[80px] luno:h-[16px] luno:bg-skeleton" />
