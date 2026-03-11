@@ -13,7 +13,8 @@ export const createApi = async ({ config, chainId }: CreateApiOptions): Promise<
     throw new Error('Substrate configuration is not provided.');
   }
 
-  const chainConfig = config.chains.find((c: SubstrateChain) => c.genesisHash === chainId);
+  const chainConfig = config.chains.find((c: SubstrateChain) => c.id === chainId);
+
   const transportConfig = config.transports[chainId];
 
   if (!chainConfig || !transportConfig) {

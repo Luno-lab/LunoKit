@@ -183,7 +183,7 @@ const SubstrateStateSync = () => {
     clearApiState();
     markApiInitialized();
 
-    createApi({ config, chainId: substrateChainId })
+    createApi({ config: config.substrate, chainId: substrateChainId })
       .then((api) => {
         _setApi(api);
         _setIsApiReady(true);
