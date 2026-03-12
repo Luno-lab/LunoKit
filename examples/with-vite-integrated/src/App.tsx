@@ -33,7 +33,7 @@ const App: React.FC = () => {
           </div>
           <h1>Luno Wallet Kit</h1>
           <p className="hero-subtitle">
-            The modern Polkadot wallet connection library for React applications
+            The modern wallet connection library for Substrate & EVM — built for React
           </p>
           <div className="hero-connect">
             <ConnectButton />
