@@ -102,20 +102,20 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 
   const connectOptionsItems = useMemo(() => {
     const result = [];
-    if (config?.substrate) {
+    if (config?.substrate && (!targetNamespace || targetNamespace === ChainType.SUBSTRATE)) {
       result.push({
         value: ChainType.SUBSTRATE,
         content: <ConnectOptions onConnect={handleConnect} showInstalledGroup={showInstalledGroup} namespace={ChainType.SUBSTRATE} />,
       });
     }
-    if (config?.evm) {
+    if (config?.evm && (!targetNamespace || targetNamespace === ChainType.EVM)) {
       result.push({
         value: ChainType.EVM,
         content: <ConnectOptions onConnect={handleConnect} showInstalledGroup={showInstalledGroup} namespace={ChainType.EVM} />,
       });
     }
     return result;
-  }, [config?.substrate, config?.evm, handleConnect, showInstalledGroup]);
+  }, [config?.substrate, config?.evm, handleConnect, showInstalledGroup, targetNamespace]);
 
   const viewComponents = useMemo(() => {
     return {
