@@ -144,6 +144,11 @@ const lunoConfig = createConfig({
     chains: [mainnet, sepolia],
     connectors: [
       Evm.metamaskConnector(),
+      Evm.okxConnector,
+      Evm.phatomConnector,
+      Evm.baseConnector,
+      Evm.subwalletConnector,
+      Evm.talismanConnector,
       // Evm.walletConnectConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID, showQrModal: false,})
     ]
   }

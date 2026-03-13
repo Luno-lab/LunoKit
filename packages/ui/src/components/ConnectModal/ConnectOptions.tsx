@@ -11,12 +11,18 @@ interface Props {
 }
 
 const popularConnectorIds = [
+  // substrate
   'polkadot-js',
   'subwallet-js',
   'talisman',
   'walletconnect',
   'nova',
   'nova-mobile',
+
+  // evm
+  'phatom',
+  'okxwallet',
+  'base'
 ];
 
 export const ConnectOptions = React.memo(({ onConnect, showInstalledGroup, namespace }: Props) => {
