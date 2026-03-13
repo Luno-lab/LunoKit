@@ -1,5 +1,5 @@
 import { ChainType, type NativeBalance, type Optional, type HexString } from '@luno-kit/core/types';
-import { Substrate } from '@luno-kit/core/utils';
+import { Substrate, Evm } from '@luno-kit/core/utils';
 import { getBalance as getEvmBalance } from 'wagmi/actions';
 import type { LegacyClient } from 'dedot';
 import { isEvmAddress } from 'dedot/utils';
@@ -127,7 +127,7 @@ export function useBalance(
       });
       return {
         value: result.value,
-        formatted: formatUnits(result.value, result.decimals),
+        formatted: Evm.truncateDecimals(formatUnits(result.value, result.decimals)),
         symbol: result.symbol,
         decimals: result.decimals,
       } satisfies NativeBalance;
