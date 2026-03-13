@@ -4,3 +4,4 @@ export { injectedConnector } from './injected';
 export { metamaskConnector } from './metamask';
 export { SafeConnector } from './safe';
 export { WalletConnectConnector, walletConnectConnector } from './walletconnect';
+export { okxConnector, phatomConnector, baseConnector, subwalletConnector, talismanConnector } from './others'
