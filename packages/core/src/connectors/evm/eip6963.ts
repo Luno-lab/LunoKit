@@ -1,3 +1,5 @@
+import type { EIP1193Provider } from 'viem';
+
 interface EIP6963ProviderInfo {
   rdns: string;
   uuid: string;
@@ -7,7 +9,7 @@ interface EIP6963ProviderInfo {
 
 interface EIP6963ProviderDetail {
   info: EIP6963ProviderInfo;
-  provider: unknown;
+  provider: EIP1193Provider;
 }
 
 const announcedProviders: EIP6963ProviderDetail[] = [];
@@ -29,4 +31,13 @@ export function isProviderInstalled(rdns: string): boolean {
 
 export function getAnnouncedProviders(): ReadonlyArray<EIP6963ProviderDetail> {
   return [...announcedProviders];
+}
+
+export function createEip6963Target(rdns: string | undefined, id: string, name: string) {
+  if (!rdns) return undefined;
+  return () => {
+    const announced = announcedProviders.find((p) => p.info.rdns === rdns);
+    if (!announced) return undefined;
+    return { id, name, provider: announced.provider };
+  };
 }

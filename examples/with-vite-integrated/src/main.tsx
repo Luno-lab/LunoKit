@@ -154,7 +154,6 @@ const lunoConfig = createConfig({
   }
 });
 
-console.log('lunoConfig', lunoConfig)
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
