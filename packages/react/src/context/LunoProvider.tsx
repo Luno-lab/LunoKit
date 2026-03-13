@@ -109,8 +109,8 @@ const EvmStateSync = () => {
         } else {
           setEvmState({
             status: ConnectionStatus.Disconnected,
-            chainId: undefined,
-            chain: undefined,
+            // chainId: undefined,
+            // chain: undefined,
             account: undefined,
             allAccounts: [],
             connector: undefined,
