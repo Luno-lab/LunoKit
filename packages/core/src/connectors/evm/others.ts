@@ -1,4 +1,4 @@
-import {baseEvmWallet, talismanEvmWallet, subwalletEvmWallet, phatomEvmWallet, okxEvmWallet} from '../../config/logos/generated'
+import {baseEvmWallet, coinbaseEvmWallet, talismanEvmWallet, subwalletEvmWallet, phatomEvmWallet, okxEvmWallet} from '../../config/logos/generated'
 import {injectedConnector} from './injected'
 
 export const baseConnector = injectedConnector({
@@ -39,4 +39,12 @@ export const okxConnector = injectedConnector({
   icon: okxEvmWallet,
   links: {},
   rdns: 'com.okex.wallet',
+})
+
+export const coinbaseConnector = injectedConnector({
+  id: 'coinbase',
+  name: 'Coinbase',
+  icon: coinbaseEvmWallet,
+  links: {},
+  rdns: 'com.coinbase.wallet',
 })

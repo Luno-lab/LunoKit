@@ -13,6 +13,7 @@ export { baseEvmChain } from './baseEvmChain.js';
 export { baseEvmWallet } from './baseEvmWallet.js';
 export { bridgehubChain } from './bridgehubChain.js';
 export { bscEvmChain } from './bscEvmChain.js';
+export { coinbaseEvmWallet } from './coinbaseEvmWallet.js';
 export { collectivesChain } from './collectivesChain.js';
 export { coretimeChain } from './coretimeChain.js';
 export { coretimeKusamaChain } from './coretimeKusamaChain.js';
