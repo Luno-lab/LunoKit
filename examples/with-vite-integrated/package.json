@@ -13,6 +13,8 @@
     "@luno-kit/react": "workspace:*",
     "@luno-kit/ui": "workspace:*",
     "@metamask/sdk": "catalog:",
+    "@safe-global/safe-apps-provider": "~0.18.6",
+    "@safe-global/safe-apps-sdk": "^9.1.0",
     "@tanstack/react-query": "catalog:",
     "@walletconnect/ethereum-provider": "catalog:",
     "react": "catalog:",

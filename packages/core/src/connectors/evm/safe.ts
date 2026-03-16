@@ -1,5 +1,5 @@
 import { type SafeParameters, safe } from '@wagmi/connectors';
-import { safeEvmWallet } from '../../config/logos/generated/safeEvmWallet';
+import { safeEvmWallet } from '../../config/logos/generated';
 import { EvmConnector, type EvmConnectorOptions } from './connector';
 
 export class SafeConnector extends EvmConnector {
@@ -16,7 +16,7 @@ export class SafeConnector extends EvmConnector {
   }
 }
 
-export const safeConnector = (options: SafeParameters) => {
+export const safeConnector = (options: Optional<SafeParameters> = {}) => {
   return new SafeConnector({
     id: 'safe',
     name: 'Safe',
