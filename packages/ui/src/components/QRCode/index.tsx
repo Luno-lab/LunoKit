@@ -158,5 +158,5 @@ export const QRCode = ({ logoBackground, uri, size }: Props) => {
       </div>
     );
   }
-  return <Cuer arena={logoBackground} value={uri} />;
+  return <Cuer arena={logoBackground} value={uri} size={size} />;
 };

@@ -150,7 +150,7 @@ const lunoConfig = createConfig({
       // Evm.baseConnector,
       Evm.subwalletConnector,
       Evm.talismanConnector,
-      // Evm.walletConnectConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID, showQrModal: false,})
+      Evm.walletConnectConnector({ projectId: import.meta.env.VITE_WALLET_CONNECT_ID, showQrModal: false,})
     ]
   }
 });
