@@ -16,7 +16,7 @@ export class SafeConnector extends EvmConnector {
   }
 }
 
-export const safeConnector = (options: Optional<SafeParameters> = {}) => {
+export const safeConnector = (options?: Optional<SafeParameters>) => {
   return new SafeConnector({
     id: 'safe',
     name: 'Safe',
