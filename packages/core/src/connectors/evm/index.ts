@@ -1,7 +1,12 @@
-export { EvmConnector } from './connector';
-export { InjectConnector } from './inject';
-export { injectedConnector } from './injected';
-export { metamaskConnector } from './metamask';
-export { safeConnector } from './safe';
-export { WalletConnectConnector, walletConnectConnector } from './walletconnect';
-export { okxConnector, phatomConnector, baseConnector, subwalletConnector, talismanConnector, coinbaseConnector } from './others'
+export { EvmConnector } from './base/connector';
+export { InjectConnector } from './base/inject';
+export { injectedConnector } from './base/injected';
+export { metamaskConnector } from './wallets/metamask';
+export { safeConnector } from './wallets/safe';
+export { WalletConnectConnector, walletConnectConnector } from './wallets/walletconnect';
+export { baseConnector } from './wallets/base-wallet';
+export { talismanConnector } from './wallets/talisman';
+export { subwalletConnector } from './wallets/subwallet';
+export { phatomConnector } from './wallets/phantom';
+export { okxConnector } from './wallets/okx';
+export { coinbaseConnector } from './wallets/coinbase';

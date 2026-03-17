@@ -1,0 +1,15 @@
+import { subwalletSubstrateWallet } from '../../../config/logos/generated';
+import { InjectConnector } from '../base/inject';
+
+export const subwalletConnector = () => {
+  return new InjectConnector({
+    id: 'subwallet-js',
+    name: 'SubWallet',
+    icon: subwalletSubstrateWallet,
+    links: {
+      browserExtension:
+        'https://chromewebstore.google.com/detail/subwallet-polkadot-wallet/onhogfjeacnfoofkfgppdlbmlmnplgbn',
+      deepLink: 'https://mobile.subwallet.app/browser',
+    },
+  });
+};
