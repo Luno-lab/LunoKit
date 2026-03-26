@@ -1,8 +1,20 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Account, SubstrateSigner } from '../types';
 import { BaseConnector } from './base';
 
-class TestConnector extends BaseConnector {
+interface MockAccount {
+  address: string;
+  name?: string;
+}
+
+interface MockSigner {
+  sign: (payload: string) => string;
+}
+
+interface MockConnectOptions {
+  appName: string;
+}
+
+class TestConnector extends BaseConnector<MockSigner, MockConnectOptions, MockAccount> {
   readonly id = 'test-connector';
   readonly name = 'Test Connector';
   readonly icon = 'test-icon.svg';
@@ -15,14 +27,12 @@ class TestConnector extends BaseConnector {
     return true;
   }
 
-  async connect(appName: string): Promise<Account[]> {
-    const testAccounts: Account[] = [
-      { address: '1FRMM8PEiWXYax7rpS6X4XZX1aAAxSWx1CrKTyrVYhV24fg', name: 'Test Account' },
-    ];
-    this.accounts = testAccounts;
-    this.signer = {} as SubstrateSigner;
-    this.emit('connect', [...testAccounts]);
-    return testAccounts;
+  async connect(_options: MockConnectOptions): Promise<MockAccount[]> {
+    const accounts: MockAccount[] = [{ address: '0xabc123', name: 'Test Account' }];
+    this.accounts = accounts;
+    this.signer = { sign: (p: string) => `signed:${p}` };
+    this.emit('connect', [...accounts]);
+    return accounts;
   }
 
   async disconnect(): Promise<void> {
@@ -36,16 +46,12 @@ class TestConnector extends BaseConnector {
     return `signed:${message}:${address}`;
   }
 
-  setConnectionUri(uri: string) {
+  exposeSetConnectionUri(uri: string) {
     this.connectionUri = uri;
   }
 
-  hasConnectionUri(): boolean {
+  override hasConnectionUri(): boolean {
     return this.connectionUri !== undefined;
-  }
-
-  async updateAccountsForChain(chainId: string): Promise<Account[]> {
-    return [...this.accounts];
   }
 }
 
@@ -63,6 +69,10 @@ describe('BaseConnector', () => {
       expect(connector.icon).toBe('test-icon.svg');
     });
 
+    it('should have default empty links', () => {
+      expect(connector.links).toEqual({});
+    });
+
     it('should extend EventEmitter', () => {
       expect(connector.on).toBeDefined();
       expect(connector.emit).toBeDefined();
@@ -77,15 +87,15 @@ describe('BaseConnector', () => {
     });
 
     it('should return accounts after connection', async () => {
-      await connector.connect('test-app');
+      await connector.connect({ appName: 'test-app' });
       const accounts = await connector.getAccounts();
 
       expect(accounts).toHaveLength(1);
-      expect(accounts[0].address).toBe('1FRMM8PEiWXYax7rpS6X4XZX1aAAxSWx1CrKTyrVYhV24fg');
+      expect(accounts[0].address).toBe('0xabc123');
     });
 
-    it('should return copied array of accounts', async () => {
-      await connector.connect('test-app');
+    it('should return a copy of accounts array', async () => {
+      await connector.connect({ appName: 'test-app' });
       const accounts1 = await connector.getAccounts();
       const accounts2 = await connector.getAccounts();
 
@@ -93,23 +103,25 @@ describe('BaseConnector', () => {
       expect(accounts1).not.toBe(accounts2);
     });
 
-    it('should handle multiple connect calls gracefully', async () => {
-      await connector.connect('test-app');
-      const accounts1 = await connector.getAccounts();
+    it('should clear accounts after disconnect', async () => {
+      await connector.connect({ appName: 'test-app' });
+      await connector.disconnect();
 
-      const accounts2 = await connector.connect('test-app');
-      expect(accounts2).toEqual(accounts1);
+      expect(await connector.getAccounts()).toEqual([]);
     });
   });
 
   describe('signer management', () => {
     it('should start with undefined signer', async () => {
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
       const signer = await connector.getSigner();
+
       expect(signer).toBeUndefined();
+      consoleSpy.mockRestore();
     });
 
     it('should return signer after connection', async () => {
-      await connector.connect('test-app');
+      await connector.connect({ appName: 'test-app' });
       const signer = await connector.getSigner();
 
       expect(signer).toBeDefined();
@@ -123,77 +135,64 @@ describe('BaseConnector', () => {
       expect(consoleSpy).toHaveBeenCalledWith(
         'Connector test-connector: Signer not available. Connection might be incomplete or failed.'
       );
-
       consoleSpy.mockRestore();
     });
   });
 
-  describe('connection URI management', () => {
-    it('should start with undefined connectionUri', async () => {
-      const uri = await connector.getConnectionUri();
-      expect(uri).toBeUndefined();
-    });
-
+  describe('connection URI', () => {
     it('should return false for hasConnectionUri by default', () => {
       expect(connector.hasConnectionUri()).toBe(false);
     });
 
-    it('should return connectionUri when set', async () => {
-      const testUri = 'wc:test-connection-uri@1';
-      connector.setConnectionUri(testUri);
+    it('should return undefined connectionUri initially', async () => {
+      expect(await connector.getConnectionUri()).toBeUndefined();
+    });
 
-      const uri = await connector.getConnectionUri();
-      expect(uri).toBe(testUri);
+    it('should return connectionUri when set', async () => {
+      connector.exposeSetConnectionUri('wc:test-uri@1');
+
+      expect(await connector.getConnectionUri()).toBe('wc:test-uri@1');
       expect(connector.hasConnectionUri()).toBe(true);
     });
 
     it('should reset connectionUri after disconnect', async () => {
-      connector.setConnectionUri('wc:test@1');
-      await connector.connect('test-app');
+      connector.exposeSetConnectionUri('wc:test@1');
+      await connector.connect({ appName: 'test-app' });
       await connector.disconnect();
 
-      const uri = await connector.getConnectionUri();
-      expect(uri).toBeUndefined();
+      expect(await connector.getConnectionUri()).toBeUndefined();
       expect(connector.hasConnectionUri()).toBe(false);
     });
   });
 
-  describe('chain-specific account management', () => {
-    it('should return current accounts by default for updateAccountsForChain', async () => {
-      await connector.connect('test-app');
-      const originalAccounts = await connector.getAccounts();
-
-      const chainAccounts = await connector.updateAccountsForChain('polkadot:test-chain-id');
-
-      expect(chainAccounts).toEqual(originalAccounts);
-    });
-
-    it('should handle updateAccountsForChain when not connected', async () => {
-      const chainAccounts = await connector.updateAccountsForChain('polkadot:test-chain-id');
-      expect(chainAccounts).toEqual([]);
-    });
-  });
-
   describe('events', () => {
-    it('should emit connect event', async () => {
+    it('should emit connect event with accounts', async () => {
       const connectSpy = vi.fn();
       connector.on('connect', connectSpy);
 
-      await connector.connect('test-app');
+      await connector.connect({ appName: 'test-app' });
 
-      expect(connectSpy).toHaveBeenCalledWith([
-        { address: '1FRMM8PEiWXYax7rpS6X4XZX1aAAxSWx1CrKTyrVYhV24fg', name: 'Test Account' },
-      ]);
+      expect(connectSpy).toHaveBeenCalledWith([{ address: '0xabc123', name: 'Test Account' }]);
     });
 
     it('should emit disconnect event', async () => {
       const disconnectSpy = vi.fn();
       connector.on('disconnect', disconnectSpy);
 
-      await connector.connect('test-app');
+      await connector.connect({ appName: 'test-app' });
       await connector.disconnect();
 
       expect(disconnectSpy).toHaveBeenCalled();
+    });
+
+    it('should support removing event listeners', async () => {
+      const spy = vi.fn();
+      connector.on('connect', spy);
+      connector.off('connect', spy);
+
+      await connector.connect({ appName: 'test-app' });
+
+      expect(spy).not.toHaveBeenCalled();
     });
   });
 });

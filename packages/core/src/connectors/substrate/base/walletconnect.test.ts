@@ -1,12 +1,12 @@
 import { describe } from 'vitest';
 import { walletconnectSubstrateWallet } from '../../../config/logos/generated';
 import { createWalletConnectTestSuite } from '../test-helper';
-import { walletConnectConnector } from './walletconnect';
+import { WalletConnectConnector } from './walletconnect';
 
 describe(
   'WalletConnectConnector',
   createWalletConnectTestSuite({
-    getConnector: walletConnectConnector,
+    getConnector: (options) => new WalletConnectConnector(options),
     expected: {
       id: 'walletconnect',
       name: 'WalletConnect',

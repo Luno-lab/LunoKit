@@ -1,10 +1,10 @@
 export { EvmConnector } from './base/connector';
 export { InjectConnector } from './base/inject';
-export { injectedConnector } from './base/injected';
+export { WalletConnectConnector } from './base/walletconnect';
+export { injectedConnector } from './wallets/injected';
 export { metamaskConnector } from './wallets/metamask';
 export { safeConnector } from './wallets/safe';
-export { WalletConnectConnector, walletConnectConnector } from './wallets/walletconnect';
-export { baseConnector } from './wallets/base-wallet';
+export { walletConnectConnector } from './wallets/walletconnect';
 export { talismanConnector } from './wallets/talisman';
 export { subwalletConnector } from './wallets/subwallet';
 export { phatomConnector } from './wallets/phantom';

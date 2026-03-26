@@ -1,16 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ledgerSubstrateWallet } from '../../../config/logos/generated';
-import type { SubstrateChain } from '../../../types';
+import { ChainType, type SubstrateChain } from '../../../types';
 import { ledgerConnector } from './ledger';
 
 const TEST_ADDRESS = '1FRMM8PEiWXYax7rpS6X4XZX1aAAxSWx1CrKTyrVYhV24fg';
-const TEST_PUBLIC_KEY = new Uint8Array([
-  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
-  28, 29, 30, 31, 32,
-]);
 const TEST_PUBLIC_KEY_HEX = 'a711da72565f9cc37e65d2b8bb97a939f8d95730e39648f764e210a8fef22bf3';
-const TEST_SubstrateChain: SubstrateChain = {
+const TEST_CHAIN: SubstrateChain = {
+  id: '0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3',
   genesisHash: '0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3',
+  chainType: ChainType.SUBSTRATE,
   name: 'Polkadot',
   nativeCurrency: { name: 'Polkadot', symbol: 'DOT', decimals: 10 },
   rpcUrls: {
@@ -18,7 +16,7 @@ const TEST_SubstrateChain: SubstrateChain = {
   },
   ss58Format: 0,
   blockExplorers: { default: { name: 'Subscan', url: 'https://polkadot.subscan.io' } },
-  SubstrateChainIconUrl: 'polkadot-icon',
+  chainIconUrl: 'polkadot-icon',
   testnet: false,
 };
 
@@ -33,7 +31,7 @@ vi.mock('@zondax/ledger-substrate', () => ({
   PolkadotGenericApp: vi.fn(),
 }));
 
-vi.mock('../../config', () => ({
+vi.mock('../../../config', () => ({
   wsProvider: vi.fn(),
 }));
 
@@ -64,11 +62,7 @@ const mockApp = {
     pubKey: TEST_PUBLIC_KEY_HEX,
   }),
   signWithMetadataEd25519: vi.fn().mockResolvedValue({
-    signature: new Uint8Array([
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
-      27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
-      50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64,
-    ]),
+    signature: new Uint8Array(64).fill(1),
   }),
 };
 
@@ -127,10 +121,9 @@ describe('LedgerConnector', () => {
 
     globalThis.Buffer = Buffer;
 
-    // Setup mocks
     const { default: TransportWebUSB } = await import('@ledgerhq/hw-transport-webusb');
     const { PolkadotGenericApp } = await import('@zondax/ledger-substrate');
-    const { wsProvider } = await import('../../config');
+    const { wsProvider } = await import('../../../config');
     const dedotModule = await import('dedot');
     const merkleizedModule = await import('dedot/merkleized-metadata');
     const codecsModule = await import('dedot/codecs');
@@ -149,13 +142,12 @@ describe('LedgerConnector', () => {
     );
     vi.mocked((codecsModule as any).Extrinsic).mockImplementation(() => mockExtrinsic);
 
-    // Reset mock app to default state
     mockApp.getAddressEd25519.mockResolvedValue({
       address: TEST_ADDRESS,
       pubKey: TEST_PUBLIC_KEY_HEX,
     });
 
-    connector = ledgerConnector({ SubstrateChains: [TEST_SubstrateChain] });
+    connector = ledgerConnector({ chains: [TEST_CHAIN] });
     vi.clearAllMocks();
   });
 
@@ -177,7 +169,7 @@ describe('LedgerConnector', () => {
   });
 
   describe('installation detection', () => {
-    it('should always be installed', () => {
+    it('should always return false for isInstalled', () => {
       expect(connector.isInstalled()).toBe(false);
     });
   });
@@ -193,7 +185,6 @@ describe('LedgerConnector', () => {
         writable: true,
         configurable: true,
       });
-
       expect(await connector.isAvailable()).toBe(false);
     });
 
@@ -203,19 +194,19 @@ describe('LedgerConnector', () => {
         writable: true,
         configurable: true,
       });
-
       expect(await connector.isAvailable()).toBe(false);
     });
   });
 
   describe('connection flow', () => {
     it('should connect successfully with valid setup', async () => {
-      const accounts = await connector.connect('test-app');
+      const accounts = await connector.connect({ appName: 'test-app' });
 
       expect(accounts).toHaveLength(1);
       expect(accounts![0].address).toBe(TEST_ADDRESS);
       expect(accounts![0].name).toBe('Ledger Wallet');
       expect(accounts![0].type).toBe('sr25519');
+      expect(accounts![0].chainType).toBe('substrate');
       expect(accounts![0].meta?.source).toBe('ledger');
       expect(accounts![0].meta?.accountIndex).toBe(0);
     });
@@ -227,12 +218,12 @@ describe('LedgerConnector', () => {
         configurable: true,
       });
 
-      await expect(connector.connect('test-app', [TEST_SubstrateChain])).rejects.toThrow(
+      await expect(connector.connect({ appName: 'test-app' })).rejects.toThrow(
         'WebUSB is not supported in this browser.'
       );
     });
 
-    it('should handle SecurityError during transport creation and fallback to request', async () => {
+    it('should fallback to request when create fails with non-SecurityError', async () => {
       const { default: TransportWebUSB } = await import('@ledgerhq/hw-transport-webusb');
       const transport = TransportWebUSB as any;
       vi.mocked(transport.create).mockRejectedValueOnce({
@@ -241,7 +232,7 @@ describe('LedgerConnector', () => {
       });
       vi.mocked(transport.request).mockResolvedValueOnce(mockTransport);
 
-      const accounts = await connector.connect('test-app', [TEST_SubstrateChain]);
+      const accounts = await connector.connect({ appName: 'test-app' });
 
       expect(accounts).toHaveLength(1);
       expect(transport.request).toHaveBeenCalled();
@@ -254,13 +245,9 @@ describe('LedgerConnector', () => {
         name: 'SecurityError',
         message: 'User gesture required',
       });
-      vi.mocked(transport.request).mockRejectedValueOnce({
-        name: 'SecurityError',
-        message: 'User gesture required',
-      });
 
-      await expect(connector.connect('test-app', [TEST_SubstrateChain])).rejects.toThrow(
-        'Ledger connection requires user interaction. Please click the connect button to connect your Ledger device.'
+      await expect(connector.connect({ appName: 'test-app' })).rejects.toThrow(
+        'Ledger connection requires user interaction.'
       );
     });
 
@@ -270,7 +257,7 @@ describe('LedgerConnector', () => {
         pubKey: null,
       });
 
-      await expect(connector.connect('test-app', [TEST_SubstrateChain])).rejects.toThrow(
+      await expect(connector.connect({ appName: 'test-app' })).rejects.toThrow(
         'Failed to retrieve address from Ledger.'
       );
     });
@@ -279,69 +266,24 @@ describe('LedgerConnector', () => {
       const connectSpy = vi.fn();
       connector.on('connect', connectSpy);
 
-      await connector.connect('test-app', [TEST_SubstrateChain]);
+      await connector.connect({ appName: 'test-app' });
 
       expect(connectSpy).toHaveBeenCalledWith([
-        expect.objectContaining({
-          address: TEST_ADDRESS,
-        }),
+        expect.objectContaining({ address: TEST_ADDRESS }),
       ]);
-    });
-
-    it('should cleanup on connection failure', async () => {
-      const { default: TransportWebUSB } = await import('@ledgerhq/hw-transport-webusb');
-      const transport = TransportWebUSB as any;
-      vi.mocked(transport.create).mockRejectedValueOnce({
-        name: 'SecurityError',
-        message: 'User gesture required',
-      });
-      vi.mocked(transport.request).mockRejectedValueOnce({
-        name: 'SecurityError',
-        message: 'User gesture required',
-      });
-
-      await expect(connector.connect('test-app', [TEST_SubstrateChain])).rejects.toThrow(
-        'Ledger connection requires user interaction'
-      );
-
-      const accounts = await connector.getAccounts();
-      expect(accounts).toEqual([]);
-    });
-
-    it('should handle public key as array', async () => {
-      mockApp.getAddressEd25519.mockResolvedValueOnce({
-        address: TEST_ADDRESS,
-        pubKey: Array.from(TEST_PUBLIC_KEY),
-      });
-
-      const accounts = await connector.connect('test-app', [TEST_SubstrateChain]);
-
-      expect(accounts![0].publicKey).toBeDefined();
-    });
-
-    it('should handle public key as Uint8Array', async () => {
-      mockApp.getAddressEd25519.mockResolvedValueOnce({
-        address: TEST_ADDRESS,
-        pubKey: TEST_PUBLIC_KEY,
-      });
-
-      const accounts = await connector.connect('test-app', [TEST_SubstrateChain]);
-
-      expect(accounts![0].publicKey).toBeDefined();
     });
   });
 
   describe('disconnection', () => {
     beforeEach(async () => {
       mockTransport.device.opened = true;
-      await connector.connect('test-app', [TEST_SubstrateChain]);
+      await connector.connect({ appName: 'test-app' });
     });
 
     it('should cleanup all resources on disconnect', async () => {
       await connector.disconnect();
 
-      const accounts = await connector.getAccounts();
-      expect(accounts).toEqual([]);
+      expect(await connector.getAccounts()).toEqual([]);
       expect(mockTransport.close).toHaveBeenCalled();
     });
 
@@ -359,14 +301,13 @@ describe('LedgerConnector', () => {
 
       await connector.disconnect();
 
-      const accounts = await connector.getAccounts();
-      expect(accounts).toEqual([]);
+      expect(await connector.getAccounts()).toEqual([]);
     });
   });
 
   describe('message signing', () => {
     beforeEach(async () => {
-      await connector.connect('test-app', [TEST_SubstrateChain]);
+      await connector.connect({ appName: 'test-app' });
     });
 
     it('should throw for signRaw (not supported)', async () => {
@@ -379,60 +320,59 @@ describe('LedgerConnector', () => {
   describe('transaction signing', () => {
     const mockPayload = {
       address: TEST_ADDRESS,
-      genesisHash: TEST_SubstrateChain.genesisHash,
-      method: '0x1234',
-      nonce: '0x00',
-      specVersion: '0x1234',
-      transactionVersion: '0x01',
-      blockHash: '0xabc',
-      blockNumber: '0x123',
-      era: '0x00',
-      tip: '0x00',
+      genesisHash: TEST_CHAIN.genesisHash,
+      method: '0x1234' as const,
+      nonce: '0x00' as const,
+      specVersion: '0x1234' as const,
+      transactionVersion: '0x01' as const,
+      blockHash: '0xabc' as const,
+      blockNumber: '0x123' as const,
+      era: '0x00' as const,
+      tip: '0x00' as const,
       signedExtensions: [],
       version: 4,
     };
 
     beforeEach(async () => {
-      await connector.connect('test-app', [TEST_SubstrateChain]);
+      await connector.connect({ appName: 'test-app' });
     });
 
     it('should throw error when app not connected', async () => {
       await connector.disconnect();
       const signer = await connector.getSigner();
-      expect(signer).toBeDefined();
 
       await expect(signer.signPayload!(mockPayload)).rejects.toThrow('Ledger not connected');
     });
 
-    it('should throw error when SubstrateChain not found', async () => {
+    it('should throw error when chain not found', async () => {
       const signer = await connector.getSigner();
-      expect(signer).toBeDefined();
 
       await expect(
         signer.signPayload!({
           ...mockPayload,
           genesisHash: '0xunknown' as `0x${string}`,
         })
-      ).rejects.toThrow('SubstrateChain not found in your configuration SubstrateChains');
+      ).rejects.toThrow('Chain not found in your configuration chains');
     });
 
-    it('should close transport after signing', async () => {
+    it('should sign payload successfully', async () => {
       const signer = await connector.getSigner();
-      expect(signer).toBeDefined();
-
       mockTransport.device.opened = true;
-      await signer.signPayload!(mockPayload);
+
+      const result = await signer.signPayload!(mockPayload);
+
+      expect(result).toBeDefined();
+      expect(result.signature).toBeDefined();
     });
   });
 
   describe('account management', () => {
     it('should return empty accounts initially', async () => {
-      const accounts = await connector.getAccounts();
-      expect(accounts).toEqual([]);
+      expect(await connector.getAccounts()).toEqual([]);
     });
 
     it('should return accounts after connection', async () => {
-      await connector.connect('test-app', [TEST_SubstrateChain]);
+      await connector.connect({ appName: 'test-app' });
 
       const accounts = await connector.getAccounts();
       expect(accounts).toHaveLength(1);

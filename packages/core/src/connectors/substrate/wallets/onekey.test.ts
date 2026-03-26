@@ -1,6 +1,6 @@
 import { describe } from 'vitest';
 import { onekeySubstrateWallet } from '../../../config/logos/generated';
-import { createConnectorTestSuite } from '../../test-helper';
+import { createConnectorTestSuite } from '../test-helper';
 import { onekeyConnector } from './onekey';
 
 describe(

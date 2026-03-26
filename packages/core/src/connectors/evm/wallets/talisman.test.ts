@@ -1,16 +1,17 @@
 import { describe } from 'vitest';
-import { talismanSubstrateWallet } from '../../../config/logos/generated';
-import { createConnectorTestSuite } from '../test-helper';
+import { talismanEvmWallet } from '../../../config/logos/generated';
+import { createEvmInjectedTestSuite } from '../test-helper';
 import { talismanConnector } from './talisman';
 
 describe(
   'talismanConnector',
-  createConnectorTestSuite({
+  createEvmInjectedTestSuite({
     getConnector: () => talismanConnector(),
     expected: {
       id: 'talisman',
       name: 'Talisman',
-      icon: talismanSubstrateWallet,
+      icon: talismanEvmWallet,
+      rdns: 'xyz.talisman',
     },
   })
 );

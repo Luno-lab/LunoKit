@@ -1,13 +1,13 @@
 import { type InjectedParameters, injected } from '@wagmi/connectors';
-import { type EvmInjectConnectorOptions, InjectConnector } from './inject';
-import { createEip6963Target } from './eip6963';
+import { type EvmInjectConnectorOptions, InjectConnector } from '../base/inject';
+import { createEip6963Target } from '../base/eip6963';
 
 export const injectedConnector = (
   options?: InjectedParameters & Omit<EvmInjectConnectorOptions, 'wagmiFactory'>,
 ) => {
   const { id: _id, name: _name, icon, links, rdns, ...wagmiOptions } = options ?? {};
   const id = _id || 'injected';
-  const name = _name || 'Injected Wallet';
+  const name = _name || 'Browser Wallet';
 
   return new InjectConnector({
     id,

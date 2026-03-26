@@ -1,5 +1,5 @@
 import {coinbaseEvmWallet} from '../../../config/logos/generated'
-import {injectedConnector} from '../base/injected'
+import {injectedConnector} from './injected'
 
 export const coinbaseConnector = () => injectedConnector({
   id: 'coinbase',

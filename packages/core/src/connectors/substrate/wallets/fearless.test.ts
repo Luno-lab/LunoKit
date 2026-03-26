@@ -1,6 +1,6 @@
 import { describe } from 'vitest';
 import { fearlessSubstrateWallet } from '../../../config/logos/generated';
-import { createConnectorTestSuite } from '../../test-helper';
+import { createConnectorTestSuite } from '../test-helper';
 import { fearlessConnector } from './fearless';
 
 describe(

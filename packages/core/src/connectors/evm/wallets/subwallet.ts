@@ -1,5 +1,5 @@
 import {subwalletEvmWallet} from '../../../config/logos/generated'
-import {injectedConnector} from '../base/injected'
+import {injectedConnector} from './injected'
 
 export const subwalletConnector = () => injectedConnector({
   id: 'subwallet',

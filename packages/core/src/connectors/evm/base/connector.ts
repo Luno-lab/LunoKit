@@ -81,7 +81,6 @@ export abstract class EvmConnector extends BaseConnector<EvmSigner, EvmConnectOp
       account: address,
       chainId,
     });
-    console.log('signersigner', signer);
 
     return signer as unknown as EvmSigner;
   }
@@ -97,7 +96,6 @@ export abstract class EvmConnector extends BaseConnector<EvmSigner, EvmConnectOp
         chainId: options?.chainId,
       });
 
-      console.log('result', result);
       const account: EvmAccount = {
         address: result.accounts[0],
         name: this.name,

@@ -1,7 +1,8 @@
+import { mainnet, sepolia } from '@wagmi/core/chains';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { kusama, polkadot } from '../chains';
-import { polkadotjsConnector, subwalletConnector } from '../connectors';
-import type { Chain, CreateConfigParameters, LunoStorage } from '../types';
+import { Evm, Substrate } from '../connectors';
+import type { CreateConfigParameters, SubstrateChain } from '../types';
 import { createConfig } from './createConfig';
 
 vi.mock('./createStorage', () => ({
@@ -13,389 +14,311 @@ vi.mock('./createStorage', () => ({
 }));
 
 vi.mock('../config/logos/generated', async (importOriginal) => {
-  const actual = await importOriginal();
+  const actual = (await importOriginal()) as Record<string, unknown>;
   return {
     ...actual,
   };
 });
 
 describe('createConfig', () => {
-  const mockConnectors = [polkadotjsConnector(), subwalletConnector()];
-
-  const mockChains = [polkadot, kusama];
-
-  const mockChainWithoutWs: Chain = {
-    genesisHash: '0x123456789abcdef',
-    name: 'Test Chain',
-    nativeCurrency: {
-      name: 'Test Token',
-      symbol: 'TEST',
-      decimals: 18,
-    },
-    rpcUrls: {
-      http: ['https://test-chain.rpc.com'],
-    },
-    ss58Format: 42,
-    blockExplorers: {
-      default: {
-        name: 'Test Explorer',
-        url: 'https://test-explorer.com',
-      },
-    },
-    chainIconUrl: 'data:image/svg+xml;base64,PHN2Zz48L3N2Zz4=',
-    testnet: true,
-  };
-
-  const mockStorage: LunoStorage = {
-    getItem: vi.fn(),
-    setItem: vi.fn(),
-    removeItem: vi.fn(),
-  };
-
   beforeEach(() => {
     vi.clearAllMocks();
     vi.spyOn(console, 'log').mockImplementation(() => {});
     vi.spyOn(console, 'warn').mockImplementation(() => {});
   });
 
-  describe('successful config creation', () => {
-    it('should create config with valid parameters', () => {
-      const params: CreateConfigParameters = {
-        chains: [polkadot],
-        connectors: [polkadotjsConnector()],
-      };
-
-      const config = createConfig(params);
-
-      expect(config).toEqual({
-        appName: 'My Luno App',
-        chains: [polkadot],
-        connectors: [
-          expect.objectContaining({
-            id: 'polkadot-js',
-            name: 'Polkadot{.js}',
-            icon: expect.any(String),
-          }),
-        ],
-        transports: {
-          [polkadot.genesisHash]: polkadot.rpcUrls.webSocket,
+  describe('top-level parameters', () => {
+    it('should use default values', () => {
+      const config = createConfig({
+        substrate: {
+          connectors: [Substrate.polkadotjsConnector()],
         },
-        storage: expect.any(Object),
-        autoConnect: true,
-        customRpc: undefined,
-        customTypes: undefined,
-        cacheMetadata: true,
-        metadata: undefined,
-        scaledResponses: undefined,
       });
-    });
 
-    it('should work with multiple real connectors and chains', () => {
-      const params: CreateConfigParameters = {
-        chains: mockChains,
-        connectors: mockConnectors,
-      };
-
-      const config = createConfig(params);
-
-      expect(config.chains).toHaveLength(2);
-      expect(config.connectors).toHaveLength(2);
-      expect(config.connectors[0].id).toBe('polkadot-js');
-      expect(config.connectors[1].id).toBe('subwallet-js');
-      expect(config.transports).toHaveProperty(polkadot.genesisHash);
-      expect(config.transports).toHaveProperty(kusama.genesisHash);
-    });
-
-    it('should use provided custom values', () => {
-      const params: CreateConfigParameters = {
-        appName: 'Custom App',
-        chains: [polkadot],
-        connectors: [polkadotjsConnector()],
-        storage: mockStorage,
-        autoConnect: false,
-        cacheMetadata: true,
-        metadata: { test: 'metadata' } as any,
-        scaledResponses: true,
-        customTypes: { TestType: {} as any },
-        customRpc: { testMethod: {} },
-      };
-
-      const config = createConfig(params);
-
-      expect(config.appName).toBe('Custom App');
-      expect(config.storage).toBe(mockStorage);
-      expect(config.autoConnect).toBe(false);
-      expect(config.cacheMetadata).toBe(true);
-      expect(config.metadata).toEqual({ test: 'metadata' });
-      expect(config.scaledResponses).toBe(true);
-      expect(config.customTypes).toEqual({ TestType: {} });
-      expect(config.customRpc).toEqual({ testMethod: {} });
-    });
-
-    it('should merge custom transports with generated ones', () => {
-      const customTransports = {
-        'custom-hash': 'wss://custom.endpoint.com',
-        [polkadot.genesisHash]: 'wss://override.endpoint.com',
-      };
-
-      const params: CreateConfigParameters = {
-        chains: [polkadot],
-        connectors: [polkadotjsConnector()],
-        transports: customTransports,
-      };
-
-      const config = createConfig(params);
-
-      expect(config.transports).toEqual({
-        [polkadot.genesisHash]: 'wss://override.endpoint.com',
-        'custom-hash': 'wss://custom.endpoint.com',
-      });
-    });
-  });
-
-  describe('parameter validation', () => {
-    it('should throw error when connectors array is empty', () => {
-      const params: CreateConfigParameters = {
-        chains: [polkadot],
-        connectors: [],
-      };
-
-      expect(() => createConfig(params)).toThrow(
-        'No connectors provided. Wallet connection features will be unavailable.'
-      );
-    });
-  });
-
-  describe('transport generation', () => {
-    it('should generate transports from chain WebSocket URLs', () => {
-      const params: CreateConfigParameters = {
-        chains: [polkadot],
-        connectors: [polkadotjsConnector()],
-      };
-
-      const config = createConfig(params);
-
-      expect(config.transports[polkadot.genesisHash]).toBe(polkadot.rpcUrls.webSocket);
-    });
-
-    it('should warn when chain has no WebSocket URL', () => {
-      const consoleSpy = vi.spyOn(console, 'warn');
-
-      const params: CreateConfigParameters = {
-        chains: [mockChainWithoutWs],
-        connectors: [polkadotjsConnector()],
-        transports: {
-          [mockChainWithoutWs.genesisHash]: 'wss://custom.endpoint.com',
-        },
-      };
-
-      createConfig(params);
-
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'No WebSocket URL found for chain "Test Chain" (0x123456789abcdef). Skipping transport generation.'
-      );
-    });
-
-    it('should handle multiple chains with mixed WebSocket availability', () => {
-      const chainWithWs = polkadot;
-      const chainWithoutWs = mockChainWithoutWs;
-
-      const params: CreateConfigParameters = {
-        chains: [chainWithWs, chainWithoutWs],
-        connectors: [polkadotjsConnector()],
-        transports: {
-          [chainWithoutWs.genesisHash]: 'wss://fallback.endpoint.com',
-        },
-      };
-
-      const config = createConfig(params);
-
-      expect(config.transports).toEqual({
-        [chainWithWs.genesisHash]: polkadot.rpcUrls.webSocket,
-        [chainWithoutWs.genesisHash]: 'wss://fallback.endpoint.com',
-      });
-    });
-  });
-
-  describe('empty chains handling', () => {
-    it('should create config with empty chains array', () => {
-      const params: CreateConfigParameters = {
-        chains: [],
-        connectors: [polkadotjsConnector()],
-      };
-
-      const config = createConfig(params);
-
-      expect(config.chains).toEqual([]);
-      expect(config.transports).toEqual({});
-    });
-
-    it('should create config with undefined chains', () => {
-      const params: CreateConfigParameters = {
-        connectors: [polkadotjsConnector()],
-      } as CreateConfigParameters;
-
-      const config = createConfig(params);
-
-      expect(config.chains).toEqual([]);
-      expect(config.transports).toEqual({});
-    });
-
-    it('should handle custom transports without chains', () => {
-      const customTransports = {
-        'custom-hash': 'wss://custom.endpoint.com',
-      };
-
-      const params: CreateConfigParameters = {
-        chains: [],
-        connectors: [polkadotjsConnector()],
-        transports: customTransports,
-      };
-
-      const config = createConfig(params);
-
-      expect(config.chains).toEqual([]);
-      expect(config.transports).toEqual(customTransports);
-    });
-  });
-
-  describe('immutability', () => {
-    it('should freeze chains array', () => {
-      const params: CreateConfigParameters = {
-        chains: [polkadot],
-        connectors: [polkadotjsConnector()],
-      };
-
-      const config = createConfig(params);
-
-      expect(Object.isFrozen(config.chains)).toBe(true);
-    });
-
-    it('should freeze connectors array', () => {
-      const params: CreateConfigParameters = {
-        chains: [polkadot],
-        connectors: [polkadotjsConnector()],
-      };
-
-      const config = createConfig(params);
-
-      expect(Object.isFrozen(config.connectors)).toBe(true);
-    });
-
-    it('should freeze transports object', () => {
-      const params: CreateConfigParameters = {
-        chains: [polkadot],
-        connectors: [polkadotjsConnector()],
-      };
-
-      const config = createConfig(params);
-
-      expect(Object.isFrozen(config.transports)).toBe(true);
-    });
-  });
-
-  describe('edge cases', () => {
-    it('should handle undefined optional parameters gracefully', () => {
-      const params: CreateConfigParameters = {
-        chains: [polkadot],
-        connectors: [polkadotjsConnector()],
-        customTypes: undefined,
-        customRpc: undefined,
-        cacheMetadata: undefined,
-        metadata: undefined,
-        scaledResponses: undefined,
-      };
-
-      const config = createConfig(params);
-
-      expect(config.customTypes).toBeUndefined();
-      expect(config.customRpc).toBeUndefined();
-      expect(config.cacheMetadata).toBe(true);
-      expect(config.metadata).toBeUndefined();
-      expect(config.scaledResponses).toBeUndefined();
-    });
-
-    it('should handle chains with testnet property', () => {
-      const params: CreateConfigParameters = {
-        chains: [mockChainWithoutWs],
-        connectors: [polkadotjsConnector()],
-        transports: {
-          [mockChainWithoutWs.genesisHash]: 'wss://testnet.endpoint.com',
-        },
-      };
-
-      const config = createConfig(params);
-
-      expect(config.chains[0].testnet).toBe(true);
-    });
-  });
-
-  describe('real-world scenarios', () => {
-    it('should work with typical production configuration', () => {
-      const params: CreateConfigParameters = {
-        appName: 'My dApp',
-        chains: [polkadot, kusama],
-        connectors: [polkadotjsConnector(), subwalletConnector()],
-        autoConnect: true,
-        cacheMetadata: true,
-      };
-
-      const config = createConfig(params);
-
-      expect(config.appName).toBe('My dApp');
-      expect(config.chains).toHaveLength(2);
-      expect(config.connectors).toHaveLength(2);
+      expect(config.appName).toBe('My Luno App');
       expect(config.autoConnect).toBe(true);
-      expect(config.cacheMetadata).toBe(true);
-      expect(Object.keys(config.transports)).toHaveLength(2);
+      expect(config.storage).toBeDefined();
     });
-  });
 
-  describe('default storage behavior', () => {
-    it('should use localStorage when available', () => {
-      const mockLocalStorage = {
+    it('should accept custom appName, autoConnect and storage', () => {
+      const mockStorage = {
         getItem: vi.fn(),
         setItem: vi.fn(),
         removeItem: vi.fn(),
       };
 
-      Object.defineProperty(globalThis, 'window', {
-        value: { localStorage: mockLocalStorage },
-        writable: true,
-        configurable: true,
+      const config = createConfig({
+        appName: 'Custom App',
+        autoConnect: false,
+        storage: mockStorage,
+        substrate: {
+          connectors: [Substrate.polkadotjsConnector()],
+        },
       });
 
-      const params: CreateConfigParameters = {
-        chains: [polkadot],
-        connectors: [polkadotjsConnector()],
-      };
-
-      const config = createConfig(params);
-
-      expect(config.storage).toBeDefined();
-      expect(config.storage).toHaveProperty('getItem');
-      expect(config.storage).toHaveProperty('setItem');
-      expect(config.storage).toHaveProperty('removeItem');
+      expect(config.appName).toBe('Custom App');
+      expect(config.autoConnect).toBe(false);
+      expect(config.storage).toBe(mockStorage);
     });
 
-    it('should use noopStorage when localStorage unavailable', () => {
-      Object.defineProperty(globalThis, 'window', {
-        value: undefined,
-        writable: true,
-        configurable: true,
+    it('should throw when neither substrate nor evm is provided', () => {
+      expect(() => createConfig({} as CreateConfigParameters)).toThrow(
+        '[LunoKit] You must provide either "substrate" or "evm" configuration.'
+      );
+    });
+  });
+
+  describe('substrate-only config', () => {
+    it('should create config with substrate connectors and chains', () => {
+      const config = createConfig({
+        substrate: {
+          chains: [polkadot, kusama],
+          connectors: [Substrate.polkadotjsConnector(), Substrate.subwalletConnector()],
+        },
       });
 
-      const params: CreateConfigParameters = {
-        chains: [polkadot],
-        connectors: [polkadotjsConnector()],
+      expect(config.substrate).toBeDefined();
+      expect(config.evm).toBeUndefined();
+      expect(config.substrate!.chains).toHaveLength(2);
+      expect(config.substrate!.connectors).toHaveLength(2);
+      expect(config.substrate!.connectors[0].id).toBe('polkadot-js');
+      expect(config.substrate!.connectors[1].id).toBe('subwallet-js');
+    });
+
+    it('should generate transports from chain WebSocket URLs', () => {
+      const config = createConfig({
+        substrate: {
+          chains: [polkadot],
+          connectors: [Substrate.polkadotjsConnector()],
+        },
+      });
+
+      expect(config.substrate!.transports[polkadot.genesisHash]).toBe(polkadot.rpcUrls.webSocket);
+    });
+
+    it('should merge custom transports with generated ones', () => {
+      const config = createConfig({
+        substrate: {
+          chains: [polkadot],
+          connectors: [Substrate.polkadotjsConnector()],
+          transports: {
+            [polkadot.genesisHash]: ['wss://override.endpoint.com'],
+          },
+        },
+      });
+
+      expect(config.substrate!.transports[polkadot.genesisHash]).toEqual([
+        'wss://override.endpoint.com',
+      ]);
+    });
+
+    it('should warn when chain has no WebSocket URL', () => {
+      const consoleSpy = vi.spyOn(console, 'warn');
+      const chainWithoutWs: SubstrateChain = {
+        ...polkadot,
+        id: '0x0000000000000000000000000000000000000000000000000000000000000001',
+        genesisHash: '0x0000000000000000000000000000000000000000000000000000000000000001',
+        name: 'No WS Chain',
+        rpcUrls: { webSocket: undefined as unknown as readonly string[] },
       };
 
-      const config = createConfig(params);
+      createConfig({
+        substrate: {
+          chains: [chainWithoutWs],
+          connectors: [Substrate.polkadotjsConnector()],
+          transports: {
+            [chainWithoutWs.genesisHash]: ['wss://fallback.endpoint.com'],
+          },
+        },
+      });
 
-      expect(config.storage).toBeDefined();
-      expect(config.storage).toHaveProperty('getItem');
-      expect(config.storage).toHaveProperty('setItem');
-      expect(config.storage).toHaveProperty('removeItem');
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('No WebSocket URL found for chain')
+      );
+    });
+
+    it('should throw when connectors array is empty', () => {
+      expect(() =>
+        createConfig({
+          substrate: {
+            connectors: [],
+          },
+        })
+      ).toThrow('No connectors provided. Wallet connection features will be unavailable.');
+    });
+
+    it('should handle empty chains array', () => {
+      const config = createConfig({
+        substrate: {
+          chains: [],
+          connectors: [Substrate.polkadotjsConnector()],
+        },
+      });
+
+      expect(config.substrate!.chains).toEqual([]);
+      expect(config.substrate!.transports).toEqual({});
+    });
+
+    it('should pass through customTypes and customRpc', () => {
+      const config = createConfig({
+        substrate: {
+          connectors: [Substrate.polkadotjsConnector()],
+          customTypes: { TestType: {} as any },
+          customRpc: { testMethod: {} },
+        },
+      });
+
+      expect(config.substrate!.customTypes).toEqual({ TestType: {} });
+      expect(config.substrate!.customRpc).toEqual({ testMethod: {} });
+    });
+
+    it('should support connector groups', () => {
+      const config = createConfig({
+        substrate: {
+          connectors: [
+            {
+              groupName: 'Recommended',
+              wallets: [Substrate.polkadotjsConnector()],
+            },
+            {
+              groupName: 'Others',
+              wallets: [Substrate.subwalletConnector()],
+            },
+          ],
+        },
+      });
+
+      expect(config.substrate!.connectors).toHaveLength(2);
+      expect(config.substrate!.connectorGroups).toHaveLength(2);
+      expect(config.substrate!.connectorGroups![0].groupName).toBe('Recommended');
+      expect(config.substrate!.connectorGroups![1].groupName).toBe('Others');
+    });
+
+    it('should filter out empty connector groups', () => {
+      const config = createConfig({
+        substrate: {
+          connectors: [
+            {
+              groupName: 'Recommended',
+              wallets: [Substrate.polkadotjsConnector()],
+            },
+            {
+              groupName: 'Empty',
+              wallets: [],
+            },
+          ],
+        },
+      });
+
+      expect(config.substrate!.connectorGroups).toHaveLength(1);
+      expect(config.substrate!.connectorGroups![0].groupName).toBe('Recommended');
+    });
+  });
+
+  describe('evm-only config', () => {
+    it('should create config with evm connectors and chains', () => {
+      const config = createConfig({
+        evm: {
+          chains: [mainnet],
+          connectors: [Evm.metamaskConnector()],
+        },
+      });
+
+      expect(config.evm).toBeDefined();
+      expect(config.substrate).toBeUndefined();
+      expect(config.evm!.chains).toHaveLength(1);
+      expect(config.evm!.chains[0].chainType).toBe('evm');
+      expect(config.evm!.connectors).toHaveLength(1);
+      expect(config.evm!.wagmiConfig).toBeDefined();
+    });
+
+    it('should normalize evm chains with chainType', () => {
+      const config = createConfig({
+        evm: {
+          chains: [mainnet, sepolia],
+          connectors: [Evm.metamaskConnector()],
+        },
+      });
+
+      for (const chain of config.evm!.chains) {
+        expect(chain.chainType).toBe('evm');
+      }
+    });
+
+    it('should backfill wagmi connector into luno evm connector', () => {
+      const metamask = Evm.metamaskConnector();
+      const config = createConfig({
+        evm: {
+          chains: [mainnet],
+          connectors: [metamask],
+        },
+      });
+
+      expect(config.evm!.wagmiConfig.connectors.length).toBeGreaterThan(0);
+    });
+
+    it('should support evm connector groups', () => {
+      const config = createConfig({
+        evm: {
+          chains: [mainnet],
+          connectors: [
+            {
+              groupName: 'Popular',
+              wallets: [Evm.metamaskConnector()],
+            },
+          ],
+        },
+      });
+
+      expect(config.evm!.connectorGroups).toHaveLength(1);
+      expect(config.evm!.connectorGroups![0].groupName).toBe('Popular');
+    });
+  });
+
+  describe('dual-track config (substrate + evm)', () => {
+    it('should create config with both substrate and evm', () => {
+      const config = createConfig({
+        substrate: {
+          chains: [polkadot],
+          connectors: [Substrate.polkadotjsConnector()],
+        },
+        evm: {
+          chains: [mainnet],
+          connectors: [Evm.metamaskConnector()],
+        },
+      });
+
+      expect(config.substrate).toBeDefined();
+      expect(config.evm).toBeDefined();
+      expect(config.substrate!.chains).toHaveLength(1);
+      expect(config.evm!.chains).toHaveLength(1);
+    });
+  });
+
+  describe('immutability', () => {
+    it('should freeze substrate chains, connectors and transports', () => {
+      const config = createConfig({
+        substrate: {
+          chains: [polkadot],
+          connectors: [Substrate.polkadotjsConnector()],
+        },
+      });
+
+      expect(Object.isFrozen(config.substrate!.chains)).toBe(true);
+      expect(Object.isFrozen(config.substrate!.connectors)).toBe(true);
+      expect(Object.isFrozen(config.substrate!.transports)).toBe(true);
+    });
+
+    it('should freeze evm chains and connectors', () => {
+      const config = createConfig({
+        evm: {
+          chains: [mainnet],
+          connectors: [Evm.metamaskConnector()],
+        },
+      });
+
+      expect(Object.isFrozen(config.evm!.chains)).toBe(true);
+      expect(Object.isFrozen(config.evm!.connectors)).toBe(true);
     });
   });
 });

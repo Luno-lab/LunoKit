@@ -2,7 +2,7 @@ import { novaSubstrateWallet } from '../../../config/logos/generated';
 import type { WalletConnectConnectorOptions } from '../../../types';
 import { isMobileDevice } from '../../../utils';
 import { novaMobileConnector } from './novaMobile';
-import { WalletConnectConnector } from './walletconnect';
+import { WalletConnectConnector } from '../base/walletconnect';
 
 type WalletConnectConfig = Pick<
   WalletConnectConnectorOptions,

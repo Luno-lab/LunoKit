@@ -1,5 +1,6 @@
 export { SubstrateConnector } from './base/connector';
 export { InjectConnector } from './base/inject';
+export { WalletConnectConnector } from './base/walletconnect';
 export { enkryptConnector } from './wallets/enkrypt';
 export { fearlessConnector } from './wallets/fearless';
 export { ledgerConnector } from './wallets/ledger';
@@ -11,4 +12,4 @@ export { polkadotjsConnector } from './wallets/polkadot-js';
 export { polkagateConnector } from './wallets/polkagate';
 export { subwalletConnector } from './wallets/subwallet';
 export { talismanConnector } from './wallets/talisman';
-export { WalletConnectConnector, walletConnectConnector } from './wallets/walletconnect';
+export { walletConnectConnector } from './wallets/walletconnect';

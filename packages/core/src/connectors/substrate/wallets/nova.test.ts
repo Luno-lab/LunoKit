@@ -1,6 +1,6 @@
 import { describe } from 'vitest';
 import { novaSubstrateWallet } from '../../../config/logos/generated';
-import { createWalletConnectTestSuite } from '../../test-helper';
+import { createWalletConnectTestSuite } from '../test-helper';
 import { novaConnector } from './nova';
 
 describe(

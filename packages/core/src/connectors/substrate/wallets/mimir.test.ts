@@ -130,7 +130,7 @@ describe('MimirConnector', () => {
 
       const accounts = await connector.connect({ appName: 'test-app' });
 
-      expect(superConnectSpy).toHaveBeenCalledWith('test-app');
+      expect(superConnectSpy).toHaveBeenCalledWith({ appName: 'test-app' });
 
       expect(accounts).toEqual([{ address: '123', meta: { name: 'Test' } }]);
     });

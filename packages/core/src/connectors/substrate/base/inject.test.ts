@@ -1,5 +1,5 @@
 import { describe } from 'vitest';
-import { createConnectorTestSuite } from '../../test-helper';
+import { createConnectorTestSuite } from '../test-helper';
 import { InjectConnector } from './inject';
 
 const options = {

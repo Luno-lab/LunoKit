@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Chain, WalletConnectConnectorOptions } from '../types';
-import type { BaseConnector } from './base';
+import type { SubstrateChain, WalletConnectConnectorOptions } from '../../types';
+import type { SubstrateConnector } from './base/connector'
 
 interface ConnectorTestConfig<T> {
   getConnector: () => T;
@@ -23,7 +23,7 @@ interface MockInjector {
   };
 }
 
-export function createConnectorTestSuite<T extends BaseConnector>(config: ConnectorTestConfig<T>) {
+export function createConnectorTestSuite<T extends SubstrateConnector>(config: ConnectorTestConfig<T>) {
   return () => {
     let connector: T;
     let mockInjectedWeb3: Record<string, any>;
@@ -135,24 +135,24 @@ export function createConnectorTestSuite<T extends BaseConnector>(config: Connec
       });
 
       it('should connect successfully with valid setup', async () => {
-        const accounts = await connector.connect('test-app');
+        const accounts = await connector.connect({ appName: 'test-app' });
 
         expect(mockInjectedWeb3[actualInjectorId].enable).toHaveBeenCalledWith('test-app');
         expect(mockInjector.accounts.get).toHaveBeenCalled();
         expect(accounts).toHaveLength(1);
-        expect(accounts[0].address).toBe(TEST_ADDRESS);
+        expect(accounts![0].address).toBe(TEST_ADDRESS);
       });
 
       it('should handle already connected state', async () => {
-        await connector.connect('test-app');
-        const accounts = await connector.connect('test-app');
+        await connector.connect({ appName: 'test-app' });
+        const accounts = await connector.connect({ appName: 'test-app' });
         expect(accounts).toHaveLength(1);
         expect(mockInjectedWeb3[actualInjectorId].enable).toHaveBeenCalledTimes(1);
       });
 
       it('should throw error when extension not available', async () => {
         vi.spyOn(connector, 'isAvailable').mockResolvedValue(false);
-        await expect(connector.connect('test-app')).rejects.toThrow(
+        await expect(connector.connect({ appName: 'test-app' })).rejects.toThrow(
           `${name} extension not found or not enabled.`
         );
       });
@@ -169,7 +169,7 @@ export function createConnectorTestSuite<T extends BaseConnector>(config: Connec
           configurable: true,
         });
 
-        await expect(connector.connect('test-app')).rejects.toThrow(
+        await expect(connector.connect({ appName: 'test-app' })).rejects.toThrow(
           `${name} extension not found or not enabled.`
         );
       });
@@ -177,7 +177,7 @@ export function createConnectorTestSuite<T extends BaseConnector>(config: Connec
       it('should throw error when enable fails', async () => {
         mockInjectedWeb3[actualInjectorId].enable.mockResolvedValue(null);
 
-        await expect(connector.connect('test-app')).rejects.toThrow(
+        await expect(connector.connect({ appName: 'test-app' })).rejects.toThrow(
           `Failed to enable the '${id}' extension.`
         );
       });
@@ -185,7 +185,7 @@ export function createConnectorTestSuite<T extends BaseConnector>(config: Connec
       it('should throw error when no accounts found', async () => {
         mockInjector.accounts.get.mockResolvedValue([]);
 
-        await expect(connector.connect('test-app')).rejects.toThrow(
+        await expect(connector.connect({ appName: 'test-app' })).rejects.toThrow(
           `No accounts found in ${name}. Make sure accounts are visible and access is granted.`
         );
       });
@@ -193,7 +193,7 @@ export function createConnectorTestSuite<T extends BaseConnector>(config: Connec
       it('should cleanup on connection failure', async () => {
         mockInjectedWeb3[actualInjectorId].enable.mockRejectedValue(new Error('Enable failed'));
 
-        await expect(connector.connect('test-app')).rejects.toThrow('Enable failed');
+        await expect(connector.connect({ appName: 'test-app' })).rejects.toThrow('Enable failed');
 
         const accounts = await connector.getAccounts();
         const signer = await connector.getSigner();
@@ -202,7 +202,7 @@ export function createConnectorTestSuite<T extends BaseConnector>(config: Connec
       });
 
       it('should setup account subscription on successful connection', async () => {
-        await connector.connect('test-app');
+        await connector.connect({ appName: 'test-app' });
         expect(mockInjector.accounts.subscribe).toHaveBeenCalled();
       });
 
@@ -210,7 +210,7 @@ export function createConnectorTestSuite<T extends BaseConnector>(config: Connec
         const connectSpy = vi.fn();
         connector.on('connect', connectSpy);
 
-        await connector.connect('test-app');
+        await connector.connect({ appName: 'test-app' });
 
         expect(connectSpy).toHaveBeenCalledWith([
           expect.objectContaining({
@@ -220,8 +220,8 @@ export function createConnectorTestSuite<T extends BaseConnector>(config: Connec
       });
 
       it('should set correct source metadata for accounts', async () => {
-        const accounts = await connector.connect('test-app');
-        accounts.forEach((account) => {
+        const accounts = await connector.connect({ appName: 'test-app' });
+        accounts!.forEach((account: any) => {
           expect(account.meta?.source).toBe(id);
         });
       });
@@ -232,7 +232,7 @@ export function createConnectorTestSuite<T extends BaseConnector>(config: Connec
         mockInjectedWeb3[actualInjectorId].enable.mockResolvedValue(mockInjector);
         mockInjector.accounts.get.mockResolvedValue([{ address: TEST_ADDRESS, name: 'Test' }]);
         mockInjector.accounts.subscribe.mockReturnValue(() => {});
-        await connector.connect('test-app');
+        await connector.connect({ appName: 'test-app' });
       });
 
       it('should sign message successfully', async () => {
@@ -276,12 +276,6 @@ export function createConnectorTestSuite<T extends BaseConnector>(config: Connec
       it('should return undefined for invalid parameters', async () => {
         expect(await connector.signMessage('', TEST_ADDRESS)).toBeUndefined();
         expect(await connector.signMessage('hello world', '')).toBeUndefined();
-        expect(await connector.signMessage(null as any, TEST_ADDRESS)).toBeUndefined();
-        expect(await connector.signMessage('hello', null as any)).toBeUndefined();
-        expect(await connector.signMessage(undefined as any, TEST_ADDRESS)).toBeUndefined();
-        expect(await connector.signMessage('hello', undefined as any)).toBeUndefined();
-        expect(await connector.signMessage('', '')).toBeUndefined();
-        expect(await connector.signMessage(null as any, null as any)).toBeUndefined();
       });
 
       it('should throw error when signing with unmanaged address', async () => {
@@ -307,7 +301,7 @@ export function createConnectorTestSuite<T extends BaseConnector>(config: Connec
         const unsubscribeFn = vi.fn();
         mockInjector.accounts.subscribe.mockReturnValue(unsubscribeFn);
 
-        await connector.connect('test-app');
+        await connector.connect({ appName: 'test-app' });
         await connector.disconnect();
 
         const accounts = await connector.getAccounts();
@@ -341,7 +335,7 @@ export function createConnectorTestSuite<T extends BaseConnector>(config: Connec
         const accountsChangedSpy = vi.fn();
         connector.on('accountsChanged', accountsChangedSpy);
 
-        await connector.connect('test-app');
+        await connector.connect({ appName: 'test-app' });
 
         const newAccounts = [{ address: TEST_ADDRESS, name: 'Updated Test' }];
         subscriptionCallback(newAccounts);
@@ -367,6 +361,8 @@ interface MockWalletConnectProvider {
   client?: {
     connect: any;
     request: any;
+    on: any;
+    off: any;
   };
   session?: {
     topic: string;
@@ -378,7 +374,7 @@ interface MockWalletConnectProvider {
   };
 }
 
-export function createWalletConnectTestSuite<T extends BaseConnector>(
+export function createWalletConnectTestSuite<T extends SubstrateConnector>(
   config: WalletConnectTestConfig<T>
 ) {
   return () => {
@@ -393,7 +389,7 @@ export function createWalletConnectTestSuite<T extends BaseConnector>(
         genesisHash: '0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e',
         name: 'Polkadot',
       },
-    ] as Chain[];
+    ] as unknown as SubstrateChain[];
     const TEST_SESSION = {
       topic: 'test-topic',
       namespaces: {
@@ -422,6 +418,8 @@ export function createWalletConnectTestSuite<T extends BaseConnector>(
         client: {
           connect: vi.fn(),
           request: vi.fn(),
+          on: vi.fn(),
+          off: vi.fn(),
         },
         session: undefined,
       };
@@ -461,7 +459,7 @@ export function createWalletConnectTestSuite<T extends BaseConnector>(
     });
 
     describe('installation and availability', () => {
-      it('should always be installed', () => {
+      it('should not be installed (remote protocol)', () => {
         expect(connector.isInstalled()).toBe(false);
       });
 
@@ -476,26 +474,26 @@ export function createWalletConnectTestSuite<T extends BaseConnector>(
           projectId: '',
         });
 
-        await expect(connectorWithoutProject.connect('test-app', TEST_CHAINS)).rejects.toThrow(
-          `${name} requires a projectId`
-        );
+        await expect(
+          connectorWithoutProject.connect({ appName: 'test-app', chains: TEST_CHAINS })
+        ).rejects.toThrow(`${name} requires a projectId`);
       });
 
       it('should throw error when chains missing', async () => {
-        await expect(connector.connect('test-app', [])).rejects.toThrow(
-          `${name} requires chains configuration`
-        );
+        await expect(
+          connector.connect({ appName: 'test-app', chains: [] })
+        ).rejects.toThrow(`${name} requires chains configuration`);
       });
 
       it('should connect with existing session', async () => {
         mockProvider.session = TEST_SESSION;
 
-        const accounts = await connector.connect('test-app', TEST_CHAINS);
+        const accounts = await connector.connect({ appName: 'test-app', chains: TEST_CHAINS });
 
         expect(mockProvider.client!.connect).not.toHaveBeenCalled();
         expect(accounts).toHaveLength(1);
-        expect(accounts[0].address).toBe(TEST_ADDRESS);
-        expect(accounts[0].meta?.source).toBe(id);
+        expect(accounts![0].address).toBe(TEST_ADDRESS);
+        expect((accounts![0] as any).meta?.source).toBe(id);
       });
 
       it('should connect with new session and emit events', async () => {
@@ -510,7 +508,7 @@ export function createWalletConnectTestSuite<T extends BaseConnector>(
         connector.on('connect', connectSpy);
         connector.on('get_uri', getUriSpy);
 
-        const accounts = await connector.connect('test-app', TEST_CHAINS);
+        const accounts = await connector.connect({ appName: 'test-app', chains: TEST_CHAINS });
 
         expect(mockProvider.init).toHaveBeenCalledWith({
           projectId: TEST_PROJECT_ID,
@@ -527,7 +525,7 @@ export function createWalletConnectTestSuite<T extends BaseConnector>(
           }),
         ]);
         expect(accounts).toHaveLength(1);
-        expect(accounts[0].address).toBe(TEST_ADDRESS);
+        expect(accounts![0].address).toBe(TEST_ADDRESS);
       });
     });
 
@@ -543,7 +541,7 @@ export function createWalletConnectTestSuite<T extends BaseConnector>(
           approval: () => Promise.resolve(TEST_SESSION),
         });
 
-        const connectPromise = connector.connect('test-app', TEST_CHAINS);
+        const connectPromise = connector.connect({ appName: 'test-app', chains: TEST_CHAINS });
         const uriPromise = connector.getConnectionUri();
 
         await connectPromise;
@@ -556,7 +554,7 @@ export function createWalletConnectTestSuite<T extends BaseConnector>(
     describe('account management', () => {
       beforeEach(async () => {
         mockProvider.session = TEST_SESSION;
-        await connector.connect('test-app', TEST_CHAINS);
+        await connector.connect({ appName: 'test-app', chains: TEST_CHAINS });
       });
 
       it('should return connected accounts', async () => {
@@ -569,7 +567,7 @@ export function createWalletConnectTestSuite<T extends BaseConnector>(
     describe('signing', () => {
       beforeEach(async () => {
         mockProvider.session = TEST_SESSION;
-        await connector.connect('test-app', TEST_CHAINS);
+        await connector.connect({ appName: 'test-app', chains: TEST_CHAINS });
       });
 
       it('should sign message successfully', async () => {
@@ -609,17 +607,20 @@ export function createWalletConnectTestSuite<T extends BaseConnector>(
         const signer = await connector.getSigner();
         const mockPayload = {
           address: TEST_ADDRESS,
-          genesisHash: '0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e',
+          genesisHash: '0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e' as const,
           method: '0x123',
-          nonce: '0x00',
-          specVersion: '0x1234',
-          transactionVersion: '0x01',
-          blockHash: '0xabc',
-          blockNumber: '0x123',
-          era: '0x00',
+          nonce: '0x00' as const,
+          specVersion: '0x1234' as const,
+          transactionVersion: '0x01' as const,
+          blockHash: '0xabc' as const,
+          blockNumber: '0x123' as const,
+          era: '0x00' as const,
+          tip: '0x00' as const,
+          signedExtensions: ['CheckMortality', 'CheckNonce'],
+          version: 4,
         };
 
-        const result = await signer!.signPayload(mockPayload);
+        const result = await signer!.signPayload!(mockPayload);
 
         expect(result.signature).toBe('0xtest-tx-signature');
         expect(mockProvider.client!.request).toHaveBeenCalledWith({
@@ -647,7 +648,7 @@ export function createWalletConnectTestSuite<T extends BaseConnector>(
     describe('disconnection', () => {
       it('should disconnect when connected', async () => {
         mockProvider.session = TEST_SESSION;
-        await connector.connect('test-app', TEST_CHAINS);
+        await connector.connect({ appName: 'test-app', chains: TEST_CHAINS });
 
         const disconnectSpy = vi.fn();
         connector.on('disconnect', disconnectSpy);

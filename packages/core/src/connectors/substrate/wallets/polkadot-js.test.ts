@@ -1,6 +1,6 @@
 import { describe } from 'vitest';
 import { polkadotjsSubstrateWallet } from '../../../config/logos/generated';
-import { createConnectorTestSuite } from '../../test-helper';
+import { createConnectorTestSuite } from '../test-helper';
 import { polkadotjsConnector } from './polkadot-js';
 
 describe(

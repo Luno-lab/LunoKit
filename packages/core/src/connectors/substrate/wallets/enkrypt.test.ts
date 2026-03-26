@@ -1,6 +1,6 @@
 import { describe } from 'vitest';
 import { enkryptSubstrateWallet } from '../../../config/logos/generated';
-import { createConnectorTestSuite } from '../../test-helper';
+import { createConnectorTestSuite } from '../test-helper';
 import { enkryptConnector } from './enkrypt';
 
 describe(

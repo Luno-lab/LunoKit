@@ -1,5 +1,5 @@
 import {okxEvmWallet} from '../../../config/logos/generated'
-import {injectedConnector} from '../base/injected'
+import {injectedConnector} from './injected'
 
 export const okxConnector = () => injectedConnector({
   id: 'okxwallet',
